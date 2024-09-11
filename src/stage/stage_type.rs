@@ -1,3 +1,6 @@
+// TODO remove this
+#![allow(dead_code)]
+
 mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
@@ -89,7 +92,7 @@ mod consts {
     ];
     }
 }
-use consts::{STAGE_CODES, STAGE_TYPE_MAP};
+use consts::{StageCode, STAGE_CODES, STAGE_TYPE_MAP};
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -101,7 +104,7 @@ lazy_static! {
 
 #[derive(Debug)]
 struct StageType {
-    pub stage_type: &'static str,
+    pub type_name: &'static str,
     pub type_code: &'static str,
     pub type_num: i32,
     pub map_num: i32,
@@ -133,14 +136,13 @@ impl StageType {
                 // let chapter: i32 = stage_type.parse().unwrap();
                 let submap: i32 = (&selector[1]).parse().unwrap();
                 let stage: i32 = (&selector[2]).parse::<i32>().unwrap();
-                return Self::from_split(&selector[0], submap, stage);
+                return Self::from_new(stage_type, submap, stage);
             }
         }
     }
 
     fn get_selector_type(selector_type: &str) -> Result<&'static str, StageTypeError> {
         for selector_map in STAGE_TYPE_MAP.iter() {
-            println!("{selector_map:?}: {selector_type}");
             if selector_map.matcher.is_match(selector_type) {
                 return Ok(selector_map.stage_type);
             }
@@ -154,37 +156,83 @@ impl StageType {
 
         match DB_REFERENCE_STAGE.captures(&reference) {
             Some(caps) => {
-                // let chapter: i32 = stage_type.parse().unwrap();
-                let submap: i32 = (&caps[1]).parse().unwrap();
-                let stage: i32 = (&caps[2]).parse::<i32>().unwrap() - 1;
-                return Self::from_split(&caps[0], submap, stage);
+                let chapter: i32 = (&caps[1]).parse().unwrap();
+                // necessary since can contain leading 0s
+                let submap: i32 = (&caps[2]).parse().unwrap();
+                let stage: i32 = (&caps[3]).parse::<i32>().unwrap() - 1;
+                return Self::from_numbers(chapter, submap, stage);
             }
             None => Err(StageTypeError::Rejected),
         }
     }
 
-    // /// Don't use this.
-    // pub fn from_numbers(
-    //     stage_type: i32,
-    //     map_num: i32,
-    //     stage_num: i32,
-    // ) -> Result<StageType, StageTypeError> {
-    //     return Self::from_split(&stage_type.to_string(), map_num, stage_num);
-    // }
+   fn from_numbers(
+        stage_type: i32,
+        map_num: i32,
+        stage_num: i32,
+    ) -> Result<StageType, StageTypeError> {
+        return Self::from_split(&stage_type.to_string(), map_num, stage_num);
+    }
+
+    fn get_stage_code(stage_type: &str) -> StageCode {
+        for code in STAGE_CODES {
+            if stage_type == code.code {
+                return code;
+            }
+        }
+
+        unreachable!();
+    }
 
     pub fn from_split(
         stage_type: &str,
         map_num: i32,
         stage_num: i32,
     ) -> Result<StageType, StageTypeError> {
+        Self::from_new(Self::get_selector_type(stage_type)?, map_num, stage_num)
+    }
+
+    /// IDK this naming convention any more
+    fn from_new(
+        stage_type: &str,
+        map_num: i32,
+        stage_num: i32,
+    ) -> Result<StageType, StageTypeError> {
+        let code = Self::get_stage_code(stage_type);
+
+        let type_name = code.name;
+        let type_num = code.number;
+
+        let type_code;
+        let map_file_name;
+        let stage_file_name;
+        if code.code.contains("|") {
+            // If more than RE|EX is needed this could completely break
+            let map = &code.code[..2];
+            let stage = &code.code[3..];
+            type_code = stage;
+            map_file_name = format!("MapStageData{map}_{map_num:03}.csv");
+            stage_file_name = format!("stage{stage}{map_num:03}_{stage_num:02}.csv");
+        } else {
+            let map = code.code;
+            let stage = match code.has_r_prefix {
+                true => "R".to_owned() + code.code,
+                false => code.code.to_owned(),
+            };
+            type_code = map;
+            map_file_name = format!("MapStageData{map}_{map_num:03}.csv");
+            stage_file_name = format!("stage{stage}{map_num:03}_{stage_num:02}.csv");
+        }
+        // let type_code = code.code
+
         Ok(StageType {
-            stage_type: "the",
-            type_code: "the",
-            type_num: 0,
-            map_num: 0,
-            stage_num: 0,
-            map_file_name: "".to_string(),
-            stage_file_name: "".to_string(),
+            type_name,
+            type_code,
+            type_num,
+            map_num,
+            stage_num,
+            map_file_name,
+            stage_file_name,
         })
     }
 }
