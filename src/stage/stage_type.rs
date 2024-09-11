@@ -214,14 +214,15 @@ impl StageType {
             map_file_name = format!("MapStageData{map}_{map_num:03}.csv");
             stage_file_name = format!("stage{stage}{map_num:03}_{stage_num:02}.csv");
         } else {
-            let map = code.code;
-            let stage = match code.has_r_prefix {
-                true => "R".to_owned() + code.code,
-                false => code.code.to_owned(),
+            let stage_prefix = match code.has_r_prefix {
+                true => "R",
+                false => "",
             };
-            type_code = map;
-            map_file_name = format!("MapStageData{map}_{map_num:03}.csv");
-            stage_file_name = format!("stage{stage}{map_num:03}_{stage_num:02}.csv");
+            let code = code.code;
+
+            type_code = code;
+            map_file_name = format!("MapStageData{code}_{map_num:03}.csv");
+            stage_file_name = format!("stage{stage_prefix}{code}{map_num:03}_{stage_num:02}.csv");
         }
         // let type_code = code.code
 
