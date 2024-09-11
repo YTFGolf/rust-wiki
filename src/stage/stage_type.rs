@@ -3,19 +3,19 @@ mod consts {
     use regex::Regex;
 
     #[derive(Debug)]
-    pub struct StageCode<'a> {
-        pub name: &'a str,
+    pub struct StageCode {
+        pub name: &'static str,
         pub number: i32,
-        pub code: &'a str,
+        pub code: &'static str,
         pub has_r_prefix: bool,
     }
 
-    const fn initialise_code<'a>(
-        name: &'a str,
+    const fn initialise_code(
+        name: &'static str,
         number: i32,
-        code: &'a str,
+        code: &'static str,
         has_r_prefix: bool,
-    ) -> StageCode<'a> {
+    ) -> StageCode {
         StageCode {
             name,
             number,
@@ -47,12 +47,12 @@ mod consts {
     ];
 
     #[derive(Debug)]
-    pub struct StageTypeMap<'a> {
+    pub struct StageTypeMap {
         pub matcher: Regex,
-        pub stage_type: &'a str,
+        pub stage_type: &'static str,
     }
 
-    fn initialise_type_map<'a>(pattern: &'a str, stage_type: &'a str) -> StageTypeMap<'a> {
+    fn initialise_type_map(pattern: &'static str, stage_type: &'static str) -> StageTypeMap {
         let re = format!("(?:i)^({})$", pattern);
         let matcher = Regex::new(&re).unwrap();
         StageTypeMap {
@@ -63,7 +63,7 @@ mod consts {
 
     lazy_static! {
     #[rustfmt::skip]
-    pub static ref STAGE_TYPE_MAP: [StageTypeMap<'static>; 19] = [
+    pub static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
@@ -86,10 +86,72 @@ mod consts {
     ];
     }
 }
-use consts::{STAGE_TYPE_MAP, STAGE_CODES};
+use consts::{STAGE_CODES, STAGE_TYPE_MAP};
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    static ref DB_REFERENCE_FULL: Regex =
+        Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap();
+    static ref DB_REFERENCE_STAGE: Regex = Regex::new(r"^s(\d{2})(\d{3})\-(\d{2})$").unwrap();
+}
+
+#[derive(Debug)]
+struct StageType {
+    pub stage_type: &'static str,
+    pub type_code: &'static str,
+    pub type_num: i32,
+    pub map_num: i32,
+    pub stage_num: i32,
+
+    pub map_file_name: String,
+    pub stage_file_name: String,
+}
+
+#[derive(Debug)]
+enum StageTypeError {
+    Rejected,
+}
+
+impl StageType {
+    pub fn from_ref(selector: &str) -> Result<StageType, StageTypeError> {
+        let reference = DB_REFERENCE_FULL.replace(selector, "$1");
+
+        if let Some(caps) = DB_REFERENCE_STAGE.captures(&reference) {
+            // let chapter: i32 = caps[1].parse().unwrap();
+            let submap: i32 = caps[2].parse().unwrap();
+            let stage: i32 = caps[3].parse::<i32>().unwrap() - 1;
+
+            return Self::from_split(&caps[1], submap, stage);
+        }
+
+        return Err(StageTypeError::Rejected);
+    }
+
+    pub fn from_numbers(stage_type: i32, map_num: i32, stage_num: i32)-> Result<StageType, StageTypeError> {
+        return Self::from_split(&stage_type.to_string(), map_num, stage_num)
+    }
+
+    pub fn from_split(stage_type: &str, map_num: i32, stage_num: i32) -> Result<StageType, StageTypeError> {
+        Ok(StageType {
+            stage_type: "the",
+            type_code: "the",
+            type_num: 0,
+            map_num: 0,
+            stage_num: 0,
+            map_file_name: "".to_string(),
+            stage_file_name: "".to_string(),
+        })
+    }
+}
 
 pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", STAGE_CODES);
     println!("{:?}", STAGE_TYPE_MAP.iter().collect::<Vec<_>>());
+    println!("{:?}", StageType::from_split("0", 0, 0));
+    println!(
+        "{:?}",
+        StageType::from_ref("*https://battlecats-db.com/stage/s01382-03.html")
+    );
     selector
 }
