@@ -1,6 +1,6 @@
 mod consts {
     use lazy_static::lazy_static;
-    use regex::Regex;
+    use regex::{Regex, RegexBuilder};
 
     #[derive(Debug)]
     pub struct StageCode {
@@ -53,8 +53,11 @@ mod consts {
     }
 
     fn initialise_type_map(pattern: &'static str, stage_type: &'static str) -> StageTypeMap {
-        let re = format!("(?:i)^({})$", pattern);
-        let matcher = Regex::new(&re).unwrap();
+        let re = format!("^({})$", pattern);
+        let matcher = RegexBuilder::new(&re)
+            .case_insensitive(true)
+            .build()
+            .unwrap();
         StageTypeMap {
             matcher,
             stage_type,
