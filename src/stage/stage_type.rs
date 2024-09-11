@@ -114,28 +114,69 @@ struct StageType {
 #[derive(Debug)]
 enum StageTypeError {
     Rejected,
+    Invalid,
 }
 
 impl StageType {
+    pub fn new(selector: &str) -> Result<StageType, StageTypeError> {
+        todo!()
+    }
+
+    pub fn from_selector(selector: &str) -> Result<StageType, StageTypeError> {
+        let selector: Vec<&str> = selector.split(" ").collect();
+        let stage_type =
+            Self::get_selector_type(selector.get(0).expect("Selector should have content!"))?;
+
+        match stage_type {
+            "main" => todo!(),
+            _ => {
+                // let chapter: i32 = stage_type.parse().unwrap();
+                let submap: i32 = (&selector[1]).parse().unwrap();
+                let stage: i32 = (&selector[2]).parse::<i32>().unwrap();
+                return Self::from_split(&selector[0], submap, stage);
+            }
+        }
+    }
+
+    fn get_selector_type(selector_type: &str) -> Result<&'static str, StageTypeError> {
+        for selector_map in STAGE_TYPE_MAP.iter() {
+            println!("{selector_map:?}: {selector_type}");
+            if selector_map.matcher.is_match(selector_type) {
+                return Ok(selector_map.stage_type);
+            }
+        }
+
+        Err(StageTypeError::Invalid)
+    }
+
     pub fn from_ref(selector: &str) -> Result<StageType, StageTypeError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
 
-        if let Some(caps) = DB_REFERENCE_STAGE.captures(&reference) {
-            // let chapter: i32 = caps[1].parse().unwrap();
-            let submap: i32 = caps[2].parse().unwrap();
-            let stage: i32 = caps[3].parse::<i32>().unwrap() - 1;
-
-            return Self::from_split(&caps[1], submap, stage);
+        match DB_REFERENCE_STAGE.captures(&reference) {
+            Some(caps) => {
+                // let chapter: i32 = stage_type.parse().unwrap();
+                let submap: i32 = (&caps[1]).parse().unwrap();
+                let stage: i32 = (&caps[2]).parse::<i32>().unwrap() - 1;
+                return Self::from_split(&caps[0], submap, stage);
+            }
+            None => Err(StageTypeError::Rejected),
         }
-
-        return Err(StageTypeError::Rejected);
     }
 
-    pub fn from_numbers(stage_type: i32, map_num: i32, stage_num: i32)-> Result<StageType, StageTypeError> {
-        return Self::from_split(&stage_type.to_string(), map_num, stage_num)
-    }
+    // /// Don't use this.
+    // pub fn from_numbers(
+    //     stage_type: i32,
+    //     map_num: i32,
+    //     stage_num: i32,
+    // ) -> Result<StageType, StageTypeError> {
+    //     return Self::from_split(&stage_type.to_string(), map_num, stage_num);
+    // }
 
-    pub fn from_split(stage_type: &str, map_num: i32, stage_num: i32) -> Result<StageType, StageTypeError> {
+    pub fn from_split(
+        stage_type: &str,
+        map_num: i32,
+        stage_num: i32,
+    ) -> Result<StageType, StageTypeError> {
         Ok(StageType {
             stage_type: "the",
             type_code: "the",
@@ -156,5 +197,6 @@ pub fn get_st_obj(selector: &str) -> &str {
         "{:?}",
         StageType::from_ref("*https://battlecats-db.com/stage/s01382-03.html")
     );
+    println!("{:?}", StageType::from_selector(selector));
     selector
 }
