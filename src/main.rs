@@ -1,3 +1,6 @@
+mod stage;
+use stage::stage_type::get_st_obj;
+
 fn main() {
-    println!("Hello, world!");
+    println!("{:?}", get_st_obj("sol 0 0"))
 }
