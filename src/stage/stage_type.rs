@@ -10,7 +10,7 @@ mod consts {
         pub has_r_prefix: bool,
     }
 
-    const fn initialise_code(
+    const fn initialise_type_code(
         name: &'static str,
         number: i32,
         code: &'static str,
@@ -23,28 +23,6 @@ mod consts {
             has_r_prefix,
         }
     }
-
-    #[rustfmt::skip]
-    pub const STAGE_CODES: [StageCode; 18] = [
-        initialise_code("Stories of Legend",    000, "N",     true),
-        initialise_code("Event Stages",         001, "S",     true),
-        initialise_code("Collaboration Stages", 002, "C",     true),
-        initialise_code("Main Chapters",        003, "main",  false),
-        initialise_code("Extra Stages",         004, "RE|EX", false),
-        initialise_code("Catclaw Dojo",         006, "T",     true),
-        initialise_code("Towers",               007, "V",     true),
-        initialise_code("Ranking Dojo",         011, "R",     true),
-        initialise_code("Challenge Battle",     012, "M",     true),
-        initialise_code("Uncanny Legends",      013, "NA",    true),
-        initialise_code("Catamin Stages",       014, "B",     true),
-        initialise_code("Gauntlets",            024, "A",     true),
-        initialise_code("Enigma Stages",        025, "H",     true),
-        initialise_code("Collab Gauntlets",     027, "CA",    true),
-        initialise_code("Behemoth Culling",     031, "Q",     true),
-        initialise_code("Labyrinth",            033, "L",     false),
-        initialise_code("Zero Legends",         034, "ND",    true),
-        initialise_code("Colosseum",            036, "SR",    true),
-    ];
 
     #[derive(Debug)]
     pub struct StageTypeMap {
@@ -63,6 +41,28 @@ mod consts {
             stage_type,
         }
     }
+
+    #[rustfmt::skip]
+    pub const STAGE_CODES: [StageCode; 18] = [
+        initialise_type_code("Stories of Legend",    000, "N",     true),
+        initialise_type_code("Event Stages",         001, "S",     true),
+        initialise_type_code("Collaboration Stages", 002, "C",     true),
+        initialise_type_code("Main Chapters",        003, "main",  false),
+        initialise_type_code("Extra Stages",         004, "RE|EX", false),
+        initialise_type_code("Catclaw Dojo",         006, "T",     true),
+        initialise_type_code("Towers",               007, "V",     true),
+        initialise_type_code("Ranking Dojo",         011, "R",     true),
+        initialise_type_code("Challenge Battle",     012, "M",     true),
+        initialise_type_code("Uncanny Legends",      013, "NA",    true),
+        initialise_type_code("Catamin Stages",       014, "B",     true),
+        initialise_type_code("Gauntlets",            024, "A",     true),
+        initialise_type_code("Enigma Stages",        025, "H",     true),
+        initialise_type_code("Collab Gauntlets",     027, "CA",    true),
+        initialise_type_code("Behemoth Culling",     031, "Q",     true),
+        initialise_type_code("Labyrinth",            033, "L",     false),
+        initialise_type_code("Zero Legends",         034, "ND",    true),
+        initialise_type_code("Colosseum",            036, "SR",    true),
+    ];
 
     lazy_static! {
     #[rustfmt::skip]
@@ -135,19 +135,25 @@ pub enum StageTypeError {
 impl StageType {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Result<StageType, StageTypeError> {
-        if let Ok(st) = Self::from_selector(selector){
+        if let Ok(st) = Self::from_selector(selector) {
             return Ok(st);
         };
-        if let Ok(st) = Self::from_file(selector){
+        if let Ok(st) = Self::from_file(selector) {
             return Ok(st);
         };
-        if let Ok(st) = Self::from_ref(selector){
+        if let Ok(st) = Self::from_ref(selector) {
             return Ok(st);
         };
 
         Err(StageTypeError::Invalid)
     }
 
+    /// Parse space-delimited selector into StageType.
+    /// ```
+    /// # use rust_wiki::stage::stage_type::StageType;
+    /// let selector = "N 0 0"
+    /// assert_eq!(StageType::from_selector(selector).unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv", stage_file_name: "stageRN000_00.csv" });
+    /// ```
     pub fn from_selector(selector: &str) -> Result<StageType, StageTypeError> {
         let selector: Vec<&str> = selector.split(" ").collect();
         let stage_type =
@@ -159,7 +165,7 @@ impl StageType {
                 // let chapter: i32 = stage_type.parse().unwrap();
                 let submap: i32 = (&selector[1]).parse().unwrap();
                 let stage: i32 = (&selector[2]).parse::<i32>().unwrap();
-                return Self::from_new(stage_type, submap, stage);
+                return Self::from_split_parsed(stage_type, submap, stage);
             }
         }
     }
@@ -179,8 +185,8 @@ impl StageType {
                 &FILE_PATTERNS.eoc.replace(file_name, "$1"),
             ]);
         } else if FILE_PATTERNS.other_main.is_match(file_name) {
-            // will deal with this later
             ()
+            // will deal with this later
         } else if file_name.contains("_") {
             let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
             let map_num: i32 = (&caps[2]).parse::<i32>().unwrap();
@@ -190,6 +196,7 @@ impl StageType {
             return Err(StageTypeError::Rejected);
         }
 
+        // Rest is for main chapters minus EoC
         let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
         let mut chap_num = caps[2].parse::<i32>().unwrap();
         if &caps[1] == "Z" && chap_num <= 3 {
@@ -201,7 +208,7 @@ impl StageType {
             "W" => (chap_num - 3, stage_num),
             "Space" => (chap_num - 6, stage_num),
             "DM" => (stage_num, stage_num),
-            // sort of a workaround
+            // sort of a workaround so this compiles
             "Z" => (stage_num, chap_num),
             _ => unreachable!(),
         };
@@ -222,6 +229,7 @@ impl StageType {
         Err(StageTypeError::Invalid)
     }
 
+    /// Parse battle-cats.db reference into StageType.
     pub fn from_ref(selector: &str) -> Result<StageType, StageTypeError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
 
@@ -237,6 +245,7 @@ impl StageType {
         }
     }
 
+    /// Is this even necessary?
     fn from_numbers(
         stage_type: i32,
         map_num: i32,
@@ -245,6 +254,7 @@ impl StageType {
         return Self::from_split(&stage_type.to_string(), map_num, stage_num);
     }
 
+    /// Get the StageCode from `STAGE_CODES`.
     fn get_stage_code(stage_type: &str) -> StageCode {
         for code in STAGE_CODES {
             if stage_type == code.code {
@@ -255,16 +265,17 @@ impl StageType {
         unreachable!();
     }
 
+    /// Get StageType from selectors split into variables.
     pub fn from_split(
         stage_type: &str,
         map_num: i32,
         stage_num: i32,
     ) -> Result<StageType, StageTypeError> {
-        Self::from_new(Self::get_selector_type(stage_type)?, map_num, stage_num)
+        Self::from_split_parsed(Self::get_selector_type(stage_type)?, map_num, stage_num)
     }
 
-    /// IDK this naming convention any more
-    fn from_new(
+    /// `from_split` but with `stage_type` being a code from `STAGE_CODES`.
+    fn from_split_parsed(
         stage_type: &str,
         map_num: i32,
         stage_num: i32,
@@ -308,7 +319,14 @@ impl StageType {
         })
     }
 
-    fn from_selector_main(selector: Vec<&str>) -> Result<StageType, StageTypeError> {
+    /// Formats:
+    /// - EoC: `["eoc", 0]` = Korea
+    /// - ItF/W: `["itf", 1, 0]` = Japan Ch. 1
+    /// - CotC/Space: `["cotc", 1, 0]` = Earth Ch. 1
+    /// - Aku/DM: `["aku", 0]` = Korea
+    /// - Filibuster: `["filibuster"]`
+    /// - Z: `["z", 1, 0]` = Korea
+    pub fn from_selector_main(selector: Vec<&str>) -> Result<StageType, StageTypeError> {
         let code = &STAGE_CODES[3];
         let type_name = code.name;
         let type_code = code.code;
@@ -406,4 +424,3 @@ pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", StageType::new(&String::from("stageW04_05.csv")));
     selector
 }
-// from split, from file, from ref
