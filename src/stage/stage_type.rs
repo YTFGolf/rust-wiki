@@ -1,6 +1,3 @@
-// TODO remove this
-#![allow(dead_code)]
-
 mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
@@ -100,6 +97,18 @@ lazy_static! {
     static ref DB_REFERENCE_FULL: Regex =
         Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap();
     static ref DB_REFERENCE_STAGE: Regex = Regex::new(r"^s(\d{2})(\d{3})\-(\d{2})$").unwrap();
+    static ref FILE_PATTERNS: FilePatterns = FilePatterns {
+        eoc: Regex::new(r"^stage(\d{2})\.csv$").unwrap(),
+        other_main: Regex::new(r"^stage(W|Space|DM|Z)\d\d.*\.csv$").unwrap(),
+        default: Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap(),
+    };
+}
+struct FilePatterns {
+    eoc: Regex,
+    /// Main chapters that aren't EoC
+    other_main: Regex,
+    /// Every chapter that isn't EoC
+    default: Regex,
 }
 
 #[derive(Debug)]
@@ -117,7 +126,9 @@ struct StageType {
 
 #[derive(Debug)]
 enum StageTypeError {
+    /// Not the correct function to use.
     Rejected,
+    /// Either selector doesn't exist or numbers are not given.
     Invalid,
 }
 
@@ -140,6 +151,48 @@ impl StageType {
                 return Self::from_new(stage_type, submap, stage);
             }
         }
+    }
+
+    pub fn from_file(file_name: &str) -> Result<StageType, StageTypeError> {
+        if file_name == "stageSpace09_Invasion_00.csv" {
+            return Self::from_selector_main(vec!["Filibuster"]);
+        } else if FILE_PATTERNS.eoc.is_match(file_name) {
+            return Self::from_selector_main(vec![
+                "eoc",
+                &FILE_PATTERNS.eoc.replace(file_name, "$1"),
+            ]);
+        } else if FILE_PATTERNS.other_main.is_match(file_name) {
+            // will deal with this later
+            ()
+        } else if file_name.contains("_") {
+            let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
+            let map_num: i32 = (&caps[2]).parse::<i32>().unwrap();
+            let stage_num: i32 = (&caps[3]).parse::<i32>().unwrap();
+            return Self::from_split(&caps[1], map_num, stage_num);
+        }
+        else{
+            return Err(StageTypeError::Rejected)
+        }
+        todo!()
+        // elif re.match(r'^stage(W|Space|DM|Z)\d\d.*\.csv$', fileName):
+        //     def get_sel(matchobj):
+        //         're.sub replacement function'
+        //         def zombie():
+        //             nonlocal chapNum
+        //             if chapNum <= 3:
+        //                 chapNum += 1
+        //             return f'{chapNum}{Options.delim}{matchobj.group(3)}'
+        //         chapNum = int(matchobj.group(2))
+        //         parser = {
+        //             'W': f'{chapNum-3}{Options.delim}{matchobj.group(3)}',
+        //             'Space': f'{chapNum-6}{Options.delim}{matchobj.group(3)}',
+        //             'DM': f'{matchobj.group(3)}',
+        //             'Z': zombie()
+        //         }
+        //         return f'{matchobj.group(1)}{Options.delim}{parser[matchobj.group(1)]}'
+
+        //     return re.sub(r'stage([\D]*)([\d]*)_([\d]*)\.csv',
+        //                   get_sel, fileName)
     }
 
     fn get_selector_type(selector_type: &str) -> Result<&'static str, StageTypeError> {
@@ -331,6 +384,7 @@ pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", StageType::from_selector("Filibuster"));
     println!("{:?}", StageType::from_selector("z 5 0"));
     println!("{:?}", StageType::from_file("stageRN013_05.csv"));
+    println!("{:?}", StageType::from_file("stageW04_05.csv"));
     selector
 }
 // from split, from file, from ref
