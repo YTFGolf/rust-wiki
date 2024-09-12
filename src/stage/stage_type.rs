@@ -131,7 +131,7 @@ impl StageType {
             Self::get_selector_type(selector.get(0).expect("Selector should have content!"))?;
 
         match stage_type {
-            "main" => todo!(),
+            "main" => Self::from_selector_main(selector),
             _ => {
                 // let chapter: i32 = stage_type.parse().unwrap();
                 let submap: i32 = (&selector[1]).parse().unwrap();
@@ -166,7 +166,7 @@ impl StageType {
         }
     }
 
-   fn from_numbers(
+    fn from_numbers(
         stage_type: i32,
         map_num: i32,
         stage_num: i32,
@@ -236,6 +236,69 @@ impl StageType {
             stage_file_name,
         })
     }
+
+    fn from_selector_main(selector: Vec<&str>) -> Result<StageType, StageTypeError> {
+        let code = &STAGE_CODES[3];
+        let type_name = code.name;
+        let type_code = code.code;
+        let type_num = code.number;
+
+        let (map_num, stage_num, map_file_name, stage_file_name) =
+            match selector[0].to_lowercase().as_str() {
+                "eoc" => {
+                    let stage_num: i32 = selector[1].parse::<i32>().unwrap();
+                    (
+                        9_i32,
+                        stage_num,
+                        "stageNormal0.csv".to_string(),
+                        format!("stage{stage_num:02}.csv"),
+                    )
+                }
+                "itf" | "w" => {
+                    let map_num: i32 = selector[1].parse::<i32>().unwrap() + 2;
+                    let stage_num: i32 = selector[2].parse::<i32>().unwrap();
+                    let map_file = format!("stageNormal1_{}.csv", map_num - 3);
+                    let stage_file = format!("stageW{:02}_{stage_num:02}.csv", map_num + 1);
+                    (map_num, stage_num, map_file, stage_file)
+                }
+                "cotc" | "space" => {
+                    let map_num: i32 = selector[1].parse::<i32>().unwrap() + 5;
+                    let stage_num: i32 = selector[2].parse::<i32>().unwrap();
+                    let map_file = format!("stageNormal2_{}.csv", map_num - 6);
+                    let stage_file = format!("stageSpace{:02}_{stage_num:02}.csv", map_num + 1);
+                    (map_num, stage_num, map_file, stage_file)
+                }
+                "aku" | "dm" => {
+                    let stage_num: i32 = selector[1].parse::<i32>().unwrap();
+                    (
+                        14_i32,
+                        stage_num,
+                        "MapStageDataDM_000.csv".to_string(),
+                        format!("stageDM000_{stage_num:02}.csv"),
+                    )
+                }
+                "filibuster" => (
+                    11_i32,
+                    0_i32,
+                    "stageNormal2_2_Invasion.csv".to_string(),
+                    "stageSpace09_Invasion_00.csv".to_string(),
+                ),
+                "z" => {
+                    todo!()
+                }
+                _ => unreachable!(),
+            };
+
+        Ok(StageType {
+            type_name,
+            type_code,
+            type_num,
+            map_num,
+            stage_num,
+            map_file_name,
+            stage_file_name,
+        })
+    }
 }
 
 pub fn get_st_obj(selector: &str) -> &str {
@@ -247,5 +310,8 @@ pub fn get_st_obj(selector: &str) -> &str {
         StageType::from_ref("*https://battlecats-db.com/stage/s01382-03.html")
     );
     println!("{:?}", StageType::from_selector(selector));
+    println!("{:?}", StageType::from_selector("ItF 1 48"));
+    println!("{:?}", StageType::from_selector("DM 0"));
+    println!("{:?}", StageType::from_selector("Filibuster"));
     selector
 }
