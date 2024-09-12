@@ -1,4 +1,4 @@
-mod consts {
+pub mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
 
@@ -208,7 +208,7 @@ impl StageType {
             "Space" => (chap_num - 6, stage_num),
             "DM" => (stage_num, stage_num),
             // sort of a workaround so this compiles
-            "Z" => (stage_num, chap_num),
+            "Z" => (chap_num, stage_num),
             _ => unreachable!(),
         };
         Self::from_selector_main(vec![
@@ -329,12 +329,12 @@ impl StageType {
     }
 
     /// Formats:
-    /// - EoC: `["eoc", 0]` = Korea
-    /// - ItF/W: `["itf", 1, 0]` = Japan Ch. 1
-    /// - CotC/Space: `["cotc", 1, 0]` = Earth Ch. 1
-    /// - Aku/DM: `["aku", 0]` = Korea
+    /// - EoC: `["eoc", "0"]` = Korea
+    /// - ItF/W: `["itf", "1", "0"]` = Japan Ch. 1
+    /// - CotC/Space: `["cotc", "1", "0"]` = Earth Ch. 1
+    /// - Aku/DM: `["aku", "0"]` = Korea
     /// - Filibuster: `["filibuster"]`
-    /// - Z: `["z", 1, 0]` = Korea
+    /// - Z: `["z", "1", "0"]` = Korea
     pub fn from_selector_main(selector: Vec<&str>) -> Result<StageType, StageTypeError> {
         let code = &STAGE_CODES[3];
         let type_name = code.name;
@@ -415,9 +415,6 @@ impl StageType {
 }
 
 pub fn get_st_obj(selector: &str) -> &str {
-    println!("{:?}", STAGE_CODES);
-    println!("{:?}", STAGE_TYPE_MAP.iter().collect::<Vec<_>>());
-    println!("{:?}", StageType::from_split("0", 0, 0));
     println!(
         "{:?}",
         StageType::from_ref("*https://battlecats-db.com/stage/s01382-03.html")
@@ -432,4 +429,327 @@ pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", StageType::from_file("stageW04_05.csv"));
     println!("{:?}", StageType::new(&String::from("stageW04_05.csv")));
     selector
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_from_split_sol() {
+        let answer = StageType {
+            type_name: "Stories of Legend",
+            type_code: "N",
+            type_num: 0,
+            map_num: 0,
+            stage_num: 0,
+            map_file_name: "MapStageDataN_000.csv".to_string(),
+            stage_file_name: "stageRN000_00.csv".to_string(),
+        };
+
+        let st = StageType::from_split("SoL", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("sol", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("n", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("rn", 0, 0).unwrap();
+        assert_eq!(st, answer);
+    }
+
+    #[test]
+    fn test_from_split_ex() {
+        let answer = StageType {
+            type_name: "Extra Stages",
+            type_code: "EX",
+            type_num: 4,
+            map_num: 0,
+            stage_num: 0,
+            map_file_name: "MapStageDataRE_000.csv".to_string(),
+            stage_file_name: "stageEX000_00.csv".to_string(),
+        };
+
+        let st = StageType::from_split("eXTRA", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("extra", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("4", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("RE", 0, 0).unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_split("EX", 0, 0).unwrap();
+        assert_eq!(st, answer);
+    }
+
+    #[test]
+    fn test_from_selector_main() {
+        let st = StageType::from_selector_main(vec!["eoc", "0"]).unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 9,
+                stage_num: 0,
+                map_file_name: "stageNormal0.csv".to_string(),
+                stage_file_name: "stage00.csv".to_string()
+            }
+        );
+
+        let st = StageType::from_selector_main(vec!["itf", "1", "0"]).unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 3,
+                stage_num: 0,
+                map_file_name: "stageNormal1_0.csv".to_string(),
+                stage_file_name: "stageW04_00.csv".to_string()
+            }
+        );
+
+        let st = StageType::from_selector_main(vec!["cotc", "1", "0"]).unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 6,
+                stage_num: 0,
+                map_file_name: "stageNormal2_0.csv".to_string(),
+                stage_file_name: "stageSpace07_00.csv".to_string()
+            }
+        );
+
+        let st = StageType::from_selector_main(vec!["aku", "0"]).unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 14,
+                stage_num: 0,
+                map_file_name: "MapStageDataDM_000.csv".to_string(),
+                stage_file_name: "stageDM000_00.csv".to_string()
+            }
+        );
+
+        let st = StageType::from_selector_main(vec!["filibuster"]).unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 11,
+                stage_num: 0,
+                map_file_name: "stageNormal2_2_Invasion.csv".to_string(),
+                stage_file_name: "stageSpace09_Invasion_00.csv".to_string()
+            }
+        );
+
+        let st = StageType::from_selector_main(vec!["z", "7", "0"]).unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 15,
+                stage_num: 0,
+                map_file_name: "stageNormal2_0_Z.csv".to_string(),
+                stage_file_name: "stageZ07_00.csv".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn test_from_split_fail() {
+        let st = StageType::from_split("doesn't exist", 0, 0);
+        assert_eq!(st, Err(StageTypeError::Invalid));
+    }
+
+    #[test]
+    fn test_from_selector() {
+        let st = StageType::from_selector("N 0 0").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Stories of Legend",
+                type_code: "N",
+                type_num: 0,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataN_000.csv".to_string(),
+                stage_file_name: "stageRN000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_selector("sol 0 0").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Stories of Legend",
+                type_code: "N",
+                type_num: 0,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataN_000.csv".to_string(),
+                stage_file_name: "stageRN000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_selector("T 0 0").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Catclaw Dojo",
+                type_code: "T",
+                type_num: 6,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataT_000.csv".to_string(),
+                stage_file_name: "stageRT000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_selector("EX 0 0").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Extra Stages",
+                type_code: "EX",
+                type_num: 4,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataRE_000.csv".to_string(),
+                stage_file_name: "stageEX000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_selector("COTC 1 0").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 6,
+                stage_num: 0,
+                map_file_name: "stageNormal2_0.csv".to_string(),
+                stage_file_name: "stageSpace07_00.csv".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn test_from_file() {
+        let st = StageType::from_file("stageRN000_00.csv").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Stories of Legend",
+                type_code: "N",
+                type_num: 0,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataN_000.csv".to_string(),
+                stage_file_name: "stageRN000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_file("stageRT000_00.csv").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Catclaw Dojo",
+                type_code: "T",
+                type_num: 6,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataT_000.csv".to_string(),
+                stage_file_name: "stageRT000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_file("stageL000_00.csv").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Labyrinth",
+                type_code: "L",
+                type_num: 33,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataL_000.csv".to_string(),
+                stage_file_name: "stageL000_00.csv".to_string(),
+            }
+        );
+
+        let st = StageType::from_file("stageEX000_00.csv").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Extra Stages",
+                type_code: "EX",
+                type_num: 4,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataRE_000.csv".to_string(),
+                stage_file_name: "stageEX000_00.csv".to_string(),
+            }
+        );
+    }
+
+    #[test]
+    fn test_from_file_main() {
+        let st = StageType::from_file("stageSpace07_00.csv").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 6,
+                stage_num: 0,
+                map_file_name: "stageNormal2_0.csv".to_string(),
+                stage_file_name: "stageSpace07_00.csv".to_string()
+            }
+        );
+
+        let st = StageType::from_file("stageZ00_00.csv").unwrap();
+        assert_eq!(
+            st,
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "stageNormal0_0_Z.csv".to_string(),
+                stage_file_name: "stageZ00_00.csv".to_string()
+            }
+        );
+    }
+
+    // #[test]
+    // fn test_from_file_property(){
+    //     // let selector =
+    // }
+
+    // normal, ex, then main, then fail
+    // ref do *htt, htt, s0
+
+    // [x] split
+    // [x] selector
+    // [ ] file
+    // [ ] ref
+    // [ ] new
+    // [ ] internals
+    // [ ] fuzzy stuff
 }
