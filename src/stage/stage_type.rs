@@ -133,8 +133,19 @@ pub enum StageTypeError {
 }
 
 impl StageType {
+    /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Result<StageType, StageTypeError> {
-        todo!()
+        if let Ok(st) = Self::from_selector(selector){
+            return Ok(st);
+        };
+        if let Ok(st) = Self::from_file(selector){
+            return Ok(st);
+        };
+        if let Ok(st) = Self::from_ref(selector){
+            return Ok(st);
+        };
+
+        Err(StageTypeError::Invalid)
     }
 
     pub fn from_selector(selector: &str) -> Result<StageType, StageTypeError> {
@@ -392,7 +403,7 @@ pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", StageType::from_file("stageRN013_05.csv"));
     println!("{:?}", StageType::from_file("stageRN000_00.csv"));
     println!("{:?}", StageType::from_file("stageW04_05.csv"));
-    // println!("{:?}", StageType::new(&String::from("stageW04_05.csv")));
+    println!("{:?}", StageType::new(&String::from("stageW04_05.csv")));
     selector
 }
 // from split, from file, from ref
