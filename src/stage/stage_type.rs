@@ -415,19 +415,6 @@ impl StageType {
 }
 
 pub fn get_st_obj(selector: &str) -> &str {
-    println!(
-        "{:?}",
-        StageType::from_ref("*https://battlecats-db.com/stage/s01382-03.html")
-    );
-    println!("{:?}", StageType::from_selector(selector));
-    println!("{:?}", StageType::from_selector("ItF 1 48"));
-    println!("{:?}", StageType::from_selector("DM 0"));
-    println!("{:?}", StageType::from_selector("Filibuster"));
-    println!("{:?}", StageType::from_selector("z 5 0"));
-    println!("{:?}", StageType::from_file("stageRN013_05.csv"));
-    println!("{:?}", StageType::from_file("stageRN000_00.csv"));
-    println!("{:?}", StageType::from_file("stageW04_05.csv"));
-    println!("{:?}", StageType::new(&String::from("stageW04_05.csv")));
     selector
 }
 
@@ -737,19 +724,186 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn test_from_file_property(){
-    //     // let selector =
-    // }
+    #[test]
+    fn test_from_ref() {
+        let answer = StageType {
+            type_name: "Stories of Legend",
+            type_code: "N",
+            type_num: 0,
+            map_num: 0,
+            stage_num: 0,
+            map_file_name: "MapStageDataN_000.csv".to_string(),
+            stage_file_name: "stageRN000_00.csv".to_string(),
+        };
+
+        let st = StageType::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        assert_eq!(st, answer);
+        let st = StageType::from_ref("s00000-01").unwrap();
+        assert_eq!(st, answer);
+    }
+
+    #[test]
+    fn test_new() {
+        let selector = "*https://battlecats-db.com/stage/s01382-03.html";
+        assert_eq!(StageType::from_ref(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::new(selector).unwrap(),
+            StageType {
+                type_name: "Event Stages",
+                type_code: "S",
+                type_num: 1,
+                map_num: 382,
+                stage_num: 2,
+                map_file_name: "MapStageDataS_382.csv".to_string(),
+                stage_file_name: "stageRS382_02.csv".to_string()
+            }
+        );
+
+        let selector = "ItF 1 48";
+        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_selector(selector).unwrap(),
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 3,
+                stage_num: 48,
+                map_file_name: "stageNormal1_0.csv".to_string(),
+                stage_file_name: "stageW04_48.csv".to_string()
+            }
+        );
+
+        let selector = "DM 0";
+        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_selector(selector).unwrap(),
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 14,
+                stage_num: 0,
+                map_file_name: "MapStageDataDM_000.csv".to_string(),
+                stage_file_name: "stageDM000_00.csv".to_string()
+            }
+        );
+
+        let selector = "Filibuster";
+        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_selector(selector).unwrap(),
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 11,
+                stage_num: 0,
+                map_file_name: "stageNormal2_2_Invasion.csv".to_string(),
+                stage_file_name: "stageSpace09_Invasion_00.csv".to_string()
+            }
+        );
+
+        let selector = "z 5 0";
+        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_selector(selector).unwrap(),
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 12,
+                stage_num: 0,
+                map_file_name: "stageNormal1_1_Z.csv".to_string(),
+                stage_file_name: "stageZ05_00.csv".to_string()
+            }
+        );
+
+        let selector = "stageRN013_05.csv";
+        assert_eq!(StageType::from_file(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_file(selector).unwrap(),
+            StageType {
+                type_name: "Stories of Legend",
+                type_code: "N",
+                type_num: 0,
+                map_num: 13,
+                stage_num: 5,
+                map_file_name: "MapStageDataN_013.csv".to_string(),
+                stage_file_name: "stageRN013_05.csv".to_string()
+            }
+        );
+
+        let selector = "stageRN000_00.csv";
+        assert_eq!(StageType::from_file(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_file(selector).unwrap(),
+            StageType {
+                type_name: "Stories of Legend",
+                type_code: "N",
+                type_num: 0,
+                map_num: 0,
+                stage_num: 0,
+                map_file_name: "MapStageDataN_000.csv".to_string(),
+                stage_file_name: "stageRN000_00.csv".to_string()
+            }
+        );
+
+        let selector = "stageW04_05.csv";
+        assert_eq!(StageType::from_file(selector), StageType::new(selector));
+        assert_eq!(
+            StageType::from_file(selector).unwrap(),
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 3,
+                stage_num: 5,
+                map_file_name: "stageNormal1_0.csv".to_string(),
+                stage_file_name: "stageW04_05.csv".to_string()
+            }
+        );
+
+        let selector = "stageW04_05.csv";
+        assert_eq!(
+            StageType::new(&String::from(selector)),
+            StageType::new(selector)
+        );
+        assert_eq!(
+            StageType::new(&String::from(selector)).unwrap(),
+            StageType {
+                type_name: "Main Chapters",
+                type_code: "main",
+                type_num: 3,
+                map_num: 3,
+                stage_num: 5,
+                map_file_name: "stageNormal1_0.csv".to_string(),
+                stage_file_name: "stageW04_05.csv".to_string()
+            }
+        );
+    }
 
     // normal, ex, then main, then fail
     // ref do *htt, htt, s0
 
     // [x] split
     // [x] selector
-    // [ ] file
-    // [ ] ref
-    // [ ] new
+    // [x] file
+    // [x] ref
+    // [x] new
+    // [ ] failing
     // [ ] internals
-    // [ ] fuzzy stuff
+    // [ ] property stuff
+
+    // #[test]
+    // fn test_from_file_property(){
+    //     // let selector =
+    // }
+
+    // property
+    // selector = stage_file_name
+    // selector = "{type_num} {map_num} {stage_num}"
+    // selector = "s{type_num:02}{map_num:03}-{stage_num:03}"
 }
