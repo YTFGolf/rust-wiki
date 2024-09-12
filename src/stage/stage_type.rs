@@ -103,6 +103,7 @@ lazy_static! {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct StageType {
     pub type_name: &'static str,
     pub type_code: &'static str,
@@ -284,7 +285,22 @@ impl StageType {
                     "stageSpace09_Invasion_00.csv".to_string(),
                 ),
                 "z" => {
-                    todo!()
+                    let mut chap_num: usize = selector[1].parse().unwrap();
+
+                    let map_num = [0, 1, 2, 10, 12, 13, 15, 16][chap_num - 1];
+                    let stage_num = selector[2].parse::<i32>().unwrap();
+                    let map_file = format!(
+                        "stageNormal{}_{}_Z.csv",
+                        (chap_num - 1) / 3,
+                        (chap_num - 1) % 3
+                    );
+
+                    if chap_num <= 3 {
+                        chap_num -= 1;
+                    }
+                    let stage_file = format!("stageZ{chap_num:02}_{stage_num:02}.csv");
+
+                    (map_num, stage_num, map_file, stage_file)
                 }
                 _ => unreachable!(),
             };
@@ -313,5 +329,8 @@ pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", StageType::from_selector("ItF 1 48"));
     println!("{:?}", StageType::from_selector("DM 0"));
     println!("{:?}", StageType::from_selector("Filibuster"));
+    println!("{:?}", StageType::from_selector("z 5 0"));
+    println!("{:?}", StageType::from_file("stageRN013_05.csv"));
     selector
 }
+// from split, from file, from ref
