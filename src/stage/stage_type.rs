@@ -111,8 +111,7 @@ struct FilePatterns {
     default: Regex,
 }
 
-#[derive(Debug)]
-#[allow(dead_code)]
+#[derive(Debug, PartialEq)]
 pub struct StageType {
     pub type_name: &'static str,
     pub type_code: &'static str,
@@ -124,7 +123,7 @@ pub struct StageType {
     pub stage_file_name: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum StageTypeError {
     /// Not the correct function to use.
     Rejected,
@@ -151,8 +150,8 @@ impl StageType {
     /// Parse space-delimited selector into StageType.
     /// ```
     /// # use rust_wiki::stage::stage_type::StageType;
-    /// let selector = "N 0 0"
-    /// assert_eq!(StageType::from_selector(selector).unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv", stage_file_name: "stageRN000_00.csv" });
+    /// let selector = "N 0 0";
+    /// assert_eq!(StageType::from_selector(selector).unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_selector(selector: &str) -> Result<StageType, StageTypeError> {
         let selector: Vec<&str> = selector.split(" ").collect();
@@ -230,6 +229,11 @@ impl StageType {
     }
 
     /// Parse battle-cats.db reference into StageType.
+    /// ```
+    /// # use rust_wiki::stage::stage_type::StageType;
+    /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
+    /// assert_eq!(StageType::from_ref(reference).unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// ```
     pub fn from_ref(selector: &str) -> Result<StageType, StageTypeError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
 
@@ -266,6 +270,11 @@ impl StageType {
     }
 
     /// Get StageType from selectors split into variables.
+    /// ```
+    /// # use rust_wiki::stage::stage_type::StageType;
+    /// let st = StageType::from_split("SoL", 0, 0);
+    /// assert_eq!(st.unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// ```
     pub fn from_split(
         stage_type: &str,
         map_num: i32,
