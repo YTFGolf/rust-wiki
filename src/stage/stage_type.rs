@@ -113,7 +113,7 @@ struct FilePatterns {
 
 #[derive(Debug)]
 #[allow(dead_code)]
-struct StageType {
+pub struct StageType {
     pub type_name: &'static str,
     pub type_code: &'static str,
     pub type_num: i32,
@@ -125,7 +125,7 @@ struct StageType {
 }
 
 #[derive(Debug)]
-enum StageTypeError {
+pub enum StageTypeError {
     /// Not the correct function to use.
     Rejected,
     /// Either selector doesn't exist or numbers are not given.
@@ -153,6 +153,12 @@ impl StageType {
         }
     }
 
+    /// Parse file name into stage type.
+    /// ```
+    /// # use rust_wiki::stage::stage_type::StageType;
+    /// let file_name = "stageRN000_00.csv";
+    /// assert_eq!(file_name, StageType::from_file(file_name).unwrap().stage_file_name);
+    /// ```
     pub fn from_file(file_name: &str) -> Result<StageType, StageTypeError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
             return Self::from_selector_main(vec!["Filibuster"]);
@@ -169,30 +175,30 @@ impl StageType {
             let map_num: i32 = (&caps[2]).parse::<i32>().unwrap();
             let stage_num: i32 = (&caps[3]).parse::<i32>().unwrap();
             return Self::from_split(&caps[1], map_num, stage_num);
+        } else {
+            return Err(StageTypeError::Rejected);
         }
-        else{
-            return Err(StageTypeError::Rejected)
-        }
-        todo!()
-        // elif re.match(r'^stage(W|Space|DM|Z)\d\d.*\.csv$', fileName):
-        //     def get_sel(matchobj):
-        //         're.sub replacement function'
-        //         def zombie():
-        //             nonlocal chapNum
-        //             if chapNum <= 3:
-        //                 chapNum += 1
-        //             return f'{chapNum}{Options.delim}{matchobj.group(3)}'
-        //         chapNum = int(matchobj.group(2))
-        //         parser = {
-        //             'W': f'{chapNum-3}{Options.delim}{matchobj.group(3)}',
-        //             'Space': f'{chapNum-6}{Options.delim}{matchobj.group(3)}',
-        //             'DM': f'{matchobj.group(3)}',
-        //             'Z': zombie()
-        //         }
-        //         return f'{matchobj.group(1)}{Options.delim}{parser[matchobj.group(1)]}'
 
-        //     return re.sub(r'stage([\D]*)([\d]*)_([\d]*)\.csv',
-        //                   get_sel, fileName)
+        let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
+        let mut chap_num = caps[2].parse::<i32>().unwrap();
+        if &caps[1] == "Z" && chap_num <= 3 {
+            chap_num += 1;
+        }
+
+        let stage_num = caps[3].parse::<i32>().unwrap();
+        let selector = match &caps[1] {
+            "W" => (chap_num - 3, stage_num),
+            "Space" => (chap_num - 6, stage_num),
+            "DM" => (stage_num, stage_num),
+            // sort of a workaround
+            "Z" => (stage_num, chap_num),
+            _ => unreachable!(),
+        };
+        Self::from_selector_main(vec![
+            &caps[1],
+            &selector.0.to_string(),
+            &selector.1.to_string(),
+        ])
     }
 
     fn get_selector_type(selector_type: &str) -> Result<&'static str, StageTypeError> {
@@ -384,7 +390,9 @@ pub fn get_st_obj(selector: &str) -> &str {
     println!("{:?}", StageType::from_selector("Filibuster"));
     println!("{:?}", StageType::from_selector("z 5 0"));
     println!("{:?}", StageType::from_file("stageRN013_05.csv"));
+    println!("{:?}", StageType::from_file("stageRN000_00.csv"));
     println!("{:?}", StageType::from_file("stageW04_05.csv"));
+    // println!("{:?}", StageType::new(&String::from("stageW04_05.csv")));
     selector
 }
 // from split, from file, from ref
