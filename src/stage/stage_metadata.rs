@@ -120,17 +120,26 @@ use consts::{StageType, STAGE_TYPES, STAGE_TYPE_MAP};
 use lazy_static::lazy_static;
 use regex::Regex;
 
+/// Struct to contain [struct@FILE_PATTERNS].
 struct FilePatterns {
+    /// Captures the stage number (e.g. `"40"` in `"stage40.csv"`).
     eoc: Regex,
-    /// Main chapters that aren't EoC
+    /// Main chapters that aren't EoC. Captures prefix (e.g. `"W"` in
+    /// `"stageW04_33.csv"`).
     other_main: Regex,
-    /// Every chapter that isn't EoC
+    /// Every chapter that isn't EoC. Captures prefix, map number and stage
+    /// number (e.g. `["RND", "106", "702"]` in `"stageRND106_702.csv"`).
     default: Regex,
 }
 lazy_static! {
+    /// Captures `"s00000-01"` in
+    /// `"*https://battlecats-db.com/stage/s00000-01.html"`.
     static ref DB_REFERENCE_FULL: Regex =
         Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap();
+    /// Captures `["01", "001", "999"]` in `"s01001-999"`.
     static ref DB_REFERENCE_STAGE: Regex = Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap();
+
+    /// Static container for file-related regexes.
     static ref FILE_PATTERNS: FilePatterns = FilePatterns {
         eoc: Regex::new(r"^stage(\d{2})\.csv$").unwrap(),
         other_main: Regex::new(r"^stage(W|Space|DM|Z)\d\d.*\.csv$").unwrap(),
@@ -170,7 +179,7 @@ pub enum StageMetaParseError {
 impl StageMeta {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Result<StageMeta, StageMetaParseError> {
-        // TODO optimise
+        // TODO optimise by checking selectors before running functions
         if let Ok(st) = Self::from_selector(selector) {
             return Ok(st);
         };
@@ -254,7 +263,7 @@ impl StageMeta {
         ])
     }
 
-    /// Get `StageCode.code` from `selector_type`.
+    /// Get [code][StageType::code] from [struct@STAGE_TYPE_MAP].
     fn get_selector_type(selector_type: &str) -> Result<&'static str, StageMetaParseError> {
         for selector_map in STAGE_TYPE_MAP.iter() {
             if selector_map.matcher.is_match(selector_type) {
@@ -265,7 +274,7 @@ impl StageMeta {
         Err(StageMetaParseError::Invalid)
     }
 
-    /// Parse battle-cats.db reference into StageMeta.
+    /// Parse battle-cats.db reference into [StageMeta] object.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
@@ -278,6 +287,7 @@ impl StageMeta {
             Some(caps) => {
                 let chapter: usize = caps[1].parse().unwrap();
                 // necessary since can contain leading 0s
+                // TODO probably easier to just remove leading 0s
                 let submap: usize = caps[2].parse().unwrap();
                 let stage: usize = caps[3].parse::<usize>().unwrap() - 1;
                 Self::from_numbers(chapter, submap, stage)
@@ -307,7 +317,7 @@ impl StageMeta {
         panic!("You shouldn't be able to get to this line.");
     }
 
-    /// Get StageMeta from selectors split into variables.
+    /// Get [StageMeta] from a selector split into variables.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let st = StageMeta::from_split("SoL", 0, 0);
@@ -321,7 +331,8 @@ impl StageMeta {
         Self::from_split_parsed(Self::get_selector_type(stage_type)?, map_num, stage_num)
     }
 
-    /// `from_split` but with `stage_type` being a code from `STAGE_CODES`.
+    /// [from_split][StageMeta::from_split] but with `stage_type` being a code
+    /// from [STAGE_TYPES].
     fn from_split_parsed(
         stage_type: &str,
         map_num: usize,
@@ -373,6 +384,9 @@ impl StageMeta {
     /// - Aku/DM: `["aku", "0"]` = Korea
     /// - Filibuster: `["filibuster"]`
     /// - Z: `["z", "1", "0"]` = Korea
+    // TODO change selector to be something else probably so you don't need to
+    // convert to string only to have numbers be parsed again. Or make new
+    // internal function for that (does this one even need to be public?).
     pub fn from_selector_main(selector: &Vec<&str>) -> Result<StageMeta, StageMetaParseError> {
         let code = &STAGE_TYPES[3];
         let type_name = code.name;
@@ -943,6 +957,18 @@ mod tests {
 
     #[test]
     #[should_panic]
+    fn test_negative_selector() {
+        let _ = StageMeta::from_selector("Q 2 -1");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_non_numeric_selector() {
+        let _ = StageMeta::from_selector("Labyrinth two three");
+    }
+
+    #[test]
+    #[should_panic]
     fn test_not_enough_args() {
         let _ = StageMeta::from_selector_main(&vec!["itf"]);
     }
@@ -957,6 +983,12 @@ mod tests {
     #[should_panic]
     fn test_invalid_number_high() {
         let _ = StageMeta::from_selector_main(&vec!["z", "9", "0"]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_number_neg() {
+        let _ = StageMeta::from_selector_main(&vec!["itf", "1", "-1"]);
     }
 
     #[test]
@@ -1057,9 +1089,12 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
             // itf is 1-based so need +1
-            let st =
-                StageMeta::from_selector_main(&vec![selector, &map.to_string(), &stage.to_string()])
-                    .unwrap();
+            let st = StageMeta::from_selector_main(&vec![
+                selector,
+                &map.to_string(),
+                &stage.to_string(),
+            ])
+            .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1089,9 +1124,12 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
             // cotc is 1-based so need +1
-            let st =
-                StageMeta::from_selector_main(&vec![selector, &map.to_string(), &stage.to_string()])
-                    .unwrap();
+            let st = StageMeta::from_selector_main(&vec![
+                selector,
+                &map.to_string(),
+                &stage.to_string(),
+            ])
+            .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1146,9 +1184,12 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<usize>() % 8 + 1, random::<usize>() % 1000);
             // Currently 8 chapters exist
-            let st =
-                StageMeta::from_selector_main(&vec![selector, &map.to_string(), &stage.to_string()])
-                    .unwrap();
+            let st = StageMeta::from_selector_main(&vec![
+                selector,
+                &map.to_string(),
+                &stage.to_string(),
+            ])
+            .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1173,13 +1214,4 @@ mod tests {
             );
         }
     }
-
-    // [x] split
-    // [x] selector
-    // [x] file
-    // [x] ref
-    // [x] new
-    // [x] failing
-    // [x] internals
-    // [x] property stuff
 }
