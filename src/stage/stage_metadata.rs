@@ -1,6 +1,4 @@
-//! Module that deals with parsing and storing data about the type of stage.
-//!
-//! ALso maybe rename stuff
+//! Module that deals with parsing and storing metadata about stages.
 
 /// Contains constant/static values to be used by the rest of the module.
 pub mod consts {
@@ -9,7 +7,7 @@ pub mod consts {
 
     #[derive(Debug, PartialEq)]
     /// Struct that contains information about each stage type.
-    pub struct StageTypeCode {
+    pub struct StageType {
         /// E.g. `"Stories of Legend"`.
         pub name: &'static str,
         /// Numerical value of stage type.
@@ -25,13 +23,13 @@ pub mod consts {
         pub has_r_prefix: bool,
     }
 
-    const fn initialise_type_code(
+    const fn initialise_stage_type(
         name: &'static str,
         number: usize,
         code: &'static str,
         has_r_prefix: bool,
-    ) -> StageTypeCode {
-        StageTypeCode {
+    ) -> StageType {
+        StageType {
             name,
             number,
             code,
@@ -40,11 +38,11 @@ pub mod consts {
     }
 
     #[derive(Debug)]
-    /// Maps a [Regex] to a code from [STAGE_TYPE_CODES].
+    /// Maps a [Regex] to a code from [STAGE_TYPES].
     pub struct StageTypeMap {
         /// Regex matching any valid pattern for the stage type.
         pub matcher: Regex,
-        /// Code as in [STAGE_TYPE_CODES].
+        /// Code as in [STAGE_TYPES].
         pub stage_type: &'static str,
     }
 
@@ -61,31 +59,31 @@ pub mod consts {
     }
 
     #[rustfmt::skip]
-    /// Collection of [StageTypeCodes][StageTypeCode] covering all chapters in the game.
-    pub const STAGE_TYPE_CODES: [StageTypeCode; 18] = [
-        initialise_type_code("Stories of Legend",    000, "N",     true),
-        initialise_type_code("Event Stages",         001, "S",     true),
-        initialise_type_code("Collaboration Stages", 002, "C",     true),
-        initialise_type_code("Main Chapters",        003, "main",  false),
-        initialise_type_code("Extra Stages",         004, "RE|EX", false),
-        initialise_type_code("Catclaw Dojo",         006, "T",     true),
-        initialise_type_code("Towers",               007, "V",     true),
-        initialise_type_code("Ranking Dojo",         011, "R",     true),
-        initialise_type_code("Challenge Battle",     012, "M",     true),
-        initialise_type_code("Uncanny Legends",      013, "NA",    true),
-        initialise_type_code("Catamin Stages",       014, "B",     true),
-        initialise_type_code("Gauntlets",            024, "A",     true),
-        initialise_type_code("Enigma Stages",        025, "H",     true),
-        initialise_type_code("Collab Gauntlets",     027, "CA",    true),
-        initialise_type_code("Behemoth Culling",     031, "Q",     true),
-        initialise_type_code("Labyrinth",            033, "L",     false),
-        initialise_type_code("Zero Legends",         034, "ND",    true),
-        initialise_type_code("Colosseum",            036, "SR",    true),
+    /// Collection of [StageTypes][StageType] covering all chapters in the game.
+    pub const STAGE_TYPES: [StageType; 18] = [
+        initialise_stage_type("Stories of Legend",    000, "N",     true),
+        initialise_stage_type("Event Stages",         001, "S",     true),
+        initialise_stage_type("Collaboration Stages", 002, "C",     true),
+        initialise_stage_type("Main Chapters",        003, "main",  false),
+        initialise_stage_type("Extra Stages",         004, "RE|EX", false),
+        initialise_stage_type("Catclaw Dojo",         006, "T",     true),
+        initialise_stage_type("Towers",               007, "V",     true),
+        initialise_stage_type("Ranking Dojo",         011, "R",     true),
+        initialise_stage_type("Challenge Battle",     012, "M",     true),
+        initialise_stage_type("Uncanny Legends",      013, "NA",    true),
+        initialise_stage_type("Catamin Stages",       014, "B",     true),
+        initialise_stage_type("Gauntlets",            024, "A",     true),
+        initialise_stage_type("Enigma Stages",        025, "H",     true),
+        initialise_stage_type("Collab Gauntlets",     027, "CA",    true),
+        initialise_stage_type("Behemoth Culling",     031, "Q",     true),
+        initialise_stage_type("Labyrinth",            033, "L",     false),
+        initialise_stage_type("Zero Legends",         034, "ND",    true),
+        initialise_stage_type("Colosseum",            036, "SR",    true),
     ];
 
     lazy_static! {
     #[rustfmt::skip]
-    /// Map of regex matchers to code used in [STAGE_TYPE_CODES].
+    /// Map of regex matchers to code used in [STAGE_TYPES].
     ///
     /// Includes common name for type, type number, type prefix, type prefix
     /// with R if applicable. Main Chapters should be dealt with differently to
@@ -117,7 +115,7 @@ pub mod consts {
     ];
     }
 }
-use consts::{StageTypeCode, STAGE_TYPE_CODES, STAGE_TYPE_MAP};
+use consts::{StageType, STAGE_TYPES, STAGE_TYPE_MAP};
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -144,10 +142,9 @@ struct FilePatterns {
 pub struct StageMeta {
     /// Long-form name of the stage type.
     pub type_name: &'static str,
-    /// Short-form name of the stage type. All valid codes are given in
-    /// [STAGE_TYPE_CODES].
+    /// Short-form name of the stage type. All codes are given in [STAGE_TYPES].
     pub type_code: &'static str,
-    /// Numerical value of the [StageMeta].
+    /// Numerical value of the [StageType].
     pub type_num: usize,
     /// Map number of the stage.
     pub map_num: usize,
@@ -162,7 +159,7 @@ pub struct StageMeta {
 
 #[derive(Debug, PartialEq)]
 /// Denotes an error when parsing [StageMeta].
-pub enum StageTypeError {
+pub enum StageMetaParseError {
     /// Not the correct function to use.
     Rejected,
     /// Either selector doesn't exist or numbers are not given.
@@ -171,7 +168,7 @@ pub enum StageTypeError {
 
 impl StageMeta {
     /// Catch-all method for parsing a selector.
-    pub fn new(selector: &str) -> Result<StageMeta, StageTypeError> {
+    pub fn new(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         // TODO optimise
         if let Ok(st) = Self::from_selector(selector) {
             return Ok(st);
@@ -183,16 +180,16 @@ impl StageMeta {
             return Ok(st);
         };
 
-        Err(StageTypeError::Invalid)
+        Err(StageMetaParseError::Invalid)
     }
 
-    /// Parse space-delimited selector into StageMeta.
+    /// Parse space-delimited selector into [StageMeta] object.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let selector = "N 0 0";
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
-    pub fn from_selector(selector: &str) -> Result<StageMeta, StageTypeError> {
+    pub fn from_selector(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         let selector: Vec<&str> = selector.split(" ").collect();
         let stage_type =
             Self::get_selector_type(selector.get(0).expect("Selector should have content!"))?;
@@ -208,13 +205,13 @@ impl StageMeta {
         }
     }
 
-    /// Parse file name into stage type.
+    /// Parse file name into [StageMeta] object.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let file_name = "stageRN000_00.csv";
     /// assert_eq!(file_name, StageMeta::from_file(file_name).unwrap().stage_file_name);
     /// ```
-    pub fn from_file(file_name: &str) -> Result<StageMeta, StageTypeError> {
+    pub fn from_file(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
             return Self::from_selector_main(vec!["Filibuster"]);
         } else if FILE_PATTERNS.eoc.is_match(file_name) {
@@ -231,7 +228,7 @@ impl StageMeta {
             let stage_num: usize = (&caps[3]).parse::<usize>().unwrap();
             return Self::from_split(&caps[1], map_num, stage_num);
         } else {
-            return Err(StageTypeError::Rejected);
+            return Err(StageMetaParseError::Rejected);
         }
 
         // Rest is for main chapters minus EoC
@@ -258,14 +255,14 @@ impl StageMeta {
     }
 
     /// Get `StageCode.code` from `selector_type`.
-    fn get_selector_type(selector_type: &str) -> Result<&'static str, StageTypeError> {
+    fn get_selector_type(selector_type: &str) -> Result<&'static str, StageMetaParseError> {
         for selector_map in STAGE_TYPE_MAP.iter() {
             if selector_map.matcher.is_match(selector_type) {
                 return Ok(selector_map.stage_type);
             }
         }
 
-        Err(StageTypeError::Invalid)
+        Err(StageMetaParseError::Invalid)
     }
 
     /// Parse battle-cats.db reference into StageMeta.
@@ -274,7 +271,7 @@ impl StageMeta {
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
-    pub fn from_ref(selector: &str) -> Result<StageMeta, StageTypeError> {
+    pub fn from_ref(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
 
         match DB_REFERENCE_STAGE.captures(&reference) {
@@ -285,7 +282,7 @@ impl StageMeta {
                 let stage: usize = (&caps[3]).parse::<usize>().unwrap() - 1;
                 return Self::from_numbers(chapter, submap, stage);
             }
-            None => Err(StageTypeError::Rejected),
+            None => Err(StageMetaParseError::Rejected),
         }
     }
 
@@ -294,14 +291,14 @@ impl StageMeta {
         stage_type: usize,
         map_num: usize,
         stage_num: usize,
-    ) -> Result<StageMeta, StageTypeError> {
+    ) -> Result<StageMeta, StageMetaParseError> {
         return Self::from_split(&stage_type.to_string(), map_num, stage_num);
     }
 
-    /// Get the [StageTypeCode] that `stage_type` corresponds to from
-    /// [STAGE_TYPE_CODES].
-    fn get_stage_type_code(stage_type: &str) -> StageTypeCode {
-        for code in STAGE_TYPE_CODES {
+    /// Get the [StageType] that `stage_type` corresponds to from
+    /// [STAGE_TYPES].
+    fn get_stage_type_code(stage_type: &str) -> StageType {
+        for code in STAGE_TYPES {
             if stage_type == code.code {
                 return code;
             }
@@ -320,7 +317,7 @@ impl StageMeta {
         stage_type: &str,
         map_num: usize,
         stage_num: usize,
-    ) -> Result<StageMeta, StageTypeError> {
+    ) -> Result<StageMeta, StageMetaParseError> {
         Self::from_split_parsed(Self::get_selector_type(stage_type)?, map_num, stage_num)
     }
 
@@ -329,7 +326,7 @@ impl StageMeta {
         stage_type: &str,
         map_num: usize,
         stage_num: usize,
-    ) -> Result<StageMeta, StageTypeError> {
+    ) -> Result<StageMeta, StageMetaParseError> {
         let code = Self::get_stage_type_code(stage_type);
 
         let type_name = code.name;
@@ -376,8 +373,8 @@ impl StageMeta {
     /// - Aku/DM: `["aku", "0"]` = Korea
     /// - Filibuster: `["filibuster"]`
     /// - Z: `["z", "1", "0"]` = Korea
-    pub fn from_selector_main(selector: Vec<&str>) -> Result<StageMeta, StageTypeError> {
-        let code = &STAGE_TYPE_CODES[3];
+    pub fn from_selector_main(selector: Vec<&str>) -> Result<StageMeta, StageMetaParseError> {
+        let code = &STAGE_TYPES[3];
         let type_name = code.name;
         let type_code = code.code;
         let type_num = code.number;
@@ -440,7 +437,7 @@ impl StageMeta {
 
                     (map_num, stage_num, map_file, stage_file)
                 }
-                _ => return Err(StageTypeError::Invalid),
+                _ => return Err(StageMetaParseError::Invalid),
             };
 
         Ok(StageMeta {
@@ -597,7 +594,7 @@ mod tests {
     #[test]
     fn test_from_split_fail() {
         let st = StageMeta::from_split("doesn't exist", 0, 0);
-        assert_eq!(st, Err(StageTypeError::Invalid));
+        assert_eq!(st, Err(StageMetaParseError::Invalid));
     }
 
     #[test]
@@ -926,18 +923,18 @@ mod tests {
 
     #[test]
     fn test_stage_type_error() {
-        assert_eq!(StageMeta::new("unknown 0"), Err(StageTypeError::Invalid));
+        assert_eq!(StageMeta::new("unknown 0"), Err(StageMetaParseError::Invalid));
         assert_eq!(
             StageMeta::from_file("file no exist"),
-            Err(StageTypeError::Rejected)
+            Err(StageMetaParseError::Rejected)
         );
         assert_eq!(
             StageMeta::from_ref("not a reference"),
-            Err(StageTypeError::Rejected)
+            Err(StageMetaParseError::Rejected)
         );
         assert_eq!(
             StageMeta::from_selector_main(vec!["none"]),
-            Err(StageTypeError::Invalid)
+            Err(StageMetaParseError::Invalid)
         );
     }
 
@@ -965,19 +962,19 @@ mod tests {
         assert_eq!(StageMeta::get_selector_type("itf").unwrap(), "main");
         assert_eq!(
             StageMeta::get_selector_type("itf2"),
-            Err(StageTypeError::Invalid)
+            Err(StageMetaParseError::Invalid)
         );
     }
 
     #[test]
     fn test_get_stage_type_code() {
-        assert_eq!(StageMeta::get_stage_type_code("main"), STAGE_TYPE_CODES[3]);
+        assert_eq!(StageMeta::get_stage_type_code("main"), STAGE_TYPES[3]);
     }
 
     #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
-        for code in STAGE_TYPE_CODES {
+        for code in STAGE_TYPES {
             if code.code == "main" {
                 continue;
             }
@@ -1026,7 +1023,7 @@ mod tests {
     #[test]
     fn test_random_properties_main() {
         const NUM_ITERATIONS: usize = 20;
-        const CODE: &StageTypeCode = &STAGE_TYPE_CODES[3];
+        const CODE: &StageType = &STAGE_TYPES[3];
 
         let selector = "eoc";
         for _ in 0..NUM_ITERATIONS {
