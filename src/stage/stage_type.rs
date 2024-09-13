@@ -1,4 +1,6 @@
 //! Module that deals with parsing and storing data about the type of stage.
+//!
+//! ALso maybe rename stuff
 
 /// Contains constant/static values to be used by the rest of the module.
 pub mod consts {
@@ -18,7 +20,8 @@ pub mod consts {
         /// their stage files are of the form `"stageEX"`, so their `code` is
         /// `"RE|EX"`.
         pub code: &'static str,
-        /// Are files of the type `stageR{code}` or `stage{code}`?
+        /// Are files of the type `stageR{code}` or are they of the type
+        /// `stage{code}`?
         pub has_r_prefix: bool,
     }
 
@@ -37,8 +40,11 @@ pub mod consts {
     }
 
     #[derive(Debug)]
+    /// Maps a [Regex] to a code from [STAGE_TYPE_CODES].
     pub struct StageTypeMap {
+        /// Regex matching any valid pattern for the stage type.
         pub matcher: Regex,
+        /// Code as in [STAGE_TYPE_CODES].
         pub stage_type: &'static str,
     }
 
@@ -134,18 +140,28 @@ struct FilePatterns {
 }
 
 #[derive(Debug, PartialEq)]
+/// Contains information about the stage type of a certain stage.
 pub struct StageType {
+    /// Long-form name of the stage type.
     pub type_name: &'static str,
+    /// Short-form name of the stage type. All valid codes are given in
+    /// [STAGE_TYPE_CODES].
     pub type_code: &'static str,
+    /// Numerical value of the [StageType].
     pub type_num: usize,
+    /// Map number of the stage.
     pub map_num: usize,
+    /// Stage number of the stage.
     pub stage_num: usize,
 
+    /// DataLocal file that contains information about the map the stage is in.
     pub map_file_name: String,
+    /// DataLocal file that contains information about the stage.
     pub stage_file_name: String,
 }
 
 #[derive(Debug, PartialEq)]
+/// Denotes an error when parsing [StageType].
 pub enum StageTypeError {
     /// Not the correct function to use.
     Rejected,
