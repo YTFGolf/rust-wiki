@@ -1,4 +1,4 @@
-//! Module that deals with parsing and storing data about
+//! Module that deals with parsing and storing data about the type of stage.
 
 /// Contains constant/static values to be used by the rest of the module.
 pub mod consts {
@@ -416,10 +416,6 @@ impl StageType {
             stage_file_name,
         })
     }
-}
-
-pub fn get_st_obj(selector: &str) -> &str {
-    selector
 }
 
 #[cfg(test)]
