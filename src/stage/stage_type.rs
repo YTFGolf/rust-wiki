@@ -6,10 +6,19 @@ pub mod consts {
     use regex::{Regex, RegexBuilder};
 
     #[derive(Debug, PartialEq)]
-    pub struct StageCode {
+    /// Struct that contains information about each stage type.
+    pub struct StageTypeCode {
+        /// E.g. `"Stories of Legend"`.
         pub name: &'static str,
+        /// Numerical value of stage type.
         pub number: usize,
+        /// E.g. `"N"` for Stories of Legend.
+        ///
+        /// EX stages' map files are of the form `"MapStageDataRE"`, whereas
+        /// their stage files are of the form `"stageEX"`, so their `code` is
+        /// `"RE|EX"`.
         pub code: &'static str,
+        /// Are files of the type `stageR{code}` or `stage{code}`?
         pub has_r_prefix: bool,
     }
 
@@ -18,8 +27,8 @@ pub mod consts {
         number: usize,
         code: &'static str,
         has_r_prefix: bool,
-    ) -> StageCode {
-        StageCode {
+    ) -> StageTypeCode {
+        StageTypeCode {
             name,
             number,
             code,
@@ -46,7 +55,8 @@ pub mod consts {
     }
 
     #[rustfmt::skip]
-    pub const STAGE_CODES: [StageCode; 18] = [
+    /// Collection of [StageTypeCodes][StageTypeCode] covering all chapters in the game.
+    pub const STAGE_TYPE_CODES: [StageTypeCode; 18] = [
         initialise_type_code("Stories of Legend",    000, "N",     true),
         initialise_type_code("Event Stages",         001, "S",     true),
         initialise_type_code("Collaboration Stages", 002, "C",     true),
@@ -69,6 +79,15 @@ pub mod consts {
 
     lazy_static! {
     #[rustfmt::skip]
+    /// Map of regex matchers to code used in [STAGE_TYPE_CODES].
+    ///
+    /// Includes common name for type, type number, type prefix, type prefix
+    /// with R if applicable. Main Chapters should be dealt with differently to
+    /// other types.
+    ///
+    /// ‎
+    // Lines above are necessary otherwise rust-analyzer displays stuff as
+    // headings
     pub static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
@@ -92,7 +111,7 @@ pub mod consts {
     ];
     }
 }
-use consts::{StageCode, STAGE_CODES, STAGE_TYPE_MAP};
+use consts::{StageTypeCode, STAGE_TYPE_CODES, STAGE_TYPE_MAP};
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -137,6 +156,7 @@ pub enum StageTypeError {
 impl StageType {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Result<StageType, StageTypeError> {
+        // TODO optimise
         if let Ok(st) = Self::from_selector(selector) {
             return Ok(st);
         };
@@ -262,9 +282,10 @@ impl StageType {
         return Self::from_split(&stage_type.to_string(), map_num, stage_num);
     }
 
-    /// Get the StageCode from `STAGE_CODES`.
-    fn get_stage_code(stage_type: &str) -> StageCode {
-        for code in STAGE_CODES {
+    /// Get the [StageTypeCode] that `stage_type` corresponds to from
+    /// [STAGE_TYPE_CODES].
+    fn get_stage_type_code(stage_type: &str) -> StageTypeCode {
+        for code in STAGE_TYPE_CODES {
             if stage_type == code.code {
                 return code;
             }
@@ -293,7 +314,7 @@ impl StageType {
         map_num: usize,
         stage_num: usize,
     ) -> Result<StageType, StageTypeError> {
-        let code = Self::get_stage_code(stage_type);
+        let code = Self::get_stage_type_code(stage_type);
 
         let type_name = code.name;
         let type_num = code.number;
@@ -340,7 +361,7 @@ impl StageType {
     /// - Filibuster: `["filibuster"]`
     /// - Z: `["z", "1", "0"]` = Korea
     pub fn from_selector_main(selector: Vec<&str>) -> Result<StageType, StageTypeError> {
-        let code = &STAGE_CODES[3];
+        let code = &STAGE_TYPE_CODES[3];
         let type_name = code.name;
         let type_code = code.code;
         let type_num = code.number;
@@ -933,14 +954,14 @@ mod tests {
     }
 
     #[test]
-    fn test_get_stage_code() {
-        assert_eq!(StageType::get_stage_code("main"), STAGE_CODES[3]);
+    fn test_get_stage_type_code() {
+        assert_eq!(StageType::get_stage_type_code("main"), STAGE_TYPE_CODES[3]);
     }
 
     #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
-        for code in STAGE_CODES {
+        for code in STAGE_TYPE_CODES {
             if code.code == "main" {
                 continue;
             }
@@ -989,7 +1010,7 @@ mod tests {
     #[test]
     fn test_random_properties_main() {
         const NUM_ITERATIONS: usize = 20;
-        const CODE: &StageCode = &STAGE_CODES[3];
+        const CODE: &StageTypeCode = &STAGE_TYPE_CODES[3];
 
         let selector = "eoc";
         for _ in 0..NUM_ITERATIONS {
