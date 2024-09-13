@@ -917,6 +917,24 @@ mod tests {
         assert_eq!(StageType::get_stage_code("main"), STAGE_CODES[3]);
     }
 
+    #[test]
+    fn test_random_properties(){
+        const NUM_ITERATIONS: usize = 50;
+        for code in STAGE_CODES{
+            if code.code == "main"{continue}
+            for _ in 0..NUM_ITERATIONS{
+                let (map, stage) = (random::<usize>() % 1000, random::<usize>() % 100);
+                let st = StageType::from_split_parsed(code.code, map, stage).unwrap();
+                let file_name = st.stage_file_name;
+                assert_eq!(file_name, StageType::from_file(&file_name).unwrap().stage_file_name);
+            }
+        }
+    }
+
+    #[test]
+    fn test_random_properties_main(){
+    }
+
     // normal, ex, then main, then fail
     // ref do *htt, htt, s0
 
