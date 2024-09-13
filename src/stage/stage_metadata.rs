@@ -196,7 +196,7 @@ impl StageMeta {
             Self::get_selector_type(selector.first().expect("Selector should have content!"))?;
 
         match stage_type {
-            "main" => Self::from_selector_main(selector),
+            "main" => Self::from_selector_main(&selector),
             _ => {
                 // let chapter: usize = stage_type.parse().unwrap();
                 let submap: usize = selector[1].parse().unwrap();
@@ -214,9 +214,9 @@ impl StageMeta {
     /// ```
     pub fn from_file(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
-            return Self::from_selector_main(vec!["Filibuster"]);
+            return Self::from_selector_main(&vec!["Filibuster"]);
         } else if FILE_PATTERNS.eoc.is_match(file_name) {
-            return Self::from_selector_main(vec![
+            return Self::from_selector_main(&vec![
                 "eoc",
                 &FILE_PATTERNS.eoc.replace(file_name, "$1"),
             ]);
@@ -247,7 +247,7 @@ impl StageMeta {
             "Z" => (chap_num, stage_num),
             _ => unreachable!(),
         };
-        Self::from_selector_main(vec![
+        Self::from_selector_main(&vec![
             &caps[1],
             &selector.0.to_string(),
             &selector.1.to_string(),
@@ -373,7 +373,7 @@ impl StageMeta {
     /// - Aku/DM: `["aku", "0"]` = Korea
     /// - Filibuster: `["filibuster"]`
     /// - Z: `["z", "1", "0"]` = Korea
-    pub fn from_selector_main(selector: Vec<&str>) -> Result<StageMeta, StageMetaParseError> {
+    pub fn from_selector_main(selector: &Vec<&str>) -> Result<StageMeta, StageMetaParseError> {
         let code = &STAGE_TYPES[3];
         let type_name = code.name;
         let type_code = code.code;
@@ -506,7 +506,7 @@ mod tests {
 
     #[test]
     fn test_from_selector_main() {
-        let st = StageMeta::from_selector_main(vec!["eoc", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(&vec!["eoc", "0"]).unwrap();
         assert_eq!(
             st,
             StageMeta {
@@ -520,7 +520,7 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main(vec!["itf", "1", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(&vec!["itf", "1", "0"]).unwrap();
         assert_eq!(
             st,
             StageMeta {
@@ -534,7 +534,7 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main(vec!["cotc", "1", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(&vec!["cotc", "1", "0"]).unwrap();
         assert_eq!(
             st,
             StageMeta {
@@ -548,7 +548,7 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main(vec!["aku", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(&vec!["aku", "0"]).unwrap();
         assert_eq!(
             st,
             StageMeta {
@@ -562,7 +562,7 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main(vec!["filibuster"]).unwrap();
+        let st = StageMeta::from_selector_main(&vec!["filibuster"]).unwrap();
         assert_eq!(
             st,
             StageMeta {
@@ -576,7 +576,7 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main(vec!["z", "7", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(&vec!["z", "7", "0"]).unwrap();
         assert_eq!(
             st,
             StageMeta {
@@ -936,7 +936,7 @@ mod tests {
             Err(StageMetaParseError::Rejected)
         );
         assert_eq!(
-            StageMeta::from_selector_main(vec!["none"]),
+            StageMeta::from_selector_main(&vec!["none"]),
             Err(StageMetaParseError::Invalid)
         );
     }
@@ -944,19 +944,19 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_not_enough_args() {
-        let _ = StageMeta::from_selector_main(vec!["itf"]);
+        let _ = StageMeta::from_selector_main(&vec!["itf"]);
     }
 
     #[test]
     #[should_panic]
     fn test_invalid_number_low() {
-        let _ = StageMeta::from_selector_main(vec!["itf", "0", "0"]);
+        let _ = StageMeta::from_selector_main(&vec!["itf", "0", "0"]);
     }
 
     #[test]
     #[should_panic]
     fn test_invalid_number_high() {
-        let _ = StageMeta::from_selector_main(vec!["z", "9", "0"]);
+        let _ = StageMeta::from_selector_main(&vec!["z", "9", "0"]);
     }
 
     #[test]
@@ -1032,7 +1032,7 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<usize>() % 100;
             // EoC only supports 2 digits
-            let st = StageMeta::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
+            let st = StageMeta::from_selector_main(&vec![selector, &stage.to_string()]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1058,7 +1058,7 @@ mod tests {
             let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
             // itf is 1-based so need +1
             let st =
-                StageMeta::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                StageMeta::from_selector_main(&vec![selector, &map.to_string(), &stage.to_string()])
                     .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
@@ -1090,7 +1090,7 @@ mod tests {
             let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
             // cotc is 1-based so need +1
             let st =
-                StageMeta::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                StageMeta::from_selector_main(&vec![selector, &map.to_string(), &stage.to_string()])
                     .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
@@ -1120,7 +1120,7 @@ mod tests {
         let selector = "aku";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<usize>() % 1000;
-            let st = StageMeta::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
+            let st = StageMeta::from_selector_main(&vec![selector, &stage.to_string()]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1147,7 +1147,7 @@ mod tests {
             let (map, stage) = (random::<usize>() % 8 + 1, random::<usize>() % 1000);
             // Currently 8 chapters exist
             let st =
-                StageMeta::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                StageMeta::from_selector_main(&vec![selector, &map.to_string(), &stage.to_string()])
                     .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
