@@ -1,4 +1,4 @@
-use rust_wiki::stage::stage_type::StageType;
+use rust_wiki::stage::stage_metadata::StageMeta;
 
 // fn benchmark_stage_type(){
 //     let start = Instant::now();
@@ -12,6 +12,6 @@ use rust_wiki::stage::stage_type::StageType;
 // }
 
 fn main() {
-    println!("{:?}", StageType::new("sol 0 0").unwrap());
-    println!("{:?}", StageType::new("ex 0 0").unwrap());
+    println!("{:?}", StageMeta::new("sol 0 0").unwrap());
+    println!("{:?}", StageMeta::new("ex 0 0").unwrap());
 }

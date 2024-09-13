@@ -188,7 +188,7 @@ impl StageMeta {
 
     /// Parse space-delimited selector into StageMeta.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageMeta;
+    /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let selector = "N 0 0";
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
@@ -210,7 +210,7 @@ impl StageMeta {
 
     /// Parse file name into stage type.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageMeta;
+    /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let file_name = "stageRN000_00.csv";
     /// assert_eq!(file_name, StageMeta::from_file(file_name).unwrap().stage_file_name);
     /// ```
@@ -270,7 +270,7 @@ impl StageMeta {
 
     /// Parse battle-cats.db reference into StageMeta.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageMeta;
+    /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
@@ -312,7 +312,7 @@ impl StageMeta {
 
     /// Get StageMeta from selectors split into variables.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageMeta;
+    /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let st = StageMeta::from_split("SoL", 0, 0);
     /// assert_eq!(st.unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
