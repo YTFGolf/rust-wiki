@@ -1,3 +1,6 @@
+//! Module that deals with parsing and storing data about
+
+/// Contains constant/static values to be used by the rest of the module.
 pub mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
@@ -96,7 +99,7 @@ use regex::Regex;
 lazy_static! {
     static ref DB_REFERENCE_FULL: Regex =
         Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap();
-    static ref DB_REFERENCE_STAGE: Regex = Regex::new(r"^s(\d{2})(\d{3})\-(\d{2})$").unwrap();
+    static ref DB_REFERENCE_STAGE: Regex = Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap();
     static ref FILE_PATTERNS: FilePatterns = FilePatterns {
         eoc: Regex::new(r"^stage(\d{2})\.csv$").unwrap(),
         other_main: Regex::new(r"^stage(W|Space|DM|Z)\d\d.*\.csv$").unwrap(),
@@ -906,7 +909,26 @@ mod tests {
     }
 
     #[test]
+    #[should_panic]
+    fn test_not_enough_args() {
+        let _ = StageType::from_selector_main(vec!["itf"]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_number_low() {
+        let _ = StageType::from_selector_main(vec!["itf", "0", "0"]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_number_high() {
+        let _ = StageType::from_selector_main(vec!["z", "9", "0"]);
+    }
+
+    #[test]
     fn test_get_selector_type() {
+        assert_eq!(StageType::get_selector_type("ITF").unwrap(), "main");
         assert_eq!(StageType::get_selector_type("itf").unwrap(), "main");
         assert_eq!(
             StageType::get_selector_type("itf2"),
@@ -927,7 +949,7 @@ mod tests {
                 continue;
             }
             for _ in 0..NUM_ITERATIONS {
-                let (map, stage) = (random::<usize>() % 1000, random::<usize>() % 100);
+                let (map, stage) = (random::<usize>() % 1000, random::<usize>() % 1000);
                 let st = StageType::from_split_parsed(code.code, map, stage).unwrap();
                 let file_name = &st.stage_file_name;
                 assert_eq!(
@@ -955,15 +977,169 @@ mod tests {
                         // these 2 are more difficult to test properly
                     }
                 );
+                assert_eq!(
+                    st,
+                    StageType::new(&format!("{} {map} {stage}", code.number)).unwrap()
+                );
+                assert_eq!(
+                    st,
+                    StageType::new(&format!("s{:02}{:03}-{:02}", code.number, map, stage + 1))
+                        .unwrap()
+                );
             }
         }
     }
 
     #[test]
-    fn test_random_properties_main() {}
+    fn test_random_properties_main() {
+        const NUM_ITERATIONS: usize = 20;
+        const CODE: &StageCode = &STAGE_CODES[3];
 
-    // normal, ex, then main, then fail
-    // ref do *htt, htt, s0
+        let selector = "eoc";
+        for _ in 0..NUM_ITERATIONS {
+            let stage = random::<usize>() % 100;
+            // EoC only supports 2 digits
+            let st = StageType::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
+            let file_name = &st.stage_file_name;
+            assert_eq!(
+                file_name,
+                &StageType::from_file(file_name).unwrap().stage_file_name
+            );
+            assert_eq!(
+                st,
+                StageType {
+                    type_name: CODE.name,
+                    type_code: CODE.code,
+                    type_num: CODE.number,
+                    map_num: 9,
+                    stage_num: stage,
+                    map_file_name: st.map_file_name.to_string(),
+                    stage_file_name: st.stage_file_name.to_string(),
+                }
+            );
+            assert_eq!(st, StageType::new(&format!("{selector} {stage}")).unwrap());
+        }
+
+        let selector = "itf";
+        for _ in 0..NUM_ITERATIONS {
+            let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
+            // itf is 1-based so need +1
+            let st =
+                StageType::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                    .unwrap();
+            let file_name = &st.stage_file_name;
+            assert_eq!(
+                file_name,
+                &StageType::from_file(file_name).unwrap().stage_file_name
+            );
+            assert_eq!(
+                st,
+                StageType {
+                    type_name: CODE.name,
+                    type_code: CODE.code,
+                    type_num: CODE.number,
+                    map_num: map + 2,
+                    // 3, 4, 5
+                    stage_num: stage,
+
+                    map_file_name: st.map_file_name.to_string(),
+                    stage_file_name: st.stage_file_name.to_string(),
+                }
+            );
+            assert_eq!(
+                st,
+                StageType::new(&format!("{selector} {map} {stage}")).unwrap()
+            );
+        }
+
+        let selector = "cotc";
+        for _ in 0..NUM_ITERATIONS {
+            let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
+            // cotc is 1-based so need +1
+            let st =
+                StageType::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                    .unwrap();
+            let file_name = &st.stage_file_name;
+            assert_eq!(
+                file_name,
+                &StageType::from_file(file_name).unwrap().stage_file_name
+            );
+            assert_eq!(
+                st,
+                StageType {
+                    type_name: CODE.name,
+                    type_code: CODE.code,
+                    type_num: CODE.number,
+                    map_num: map + 5,
+                    // 6, 7, 8
+                    stage_num: stage,
+
+                    map_file_name: st.map_file_name.to_string(),
+                    stage_file_name: st.stage_file_name.to_string(),
+                }
+            );
+            assert_eq!(
+                st,
+                StageType::new(&format!("{selector} {map} {stage}")).unwrap()
+            );
+        }
+
+        let selector = "aku";
+        for _ in 0..NUM_ITERATIONS {
+            let stage = random::<usize>() % 1000;
+            let st = StageType::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
+            let file_name = &st.stage_file_name;
+            assert_eq!(
+                file_name,
+                &StageType::from_file(file_name).unwrap().stage_file_name
+            );
+            assert_eq!(
+                st,
+                StageType {
+                    type_name: CODE.name,
+                    type_code: CODE.code,
+                    type_num: CODE.number,
+                    map_num: 14,
+                    stage_num: stage,
+
+                    map_file_name: st.map_file_name.to_string(),
+                    stage_file_name: st.stage_file_name.to_string(),
+                }
+            );
+            assert_eq!(st, StageType::new(&format!("{selector} {stage}")).unwrap());
+        }
+
+        let selector = "Z";
+        for _ in 0..NUM_ITERATIONS {
+            let (map, stage) = (random::<usize>() % 8 + 1, random::<usize>() % 1000);
+            // Currently 8 chapters exist
+            let st =
+                StageType::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                    .unwrap();
+            let file_name = &st.stage_file_name;
+            assert_eq!(
+                file_name,
+                &StageType::from_file(file_name).unwrap().stage_file_name
+            );
+            assert_eq!(
+                st,
+                StageType {
+                    type_name: CODE.name,
+                    type_code: CODE.code,
+                    type_num: CODE.number,
+                    map_num: [0, 1, 2, 10, 12, 13, 15, 16][map - 1],
+                    stage_num: stage,
+
+                    map_file_name: st.map_file_name.to_string(),
+                    stage_file_name: st.stage_file_name.to_string(),
+                }
+            );
+            assert_eq!(
+                st,
+                StageType::new(&format!("{selector} {map} {stage}")).unwrap()
+            );
+        }
+    }
 
     // [x] split
     // [x] selector
@@ -972,15 +1148,5 @@ mod tests {
     // [x] new
     // [x] failing
     // [x] internals
-    // [ ] property stuff
-
-    // #[test]
-    // fn test_from_file_property(){
-    //     // let selector =
-    // }
-
-    // property
-    // selector = stage_file_name
-    // selector = "{type_num} {map_num} {stage_num}"
-    // selector = "s{type_num:02}{map_num:03}-{stage_num:03}"
+    // [x] property stuff
 }
