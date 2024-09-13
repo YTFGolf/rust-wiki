@@ -140,14 +140,14 @@ struct FilePatterns {
 }
 
 #[derive(Debug, PartialEq)]
-/// Contains information about the stage type of a certain stage.
-pub struct StageType {
+/// Contains metadata about a given stage.
+pub struct StageMeta {
     /// Long-form name of the stage type.
     pub type_name: &'static str,
     /// Short-form name of the stage type. All valid codes are given in
     /// [STAGE_TYPE_CODES].
     pub type_code: &'static str,
-    /// Numerical value of the [StageType].
+    /// Numerical value of the [StageMeta].
     pub type_num: usize,
     /// Map number of the stage.
     pub map_num: usize,
@@ -161,7 +161,7 @@ pub struct StageType {
 }
 
 #[derive(Debug, PartialEq)]
-/// Denotes an error when parsing [StageType].
+/// Denotes an error when parsing [StageMeta].
 pub enum StageTypeError {
     /// Not the correct function to use.
     Rejected,
@@ -169,9 +169,9 @@ pub enum StageTypeError {
     Invalid,
 }
 
-impl StageType {
+impl StageMeta {
     /// Catch-all method for parsing a selector.
-    pub fn new(selector: &str) -> Result<StageType, StageTypeError> {
+    pub fn new(selector: &str) -> Result<StageMeta, StageTypeError> {
         // TODO optimise
         if let Ok(st) = Self::from_selector(selector) {
             return Ok(st);
@@ -186,13 +186,13 @@ impl StageType {
         Err(StageTypeError::Invalid)
     }
 
-    /// Parse space-delimited selector into StageType.
+    /// Parse space-delimited selector into StageMeta.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageType;
+    /// # use rust_wiki::stage::stage_type::StageMeta;
     /// let selector = "N 0 0";
-    /// assert_eq!(StageType::from_selector(selector).unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
-    pub fn from_selector(selector: &str) -> Result<StageType, StageTypeError> {
+    pub fn from_selector(selector: &str) -> Result<StageMeta, StageTypeError> {
         let selector: Vec<&str> = selector.split(" ").collect();
         let stage_type =
             Self::get_selector_type(selector.get(0).expect("Selector should have content!"))?;
@@ -210,11 +210,11 @@ impl StageType {
 
     /// Parse file name into stage type.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageType;
+    /// # use rust_wiki::stage::stage_type::StageMeta;
     /// let file_name = "stageRN000_00.csv";
-    /// assert_eq!(file_name, StageType::from_file(file_name).unwrap().stage_file_name);
+    /// assert_eq!(file_name, StageMeta::from_file(file_name).unwrap().stage_file_name);
     /// ```
-    pub fn from_file(file_name: &str) -> Result<StageType, StageTypeError> {
+    pub fn from_file(file_name: &str) -> Result<StageMeta, StageTypeError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
             return Self::from_selector_main(vec!["Filibuster"]);
         } else if FILE_PATTERNS.eoc.is_match(file_name) {
@@ -268,13 +268,13 @@ impl StageType {
         Err(StageTypeError::Invalid)
     }
 
-    /// Parse battle-cats.db reference into StageType.
+    /// Parse battle-cats.db reference into StageMeta.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageType;
+    /// # use rust_wiki::stage::stage_type::StageMeta;
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
-    /// assert_eq!(StageType::from_ref(reference).unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
-    pub fn from_ref(selector: &str) -> Result<StageType, StageTypeError> {
+    pub fn from_ref(selector: &str) -> Result<StageMeta, StageTypeError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
 
         match DB_REFERENCE_STAGE.captures(&reference) {
@@ -294,7 +294,7 @@ impl StageType {
         stage_type: usize,
         map_num: usize,
         stage_num: usize,
-    ) -> Result<StageType, StageTypeError> {
+    ) -> Result<StageMeta, StageTypeError> {
         return Self::from_split(&stage_type.to_string(), map_num, stage_num);
     }
 
@@ -310,17 +310,17 @@ impl StageType {
         panic!("You shouldn't be able to get to this line.");
     }
 
-    /// Get StageType from selectors split into variables.
+    /// Get StageMeta from selectors split into variables.
     /// ```
-    /// # use rust_wiki::stage::stage_type::StageType;
-    /// let st = StageType::from_split("SoL", 0, 0);
-    /// assert_eq!(st.unwrap(), StageType { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// # use rust_wiki::stage::stage_type::StageMeta;
+    /// let st = StageMeta::from_split("SoL", 0, 0);
+    /// assert_eq!(st.unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_split(
         stage_type: &str,
         map_num: usize,
         stage_num: usize,
-    ) -> Result<StageType, StageTypeError> {
+    ) -> Result<StageMeta, StageTypeError> {
         Self::from_split_parsed(Self::get_selector_type(stage_type)?, map_num, stage_num)
     }
 
@@ -329,7 +329,7 @@ impl StageType {
         stage_type: &str,
         map_num: usize,
         stage_num: usize,
-    ) -> Result<StageType, StageTypeError> {
+    ) -> Result<StageMeta, StageTypeError> {
         let code = Self::get_stage_type_code(stage_type);
 
         let type_name = code.name;
@@ -358,7 +358,7 @@ impl StageType {
         }
         // let type_code = code.code
 
-        Ok(StageType {
+        Ok(StageMeta {
             type_name,
             type_code,
             type_num,
@@ -376,7 +376,7 @@ impl StageType {
     /// - Aku/DM: `["aku", "0"]` = Korea
     /// - Filibuster: `["filibuster"]`
     /// - Z: `["z", "1", "0"]` = Korea
-    pub fn from_selector_main(selector: Vec<&str>) -> Result<StageType, StageTypeError> {
+    pub fn from_selector_main(selector: Vec<&str>) -> Result<StageMeta, StageTypeError> {
         let code = &STAGE_TYPE_CODES[3];
         let type_name = code.name;
         let type_code = code.code;
@@ -443,7 +443,7 @@ impl StageType {
                 _ => return Err(StageTypeError::Invalid),
             };
 
-        Ok(StageType {
+        Ok(StageMeta {
             type_name,
             type_code,
             type_num,
@@ -463,7 +463,7 @@ mod tests {
 
     #[test]
     fn test_from_split_sol() {
-        let answer = StageType {
+        let answer = StageMeta {
             type_name: "Stories of Legend",
             type_code: "N",
             type_num: 0,
@@ -473,19 +473,19 @@ mod tests {
             stage_file_name: "stageRN000_00.csv".to_string(),
         };
 
-        let st = StageType::from_split("SoL", 0, 0).unwrap();
+        let st = StageMeta::from_split("SoL", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("sol", 0, 0).unwrap();
+        let st = StageMeta::from_split("sol", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("n", 0, 0).unwrap();
+        let st = StageMeta::from_split("n", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("rn", 0, 0).unwrap();
+        let st = StageMeta::from_split("rn", 0, 0).unwrap();
         assert_eq!(st, answer);
     }
 
     #[test]
     fn test_from_split_ex() {
-        let answer = StageType {
+        let answer = StageMeta {
             type_name: "Extra Stages",
             type_code: "EX",
             type_num: 4,
@@ -495,24 +495,24 @@ mod tests {
             stage_file_name: "stageEX000_00.csv".to_string(),
         };
 
-        let st = StageType::from_split("eXTRA", 0, 0).unwrap();
+        let st = StageMeta::from_split("eXTRA", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("extra", 0, 0).unwrap();
+        let st = StageMeta::from_split("extra", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("4", 0, 0).unwrap();
+        let st = StageMeta::from_split("4", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("RE", 0, 0).unwrap();
+        let st = StageMeta::from_split("RE", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_split("EX", 0, 0).unwrap();
+        let st = StageMeta::from_split("EX", 0, 0).unwrap();
         assert_eq!(st, answer);
     }
 
     #[test]
     fn test_from_selector_main() {
-        let st = StageType::from_selector_main(vec!["eoc", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(vec!["eoc", "0"]).unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -523,10 +523,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector_main(vec!["itf", "1", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(vec!["itf", "1", "0"]).unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -537,10 +537,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector_main(vec!["cotc", "1", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(vec!["cotc", "1", "0"]).unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -551,10 +551,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector_main(vec!["aku", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(vec!["aku", "0"]).unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -565,10 +565,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector_main(vec!["filibuster"]).unwrap();
+        let st = StageMeta::from_selector_main(vec!["filibuster"]).unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -579,10 +579,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector_main(vec!["z", "7", "0"]).unwrap();
+        let st = StageMeta::from_selector_main(vec!["z", "7", "0"]).unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -596,16 +596,16 @@ mod tests {
 
     #[test]
     fn test_from_split_fail() {
-        let st = StageType::from_split("doesn't exist", 0, 0);
+        let st = StageMeta::from_split("doesn't exist", 0, 0);
         assert_eq!(st, Err(StageTypeError::Invalid));
     }
 
     #[test]
     fn test_from_selector() {
-        let st = StageType::from_selector("N 0 0").unwrap();
+        let st = StageMeta::from_selector("N 0 0").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -616,10 +616,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector("sol 0 0").unwrap();
+        let st = StageMeta::from_selector("sol 0 0").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -630,10 +630,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector("T 0 0").unwrap();
+        let st = StageMeta::from_selector("T 0 0").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Catclaw Dojo",
                 type_code: "T",
                 type_num: 6,
@@ -644,10 +644,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector("EX 0 0").unwrap();
+        let st = StageMeta::from_selector("EX 0 0").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Extra Stages",
                 type_code: "EX",
                 type_num: 4,
@@ -658,10 +658,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_selector("COTC 1 0").unwrap();
+        let st = StageMeta::from_selector("COTC 1 0").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -675,10 +675,10 @@ mod tests {
 
     #[test]
     fn test_from_file() {
-        let st = StageType::from_file("stageRN000_00.csv").unwrap();
+        let st = StageMeta::from_file("stageRN000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -689,10 +689,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_file("stageRT000_00.csv").unwrap();
+        let st = StageMeta::from_file("stageRT000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Catclaw Dojo",
                 type_code: "T",
                 type_num: 6,
@@ -703,10 +703,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_file("stageL000_00.csv").unwrap();
+        let st = StageMeta::from_file("stageL000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Labyrinth",
                 type_code: "L",
                 type_num: 33,
@@ -717,10 +717,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_file("stageEX000_00.csv").unwrap();
+        let st = StageMeta::from_file("stageEX000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Extra Stages",
                 type_code: "EX",
                 type_num: 4,
@@ -734,10 +734,10 @@ mod tests {
 
     #[test]
     fn test_from_file_main() {
-        let st = StageType::from_file("stageSpace07_00.csv").unwrap();
+        let st = StageMeta::from_file("stageSpace07_00.csv").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -748,10 +748,10 @@ mod tests {
             }
         );
 
-        let st = StageType::from_file("stageZ00_00.csv").unwrap();
+        let st = StageMeta::from_file("stageZ00_00.csv").unwrap();
         assert_eq!(
             st,
-            StageType {
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -765,7 +765,7 @@ mod tests {
 
     #[test]
     fn test_from_ref() {
-        let answer = StageType {
+        let answer = StageMeta {
             type_name: "Stories of Legend",
             type_code: "N",
             type_num: 0,
@@ -775,21 +775,21 @@ mod tests {
             stage_file_name: "stageRN000_00.csv".to_string(),
         };
 
-        let st = StageType::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        let st = StageMeta::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        let st = StageMeta::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
-        let st = StageType::from_ref("s00000-01").unwrap();
+        let st = StageMeta::from_ref("s00000-01").unwrap();
         assert_eq!(st, answer);
     }
 
     #[test]
     fn test_new() {
         let selector = "*https://battlecats-db.com/stage/s01382-03.html";
-        assert_eq!(StageType::from_ref(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_ref(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::new(selector).unwrap(),
-            StageType {
+            StageMeta::new(selector).unwrap(),
+            StageMeta {
                 type_name: "Event Stages",
                 type_code: "S",
                 type_num: 1,
@@ -801,10 +801,10 @@ mod tests {
         );
 
         let selector = "ItF 1 48";
-        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_selector(selector).unwrap(),
-            StageType {
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -816,10 +816,10 @@ mod tests {
         );
 
         let selector = "DM 0";
-        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_selector(selector).unwrap(),
-            StageType {
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -831,10 +831,10 @@ mod tests {
         );
 
         let selector = "Filibuster";
-        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_selector(selector).unwrap(),
-            StageType {
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -846,10 +846,10 @@ mod tests {
         );
 
         let selector = "z 5 0";
-        assert_eq!(StageType::from_selector(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_selector(selector).unwrap(),
-            StageType {
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -861,10 +861,10 @@ mod tests {
         );
 
         let selector = "stageRN013_05.csv";
-        assert_eq!(StageType::from_file(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_file(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_file(selector).unwrap(),
-            StageType {
+            StageMeta::from_file(selector).unwrap(),
+            StageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -876,10 +876,10 @@ mod tests {
         );
 
         let selector = "stageRN000_00.csv";
-        assert_eq!(StageType::from_file(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_file(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_file(selector).unwrap(),
-            StageType {
+            StageMeta::from_file(selector).unwrap(),
+            StageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -891,10 +891,10 @@ mod tests {
         );
 
         let selector = "stageW04_05.csv";
-        assert_eq!(StageType::from_file(selector), StageType::new(selector));
+        assert_eq!(StageMeta::from_file(selector), StageMeta::new(selector));
         assert_eq!(
-            StageType::from_file(selector).unwrap(),
-            StageType {
+            StageMeta::from_file(selector).unwrap(),
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -907,12 +907,12 @@ mod tests {
 
         let selector = "stageW04_05.csv";
         assert_eq!(
-            StageType::new(&String::from(selector)),
-            StageType::new(selector)
+            StageMeta::new(&String::from(selector)),
+            StageMeta::new(selector)
         );
         assert_eq!(
-            StageType::new(&String::from(selector)).unwrap(),
-            StageType {
+            StageMeta::new(&String::from(selector)).unwrap(),
+            StageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -926,17 +926,17 @@ mod tests {
 
     #[test]
     fn test_stage_type_error() {
-        assert_eq!(StageType::new("unknown 0"), Err(StageTypeError::Invalid));
+        assert_eq!(StageMeta::new("unknown 0"), Err(StageTypeError::Invalid));
         assert_eq!(
-            StageType::from_file("file no exist"),
+            StageMeta::from_file("file no exist"),
             Err(StageTypeError::Rejected)
         );
         assert_eq!(
-            StageType::from_ref("not a reference"),
+            StageMeta::from_ref("not a reference"),
             Err(StageTypeError::Rejected)
         );
         assert_eq!(
-            StageType::from_selector_main(vec!["none"]),
+            StageMeta::from_selector_main(vec!["none"]),
             Err(StageTypeError::Invalid)
         );
     }
@@ -944,34 +944,34 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_not_enough_args() {
-        let _ = StageType::from_selector_main(vec!["itf"]);
+        let _ = StageMeta::from_selector_main(vec!["itf"]);
     }
 
     #[test]
     #[should_panic]
     fn test_invalid_number_low() {
-        let _ = StageType::from_selector_main(vec!["itf", "0", "0"]);
+        let _ = StageMeta::from_selector_main(vec!["itf", "0", "0"]);
     }
 
     #[test]
     #[should_panic]
     fn test_invalid_number_high() {
-        let _ = StageType::from_selector_main(vec!["z", "9", "0"]);
+        let _ = StageMeta::from_selector_main(vec!["z", "9", "0"]);
     }
 
     #[test]
     fn test_get_selector_type() {
-        assert_eq!(StageType::get_selector_type("ITF").unwrap(), "main");
-        assert_eq!(StageType::get_selector_type("itf").unwrap(), "main");
+        assert_eq!(StageMeta::get_selector_type("ITF").unwrap(), "main");
+        assert_eq!(StageMeta::get_selector_type("itf").unwrap(), "main");
         assert_eq!(
-            StageType::get_selector_type("itf2"),
+            StageMeta::get_selector_type("itf2"),
             Err(StageTypeError::Invalid)
         );
     }
 
     #[test]
     fn test_get_stage_type_code() {
-        assert_eq!(StageType::get_stage_type_code("main"), STAGE_TYPE_CODES[3]);
+        assert_eq!(StageMeta::get_stage_type_code("main"), STAGE_TYPE_CODES[3]);
     }
 
     #[test]
@@ -983,11 +983,11 @@ mod tests {
             }
             for _ in 0..NUM_ITERATIONS {
                 let (map, stage) = (random::<usize>() % 1000, random::<usize>() % 1000);
-                let st = StageType::from_split_parsed(code.code, map, stage).unwrap();
+                let st = StageMeta::from_split_parsed(code.code, map, stage).unwrap();
                 let file_name = &st.stage_file_name;
                 assert_eq!(
                     file_name,
-                    &StageType::from_file(file_name).unwrap().stage_file_name
+                    &StageMeta::from_file(file_name).unwrap().stage_file_name
                 );
                 let type_code = {
                     if code.code == "RE|EX" {
@@ -998,7 +998,7 @@ mod tests {
                 };
                 assert_eq!(
                     st,
-                    StageType {
+                    StageMeta {
                         type_name: code.name,
                         type_code,
                         type_num: code.number,
@@ -1012,11 +1012,11 @@ mod tests {
                 );
                 assert_eq!(
                     st,
-                    StageType::new(&format!("{} {map} {stage}", code.number)).unwrap()
+                    StageMeta::new(&format!("{} {map} {stage}", code.number)).unwrap()
                 );
                 assert_eq!(
                     st,
-                    StageType::new(&format!("s{:02}{:03}-{:02}", code.number, map, stage + 1))
+                    StageMeta::new(&format!("s{:02}{:03}-{:02}", code.number, map, stage + 1))
                         .unwrap()
                 );
             }
@@ -1032,15 +1032,15 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<usize>() % 100;
             // EoC only supports 2 digits
-            let st = StageType::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
+            let st = StageMeta::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageType::from_file(file_name).unwrap().stage_file_name
+                &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageType {
+                StageMeta {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
@@ -1050,7 +1050,7 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            assert_eq!(st, StageType::new(&format!("{selector} {stage}")).unwrap());
+            assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
         let selector = "itf";
@@ -1058,16 +1058,16 @@ mod tests {
             let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
             // itf is 1-based so need +1
             let st =
-                StageType::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                StageMeta::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
                     .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageType::from_file(file_name).unwrap().stage_file_name
+                &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageType {
+                StageMeta {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
@@ -1081,7 +1081,7 @@ mod tests {
             );
             assert_eq!(
                 st,
-                StageType::new(&format!("{selector} {map} {stage}")).unwrap()
+                StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
             );
         }
 
@@ -1090,16 +1090,16 @@ mod tests {
             let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
             // cotc is 1-based so need +1
             let st =
-                StageType::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                StageMeta::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
                     .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageType::from_file(file_name).unwrap().stage_file_name
+                &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageType {
+                StageMeta {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
@@ -1113,22 +1113,22 @@ mod tests {
             );
             assert_eq!(
                 st,
-                StageType::new(&format!("{selector} {map} {stage}")).unwrap()
+                StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
             );
         }
 
         let selector = "aku";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<usize>() % 1000;
-            let st = StageType::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
+            let st = StageMeta::from_selector_main(vec![selector, &stage.to_string()]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageType::from_file(file_name).unwrap().stage_file_name
+                &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageType {
+                StageMeta {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
@@ -1139,7 +1139,7 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            assert_eq!(st, StageType::new(&format!("{selector} {stage}")).unwrap());
+            assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
         let selector = "Z";
@@ -1147,16 +1147,16 @@ mod tests {
             let (map, stage) = (random::<usize>() % 8 + 1, random::<usize>() % 1000);
             // Currently 8 chapters exist
             let st =
-                StageType::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
+                StageMeta::from_selector_main(vec![selector, &map.to_string(), &stage.to_string()])
                     .unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageType::from_file(file_name).unwrap().stage_file_name
+                &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageType {
+                StageMeta {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
@@ -1169,7 +1169,7 @@ mod tests {
             );
             assert_eq!(
                 st,
-                StageType::new(&format!("{selector} {map} {stage}")).unwrap()
+                StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
             );
         }
     }
