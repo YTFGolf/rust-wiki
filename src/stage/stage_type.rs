@@ -2,7 +2,7 @@ pub mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
 
-    #[derive(Debug)]
+    #[derive(Debug, PartialEq)]
     pub struct StageCode {
         pub name: &'static str,
         pub number: i32,
@@ -218,6 +218,7 @@ impl StageType {
         ])
     }
 
+    /// Get `StageCode.code` from `selector_type`.
     fn get_selector_type(selector_type: &str) -> Result<&'static str, StageTypeError> {
         for selector_map in STAGE_TYPE_MAP.iter() {
             if selector_map.matcher.is_match(selector_type) {
@@ -266,7 +267,7 @@ impl StageType {
             }
         }
 
-        unreachable!();
+        panic!("You shouldn't be able to get to this line.");
     }
 
     /// Get StageType from selectors split into variables.
@@ -399,7 +400,7 @@ impl StageType {
 
                     (map_num, stage_num, map_file, stage_file)
                 }
-                _ => unreachable!(),
+                _ => return Err(StageTypeError::Invalid),
             };
 
         Ok(StageType {
@@ -885,6 +886,37 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_stage_type_error() {
+        assert_eq!(StageType::new("unknown 0"), Err(StageTypeError::Invalid));
+        assert_eq!(
+            StageType::from_file("file no exist"),
+            Err(StageTypeError::Rejected)
+        );
+        assert_eq!(
+            StageType::from_ref("not a reference"),
+            Err(StageTypeError::Rejected)
+        );
+        assert_eq!(
+            StageType::from_selector_main(vec!["none"]),
+            Err(StageTypeError::Invalid)
+        );
+    }
+
+    #[test]
+    fn test_get_selector_type() {
+        assert_eq!(StageType::get_selector_type("itf").unwrap(), "main");
+        assert_eq!(
+            StageType::get_selector_type("itf2"),
+            Err(StageTypeError::Invalid)
+        );
+    }
+
+    #[test]
+    fn test_get_stage_code() {
+        assert_eq!(StageType::get_stage_code("main"), STAGE_CODES[3]);
+    }
+
     // normal, ex, then main, then fail
     // ref do *htt, htt, s0
 
@@ -893,8 +925,8 @@ mod tests {
     // [x] file
     // [x] ref
     // [x] new
-    // [ ] failing
-    // [ ] internals
+    // [x] failing
+    // [x] internals
     // [ ] property stuff
 
     // #[test]
