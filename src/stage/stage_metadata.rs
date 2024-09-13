@@ -59,6 +59,7 @@ pub mod consts {
     }
 
     #[rustfmt::skip]
+    #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
     pub const STAGE_TYPES: [StageType; 18] = [
         initialise_stage_type("Stories of Legend",    000, "N",     true),
@@ -119,6 +120,13 @@ use consts::{StageType, STAGE_TYPES, STAGE_TYPE_MAP};
 use lazy_static::lazy_static;
 use regex::Regex;
 
+struct FilePatterns {
+    eoc: Regex,
+    /// Main chapters that aren't EoC
+    other_main: Regex,
+    /// Every chapter that isn't EoC
+    default: Regex,
+}
 lazy_static! {
     static ref DB_REFERENCE_FULL: Regex =
         Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap();
@@ -128,13 +136,6 @@ lazy_static! {
         other_main: Regex::new(r"^stage(W|Space|DM|Z)\d\d.*\.csv$").unwrap(),
         default: Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap(),
     };
-}
-struct FilePatterns {
-    eoc: Regex,
-    /// Main chapters that aren't EoC
-    other_main: Regex,
-    /// Every chapter that isn't EoC
-    default: Regex,
 }
 
 #[derive(Debug, PartialEq)]
@@ -192,15 +193,15 @@ impl StageMeta {
     pub fn from_selector(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         let selector: Vec<&str> = selector.split(" ").collect();
         let stage_type =
-            Self::get_selector_type(selector.get(0).expect("Selector should have content!"))?;
+            Self::get_selector_type(selector.first().expect("Selector should have content!"))?;
 
         match stage_type {
             "main" => Self::from_selector_main(selector),
             _ => {
                 // let chapter: usize = stage_type.parse().unwrap();
-                let submap: usize = (&selector[1]).parse().unwrap();
-                let stage: usize = (&selector[2]).parse::<usize>().unwrap();
-                return Self::from_split_parsed(stage_type, submap, stage);
+                let submap: usize = selector[1].parse().unwrap();
+                let stage: usize = selector[2].parse::<usize>().unwrap();
+                Self::from_split_parsed(stage_type, submap, stage)
             }
         }
     }
@@ -220,12 +221,11 @@ impl StageMeta {
                 &FILE_PATTERNS.eoc.replace(file_name, "$1"),
             ]);
         } else if FILE_PATTERNS.other_main.is_match(file_name) {
-            ()
             // will deal with this later
         } else if file_name.contains("_") {
             let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
-            let map_num: usize = (&caps[2]).parse::<usize>().unwrap();
-            let stage_num: usize = (&caps[3]).parse::<usize>().unwrap();
+            let map_num: usize = caps[2].parse::<usize>().unwrap();
+            let stage_num: usize = caps[3].parse::<usize>().unwrap();
             return Self::from_split(&caps[1], map_num, stage_num);
         } else {
             return Err(StageMetaParseError::Rejected);
@@ -276,11 +276,11 @@ impl StageMeta {
 
         match DB_REFERENCE_STAGE.captures(&reference) {
             Some(caps) => {
-                let chapter: usize = (&caps[1]).parse().unwrap();
+                let chapter: usize = caps[1].parse().unwrap();
                 // necessary since can contain leading 0s
-                let submap: usize = (&caps[2]).parse().unwrap();
-                let stage: usize = (&caps[3]).parse::<usize>().unwrap() - 1;
-                return Self::from_numbers(chapter, submap, stage);
+                let submap: usize = caps[2].parse().unwrap();
+                let stage: usize = caps[3].parse::<usize>().unwrap() - 1;
+                Self::from_numbers(chapter, submap, stage)
             }
             None => Err(StageMetaParseError::Rejected),
         }
@@ -292,7 +292,7 @@ impl StageMeta {
         map_num: usize,
         stage_num: usize,
     ) -> Result<StageMeta, StageMetaParseError> {
-        return Self::from_split(&stage_type.to_string(), map_num, stage_num);
+        Self::from_split(&stage_type.to_string(), map_num, stage_num)
     }
 
     /// Get the [StageType] that `stage_type` corresponds to from
@@ -923,7 +923,10 @@ mod tests {
 
     #[test]
     fn test_stage_type_error() {
-        assert_eq!(StageMeta::new("unknown 0"), Err(StageMetaParseError::Invalid));
+        assert_eq!(
+            StageMeta::new("unknown 0"),
+            Err(StageMetaParseError::Invalid)
+        );
         assert_eq!(
             StageMeta::from_file("file no exist"),
             Err(StageMetaParseError::Rejected)
