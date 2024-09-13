@@ -5,14 +5,14 @@ pub mod consts {
     #[derive(Debug, PartialEq)]
     pub struct StageCode {
         pub name: &'static str,
-        pub number: i32,
+        pub number: usize,
         pub code: &'static str,
         pub has_r_prefix: bool,
     }
 
     const fn initialise_type_code(
         name: &'static str,
-        number: i32,
+        number: usize,
         code: &'static str,
         has_r_prefix: bool,
     ) -> StageCode {
@@ -115,9 +115,9 @@ struct FilePatterns {
 pub struct StageType {
     pub type_name: &'static str,
     pub type_code: &'static str,
-    pub type_num: i32,
-    pub map_num: i32,
-    pub stage_num: i32,
+    pub type_num: usize,
+    pub map_num: usize,
+    pub stage_num: usize,
 
     pub map_file_name: String,
     pub stage_file_name: String,
@@ -161,9 +161,9 @@ impl StageType {
         match stage_type {
             "main" => Self::from_selector_main(selector),
             _ => {
-                // let chapter: i32 = stage_type.parse().unwrap();
-                let submap: i32 = (&selector[1]).parse().unwrap();
-                let stage: i32 = (&selector[2]).parse::<i32>().unwrap();
+                // let chapter: usize = stage_type.parse().unwrap();
+                let submap: usize = (&selector[1]).parse().unwrap();
+                let stage: usize = (&selector[2]).parse::<usize>().unwrap();
                 return Self::from_split_parsed(stage_type, submap, stage);
             }
         }
@@ -188,8 +188,8 @@ impl StageType {
             // will deal with this later
         } else if file_name.contains("_") {
             let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
-            let map_num: i32 = (&caps[2]).parse::<i32>().unwrap();
-            let stage_num: i32 = (&caps[3]).parse::<i32>().unwrap();
+            let map_num: usize = (&caps[2]).parse::<usize>().unwrap();
+            let stage_num: usize = (&caps[3]).parse::<usize>().unwrap();
             return Self::from_split(&caps[1], map_num, stage_num);
         } else {
             return Err(StageTypeError::Rejected);
@@ -197,12 +197,12 @@ impl StageType {
 
         // Rest is for main chapters minus EoC
         let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
-        let mut chap_num = caps[2].parse::<i32>().unwrap();
+        let mut chap_num = caps[2].parse::<usize>().unwrap();
         if &caps[1] == "Z" && chap_num <= 3 {
             chap_num += 1;
         }
 
-        let stage_num = caps[3].parse::<i32>().unwrap();
+        let stage_num = caps[3].parse::<usize>().unwrap();
         let selector = match &caps[1] {
             "W" => (chap_num - 3, stage_num),
             "Space" => (chap_num - 6, stage_num),
@@ -240,10 +240,10 @@ impl StageType {
 
         match DB_REFERENCE_STAGE.captures(&reference) {
             Some(caps) => {
-                let chapter: i32 = (&caps[1]).parse().unwrap();
+                let chapter: usize = (&caps[1]).parse().unwrap();
                 // necessary since can contain leading 0s
-                let submap: i32 = (&caps[2]).parse().unwrap();
-                let stage: i32 = (&caps[3]).parse::<i32>().unwrap() - 1;
+                let submap: usize = (&caps[2]).parse().unwrap();
+                let stage: usize = (&caps[3]).parse::<usize>().unwrap() - 1;
                 return Self::from_numbers(chapter, submap, stage);
             }
             None => Err(StageTypeError::Rejected),
@@ -252,9 +252,9 @@ impl StageType {
 
     /// Is this even necessary?
     fn from_numbers(
-        stage_type: i32,
-        map_num: i32,
-        stage_num: i32,
+        stage_type: usize,
+        map_num: usize,
+        stage_num: usize,
     ) -> Result<StageType, StageTypeError> {
         return Self::from_split(&stage_type.to_string(), map_num, stage_num);
     }
@@ -278,8 +278,8 @@ impl StageType {
     /// ```
     pub fn from_split(
         stage_type: &str,
-        map_num: i32,
-        stage_num: i32,
+        map_num: usize,
+        stage_num: usize,
     ) -> Result<StageType, StageTypeError> {
         Self::from_split_parsed(Self::get_selector_type(stage_type)?, map_num, stage_num)
     }
@@ -287,8 +287,8 @@ impl StageType {
     /// `from_split` but with `stage_type` being a code from `STAGE_CODES`.
     fn from_split_parsed(
         stage_type: &str,
-        map_num: i32,
-        stage_num: i32,
+        map_num: usize,
+        stage_num: usize,
     ) -> Result<StageType, StageTypeError> {
         let code = Self::get_stage_code(stage_type);
 
@@ -345,40 +345,40 @@ impl StageType {
         let (map_num, stage_num, map_file_name, stage_file_name) =
             match selector[0].to_lowercase().as_str() {
                 "eoc" => {
-                    let stage_num: i32 = selector[1].parse::<i32>().unwrap();
+                    let stage_num: usize = selector[1].parse::<usize>().unwrap();
                     (
-                        9_i32,
+                        9_usize,
                         stage_num,
                         "stageNormal0.csv".to_string(),
                         format!("stage{stage_num:02}.csv"),
                     )
                 }
                 "itf" | "w" => {
-                    let map_num: i32 = selector[1].parse::<i32>().unwrap() + 2;
-                    let stage_num: i32 = selector[2].parse::<i32>().unwrap();
+                    let map_num: usize = selector[1].parse::<usize>().unwrap() + 2;
+                    let stage_num: usize = selector[2].parse::<usize>().unwrap();
                     let map_file = format!("stageNormal1_{}.csv", map_num - 3);
                     let stage_file = format!("stageW{:02}_{stage_num:02}.csv", map_num + 1);
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "cotc" | "space" => {
-                    let map_num: i32 = selector[1].parse::<i32>().unwrap() + 5;
-                    let stage_num: i32 = selector[2].parse::<i32>().unwrap();
+                    let map_num: usize = selector[1].parse::<usize>().unwrap() + 5;
+                    let stage_num: usize = selector[2].parse::<usize>().unwrap();
                     let map_file = format!("stageNormal2_{}.csv", map_num - 6);
                     let stage_file = format!("stageSpace{:02}_{stage_num:02}.csv", map_num + 1);
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "aku" | "dm" => {
-                    let stage_num: i32 = selector[1].parse::<i32>().unwrap();
+                    let stage_num: usize = selector[1].parse::<usize>().unwrap();
                     (
-                        14_i32,
+                        14_usize,
                         stage_num,
                         "MapStageDataDM_000.csv".to_string(),
                         format!("stageDM000_{stage_num:02}.csv"),
                     )
                 }
                 "filibuster" => (
-                    11_i32,
-                    0_i32,
+                    11_usize,
+                    0_usize,
                     "stageNormal2_2_Invasion.csv".to_string(),
                     "stageSpace09_Invasion_00.csv".to_string(),
                 ),
@@ -386,7 +386,7 @@ impl StageType {
                     let mut chap_num: usize = selector[1].parse().unwrap();
 
                     let map_num = [0, 1, 2, 10, 12, 13, 15, 16][chap_num - 1];
-                    let stage_num = selector[2].parse::<i32>().unwrap();
+                    let stage_num = selector[2].parse::<usize>().unwrap();
                     let map_file = format!(
                         "stageNormal{}_{}_Z.csv",
                         (chap_num - 1) / 3,
@@ -421,6 +421,8 @@ pub fn get_st_obj(selector: &str) -> &str {
 
 #[cfg(test)]
 mod tests {
+    use rand::random;
+
     use super::*;
 
     #[test]
