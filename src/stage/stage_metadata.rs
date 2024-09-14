@@ -429,6 +429,9 @@ impl StageMeta {
                     )
                 }
                 "itf" | "w" => {
+                    assert!(selector[1] != "0");
+                    // necessary for release build
+
                     let map_num: usize = selector[1].parse::<usize>().unwrap() + 2;
                     let stage_num: usize = selector[2].parse::<usize>().unwrap();
                     let map_file = format!("stageNormal1_{}.csv", map_num - 3);
@@ -436,6 +439,9 @@ impl StageMeta {
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "cotc" | "space" => {
+                    assert!(selector[1] != "0");
+                    // necessary for release build
+
                     let map_num: usize = selector[1].parse::<usize>().unwrap() + 5;
                     let stage_num: usize = selector[2].parse::<usize>().unwrap();
                     let map_file = format!("stageNormal2_{}.csv", map_num - 6);
@@ -999,8 +1005,14 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_invalid_number_low() {
+    fn test_invalid_number_low_itf() {
         let _ = StageMeta::from_selector_main(&vec!["itf", "0", "0"]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_number_low_cotc() {
+        let _ = StageMeta::from_selector_main(&vec!["cotc", "0", "0"]);
     }
 
     #[test]
