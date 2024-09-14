@@ -1,7 +1,7 @@
 //! Module that deals with parsing and storing metadata about stages.
 
 /// Contains constant/static values to be used by the rest of the module.
-pub mod consts {
+mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
 
@@ -58,6 +58,48 @@ pub mod consts {
         }
     }
 
+    /// Get the [StageType] that `stage_type` corresponds to from
+    /// [STAGE_TYPES].
+    // TODO probably could make these functions more efficient with a different
+    // data structure.
+    fn get_stage_type_code(stage_type: &str) -> StageType {
+        for code in STAGE_TYPES {
+            if stage_type == code.code {
+                return code;
+            }
+        }
+
+        unreachable!("{stage_type} is an invalid stage type code!");
+    }
+
+    /// Get [code][StageType::code] from [struct@STAGE_TYPE_MAP].
+    pub fn get_selector_type(selector_type: &str) -> Option<StageType> {
+        for selector_map in STAGE_TYPE_MAP.iter() {
+            if selector_map.matcher.is_match(selector_type) {
+                return Some(get_stage_type_code(selector_map.stage_type));
+            }
+        }
+
+        None
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn test_get_selector_type() {
+            assert_eq!(get_selector_type("ITF").unwrap().code, "main");
+            assert_eq!(get_selector_type("itf").unwrap().code, "main");
+            assert_eq!(get_selector_type("itf2"), None);
+        }
+
+        #[test]
+        fn test_get_stage_type_code() {
+            assert_eq!(get_stage_type_code("main"), STAGE_TYPES[3]);
+        }
+    }
+
     #[rustfmt::skip]
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
@@ -93,7 +135,7 @@ pub mod consts {
     /// ‎
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
-    pub static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
+    static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
@@ -116,7 +158,7 @@ pub mod consts {
     ];
     }
 }
-use consts::{StageType, STAGE_TYPES, STAGE_TYPE_MAP};
+use consts::{get_selector_type, StageType, STAGE_TYPES};
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -201,16 +243,20 @@ impl StageMeta {
     /// ```
     pub fn from_selector(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         let selector: Vec<&str> = selector.split(" ").collect();
-        let stage_type =
-            Self::get_selector_type(selector.first().expect("Selector should have content!"))?;
 
-        match stage_type {
+        let Some(stage_type) =
+            get_selector_type(selector.first().expect("Selector should have content!"))
+        else {
+            return Err(StageMetaParseError::Invalid);
+        };
+
+        match stage_type.code {
             "main" => Self::from_selector_main(&selector),
             _ => {
                 // let chapter: usize = stage_type.parse().unwrap();
                 let submap: usize = selector[1].parse().unwrap();
                 let stage: usize = selector[2].parse::<usize>().unwrap();
-                Self::from_split_parsed(stage_type, submap, stage)
+                Self::from_split_parsed(&stage_type, submap, stage)
             }
         }
     }
@@ -263,17 +309,6 @@ impl StageMeta {
         ])
     }
 
-    /// Get [code][StageType::code] from [struct@STAGE_TYPE_MAP].
-    fn get_selector_type(selector_type: &str) -> Result<&'static str, StageMetaParseError> {
-        for selector_map in STAGE_TYPE_MAP.iter() {
-            if selector_map.matcher.is_match(selector_type) {
-                return Ok(selector_map.stage_type);
-            }
-        }
-
-        Err(StageMetaParseError::Invalid)
-    }
-
     /// Parse battle-cats.db reference into [StageMeta] object.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
@@ -305,18 +340,6 @@ impl StageMeta {
         Self::from_split(&stage_type.to_string(), map_num, stage_num)
     }
 
-    /// Get the [StageType] that `stage_type` corresponds to from
-    /// [STAGE_TYPES].
-    fn get_stage_type_code(stage_type: &str) -> StageType {
-        for code in STAGE_TYPES {
-            if stage_type == code.code {
-                return code;
-            }
-        }
-
-        panic!("You shouldn't be able to get to this line.");
-    }
-
     /// Get [StageMeta] from a selector split into variables.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
@@ -328,37 +351,38 @@ impl StageMeta {
         map_num: usize,
         stage_num: usize,
     ) -> Result<StageMeta, StageMetaParseError> {
-        Self::from_split_parsed(Self::get_selector_type(stage_type)?, map_num, stage_num)
+        let Some(stage_type) = get_selector_type(stage_type) else {
+            return Err(StageMetaParseError::Invalid);
+        };
+        Self::from_split_parsed(&stage_type, map_num, stage_num)
     }
 
     /// [from_split][StageMeta::from_split] but with `stage_type` being a code
     /// from [STAGE_TYPES].
     fn from_split_parsed(
-        stage_type: &str,
+        stage_type: &StageType,
         map_num: usize,
         stage_num: usize,
     ) -> Result<StageMeta, StageMetaParseError> {
-        let code = Self::get_stage_type_code(stage_type);
-
-        let type_name = code.name;
-        let type_num = code.number;
+        let type_name = stage_type.name;
+        let type_num = stage_type.number;
 
         let type_code;
         let map_file_name;
         let stage_file_name;
-        if code.code.contains("|") {
+        if stage_type.code.contains("|") {
             // If more than RE|EX is needed this could completely break
-            let map = &code.code[..2];
-            let stage = &code.code[3..];
+            let map = &stage_type.code[..2];
+            let stage = &stage_type.code[3..];
             type_code = stage;
             map_file_name = format!("MapStageData{map}_{map_num:03}.csv");
             stage_file_name = format!("stage{stage}{map_num:03}_{stage_num:02}.csv");
         } else {
-            let stage_prefix = match code.has_r_prefix {
+            let stage_prefix = match stage_type.has_r_prefix {
                 true => "R",
                 false => "",
             };
-            let code = code.code;
+            let code = stage_type.code;
 
             type_code = code;
             map_file_name = format!("MapStageData{code}_{map_num:03}.csv");
@@ -992,21 +1016,6 @@ mod tests {
     }
 
     #[test]
-    fn test_get_selector_type() {
-        assert_eq!(StageMeta::get_selector_type("ITF").unwrap(), "main");
-        assert_eq!(StageMeta::get_selector_type("itf").unwrap(), "main");
-        assert_eq!(
-            StageMeta::get_selector_type("itf2"),
-            Err(StageMetaParseError::Invalid)
-        );
-    }
-
-    #[test]
-    fn test_get_stage_type_code() {
-        assert_eq!(StageMeta::get_stage_type_code("main"), STAGE_TYPES[3]);
-    }
-
-    #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for code in STAGE_TYPES {
@@ -1015,7 +1024,7 @@ mod tests {
             }
             for _ in 0..NUM_ITERATIONS {
                 let (map, stage) = (random::<usize>() % 1000, random::<usize>() % 1000);
-                let st = StageMeta::from_split_parsed(code.code, map, stage).unwrap();
+                let st = StageMeta::from_split_parsed(&code, map, stage).unwrap();
                 let file_name = &st.stage_file_name;
                 assert_eq!(
                     file_name,
