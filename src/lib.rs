@@ -2,3 +2,4 @@
 //! Rust because why not.
 #![warn(missing_docs)]
 pub mod stage;
+pub mod file_handler;

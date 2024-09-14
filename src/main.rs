@@ -1,4 +1,4 @@
-use rust_wiki::stage::stage_metadata::StageMeta;
+use rust_wiki::{file_handler::do_stuff, stage::stage_metadata::StageMeta};
 
 // fn benchmark_stage_type(){
 //     let start = Instant::now();
@@ -14,4 +14,6 @@ use rust_wiki::stage::stage_metadata::StageMeta;
 fn main() {
     println!("{:?}", StageMeta::new("sol 0 0").unwrap());
     println!("{:?}", StageMeta::new("ex 0 0").unwrap());
+
+    do_stuff();
 }
