@@ -72,7 +72,7 @@ pub mod consts {
         unreachable!("{stage_type} is an invalid stage type code!");
     }
 
-    /// Get [code][StageType::code] from [struct@STAGE_TYPE_MAP].
+    /// Get [StageType] that `selector_type` refers to.
     pub fn get_selector_type(selector_type: &str) -> Option<StageType> {
         for selector_map in STAGE_TYPE_MAP.iter() {
             if selector_map.matcher.is_match(selector_type) {
@@ -128,14 +128,13 @@ pub mod consts {
     #[rustfmt::skip]
     /// Map of regex matchers to code used in [STAGE_TYPES].
     ///
-    /// Includes common name for type, type number, type prefix, type prefix
-    /// with R if applicable. Main Chapters should be dealt with differently to
-    /// other types.
+    /// Includes common name for type, type number, type prefix and type prefix
+    /// with R if applicable.
     ///
     /// ‎
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
-    pub static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
+    static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
