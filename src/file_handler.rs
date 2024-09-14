@@ -1,10 +1,9 @@
 //! Contains functions to read data files.
-use shellexpand;
-use std::fs;
+use std::{fs, path::{Path, PathBuf}};
+use crate::config::CONFIG;
 
-/// a
 pub fn do_stuff() {
-    let file_name = shellexpand::tilde("~/.bash_history").to_string();
-    let content = fs::read_to_string(file_name).expect("File name no existo!");
+    let file_name = "DataLocal/stage.csv";
+    let content = fs::read_to_string(CONFIG.data_mines.join(file_name)).expect("File name no existo!");
     println!("{content:?}");
 }
