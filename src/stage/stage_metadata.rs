@@ -1,7 +1,7 @@
 //! Module that deals with parsing and storing metadata about stages.
 
 /// Contains constant/static values to be used by the rest of the module.
-mod consts {
+pub mod consts {
     use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
 
@@ -135,7 +135,7 @@ mod consts {
     /// ‎
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
-    static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
+    pub static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
@@ -310,10 +310,14 @@ impl StageMeta {
     }
 
     /// Parse battle-cats.db reference into [StageMeta] object.
+    ///
+    /// `selector` can either be the full reference (with or without a leading
+    /// `*`) or just the stage part.
     /// ```
     /// # use rust_wiki::stage::stage_metadata::StageMeta;
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta::from_ref("s00000-01").unwrap());
     /// ```
     pub fn from_ref(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
