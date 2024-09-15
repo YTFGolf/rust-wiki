@@ -1,6 +1,12 @@
 //! Contains functions to read data files.
 use crate::config::CONFIG;
-use std::{fs::{self, File}, io::{BufRead, BufReader}, path::PathBuf, sync::LazyLock};
+use std::{
+    error::Error,
+    fs::{self, File},
+    io::{self, BufRead, BufReader, Cursor},
+    path::PathBuf,
+    sync::LazyLock,
+};
 
 static WIKI_DATA_LOCATION: LazyLock<PathBuf> =
     LazyLock::new(|| std::env::current_dir().unwrap().join("/data"));
@@ -35,7 +41,8 @@ pub fn do_stuff() {
         .expect("File name no existo!");
     println!("{content:?}");
 
-    read_file_lines(get_file_location(FileLocation::GameData).join(file_name))
+    read_file_lines(get_file_location(FileLocation::GameData).join(file_name));
+    read_csv_file(get_file_location(FileLocation::GameData).join(file_name));
 }
 
 /// Also temp function kinda
@@ -46,5 +53,30 @@ pub fn read_file_lines(p: PathBuf) {
     while lock.read_line(&mut line).unwrap() != 0 {
         process(&line);
         line.clear();
-    };
+    }
+}
+
+pub fn read_csv_file(p: PathBuf) {
+    // "DataLocal/stage00.csv"
+    use FileLocation::GameData;
+    let gd = get_file_location(GameData);
+
+    let f = BufReader::new(File::open(gd.join("DataLocal/stageRN000_00.csv")).unwrap())
+        .lines()
+        .map(|line| line.unwrap().split("//").next().unwrap().trim().to_owned())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        .flexible(true)
+        // .from_reader(File::open(gd.join("DataLocal/stage00.csv")).unwrap())
+        // .from_reader(File::open(gd.join("DataLocal/stage.csv")).unwrap())
+        .from_reader(Cursor::new(f));
+
+    for result in rdr.byte_records() {
+        println!("{:?}", result);
+    }
+
+    // check all stage files ig
 }
