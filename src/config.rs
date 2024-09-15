@@ -2,6 +2,7 @@
 use home::home_dir;
 use std::{path::PathBuf, sync::LazyLock};
 
+/// Expand home directory if `dir` begins with `~/`.
 fn expand_home(dir: &str) -> PathBuf {
     if &dir[0..2] == "~/" {
         home_dir().unwrap().join(&dir[2..])
