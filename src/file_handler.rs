@@ -1,7 +1,6 @@
 //! Contains functions to read data files.
 use crate::config::CONFIG;
 use std::{
-    error::Error,
     fs::{self, File},
     io::{self, BufRead, BufReader, Cursor},
     path::PathBuf,
@@ -34,6 +33,24 @@ pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
     }
 }
 
+/// Get game data file, stripped of comments.
+/// ```
+/// # use rust_wiki::file_handler::get_decommented_file_reader;
+/// let reader = get_decommented_file_reader("DataLocal/stage.csv").unwrap();
+/// let mut rdr = csv::Reader::from_reader(reader);
+/// ```
+pub fn get_decommented_file_reader(file_name: &str) -> Result<Cursor<String>, io::Error> {
+    use FileLocation::GameData;
+    let gd = get_file_location(GameData);
+    let f = BufReader::new(File::open(gd.join(file_name))?)
+        .lines()
+        .map(|line| line.unwrap().split("//").next().unwrap().trim().to_owned())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    Ok(Cursor::new(f))
+}
+
 /// temp function
 pub fn do_stuff() {
     let file_name = "DataLocal/stage.csv";
@@ -41,38 +58,17 @@ pub fn do_stuff() {
         .expect("File name no existo!");
     println!("{content:?}");
 
-    read_file_lines(get_file_location(FileLocation::GameData).join(file_name));
-    read_csv_file(get_file_location(FileLocation::GameData).join(file_name));
+    read_csv_file("DataLocal/stageRN000_00.csv");
+    read_csv_file("DataLocal/stage.csv");
 }
 
-/// Also temp function kinda
-pub fn read_file_lines(p: PathBuf) {
-    let process = |line: &str| println!("{:?}", line.split(",").collect::<Vec<_>>());
-    let mut lock = BufReader::new(File::open(p).unwrap());
-    let mut line = String::new();
-    while lock.read_line(&mut line).unwrap() != 0 {
-        process(&line);
-        line.clear();
-    }
-}
-
-pub fn read_csv_file(p: PathBuf) {
-    // "DataLocal/stage00.csv"
-    use FileLocation::GameData;
-    let gd = get_file_location(GameData);
-
-    let f = BufReader::new(File::open(gd.join("DataLocal/stageRN000_00.csv")).unwrap())
-        .lines()
-        .map(|line| line.unwrap().split("//").next().unwrap().trim().to_owned())
-        .collect::<Vec<_>>()
-        .join("\n");
-
+fn read_csv_file(file_name: &str) {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .flexible(true)
         // .from_reader(File::open(gd.join("DataLocal/stage00.csv")).unwrap())
         // .from_reader(File::open(gd.join("DataLocal/stage.csv")).unwrap())
-        .from_reader(Cursor::new(f));
+        .from_reader(get_decommented_file_reader(file_name).unwrap());
 
     for result in rdr.byte_records() {
         println!("{:?}", result);
@@ -80,3 +76,4 @@ pub fn read_csv_file(p: PathBuf) {
 
     // check all stage files ig
 }
+// could probably do some trait thing
