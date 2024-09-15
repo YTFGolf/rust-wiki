@@ -1,7 +1,6 @@
 //! Contains global config values.
-use std::{path::PathBuf, sync::LazyLock};
-
 use home::home_dir;
+use std::{path::PathBuf, sync::LazyLock};
 
 fn expand_home(dir: &str) -> PathBuf {
     if &dir[0..2] == "~/" {
