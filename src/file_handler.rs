@@ -62,8 +62,11 @@ pub fn do_stuff() {
     println!("{content:?}");
 
     Stage::new("stageRN000_00.csv");
+    Stage::new("stageRND000_00.csv");
+    Stage::new("stageRV006_19.csv");
     Stage::new("stageRQ000_09.csv");
     Stage::new("stageRS250_00.csv");
+    Stage::new("stageRS155_00.csv");
     Stage::new("stageEX000_00.csv");
     Stage::new("stageL000_18.csv");
     Stage::new("stageW04_08.csv");
