@@ -221,10 +221,10 @@ impl StageMeta {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         // TODO optimise by checking selectors before running functions
-        if let Ok(st) = Self::from_selector(selector) {
+        if let Ok(st) = Self::from_file(selector) {
             return Ok(st);
         };
-        if let Ok(st) = Self::from_file(selector) {
+        if let Ok(st) = Self::from_selector(selector) {
             return Ok(st);
         };
         if let Ok(st) = Self::from_ref(selector) {
