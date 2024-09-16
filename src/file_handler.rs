@@ -64,6 +64,7 @@ pub fn do_stuff() {
 
     read_csv_file("DataLocal/stageRN000_00.csv");
     read_csv_file("DataLocal/stageRS250_00.csv");
+    read_csv_file("DataLocal/stageL000_18.csv");
     read_csv_file("DataLocal/stage00.csv");
     // read_csv_file("DataLocal/stage.csv");
 }
@@ -94,6 +95,30 @@ struct Line2CSV {
     unknown_3: Option<u32>,
 }
 
+#[derive(Debug, serde::Deserialize)]
+#[allow(dead_code)]
+struct StageEnemyCSV {
+    num: u32,
+    amt: u32,
+    start_frame: u32,
+    respawn_frame_min: u32,
+    respawn_frame_max: u32,
+    base_hp: u32,
+    layer_min: u32,
+    layer_max: u32,
+    boss_type: u32,
+    magnification: Option<u32>,
+
+    #[serde(default)]
+    unknown_1: Option<u32>,
+    #[serde(default)]
+    attack_magnification: Option<u32>,
+    #[serde(default)]
+    is_spawn_delay: Option<u32>,
+    #[serde(default)]
+    kill_count: Option<u32>,
+}
+
 fn read_csv_file(file_name: &str) {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
@@ -110,6 +135,7 @@ fn read_csv_file(file_name: &str) {
         head = records.next().unwrap().unwrap();
         tmp.deserialize(None).unwrap()
     } else {
+        // In EoC
         ByteRecord::from(vec!["0", "0", "0", "0", "0", "0", ""])
             .deserialize(None)
             .unwrap()
@@ -121,8 +147,18 @@ fn read_csv_file(file_name: &str) {
     println!("{csv_line_2:?}");
 
     for result in rdr.byte_records() {
-        println!("{:?}", result);
+        let record: StageEnemyCSV = result.unwrap().deserialize(None).unwrap();
+        if record.num == 0 {
+            break;
+        }
+        println!("{:?}", record);
     }
 
     // check all stage files ig
+    // Encounters: check the head, if needs to be nexted then next it
+    // do split(',').next()
+    // if matches string version of target then do serde
+    // if is "0" then break
+    // Could make a tester that checks Ms. Sign with the idiomatic and the
+    // efficient way of doing it.
 }
