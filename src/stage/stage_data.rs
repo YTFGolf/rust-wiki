@@ -1,58 +1,60 @@
 //! Module that deals with getting information about stages.
+use super::stage_metadata::StageMeta;
+use crate::file_handler::get_decommented_file_reader;
+use csv_types::*;
 use std::path::PathBuf;
 
-use crate::file_handler::get_decommented_file_reader;
+/// Types to deserialise csv files.
+pub mod csv_types {
+    #[derive(Debug, serde::Deserialize)]
+    #[allow(dead_code, missing_docs)]
+    pub struct HeaderCSV {
+        pub base_id: u32,
+        pub no_cont: u32,
+        pub cont_chance: u32,
+        pub contmap_id: u32,
+        pub cont_stage_idmin: u32,
+        pub cont_stage_idmax: u32,
+    }
 
-use super::stage_metadata::StageMeta;
+    #[derive(Debug, serde::Deserialize)]
+    #[allow(dead_code, missing_docs)]
+    pub struct Line2CSV {
+        pub width: u32,
+        pub base_hp: u32,
+        pub _unknown_1: u32,
+        pub _unknown_2: u32,
+        pub background_id: u32,
+        pub max_enemies: u32,
+        pub animbase_id: u32,
+        pub time_limit: u32,
+        pub indestructible: u32,
+        pub _unknown_3: Option<u32>,
+    }
 
-#[derive(Debug, serde::Deserialize)]
-#[allow(dead_code)]
-struct HeaderCSV {
-    base_id: u32,
-    no_cont: u32,
-    cont_chance: u32,
-    contmap_id: u32,
-    cont_stage_idmin: u32,
-    cont_stage_idmax: u32,
-}
+    #[derive(Debug, serde::Deserialize)]
+    #[allow(dead_code, missing_docs)]
+    pub struct StageEnemyCSV {
+        pub num: u32,
+        pub amt: u32,
+        pub start_frame: u32,
+        pub respawn_frame_min: u32,
+        pub respawn_frame_max: u32,
+        pub base_hp: u32,
+        pub layer_min: u32,
+        pub layer_max: u32,
+        pub boss_type: u32,
+        pub magnification: Option<u32>,
 
-#[derive(Debug, serde::Deserialize)]
-#[allow(dead_code)]
-struct Line2CSV {
-    width: u32,
-    base_hp: u32,
-    unknown_1: u32,
-    unknown_2: u32,
-    background_id: u32,
-    max_enemies: u32,
-    animbase_id: u32,
-    time_limit: u32,
-    indestructible: u32,
-    unknown_3: Option<u32>,
-}
-
-#[derive(Debug, serde::Deserialize)]
-#[allow(dead_code)]
-struct StageEnemyCSV {
-    num: u32,
-    amt: u32,
-    start_frame: u32,
-    respawn_frame_min: u32,
-    respawn_frame_max: u32,
-    base_hp: u32,
-    layer_min: u32,
-    layer_max: u32,
-    boss_type: u32,
-    magnification: Option<u32>,
-
-    #[serde(default)]
-    unknown_1: Option<u32>,
-    #[serde(default)]
-    attack_magnification: Option<u32>,
-    #[serde(default)]
-    is_spawn_delay: Option<u32>,
-    #[serde(default)]
-    kill_count: Option<u32>,
+        #[serde(default)]
+        pub _unknown_1: Option<u32>,
+        #[serde(default)]
+        pub attack_magnification: Option<u32>,
+        #[serde(default)]
+        pub is_spawn_delay: Option<u32>,
+        #[serde(default)]
+        pub kill_count: Option<u32>,
+    }
 }
 
 pub struct Stage {}
@@ -61,9 +63,9 @@ impl Stage {
     pub fn new(selector: &str) {
         let md = StageMeta::new(selector).unwrap();
 
-        let path = PathBuf::from("DataLocal").join(md.stage_file_name);
-        let reader = get_decommented_file_reader(path).unwrap();
-        let data = Self::read_stage_csv(reader);
+        let stage_file = PathBuf::from("DataLocal").join(md.stage_file_name);
+        let stage_file_reader = get_decommented_file_reader(stage_file).unwrap();
+        let stage_data = Self::read_stage_csv(stage_file_reader);
 
         ()
     }
