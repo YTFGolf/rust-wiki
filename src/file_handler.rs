@@ -1,7 +1,6 @@
 //! Contains functions to read data files.
 use crate::config::CONFIG;
 use std::{
-    error::Error,
     fs::{self, File},
     io::{self, BufRead, BufReader, Cursor},
     path::{Path, PathBuf},
@@ -9,7 +8,7 @@ use std::{
 };
 
 static WIKI_DATA_LOCATION: LazyLock<PathBuf> =
-    LazyLock::new(|| std::env::current_dir().unwrap().join("/data"));
+    LazyLock::new(|| std::env::current_dir().unwrap().join("data"));
 
 /// Describes a location for files.
 pub enum FileLocation {
@@ -70,6 +69,7 @@ pub fn do_stuff() {
 }
 
 #[derive(Debug, serde::Deserialize)]
+#[allow(dead_code)]
 struct HeaderCSV {
     base_id: usize,
     no_cont: usize,
@@ -80,6 +80,7 @@ struct HeaderCSV {
 }
 
 #[derive(Debug, serde::Deserialize)]
+#[allow(dead_code)]
 struct Line2CSV {
     width: usize,
     base_hp: usize,
