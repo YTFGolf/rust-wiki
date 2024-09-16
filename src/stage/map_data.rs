@@ -1,9 +1,11 @@
+use core::str;
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Cursor},
+    io::{BufRead, BufReader, Cursor, Read},
     path::PathBuf,
 };
 
+use csv::ByteRecord;
 use csv_types::StageInfoCSVFixed;
 
 use crate::file_handler::{get_decommented_file_reader, get_file_location, FileLocation::GameData};
@@ -40,6 +42,22 @@ pub mod csv_types {
         secondtrack: u32,
     }
     // energy,xp,inittrack,basedrop,secondtrack,(itemchance?,itemnum?,itemlimit?),?,?,(score,itemID,itemquant)
+
+    #[derive(Debug, serde::Deserialize)]
+    #[allow(dead_code, missing_docs)]
+    pub struct TreasureCSV {
+        itemchance: u32,
+        itemnum: u32,
+        itemlimit: u32,
+    }
+
+    #[derive(Debug, serde::Deserialize)]
+    #[allow(dead_code, missing_docs)]
+    pub struct ScoreRewardsCSV {
+        score: u32,
+        item_id: u32,
+        itemquant: u32,
+    }
 }
 
 pub struct GameMap {}
@@ -58,17 +76,94 @@ impl GameMap {
             .unwrap_or_else(|| panic!("Stage with index {} does not exist!", md.stage_num))
             .unwrap();
 
-        let split_line = line.split("//").next().unwrap().trim();
+        let mut split_line = line.split("//").next().unwrap().trim();
+        println!("{split_line:?}");
+        if split_line.ends_with(",") {
+            split_line = &split_line[0..split_line.len() - 1]
+            // remove final bit since parse function relies on it
+        }
 
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             // .flexible(true)
             .from_reader(Cursor::new(split_line));
-        let stage_data: StageInfoCSVFixed = rdr.deserialize().next().unwrap().unwrap();
+        let stage_line = rdr.byte_records().next().unwrap().unwrap();
+        let stage_data = Self::parse_stage_line(stage_line);
 
         println!("{stage_data:?}");
 
         ()
+    }
+
+    fn parse_stage_line(record: ByteRecord) {
+        let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();
+
+        // let once = match record[record.len() - 1] {
+        //     [] => &record[record.len() - 2],
+        //     _ => &record[record.len() - 1],
+        // };
+
+        let once = &record[record.len() - 1];
+        // what does this actually do
+
+        let mut is_time = record.len() > 15;
+        if is_time {
+            for i in 8..15 {
+                if &record[i] != "-2".as_bytes() {
+                    is_time = false;
+                    break;
+                }
+            }
+        }
+        let is_time = is_time;
+
+        let parse_i32 = |slice| {
+            std::str::from_utf8(slice)
+                .expect("Invalid UTF-8")
+                .parse::<i32>()
+                .expect("Unable to parse to i32")
+        };
+
+        let mut time: Vec<Vec<i32>>;
+        if is_time {
+            let time_len = (record.len() - 17) / 3;
+            time = vec![vec![0; 3]; time_len];
+            for i in 0..time_len {
+                for j in 0..3 {
+                    time[i][j] = parse_i32(&record[16 + i * 3 + j]);
+                }
+            }
+        } else {
+            time = vec![vec![0; 3]; 0];
+        }
+
+        let is_multi = !is_time && record.len() > 9;
+
+        let mut drop: Vec<Vec<i32>>;
+        let mut rand: i32;
+
+        if record.len() == 6 {
+            drop = Vec::new();
+            rand = 0;
+        } else if !is_multi {
+            drop = vec![vec![]];
+            rand = 0;
+        } else {
+            let drop_len = (record.len() - 7) / 3;
+            drop = vec![vec![0; 3]; drop_len];
+            rand = parse_i32(&record[8]);
+            for i in 1..drop_len {
+                for j in 0..3 {
+                    drop[i][j] = parse_i32(&record[6 + i * 3 + j]);
+                }
+            }
+        }
+
+        if !drop.is_empty() {
+            drop[0] = vec![parse_i32(&record[5]), parse_i32(&record[6]), parse_i32(&record[7])];
+        }
+
+        println!("{fixed_data:?}, {drop:?}");
     }
     // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
 
