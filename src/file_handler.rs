@@ -79,6 +79,20 @@ struct HeaderCSV {
     cont_stage_idmax: usize,
 }
 
+#[derive(Debug, serde::Deserialize)]
+struct Line2CSV {
+    width: usize,
+    base_hp: usize,
+    unknown_1: usize,
+    unknown_2: usize,
+    background_id: usize,
+    max_enemies: usize,
+    animbase_id: usize,
+    time_limit: usize,
+    indestructible: usize,
+    unknown_3: Option<usize>,
+}
+
 fn read_csv_file(file_name: &str) {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
@@ -99,8 +113,11 @@ fn read_csv_file(file_name: &str) {
             .deserialize(None)
             .unwrap()
     };
+    let line_2 = head;
+    let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
     println!("{csv_head:?}");
+    println!("{csv_line_2:?}");
 
     for result in rdr.byte_records() {
         println!("{:?}", result);
