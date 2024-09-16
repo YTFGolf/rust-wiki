@@ -17,7 +17,6 @@ pub enum FileLocation {
     /// Root directory of downloaded wiki data.
     WikiData,
 }
-use csv::ByteRecord;
 use FileLocation::{GameData, WikiData};
 
 /// Get the root directory of a location.
@@ -136,9 +135,17 @@ fn read_csv_file(file_name: &str) {
         tmp.deserialize(None).unwrap()
     } else {
         // In EoC
-        ByteRecord::from(vec!["0", "0", "0", "0", "0", "0", ""])
-            .deserialize(None)
-            .unwrap()
+        HeaderCSV {
+            base_id: 0,
+            no_cont: 0,
+            cont_chance: 0,
+            contmap_id: 0,
+            cont_stage_idmin: 0,
+            cont_stage_idmax: 0,
+        }
+        // ByteRecord::from(vec!["0", "0", "0", "0", "0", "0", ""])
+        //     .deserialize(None)
+        //     .unwrap()
     };
     let line_2 = head;
     let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
@@ -161,4 +168,7 @@ fn read_csv_file(file_name: &str) {
     // if is "0" then break
     // Could make a tester that checks Ms. Sign with the idiomatic and the
     // efficient way of doing it.
+    // Would need to benchmark it though.
+    // ByteRecord::from(thing.split().collect())
+    // Could even do just checking id, mag, amag
 }
