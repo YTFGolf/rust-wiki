@@ -9,7 +9,7 @@ pub mod csv_types {
     #[derive(Debug, serde::Deserialize)]
     #[allow(dead_code, missing_docs)]
     pub struct HeaderCSV {
-        pub base_id: u32,
+        pub base_id: i32,
         pub no_cont: u32,
         pub cont_chance: u32,
         pub contmap_id: u32,
@@ -108,7 +108,11 @@ impl Stage {
         // println!("{csv_line_2:?}");
 
         for result in rdr.byte_records() {
-            let record: StageEnemyCSV = result.unwrap().deserialize(None).unwrap();
+            let record: StageEnemyCSV = match result.unwrap().deserialize(None) {
+                Ok(r) => r,
+                Err(_) => continue,
+            };
+
             if record.num == 0 {
                 break;
             }

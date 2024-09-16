@@ -61,7 +61,7 @@ pub mod csv_types {
 pub struct GameMap {}
 
 impl GameMap {
-    pub fn get_stage_data(md: StageMeta) {
+    pub fn get_stage_data(md: StageMeta) -> Option<()> {
         println!("Meta object: {:?}", md);
         // println!("Map file: {}", md.map_file_name);
         let map_file = get_file_location(GameData)
@@ -70,12 +70,13 @@ impl GameMap {
         let line = BufReader::new(File::open(map_file).unwrap())
             .lines()
             .skip(2)
-            .nth(md.stage_num.try_into().unwrap())
-            .unwrap_or_else(|| panic!("Stage with index {} does not exist!", md.stage_num))
+            .nth(md.stage_num.try_into().unwrap())?
             .unwrap();
 
         let mut split_line = line.split("//").next().unwrap().trim();
-        println!("{split_line:?}");
+        if split_line == "" {
+            return None;
+        }
         if split_line.ends_with(",") {
             split_line = &split_line[0..split_line.len() - 1]
             // remove final bit since parse function relies on it
@@ -90,7 +91,7 @@ impl GameMap {
 
         println!("{stage_data:?}");
 
-        ()
+        Some(())
     }
 
     fn parse_stage_line(record: ByteRecord) {
