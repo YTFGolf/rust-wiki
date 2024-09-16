@@ -71,27 +71,27 @@ pub fn do_stuff() {
 #[derive(Debug, serde::Deserialize)]
 #[allow(dead_code)]
 struct HeaderCSV {
-    base_id: usize,
-    no_cont: usize,
-    cont_chance: usize,
-    contmap_id: usize,
-    cont_stage_idmin: usize,
-    cont_stage_idmax: usize,
+    base_id: u32,
+    no_cont: u32,
+    cont_chance: u32,
+    contmap_id: u32,
+    cont_stage_idmin: u32,
+    cont_stage_idmax: u32,
 }
 
 #[derive(Debug, serde::Deserialize)]
 #[allow(dead_code)]
 struct Line2CSV {
-    width: usize,
-    base_hp: usize,
-    unknown_1: usize,
-    unknown_2: usize,
-    background_id: usize,
-    max_enemies: usize,
-    animbase_id: usize,
-    time_limit: usize,
-    indestructible: usize,
-    unknown_3: Option<usize>,
+    width: u32,
+    base_hp: u32,
+    unknown_1: u32,
+    unknown_2: u32,
+    background_id: u32,
+    max_enemies: u32,
+    animbase_id: u32,
+    time_limit: u32,
+    indestructible: u32,
+    unknown_3: Option<u32>,
 }
 
 fn read_csv_file(file_name: &str) {

@@ -11,7 +11,7 @@ pub mod consts {
         /// E.g. `"Stories of Legend"`.
         pub name: &'static str,
         /// Numerical value of stage type.
-        pub number: usize,
+        pub number: u32,
         /// E.g. `"N"` for Stories of Legend.
         ///
         /// EX stages' map files are of the form `"MapStageDataRE"`, whereas
@@ -25,7 +25,7 @@ pub mod consts {
 
     const fn initialise_stage_type(
         name: &'static str,
-        number: usize,
+        number: u32,
         code: &'static str,
         has_r_prefix: bool,
     ) -> StageType {
@@ -196,11 +196,11 @@ pub struct StageMeta {
     /// Short-form name of the stage type. All codes are given in [STAGE_TYPES].
     pub type_code: &'static str,
     /// Numerical value of the [StageType].
-    pub type_num: usize,
+    pub type_num: u32,
     /// Map number of the stage.
-    pub map_num: usize,
+    pub map_num: u32,
     /// Stage number of the stage.
-    pub stage_num: usize,
+    pub stage_num: u32,
 
     /// DataLocal file that contains information about the map the stage is in.
     pub map_file_name: String,
@@ -252,9 +252,9 @@ impl StageMeta {
         match stage_type.code {
             "main" => Self::from_selector_main(&selector),
             _ => {
-                // let chapter: usize = stage_type.parse().unwrap();
-                let submap: usize = selector[1].parse().unwrap();
-                let stage: usize = selector[2].parse::<usize>().unwrap();
+                // let chapter: u32 = stage_type.parse().unwrap();
+                let submap: u32 = selector[1].parse().unwrap();
+                let stage: u32 = selector[2].parse::<u32>().unwrap();
                 Self::from_split_parsed(&stage_type, submap, stage)
             }
         }
@@ -275,8 +275,8 @@ impl StageMeta {
             // will deal with this later
         } else if file_name.contains("_") {
             let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
-            let map_num: usize = caps[2].parse::<usize>().unwrap();
-            let stage_num: usize = caps[3].parse::<usize>().unwrap();
+            let map_num: u32 = caps[2].parse::<u32>().unwrap();
+            let stage_num: u32 = caps[3].parse::<u32>().unwrap();
             return Self::from_split(&caps[1], map_num, stage_num);
         } else {
             return Err(StageMetaParseError::Rejected);
@@ -284,12 +284,12 @@ impl StageMeta {
 
         // Rest is for main chapters minus EoC
         let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
-        let mut chap_num = caps[2].parse::<usize>().unwrap();
+        let mut chap_num = caps[2].parse::<u32>().unwrap();
         if &caps[1] == "Z" && chap_num <= 3 {
             chap_num += 1;
         }
 
-        let stage_num = caps[3].parse::<usize>().unwrap();
+        let stage_num = caps[3].parse::<u32>().unwrap();
         let selector = match &caps[1] {
             "W" => (chap_num - 3, stage_num),
             "Space" => (chap_num - 6, stage_num),
@@ -316,11 +316,11 @@ impl StageMeta {
 
         match DB_REFERENCE_STAGE.captures(&reference) {
             Some(caps) => {
-                let chapter: usize = caps[1].parse().unwrap();
+                let chapter: u32 = caps[1].parse().unwrap();
                 // necessary since can contain leading 0s
                 // TODO probably easier to just remove leading 0s
-                let submap: usize = caps[2].parse().unwrap();
-                let stage: usize = caps[3].parse::<usize>().unwrap() - 1;
+                let submap: u32 = caps[2].parse().unwrap();
+                let stage: u32 = caps[3].parse::<u32>().unwrap() - 1;
                 Self::from_numbers(chapter, submap, stage)
             }
             None => Err(StageMetaParseError::Rejected),
@@ -329,9 +329,9 @@ impl StageMeta {
 
     /// Is this even necessary?
     fn from_numbers(
-        stage_type: usize,
-        map_num: usize,
-        stage_num: usize,
+        stage_type: u32,
+        map_num: u32,
+        stage_num: u32,
     ) -> Result<StageMeta, StageMetaParseError> {
         Self::from_split(&stage_type.to_string(), map_num, stage_num)
     }
@@ -344,8 +344,8 @@ impl StageMeta {
     /// ```
     pub fn from_split(
         stage_type: &str,
-        map_num: usize,
-        stage_num: usize,
+        map_num: u32,
+        stage_num: u32,
     ) -> Result<StageMeta, StageMetaParseError> {
         let Some(stage_type) = get_selector_type(stage_type) else {
             return Err(StageMetaParseError::Invalid);
@@ -357,8 +357,8 @@ impl StageMeta {
     /// from [STAGE_TYPES].
     fn from_split_parsed(
         stage_type: &StageType,
-        map_num: usize,
-        stage_num: usize,
+        map_num: u32,
+        stage_num: u32,
     ) -> Result<StageMeta, StageMetaParseError> {
         let type_name = stage_type.name;
         let type_num = stage_type.number;
@@ -416,9 +416,9 @@ impl StageMeta {
         let (map_num, stage_num, map_file_name, stage_file_name) =
             match selector[0].to_lowercase().as_str() {
                 "eoc" => {
-                    let stage_num: usize = selector[1].parse::<usize>().unwrap();
+                    let stage_num: u32 = selector[1].parse::<u32>().unwrap();
                     (
-                        9_usize,
+                        9_u32,
                         stage_num,
                         "stageNormal0.csv".to_string(),
                         format!("stage{stage_num:02}.csv"),
@@ -428,8 +428,8 @@ impl StageMeta {
                     assert!(selector[1] != "0");
                     // necessary for release build
 
-                    let map_num: usize = selector[1].parse::<usize>().unwrap() + 2;
-                    let stage_num: usize = selector[2].parse::<usize>().unwrap();
+                    let map_num: u32 = selector[1].parse::<u32>().unwrap() + 2;
+                    let stage_num: u32 = selector[2].parse::<u32>().unwrap();
                     let map_file = format!("stageNormal1_{}.csv", map_num - 3);
                     let stage_file = format!("stageW{:02}_{stage_num:02}.csv", map_num + 1);
                     (map_num, stage_num, map_file, stage_file)
@@ -438,24 +438,24 @@ impl StageMeta {
                     assert!(selector[1] != "0");
                     // necessary for release build
 
-                    let map_num: usize = selector[1].parse::<usize>().unwrap() + 5;
-                    let stage_num: usize = selector[2].parse::<usize>().unwrap();
+                    let map_num: u32 = selector[1].parse::<u32>().unwrap() + 5;
+                    let stage_num: u32 = selector[2].parse::<u32>().unwrap();
                     let map_file = format!("stageNormal2_{}.csv", map_num - 6);
                     let stage_file = format!("stageSpace{:02}_{stage_num:02}.csv", map_num + 1);
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "aku" | "dm" => {
-                    let stage_num: usize = selector[1].parse::<usize>().unwrap();
+                    let stage_num: u32 = selector[1].parse::<u32>().unwrap();
                     (
-                        14_usize,
+                        14_u32,
                         stage_num,
                         "MapStageDataDM_000.csv".to_string(),
                         format!("stageDM000_{stage_num:02}.csv"),
                     )
                 }
                 "filibuster" => (
-                    11_usize,
-                    0_usize,
+                    11_u32,
+                    0_u32,
                     "stageNormal2_2_Invasion.csv".to_string(),
                     "stageSpace09_Invasion_00.csv".to_string(),
                 ),
@@ -463,7 +463,7 @@ impl StageMeta {
                     let mut chap_num: usize = selector[1].parse().unwrap();
 
                     let map_num = [0, 1, 2, 10, 12, 13, 15, 16][chap_num - 1];
-                    let stage_num = selector[2].parse::<usize>().unwrap();
+                    let stage_num = selector[2].parse::<u32>().unwrap();
                     let map_file = format!(
                         "stageNormal{}_{}_Z.csv",
                         (chap_num - 1) / 3,
@@ -1031,7 +1031,7 @@ mod tests {
                 continue;
             }
             for _ in 0..NUM_ITERATIONS {
-                let (map, stage) = (random::<usize>() % 1000, random::<usize>() % 1000);
+                let (map, stage) = (random::<u32>() % 1000, random::<u32>() % 1000);
                 let st = StageMeta::from_split_parsed(&code, map, stage).unwrap();
                 let file_name = &st.stage_file_name;
                 assert_eq!(
@@ -1079,7 +1079,7 @@ mod tests {
 
         let selector = "eoc";
         for _ in 0..NUM_ITERATIONS {
-            let stage = random::<usize>() % 100;
+            let stage = random::<u32>() % 100;
             // EoC only supports 2 digits
             let st = StageMeta::from_selector_main(&[selector, &stage.to_string()]).unwrap();
             let file_name = &st.stage_file_name;
@@ -1104,7 +1104,7 @@ mod tests {
 
         let selector = "itf";
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
+            let (map, stage) = (random::<u32>() % 1000 + 1, random::<u32>() % 1000);
             // itf is 1-based so need +1
             let st =
                 StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
@@ -1136,7 +1136,7 @@ mod tests {
 
         let selector = "cotc";
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<usize>() % 1000 + 1, random::<usize>() % 1000);
+            let (map, stage) = (random::<u32>() % 1000 + 1, random::<u32>() % 1000);
             // cotc is 1-based so need +1
             let st =
                 StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
@@ -1168,7 +1168,7 @@ mod tests {
 
         let selector = "aku";
         for _ in 0..NUM_ITERATIONS {
-            let stage = random::<usize>() % 1000;
+            let stage = random::<u32>() % 1000;
             let st = StageMeta::from_selector_main(&[selector, &stage.to_string()]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
@@ -1193,7 +1193,7 @@ mod tests {
 
         let selector = "Z";
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<usize>() % 8 + 1, random::<usize>() % 1000);
+            let (map, stage) = (random::<usize>() % 8 + 1, random::<u32>() % 1000);
             // Currently 8 chapters exist
             let st =
                 StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
