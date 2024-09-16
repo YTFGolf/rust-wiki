@@ -1,16 +1,13 @@
 //! Module that deals with getting information about stage maps.
 
+use super::stage_metadata::StageMeta;
+use crate::file_handler::{get_file_location, FileLocation::GameData};
+use csv::ByteRecord;
+use csv_types::{ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV};
 use std::{
     fs::File,
     io::{BufRead, BufReader, Cursor},
 };
-
-use csv::ByteRecord;
-use csv_types::{Rand, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV};
-
-use crate::file_handler::{get_file_location, FileLocation::GameData};
-
-use super::stage_metadata::StageMeta;
 
 /// Types to deserialise csv files.
 pub mod csv_types {
@@ -95,9 +92,8 @@ pub mod csv_types {
         GuaranteedNoTreasureRadar = -4,
     }
 
-    impl Rand {
-        /// Instantiate a [Rand].
-        pub fn new(rand: i32) -> Self {
+    impl From<i32> for Rand {
+        fn from(rand: i32) -> Self {
             match rand {
                 1 => Rand::OnceThenUnlimited,
                 0 => Rand::AllUnlimited,
@@ -241,13 +237,11 @@ impl GameMap {
             drop
         };
 
-        let rand_enum = Rand::new(rand);
-
         Some(StageDataCSV {
             fixed: fixed_data,
             treasure: drop,
             rewards: time,
-            rand: rand_enum,
+            rand: rand.into(),
         })
     }
 }
