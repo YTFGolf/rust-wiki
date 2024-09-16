@@ -1,5 +1,5 @@
 //! Contains functions to read data files.
-use crate::{config::CONFIG, stage};
+use crate::{config::CONFIG, stage::stage_data::Stage};
 use std::{
     fs::{self, File},
     io::{self, BufRead, BufReader, Cursor},
@@ -60,4 +60,11 @@ pub fn do_stuff() {
     let content = fs::read_to_string(get_file_location(GameData).join(file_name))
         .expect("File name no existo!");
     println!("{content:?}");
+
+    Stage::new("stageRN000_00.csv");
+    Stage::new("stageRQ000_09.csv");
+    Stage::new("stageRS250_00.csv");
+    Stage::new("stageL000_18.csv");
+    Stage::new("stage00.csv");
+    // read_csv_file("DataLocal/stage.csv");
 }
