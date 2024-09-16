@@ -1,5 +1,5 @@
 //! Module that deals with getting information about stages.
-use super::stage_metadata::StageMeta;
+use super::{map_data::{self, GameMap}, stage_metadata::StageMeta};
 use crate::file_handler::get_decommented_file_reader;
 use csv_types::*;
 use std::path::PathBuf;
@@ -63,9 +63,11 @@ impl Stage {
     pub fn new(selector: &str) {
         let md = StageMeta::new(selector).unwrap();
 
-        let stage_file = PathBuf::from("DataLocal").join(md.stage_file_name);
+        let stage_file = PathBuf::from("DataLocal").join(&md.stage_file_name);
         let stage_file_reader = get_decommented_file_reader(stage_file).unwrap();
         let stage_data = Self::read_stage_csv(stage_file_reader);
+
+        let map_data = GameMap::get_stage_data(md);
 
         ()
     }
@@ -102,15 +104,15 @@ impl Stage {
         let line_2 = head;
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
-        println!("{csv_head:?}");
-        println!("{csv_line_2:?}");
+        // println!("{csv_head:?}");
+        // println!("{csv_line_2:?}");
 
         for result in rdr.byte_records() {
             let record: StageEnemyCSV = result.unwrap().deserialize(None).unwrap();
             if record.num == 0 {
                 break;
             }
-            println!("{:?}", record);
+            // println!("{:?}", record);
         }
     }
 }

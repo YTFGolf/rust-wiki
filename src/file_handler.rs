@@ -64,6 +64,7 @@ pub fn do_stuff() {
     Stage::new("stageRN000_00.csv");
     Stage::new("stageRQ000_09.csv");
     Stage::new("stageRS250_00.csv");
+    Stage::new("stageEX000_00.csv");
     Stage::new("stageL000_18.csv");
     Stage::new("stage00.csv");
     // read_csv_file("DataLocal/stage.csv");
