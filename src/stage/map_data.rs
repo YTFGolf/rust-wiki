@@ -54,18 +54,21 @@ pub mod csv_types {
     pub struct TreasureCSV {
         /// Chance the item will drop.
         pub item_chance: u32,
-        /// Numerical value of the item.
-        pub item_num: u32,
+        /// ID of item.
+        pub item_id: u32,
         /// Amount of the item that drops.
         pub item_amt: u32,
     }
 
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code, missing_docs)]
+    /// CSV data related to timed score rewards.
     pub struct ScoreRewardsCSV {
+        /// Score required to get item.
         pub score: u32,
+        /// ID of item.
         pub item_id: u32,
-        pub itemquant: u32,
+        /// Amount of the item that drops.
+        pub item_amt: u32,
     }
 
     #[derive(Debug)]
@@ -196,7 +199,7 @@ impl GameMap {
                 time.push(ScoreRewardsCSV {
                     score: parse_u32(&record[16 + i * 3 + 0]),
                     item_id: parse_u32(&record[16 + i * 3 + 1]),
-                    itemquant: parse_u32(&record[16 + i * 3 + 2]),
+                    item_amt: parse_u32(&record[16 + i * 3 + 2]),
                 });
             }
 
@@ -215,7 +218,7 @@ impl GameMap {
             rand = 0;
             vec![TreasureCSV {
                 item_chance: parse_u32(&record[5]),
-                item_num: parse_u32(&record[6]),
+                item_id: parse_u32(&record[6]),
                 item_amt: parse_u32(&record[7]),
             }]
         } else {
@@ -223,14 +226,14 @@ impl GameMap {
             let mut drop = vec![];
             drop.push(TreasureCSV {
                 item_chance: parse_u32(&record[5]),
-                item_num: parse_u32(&record[6]),
+                item_id: parse_u32(&record[6]),
                 item_amt: parse_u32(&record[7]),
             });
             rand = parse_i32(&record[8]);
             for i in 1..drop_len {
                 drop.push(TreasureCSV {
                     item_chance: parse_u32(&record[6 + i * 3 + 0]),
-                    item_num: parse_u32(&record[6 + i * 3 + 1]),
+                    item_id: parse_u32(&record[6 + i * 3 + 1]),
                     item_amt: parse_u32(&record[6 + i * 3 + 2]),
                 });
             }
