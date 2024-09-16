@@ -4,7 +4,7 @@ use std::{
 };
 
 use csv::ByteRecord;
-use csv_types::{ScoreRewardsCSV, StageInfoCSVFixed, TreasureCSV};
+use csv_types::{Rand, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV};
 
 use crate::file_handler::{get_file_location, FileLocation::GameData};
 
@@ -30,23 +30,32 @@ pub mod csv_types {
     // pub struct Line2CSV {}
 
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code, missing_docs)]
     /// All fixed data stored in the map file.
     pub struct StageInfoCSVFixed {
-        energy: u32,
-        xp: u32,
-        inittrack: u32,
-        basedrop: u32,
-        secondtrack: u32,
+        /// Energy to challenge stage.
+        pub energy: u32,
+        /// Base XP rewarded.
+        pub xp: u32,
+        /// Music track played at beginning of stage.
+        _init_track: u32,
+        /// Base percentage where music changes to
+        /// [_second_track][StageInfoCSVFixed::_second_track].
+        _base_drop: u32,
+        /// Music track played when base hp goes below
+        /// [_base_drop][StageInfoCSVFixed::_base_drop].
+        // TODO determine what happens with this on Dojo stages.
+        _second_track: u32,
     }
-    // energy,xp,inittrack,basedrop,secondtrack,(itemchance?,itemnum?,itemlimit?),?,?,(score,itemID,itemquant)
 
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code, missing_docs)]
+    /// CSV data related to stage treasures.
     pub struct TreasureCSV {
-        pub itemchance: u32,
-        pub itemnum: u32,
-        pub itemlimit: u32,
+        /// Chance the item will drop.
+        pub item_chance: u32,
+        /// Numerical value of the item.
+        pub item_num: u32,
+        /// Amount of the item that drops.
+        pub item_amt: u32,
     }
 
     #[derive(Debug, serde::Deserialize)]
@@ -56,14 +65,54 @@ pub mod csv_types {
         pub item_id: u32,
         pub itemquant: u32,
     }
+
+    #[derive(Debug)]
+    /// Drop reward modifier.
+    ///
+    /// All descriptions are purely speculative based on BCU code; if you have
+    /// access to the game you may want to actually check what is said here.
+    pub enum Rand {
+        /// E.g. Merciless XP: first item is only available once
+        FirstThenUnlimited,
+        /// Default e.g. Catfruit Jubilee.
+        AllUnlimited,
+        /// Appears to just be a single unlimited raw value. Difference between
+        /// this and [AllUnlimited][Rand::AllUnlimited] is unclear.
+        UnclearMaybeRaw,
+        /// Guaranteed item e.g. any stage in Infernal Tower.
+        ///
+        /// If has multiple items then each item's chance is `item_chance` /
+        /// 100.
+        Guaranteed,
+        /// Same as [Guaranteed][Rand::Guaranteed] but without the possibility
+        /// of treasure radar.
+        GuaranteedNoTreasureRadar,
+    }
+    // 1 = first item is once, rest are as in 0
+    // 0 = default: e.g. Catfruit Jubilee
+    // -1 = unclear, seems to be unlimited and raw percentages
+    // -3 = One of the following (1 time). Chances are `item_chance` / total
+    // -4 = No treasure radar, additive chances same as -3.
+
+    #[derive(Debug)]
+    #[allow(dead_code, missing_docs)]
+    pub struct StageDataCSV {
+        pub fixed: StageInfoCSVFixed,
+        pub rand: Rand,
+        pub treasure: Vec<TreasureCSV>,
+        pub rewards: Vec<ScoreRewardsCSV>,
+    }
 }
 
+/// Currently does nothing.
 pub struct GameMap {}
 
 impl GameMap {
-    pub fn get_stage_data(md: StageMeta) -> Option<()> {
-        println!("Meta object: {:?}", md);
-        // println!("Map file: {}", md.map_file_name);
+    /// Just get the stage data, don't care for anything else the map can offer.
+    ///
+    /// If you get [None] then the stage doesn't have proper rewards, e.g.
+    /// Labyrinth stages above 100.
+    pub fn get_stage_data(md: StageMeta) -> Option<StageDataCSV> {
         let map_file = get_file_location(GameData)
             .join("DataLocal")
             .join(&md.map_file_name);
@@ -87,14 +136,11 @@ impl GameMap {
             // .flexible(true)
             .from_reader(Cursor::new(split_line));
         let stage_line = rdr.byte_records().next().unwrap().unwrap();
-        let stage_data = Self::parse_stage_line(stage_line);
 
-        println!("{stage_data:?}");
-
-        Some(())
+        Self::parse_stage_line(stage_line)
     }
 
-    fn parse_stage_line(record: ByteRecord) {
+    fn parse_stage_line(record: ByteRecord) -> Option<StageDataCSV> {
         let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();
 
         // let once = match record[record.len() - 1] {
@@ -102,7 +148,7 @@ impl GameMap {
         //     _ => &record[record.len() - 1],
         // };
 
-        let once = &record[record.len() - 1];
+        let _once = &record[record.len() - 1];
         // what does this actually do
 
         let mut is_time = record.len() > 15;
@@ -154,36 +200,51 @@ impl GameMap {
         } else if !is_multi {
             rand = 0;
             vec![TreasureCSV {
-                itemchance: parse_u32(&record[5]),
-                itemnum: parse_u32(&record[6]),
-                itemlimit: parse_u32(&record[7]),
+                item_chance: parse_u32(&record[5]),
+                item_num: parse_u32(&record[6]),
+                item_amt: parse_u32(&record[7]),
             }]
         } else {
             let drop_len = (record.len() - 7) / 3;
             let mut drop = vec![];
             drop.push(TreasureCSV {
-                itemchance: parse_u32(&record[5]),
-                itemnum: parse_u32(&record[6]),
-                itemlimit: parse_u32(&record[7]),
+                item_chance: parse_u32(&record[5]),
+                item_num: parse_u32(&record[6]),
+                item_amt: parse_u32(&record[7]),
             });
             rand = parse_i32(&record[8]);
             for i in 1..drop_len {
                 drop.push(TreasureCSV {
-                    itemchance: parse_u32(&record[6 + i * 3 + 0]),
-                    itemnum: parse_u32(&record[6 + i * 3 + 1]),
-                    itemlimit: parse_u32(&record[6 + i * 3 + 2]),
+                    item_chance: parse_u32(&record[6 + i * 3 + 0]),
+                    item_num: parse_u32(&record[6 + i * 3 + 1]),
+                    item_amt: parse_u32(&record[6 + i * 3 + 2]),
                 });
             }
 
             drop
         };
 
-        println!("{fixed_data:?}, {time:?}, {drop:?}, {rand:?}");
+        let rand_enum = match rand {
+            1 => Rand::FirstThenUnlimited,
+            0 => Rand::AllUnlimited,
+            -1 => Rand::UnclearMaybeRaw,
+            -3 => Rand::Guaranteed,
+            -4 => Rand::GuaranteedNoTreasureRadar,
+            _ => panic!("{rand} is not recognised!"),
+        };
+
+        Some(StageDataCSV {
+            fixed: fixed_data,
+            treasure: drop,
+            rewards: time,
+            rand: rand_enum,
+        })
         // Rand values:
-        // 1 = ?
-        // 0 = ?
-        // -3 = ?
-        // -4 = No treasure radar,
+        // 1 = first item is once, rest are as in 0
+        // 0 = default: e.g. Catfruit Jubilee
+        // -1 = unclear, seems to be unlimited and raw percentages
+        // -3 = One of the following (1 time). Chances are `item_chance` / total
+        // -4 = No treasure radar, additive chances same as -3.
         // maybe other
         // else {
         //     for(int[] d : drop) {
