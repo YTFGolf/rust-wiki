@@ -1,14 +1,12 @@
-use core::str;
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Cursor, Read},
-    path::PathBuf,
+    io::{BufRead, BufReader, Cursor},
 };
 
 use csv::ByteRecord;
-use csv_types::StageInfoCSVFixed;
+use csv_types::{ScoreRewardsCSV, StageInfoCSVFixed, TreasureCSV};
 
-use crate::file_handler::{get_decommented_file_reader, get_file_location, FileLocation::GameData};
+use crate::file_handler::{get_file_location, FileLocation::GameData};
 
 use super::stage_metadata::StageMeta;
 
@@ -46,17 +44,17 @@ pub mod csv_types {
     #[derive(Debug, serde::Deserialize)]
     #[allow(dead_code, missing_docs)]
     pub struct TreasureCSV {
-        itemchance: u32,
-        itemnum: u32,
-        itemlimit: u32,
+        pub itemchance: u32,
+        pub itemnum: u32,
+        pub itemlimit: u32,
     }
 
     #[derive(Debug, serde::Deserialize)]
     #[allow(dead_code, missing_docs)]
     pub struct ScoreRewardsCSV {
-        score: u32,
-        item_id: u32,
-        itemquant: u32,
+        pub score: u32,
+        pub item_id: u32,
+        pub itemquant: u32,
     }
 }
 
@@ -109,7 +107,7 @@ impl GameMap {
         let mut is_time = record.len() > 15;
         if is_time {
             for i in 8..15 {
-                if &record[i] != "-2".as_bytes() {
+                if &record[i] != b"-2" {
                     is_time = false;
                     break;
                 }
@@ -124,21 +122,25 @@ impl GameMap {
                 .expect("Unable to parse to i32")
         };
 
-        let mut time: Vec<Vec<i32>>;
-        if is_time {
+        let time: Vec<ScoreRewardsCSV> = if is_time {
             let time_len = (record.len() - 17) / 3;
-            time = vec![vec![0; 3]; time_len];
+            let mut time = vec![];
             for i in 0..time_len {
-                for j in 0..3 {
-                    time[i][j] = parse_i32(&record[16 + i * 3 + j]);
-                }
+                time.push(ScoreRewardsCSV {
+                    score: parse_i32(&record[16 + i * 3 + 0]) as u32,
+                    item_id: parse_i32(&record[16 + i * 3 + 1]) as u32,
+                    itemquant: parse_i32(&record[16 + i * 3 + 2]) as u32,
+                });
             }
+
+            time
         } else {
-            time = vec![vec![0; 3]; 0];
-        }
+            vec![]
+        };
 
         let is_multi = !is_time && record.len() > 9;
 
+        let mut drop: Vec<TreasureCSV>;
         let mut drop: Vec<Vec<i32>>;
         let mut rand: i32;
 
@@ -160,10 +162,14 @@ impl GameMap {
         }
 
         if !drop.is_empty() {
-            drop[0] = vec![parse_i32(&record[5]), parse_i32(&record[6]), parse_i32(&record[7])];
+            drop[0] = vec![
+                parse_i32(&record[5]),
+                parse_i32(&record[6]),
+                parse_i32(&record[7]),
+            ];
         }
 
-        println!("{fixed_data:?}, {drop:?}");
+        println!("{fixed_data:?}, {time:?}, {drop:?}");
     }
     // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
 

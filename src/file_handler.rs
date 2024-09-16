@@ -66,6 +66,8 @@ pub fn do_stuff() {
     Stage::new("stageRS250_00.csv");
     Stage::new("stageEX000_00.csv");
     Stage::new("stageL000_18.csv");
+    Stage::new("stageW04_08.csv");
+    // Germany (Into the Future)
     Stage::new("stage00.csv");
     // read_csv_file("DataLocal/stage.csv");
 }
