@@ -1,3 +1,5 @@
+//! Module that deals with getting information about stage maps.
+
 use std::{
     fs::File,
     io::{BufRead, BufReader, Cursor},
@@ -72,8 +74,9 @@ pub mod csv_types {
     /// All descriptions are purely speculative based on BCU code; if you have
     /// access to the game you may want to actually check what is said here.
     pub enum Rand {
-        /// E.g. Merciless XP: first item is only available once
-        FirstThenUnlimited = 1,
+        /// E.g. Merciless XP: first item is only available once. After that
+        /// works exactly the same as [AllUnlimited][Rand::AllUnlimited].
+        OnceThenUnlimited = 1,
         /// Default e.g. Catfruit Jubilee.
         AllUnlimited = 0,
         /// Appears to just be a single unlimited raw value. Difference between
@@ -84,8 +87,8 @@ pub mod csv_types {
         /// If has multiple items then each item's chance is `item_chance` /
         /// 100.
         Guaranteed = -3,
-        /// Same as [Guaranteed][Rand::Guaranteed] but without the possibility
-        /// of treasure radar.
+        /// Same as [Guaranteed][Rand::Guaranteed] but you can't use a treasure
+        /// radar.
         GuaranteedNoTreasureRadar = -4,
     }
 
@@ -93,7 +96,7 @@ pub mod csv_types {
         /// Instantiate a [Rand].
         pub fn new(rand: i32) -> Self {
             match rand {
-                1 => Rand::FirstThenUnlimited,
+                1 => Rand::OnceThenUnlimited,
                 0 => Rand::AllUnlimited,
                 -1 => Rand::UnclearMaybeRaw,
                 -3 => Rand::Guaranteed,
@@ -137,7 +140,7 @@ impl GameMap {
             .unwrap();
 
         let mut split_line = line.split("//").next().unwrap().trim();
-        if split_line == "" {
+        if split_line.is_empty() {
             return None;
         }
         if split_line.ends_with(",") {

@@ -60,7 +60,7 @@ pub mod csv_types {
 pub struct Stage {}
 
 impl Stage {
-    pub fn new(selector: &str) {
+    pub fn new(selector: &str) -> Option<Self> {
         let md = StageMeta::new(selector).unwrap();
 
         let stage_file = PathBuf::from("DataLocal").join(&md.stage_file_name);
@@ -69,7 +69,9 @@ impl Stage {
 
         let map_data = GameMap::get_stage_data(md);
 
-        ()
+        println!("{stage_data:?}, {map_data:?}");
+
+        None
     }
 
     pub fn read_stage_csv<R: std::io::Read>(reader: R) {
@@ -97,15 +99,12 @@ impl Stage {
                 cont_stage_idmin: 0,
                 cont_stage_idmax: 0,
             }
-            // ByteRecord::from(vec!["0", "0", "0", "0", "0", "0", ""])
-            //     .deserialize(None)
-            //     .unwrap()
         };
         let line_2 = head;
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
-        // println!("{csv_head:?}");
-        // println!("{csv_line_2:?}");
+        println!("{csv_head:?}");
+        println!("{csv_line_2:?}");
 
         for result in rdr.byte_records() {
             let record: StageEnemyCSV = match result.unwrap().deserialize(None) {
@@ -116,7 +115,7 @@ impl Stage {
             if record.num == 0 {
                 break;
             }
-            // println!("{:?}", record);
+            println!("{:?}", record);
         }
     }
 }
