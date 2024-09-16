@@ -1,5 +1,5 @@
 //! Module that deals with getting information about stages.
-use super::{map_data::{self, GameMap}, stage_metadata::StageMeta};
+use super::{map_data::GameMap, stage_metadata::StageMeta};
 use crate::file_handler::get_decommented_file_reader;
 use csv_types::*;
 use std::path::PathBuf;
@@ -135,3 +135,23 @@ impl Stage {
 //     // ByteRecord::from(thing.split().collect())
 //     // Could even do just checking id, mag, amag
 // }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::file_handler::{get_file_location, FileLocation::GameData};
+    use regex::Regex;
+
+    #[test]
+    #[ignore]
+    fn get_all() {
+        let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
+        for f in std::fs::read_dir(get_file_location(GameData).join("DataLocal")).unwrap() {
+            let file_name = f.unwrap().file_name().into_string().unwrap();
+            if !stage_file_re.is_match(&file_name) {
+                continue;
+            };
+            Stage::new(&file_name);
+        }
+    }
+}
