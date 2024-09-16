@@ -73,20 +73,34 @@ pub mod csv_types {
     /// access to the game you may want to actually check what is said here.
     pub enum Rand {
         /// E.g. Merciless XP: first item is only available once
-        FirstThenUnlimited,
+        FirstThenUnlimited = 1,
         /// Default e.g. Catfruit Jubilee.
-        AllUnlimited,
+        AllUnlimited = 0,
         /// Appears to just be a single unlimited raw value. Difference between
         /// this and [AllUnlimited][Rand::AllUnlimited] is unclear.
-        UnclearMaybeRaw,
+        UnclearMaybeRaw = -1,
         /// Guaranteed item e.g. any stage in Infernal Tower.
         ///
         /// If has multiple items then each item's chance is `item_chance` /
         /// 100.
-        Guaranteed,
+        Guaranteed = -3,
         /// Same as [Guaranteed][Rand::Guaranteed] but without the possibility
         /// of treasure radar.
-        GuaranteedNoTreasureRadar,
+        GuaranteedNoTreasureRadar = -4,
+    }
+
+    impl Rand {
+        /// Instantiate a [Rand].
+        pub fn new(rand: i32) -> Self {
+            match rand {
+                1 => Rand::FirstThenUnlimited,
+                0 => Rand::AllUnlimited,
+                -1 => Rand::UnclearMaybeRaw,
+                -3 => Rand::Guaranteed,
+                -4 => Rand::GuaranteedNoTreasureRadar,
+                _ => panic!("{rand} is not recognised!"),
+            }
+        }
     }
     // 1 = first item is once, rest are as in 0
     // 0 = default: e.g. Catfruit Jubilee
@@ -141,12 +155,9 @@ impl GameMap {
     }
 
     fn parse_stage_line(record: ByteRecord) -> Option<StageDataCSV> {
-        let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();
+        // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
 
-        // let once = match record[record.len() - 1] {
-        //     [] => &record[record.len() - 2],
-        //     _ => &record[record.len() - 1],
-        // };
+        let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();
 
         let _once = &record[record.len() - 1];
         // what does this actually do
@@ -224,14 +235,7 @@ impl GameMap {
             drop
         };
 
-        let rand_enum = match rand {
-            1 => Rand::FirstThenUnlimited,
-            0 => Rand::AllUnlimited,
-            -1 => Rand::UnclearMaybeRaw,
-            -3 => Rand::Guaranteed,
-            -4 => Rand::GuaranteedNoTreasureRadar,
-            _ => panic!("{rand} is not recognised!"),
-        };
+        let rand_enum = Rand::new(rand);
 
         Some(StageDataCSV {
             fixed: fixed_data,
@@ -239,76 +243,5 @@ impl GameMap {
             rewards: time,
             rand: rand_enum,
         })
-        // Rand values:
-        // 1 = first item is once, rest are as in 0
-        // 0 = default: e.g. Catfruit Jubilee
-        // -1 = unclear, seems to be unlimited and raw percentages
-        // -3 = One of the following (1 time). Chances are `item_chance` / total
-        // -4 = No treasure radar, additive chances same as -3.
-        // maybe other
-        // else {
-        //     for(int[] d : drop) {
-        //         res.add(String.valueOf(d[0]));
-        //     }
-        // }
-        // getDropData
-        // getDropChances
-
-        // if(i == 0 && (info.rand == 1 || (info.drop[i][1] >= 1000 && info.drop[i][1] < 30000)))
-        //     builder.append(LangID.getStringByID("data.stage.reward.once", lang));
-
-        // if(i == 0 && info.drop[i][0] != 100 && info.rand != -4 && !chances.isEmpty())
-        //     builder.append(EmojiStore.TREASURE_RADAR.getFormatted());
-
-        // if(i == 0 && (info.rand == 1 || (info.drop[i][1] >= 1000 && info.drop[i][1] < 30000)))
-        //     reward += " " + LangID.getStringByID("data.stage.reward.once", lang);
-    }
-    // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
-
-    pub fn read_stage_csv<R: std::io::Read>(reader: R) {
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .flexible(true)
-            // .from_reader(File::open(gd.join("DataLocal/stage00.csv")).unwrap())
-            // .from_reader(File::open(gd.join("DataLocal/stage.csv")).unwrap())
-            .from_reader(reader);
-
-        let records = rdr.byte_records();
-        for result in records {
-            println!("{result:?}");
-        }
-
-        // let mut head = records.next().unwrap().unwrap();
-        // let csv_head: HeaderCSV = if head.len() <= 7 || head[6].is_empty() {
-        //     let tmp = head;
-        //     head = records.next().unwrap().unwrap();
-        //     tmp.deserialize(None).unwrap()
-        // } else {
-        //     // In EoC
-        //     HeaderCSV {
-        //         base_id: 0,
-        //         no_cont: 0,
-        //         cont_chance: 0,
-        //         contmap_id: 0,
-        //         cont_stage_idmin: 0,
-        //         cont_stage_idmax: 0,
-        //     }
-        //     // ByteRecord::from(vec!["0", "0", "0", "0", "0", "0", ""])
-        //     //     .deserialize(None)
-        //     //     .unwrap()
-        // };
-        // let line_2 = head;
-        // let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
-
-        // println!("{csv_head:?}");
-        // println!("{csv_line_2:?}");
-
-        // for result in rdr.byte_records() {
-        //     let record: StageEnemyCSV = result.unwrap().deserialize(None).unwrap();
-        //     if record.num == 0 {
-        //         break;
-        //     }
-        //     println!("{:?}", record);
-        // }
     }
 }
