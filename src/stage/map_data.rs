@@ -121,15 +121,21 @@ impl GameMap {
                 .parse::<i32>()
                 .expect("Unable to parse to i32")
         };
+        let parse_u32 = |slice| {
+            std::str::from_utf8(slice)
+                .expect("Invalid UTF-8")
+                .parse::<u32>()
+                .expect("Unable to parse to u32")
+        };
 
         let time: Vec<ScoreRewardsCSV> = if is_time {
             let time_len = (record.len() - 17) / 3;
             let mut time = vec![];
             for i in 0..time_len {
                 time.push(ScoreRewardsCSV {
-                    score: parse_i32(&record[16 + i * 3 + 0]) as u32,
-                    item_id: parse_i32(&record[16 + i * 3 + 1]) as u32,
-                    itemquant: parse_i32(&record[16 + i * 3 + 2]) as u32,
+                    score: parse_u32(&record[16 + i * 3 + 0]),
+                    item_id: parse_u32(&record[16 + i * 3 + 1]),
+                    itemquant: parse_u32(&record[16 + i * 3 + 2]),
                 });
             }
 
@@ -140,36 +146,60 @@ impl GameMap {
 
         let is_multi = !is_time && record.len() > 9;
 
-        let mut drop: Vec<TreasureCSV>;
-        let mut drop: Vec<Vec<i32>>;
-        let mut rand: i32;
-
-        if record.len() == 6 {
-            drop = Vec::new();
+        let rand: i32;
+        let drop: Vec<TreasureCSV> = if record.len() == 6 {
             rand = 0;
+            vec![]
         } else if !is_multi {
-            drop = vec![vec![]];
             rand = 0;
+            vec![TreasureCSV {
+                itemchance: parse_u32(&record[5]),
+                itemnum: parse_u32(&record[6]),
+                itemlimit: parse_u32(&record[7]),
+            }]
         } else {
             let drop_len = (record.len() - 7) / 3;
-            drop = vec![vec![0; 3]; drop_len];
+            let mut drop = vec![];
+            drop.push(TreasureCSV {
+                itemchance: parse_u32(&record[5]),
+                itemnum: parse_u32(&record[6]),
+                itemlimit: parse_u32(&record[7]),
+            });
             rand = parse_i32(&record[8]);
             for i in 1..drop_len {
-                for j in 0..3 {
-                    drop[i][j] = parse_i32(&record[6 + i * 3 + j]);
-                }
+                drop.push(TreasureCSV {
+                    itemchance: parse_u32(&record[6 + i * 3 + 0]),
+                    itemnum: parse_u32(&record[6 + i * 3 + 1]),
+                    itemlimit: parse_u32(&record[6 + i * 3 + 2]),
+                });
             }
-        }
 
-        if !drop.is_empty() {
-            drop[0] = vec![
-                parse_i32(&record[5]),
-                parse_i32(&record[6]),
-                parse_i32(&record[7]),
-            ];
-        }
+            drop
+        };
 
-        println!("{fixed_data:?}, {time:?}, {drop:?}");
+        println!("{fixed_data:?}, {time:?}, {drop:?}, {rand:?}");
+        // Rand values:
+        // 1 = ?
+        // 0 = ?
+        // -3 = ?
+        // -4 = No treasure radar,
+        // maybe other
+        // else {
+        //     for(int[] d : drop) {
+        //         res.add(String.valueOf(d[0]));
+        //     }
+        // }
+        // getDropData
+        // getDropChances
+
+        // if(i == 0 && (info.rand == 1 || (info.drop[i][1] >= 1000 && info.drop[i][1] < 30000)))
+        //     builder.append(LangID.getStringByID("data.stage.reward.once", lang));
+
+        // if(i == 0 && info.drop[i][0] != 100 && info.rand != -4 && !chances.isEmpty())
+        //     builder.append(EmojiStore.TREASURE_RADAR.getFormatted());
+
+        // if(i == 0 && (info.rand == 1 || (info.drop[i][1] >= 1000 && info.drop[i][1] < 30000)))
+        //     reward += " " + LangID.getStringByID("data.stage.reward.once", lang);
     }
     // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
 
