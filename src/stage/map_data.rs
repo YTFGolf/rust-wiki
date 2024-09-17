@@ -69,38 +69,46 @@ pub mod csv_types {
     }
 
     #[derive(Debug)]
-    /// Drop reward modifier.
+    /// Treasure drop reward modifier.
     ///
     /// All descriptions are purely speculative based on BCU code; if you have
     /// access to the game you may want to actually check what is said here.
-    pub enum Rand {
+    pub enum TreasureType {
         /// E.g. Merciless XP: first item is only available once. After that
-        /// works exactly the same as [AllUnlimited][Rand::AllUnlimited].
+        /// works exactly the same as
+        /// [AllUnlimited][TreasureType::AllUnlimited].
         OnceThenUnlimited = 1,
         /// Default e.g. Catfruit Jubilee.
+        ///
+        /// E.g. if you have (50, 50, 50) as the chances then the effective
+        /// chances are (50, 25, 12.5).
         AllUnlimited = 0,
         /// Appears to just be a single unlimited raw value. Difference between
-        /// this and [AllUnlimited][Rand::AllUnlimited] is unclear.
+        /// this and [AllUnlimited][TreasureType::AllUnlimited] is unclear.
+        ///
+        /// There are no occurrences of this value being used on stages with
+        /// multiple treasure rewards as of 13.6.0.
         UnclearMaybeRaw = -1,
         /// Guaranteed item e.g. any stage in Infernal Tower.
         ///
-        /// If has multiple items then each item's chance is `item_chance` /
-        /// 100.
+        /// If has multiple items then each item's chance is (`item_chance` /
+        /// total sum). The exact mechanism is unclear but this seems to be the
+        /// case.
         Guaranteed = -3,
-        /// Same as [Guaranteed][Rand::Guaranteed] but you can't use a treasure
-        /// radar.
+        /// Same as [Guaranteed][TreasureType::Guaranteed] but you can't use a
+        /// treasure radar.
         GuaranteedNoTreasureRadar = -4,
     }
 
-    impl From<i32> for Rand {
-        fn from(rand: i32) -> Self {
-            match rand {
-                1 => Rand::OnceThenUnlimited,
-                0 => Rand::AllUnlimited,
-                -1 => Rand::UnclearMaybeRaw,
-                -3 => Rand::Guaranteed,
-                -4 => Rand::GuaranteedNoTreasureRadar,
-                _ => panic!("{rand} is not recognised!"),
+    impl From<i32> for TreasureType {
+        fn from(treasure_type: i32) -> Self {
+            match treasure_type {
+                1 => TreasureType::OnceThenUnlimited,
+                0 => TreasureType::AllUnlimited,
+                -1 => TreasureType::UnclearMaybeRaw,
+                -3 => TreasureType::Guaranteed,
+                -4 => TreasureType::GuaranteedNoTreasureRadar,
+                _ => panic!("{treasure_type} is not recognised!"),
             }
         }
     }
@@ -113,10 +121,10 @@ pub mod csv_types {
     #[derive(Debug)]
     #[allow(dead_code, missing_docs)]
     pub struct StageDataCSV {
-        pub fixed: StageInfoCSVFixed,
-        pub rand: Rand,
-        pub treasure: Vec<TreasureCSV>,
-        pub rewards: Vec<ScoreRewardsCSV>,
+        pub fixed_data: StageInfoCSVFixed,
+        pub treasure_type: TreasureType,
+        pub treasure_drop: Vec<TreasureCSV>,
+        pub score_rewards: Vec<ScoreRewardsCSV>,
     }
 }
 
@@ -188,7 +196,7 @@ impl GameMap {
                 .expect("Unable to parse to u32")
         };
 
-        let time: Vec<ScoreRewardsCSV> = if is_time {
+        let score_rewards: Vec<ScoreRewardsCSV> = if is_time {
             let time_len = (record.len() - 17) / 3;
             let mut time = vec![];
             for i in 0..time_len {
@@ -206,12 +214,12 @@ impl GameMap {
 
         let is_multi = !is_time && record.len() > 9;
 
-        let rand: i32;
-        let drop: Vec<TreasureCSV> = if record.len() == 6 {
-            rand = 0;
+        let treasure_type: i32;
+        let treasure_drop: Vec<TreasureCSV> = if record.len() == 6 {
+            treasure_type = 0;
             vec![]
         } else if !is_multi {
-            rand = 0;
+            treasure_type = 0;
             vec![TreasureCSV {
                 item_chance: parse_u32(&record[5]),
                 item_id: parse_u32(&record[6]),
@@ -225,7 +233,7 @@ impl GameMap {
                 item_id: parse_u32(&record[6]),
                 item_amt: parse_u32(&record[7]),
             });
-            rand = parse_i32(&record[8]);
+            treasure_type = parse_i32(&record[8]);
             for i in 1..drop_len {
                 drop.push(TreasureCSV {
                     item_chance: parse_u32(&record[6 + i * 3 + 0]),
@@ -238,10 +246,10 @@ impl GameMap {
         };
 
         Some(StageDataCSV {
-            fixed: fixed_data,
-            treasure: drop,
-            rewards: time,
-            rand: rand.into(),
+            fixed_data,
+            treasure_drop,
+            score_rewards,
+            treasure_type: treasure_type.into(),
         })
     }
 }
