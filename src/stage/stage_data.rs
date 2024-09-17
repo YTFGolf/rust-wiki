@@ -7,52 +7,84 @@ use std::path::PathBuf;
 /// Types to deserialise csv files.
 pub mod csv_types {
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code, missing_docs)]
+    /// Data stored in the header of the csv file (minus most Main Chapters).
     pub struct HeaderCSV {
+        /// ID of base used.
         pub base_id: i32,
+        /// Is no continues? Boolean value.
         pub no_cont: u32,
+        /// % chance of continuation.
         pub cont_chance: u32,
+        /// `map_num` of continuation stages.
         pub contmap_id: u32,
+        /// Minimum `stage_num` of any continuation stage.
         pub cont_stage_idmin: u32,
+        /// Maximum `stage_num` of any continuation stage.
         pub cont_stage_idmax: u32,
     }
 
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code, missing_docs)]
+    /// Data stored in line 2 of the csv file (line 1 for most Main Chapter
+    /// stages).
     pub struct Line2CSV {
+        /// Stage width.
         pub width: u32,
+        /// Base HP (ignore this if `animbase_id` is not 0).
         pub base_hp: u32,
-        pub _unknown_1: u32,
-        pub _unknown_2: u32,
+        _unknown_1: u32,
+        _unknown_2: u32,
+        /// ID of stage background.
         pub background_id: u32,
+        /// Max enemies in stage.
         pub max_enemies: u32,
+        /// ID of animated base (if 0 then no base).
         pub animbase_id: u32,
+        /// Time limit (is this only used in Dojo stages?).
         pub time_limit: u32,
+        /// Do you have the green barrier thing (boolean value).
         pub indestructible: u32,
-        pub _unknown_3: Option<u32>,
+        _unknown_3: Option<u32>,
     }
 
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code, missing_docs)]
+    /// CSV data for enemies. See [Stage Structure
+    /// Page/Battlegrounds](https://battle-cats.fandom.com/wiki/Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds)
+    /// for more complete documentation.
     pub struct StageEnemyCSV {
+        /// battle-cats db id (i.e. Doge is 2).
         pub num: u32,
+        /// Amount of enemy that spawns (0 = infinite).
         pub amt: u32,
+        /// Start frame of enemies / 2. Ignored (unless `is_spawn_delay` is
+        /// true) for enemies that spawn after base hit.
         pub start_frame: u32,
+        /// Min respawn frame of enemies / 2.
         pub respawn_frame_min: u32,
+        /// Max respawn frame of enemies / 2.
         pub respawn_frame_max: u32,
+        /// At what percentage does the enemy spawn (absolute value for Dojo).
         pub base_hp: u32,
+        /// Minimum layer.
         pub layer_min: u32,
+        /// Maximum layer.
         pub layer_max: u32,
+        /// 0 = none, 1 = boss, 2 = with screen shake.
         pub boss_type: u32,
+        /// Enemy magnification.
         pub magnification: Option<u32>,
 
         #[serde(default)]
-        pub _unknown_1: Option<u32>,
+        _unknown_1: Option<u32>,
         #[serde(default)]
+        /// If not 0 then enemy has different hp and ap mags. `magnification`
+        /// should be taken as hp mag and this is ap mag.
         pub attack_magnification: Option<u32>,
         #[serde(default)]
+        /// If base hp is <100 (unsure what the effect is in Dojos) and this is
+        /// 1 then `start_frame` is not ignored (boolean value).
         pub is_spawn_delay: Option<u32>,
         #[serde(default)]
+        /// How many cats need to die before enemy spawns.
         pub kill_count: Option<u32>,
     }
 }
@@ -89,6 +121,8 @@ impl Stage {
             let tmp = head;
             head = records.next().unwrap().unwrap();
             tmp.deserialize(None).unwrap()
+            // if (cas == -1)
+            //     cas = CH_CASTLES[id.id];
         } else {
             // In EoC
             HeaderCSV {
@@ -99,6 +133,7 @@ impl Stage {
                 cont_stage_idmin: 0,
                 cont_stage_idmax: 0,
             }
+            // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
         };
         let line_2 = head;
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
