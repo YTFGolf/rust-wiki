@@ -1,3 +1,89 @@
+use charagroups::CHARAGROUP;
+
+pub mod charagroups {
+    #[derive(Debug, serde::Deserialize)]
+    #[allow(dead_code)]
+    /// Fixed csv data in Charagroup.csv.
+    pub struct CharaGroupFixedCSV {
+        /// ID of charagroup.
+        pub group_id: u32,
+        /// Basically just `stage_restriction_charagroup_{group_id}`.
+        _text_id: String,
+        /// 0 = Can only use, 2 = can't use
+        pub group_type: u32,
+    }
+
+    use std::{
+        fs::File,
+        io::{BufRead, BufReader},
+        sync::LazyLock,
+    };
+
+    use crate::file_handler::{get_file_location, FileLocation};
+
+    #[derive(Debug)]
+    /// Type of the Charagroup.
+    pub enum CharaGroupType {
+        /// Can only use select cats.
+        OnlyUse,
+        /// Cannot use select cats.
+        CannotUse,
+    }
+
+    impl From<u32> for CharaGroupType {
+        fn from(value: u32) -> Self {
+            match value {
+                0 => Self::OnlyUse,
+                2 => Self::CannotUse,
+                _ => panic!("Value {value} is not recognised as a valid charagroup!"),
+            }
+        }
+    }
+
+    #[derive(Debug)]
+    /// Data about a CharaGroup.
+    pub struct CharaGroup {
+        /// Type of charagroup.
+        group_type: CharaGroupType,
+        /// Units in charagroup.
+        units: Vec<u32>,
+    }
+
+    fn read_charagroup_file() -> Vec<CharaGroup> {
+        let path = get_file_location(FileLocation::GameData).join("DataLocal/Charagroup.csv");
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .flexible(true)
+            .from_path(path)
+            .unwrap();
+
+        let mut records = rdr.byte_records();
+        records.next();
+
+        records
+            .into_iter()
+            .map(|record| {
+                let result = record.unwrap();
+                let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
+                let mut units: Vec<u32> = vec![];
+                for i in 3..result.len() {
+                    let n = std::str::from_utf8(&result[i])
+                        .unwrap()
+                        .parse::<u32>()
+                        .unwrap();
+                    units.push(n)
+                }
+                CharaGroup {
+                    group_type: fixed_data.group_type.into(),
+                    units,
+                }
+            })
+            .collect()
+    }
+
+    /// If you want group 1 then do `CHARAGROUP[&0]`.
+    pub static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
+}
 /*
 class Restrictions:
     # ht15=Group
@@ -68,7 +154,12 @@ pub struct StageOptionCSV {
     /// Maximum unit cost.
     pub max_cost: u32,
     // TODO need to use charagroup to document this.
-    pub chara_group: u32,
+    pub charagroup: u32,
 }
 
 // Okay how to do this
+
+pub fn also_do_stuff() {
+    println!("useful");
+    let _ = &CHARAGROUP[0];
+}
