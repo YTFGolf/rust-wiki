@@ -29,7 +29,8 @@ pub mod csv_types {
     // pub struct Line2CSV {}
 
     #[derive(Debug, serde::Deserialize)]
-    /// All fixed data stored in the map file.
+    /// All fixed data stored in the map file. Can reliably be deserialised
+    /// using serde.
     pub struct StageInfoCSVFixed {
         /// Energy to challenge stage.
         pub energy: u32,
@@ -119,11 +120,15 @@ pub mod csv_types {
     // -4 = No treasure radar, additive chances same as -3.
 
     #[derive(Debug)]
-    #[allow(dead_code, missing_docs)]
+    /// Container struct for all of the data for an individual stage.
     pub struct StageDataCSV {
+        /// Data that is always fixed into the csv.
         pub fixed_data: StageInfoCSVFixed,
+        /// Modifier for the treasure drop.
         pub treasure_type: TreasureType,
+        /// Raw treasure drop data.
         pub treasure_drop: Vec<TreasureCSV>,
+        /// Raw score rewards data.
         pub score_rewards: Vec<ScoreRewardsCSV>,
     }
 }
