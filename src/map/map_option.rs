@@ -1,8 +1,6 @@
-use std::{collections::HashMap, sync::LazyLock};
-
-use csv::ByteRecord;
-
 use crate::file_handler::{get_file_location, FileLocation};
+use csv::ByteRecord;
+use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Debug, serde::Deserialize)]
 #[allow(dead_code)]
@@ -49,7 +47,8 @@ pub struct MapOptionCSV {
     _jpname: &'static str,
 }
 
-/// Hashmap of the `"DataLocal/Map_option.csv"` file. Individual records are left unparsed.
+/// Hashmap of the `"DataLocal/Map_option.csv"` file. Individual records are
+/// left unparsed.
 pub static MAP_OPTION: LazyLock<HashMap<u32, ByteRecord>> = LazyLock::new(|| get_map_option());
 
 fn get_map_option() -> HashMap<u32, ByteRecord> {
@@ -72,4 +71,42 @@ fn get_map_option() -> HashMap<u32, ByteRecord> {
     });
 
     records_iter.collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashSet;
+
+    #[test]
+    fn test_mo() {
+        let s = MAP_OPTION[&0].deserialize::<MapOptionCSV>(None).unwrap();
+
+        assert_eq!(s.star4, 300);
+    }
+
+    #[test]
+    fn assert_no_duplicates() {
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_path(get_file_location(FileLocation::GameData).join("DataLocal/Map_option.csv"))
+            .unwrap();
+
+        let mut records = rdr.byte_records();
+        records.next();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = result.unwrap();
+            let map_id = std::str::from_utf8(&record[0])
+                .unwrap()
+                .parse::<u32>()
+                .unwrap();
+
+            assert!(!seen.contains(&map_id));
+            seen.insert(map_id);
+        }
+    }
 }

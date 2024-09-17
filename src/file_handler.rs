@@ -1,9 +1,5 @@
 //! Contains functions to read data files.
-use crate::{
-    config::CONFIG,
-    map::map_option::MAP_OPTION,
-    stage::stage_data::Stage,
-};
+use crate::{config::CONFIG, map::map_option::MAP_OPTION, stage::stage_data::Stage};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Cursor},
