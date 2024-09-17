@@ -1,5 +1,9 @@
 //! Module that deals with getting information about stages.
-use crate::{file_handler::get_decommented_file_reader, map::map_data::GameMap, stage::{stage_enemy::StageEnemy, stage_metadata::StageMeta}};
+use crate::{
+    file_handler::get_decommented_file_reader,
+    map::map_data::GameMap,
+    stage::{stage_enemy::StageEnemy, stage_metadata::StageMeta},
+};
 use csv_types::*;
 use std::path::PathBuf;
 
