@@ -124,16 +124,16 @@ impl Stage {
 
         let map_data = GameMap::get_stage_data(md);
 
-        println!("{stage_data:?}, {map_data:?}");
-        println!(
-            "{:?}",
-            stage_data
-                .unwrap()
-                .enemies
-                .into_iter()
-                .map(StageEnemy::from)
-                .collect::<Vec<_>>()
-        );
+        // println!("{stage_data:?}, {map_data:?}");
+        // println!(
+        //     "{:?}",
+        //     stage_data
+        //         .unwrap()
+        //         .enemies
+        //         .into_iter()
+        //         .map(StageEnemy::from)
+        //         .collect::<Vec<_>>()
+        // );
 
         None
     }

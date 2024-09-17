@@ -1,5 +1,9 @@
 //! Contains functions to read data files.
-use crate::{config::CONFIG, stage::stage_data::Stage};
+use crate::{
+    config::CONFIG,
+    map::map_option::MAP_OPTION,
+    stage::stage_data::Stage,
+};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Cursor},
@@ -69,4 +73,6 @@ pub fn do_stuff() {
     // Germany (Into the Future)
     Stage::new("stage00.csv");
     // read_csv_file("DataLocal/stage.csv");
+
+    println!("{MAP_OPTION:?}");
 }
