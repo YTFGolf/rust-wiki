@@ -11,6 +11,7 @@ use rust_wiki::{file_handler::do_stuff, stage::stage_metadata::StageMeta};
 //     println!("{}", start.elapsed().as_secs_f64())
 // }
 
+// Look into clap
 fn main() {
     println!("{:?}", StageMeta::new("sol 0 0").unwrap());
     println!("{:?}", StageMeta::new("ex 0 0").unwrap());
