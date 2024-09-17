@@ -3,9 +3,8 @@ use csv::ByteRecord;
 use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Debug, serde::Deserialize)]
-#[allow(dead_code)]
 /// Data stored in the map option CSV.
-pub struct MapOptionCSV {
+pub struct MapOptionCSV<'a> {
     /// ID of map.
     ///
     /// Roughly follows the format of `str(type_id * 1000 + map_id)`, except for
@@ -44,7 +43,7 @@ pub struct MapOptionCSV {
     /// Something to do with double xp ads?
     _xp2倍広告: u32,
     /// Don't trust this.
-    _jpname: &'static str,
+    _jpname: &'a str,
 }
 
 /// Hashmap of the `"DataLocal/Map_option.csv"` file. Individual records are
@@ -76,7 +75,7 @@ fn get_map_option() -> HashMap<u32, ByteRecord> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::collections::HashSet;
+    use std::{collections::HashSet, io::Cursor};
 
     #[test]
     fn test_mo() {
@@ -86,24 +85,78 @@ mod tests {
     }
 
     #[test]
-    fn assert_no_duplicates() {
-        let mut rdr = csv::ReaderBuilder::new()
+    fn assert_parses_and_no_duplicates() {
+        let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             // technically does have headers but that's an issue for another day
             .flexible(true)
             .from_path(get_file_location(FileLocation::GameData).join("DataLocal/Map_option.csv"))
             .unwrap();
 
+        let mut rdr = rdr;
         let mut records = rdr.byte_records();
         records.next();
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
             let record = result.unwrap();
-            let map_id = std::str::from_utf8(&record[0])
-                .unwrap()
-                .parse::<u32>()
-                .unwrap();
+            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+            let map_id = record_parsed.map_id;
+
+            assert!(!seen.contains(&map_id));
+            seen.insert(map_id);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_parse_checker_works() {
+        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        let reader = Cursor::new(
+            "0,4,-100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり",
+        );
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = result.unwrap();
+            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+            let map_id = record_parsed.map_id;
+
+            assert!(!seen.contains(&map_id));
+            seen.insert(map_id);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_dupe_checker_works() {
+        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        let reader = Cursor::new(
+            "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+        );
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = result.unwrap();
+            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+            let map_id = record_parsed.map_id;
 
             assert!(!seen.contains(&map_id));
             seen.insert(map_id);
