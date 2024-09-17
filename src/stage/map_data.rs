@@ -90,15 +90,16 @@ pub mod csv_types {
         /// There are no occurrences of this value being used on stages with
         /// multiple treasure rewards as of 13.6.0.
         UnclearMaybeRaw = -1,
-        /// Guaranteed item e.g. any stage in Infernal Tower.
+        /// Guaranteed item once e.g. any stage in Infernal Tower. Can't use a
+        /// Treasure Radar to get any items.
         ///
         /// If has multiple items then each item's chance is (`item_chance` /
         /// total sum). The exact mechanism is unclear but this seems to be the
         /// case.
-        Guaranteed = -3,
-        /// Same as [Guaranteed][TreasureType::Guaranteed] but you can't use a
-        /// treasure radar.
-        GuaranteedNoTreasureRadar = -4,
+        GuaranteedOnce = -3,
+        /// Same as [GuaranteedOnce][TreasureType::GuaranteedOnce] but with
+        /// unlimited rewards.
+        GuaranteedUnlimited = -4,
     }
 
     impl From<i32> for TreasureType {
@@ -107,8 +108,8 @@ pub mod csv_types {
                 1 => TreasureType::OnceThenUnlimited,
                 0 => TreasureType::AllUnlimited,
                 -1 => TreasureType::UnclearMaybeRaw,
-                -3 => TreasureType::Guaranteed,
-                -4 => TreasureType::GuaranteedNoTreasureRadar,
+                -3 => TreasureType::GuaranteedOnce,
+                -4 => TreasureType::GuaranteedUnlimited,
                 _ => panic!("{treasure_type} is not recognised!"),
             }
         }
@@ -206,7 +207,7 @@ impl GameMap {
             let mut time = vec![];
             for i in 0..time_len {
                 time.push(ScoreRewardsCSV {
-                    score: parse_u32(&record[16 + i * 3 + 0]),
+                    score: parse_u32(&record[16 + i * 3]),
                     item_id: parse_u32(&record[16 + i * 3 + 1]),
                     item_amt: parse_u32(&record[16 + i * 3 + 2]),
                 });
@@ -241,7 +242,7 @@ impl GameMap {
             treasure_type = parse_i32(&record[8]);
             for i in 1..drop_len {
                 drop.push(TreasureCSV {
-                    item_chance: parse_u32(&record[6 + i * 3 + 0]),
+                    item_chance: parse_u32(&record[6 + i * 3]),
                     item_id: parse_u32(&record[6 + i * 3 + 1]),
                     item_amt: parse_u32(&record[6 + i * 3 + 2]),
                 });
