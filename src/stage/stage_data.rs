@@ -1,6 +1,6 @@
 //! Module that deals with getting information about stages.
 use super::{map_data::GameMap, stage_metadata::StageMeta};
-use crate::file_handler::get_decommented_file_reader;
+use crate::{file_handler::get_decommented_file_reader, stage::stage_enemy::StageEnemy};
 use csv_types::*;
 use std::path::PathBuf;
 
@@ -87,6 +87,17 @@ pub mod csv_types {
         /// How many cats need to die before enemy spawns.
         pub kill_count: Option<u32>,
     }
+
+    /// Raw data from the stage csv file.
+    #[derive(Debug)]
+    pub struct RawCSVData {
+        /// Header row.
+        pub header: HeaderCSV,
+        /// Line 2.
+        pub line2: Line2CSV,
+        /// Enemies.
+        pub enemies: Vec<StageEnemyCSV>,
+    }
 }
 
 pub struct Stage {}
@@ -102,11 +113,12 @@ impl Stage {
         let map_data = GameMap::get_stage_data(md);
 
         println!("{stage_data:?}, {map_data:?}");
+        println!("{:?}", stage_data.unwrap().enemies.into_iter().map(StageEnemy::from).collect::<Vec<_>>());
 
         None
     }
 
-    pub fn read_stage_csv<R: std::io::Read>(reader: R) {
+    pub fn read_stage_csv<R: std::io::Read>(reader: R) -> Option<RawCSVData> {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)
@@ -138,9 +150,7 @@ impl Stage {
         let line_2 = head;
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
-        println!("{csv_head:?}");
-        println!("{csv_line_2:?}");
-
+        let mut enemies = vec![];
         for result in rdr.byte_records() {
             let record: StageEnemyCSV = match result.unwrap().deserialize(None) {
                 Ok(r) => r,
@@ -150,8 +160,14 @@ impl Stage {
             if record.num == 0 {
                 break;
             }
-            println!("{:?}", record);
+            enemies.push(record);
         }
+
+        Some(RawCSVData {
+            header: csv_head,
+            line2: csv_line_2,
+            enemies,
+        })
     }
 }
 
