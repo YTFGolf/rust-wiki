@@ -1,6 +1,7 @@
-use either::Either::{self, Left, Right};
+//! Module that deals with getting information about enemies in stages.
 
 use super::stage_data::csv_types::StageEnemyCSV;
+use either::Either::{self, Left, Right};
 
 #[derive(Debug)]
 /// Type of boss.
@@ -24,6 +25,7 @@ impl From<u32> for BossType {
 }
 
 #[derive(Debug)]
+/// Representation of an enemy in a stage.
 pub struct StageEnemy {
     /// Wiki id (Doge is 0).
     pub id: u32,

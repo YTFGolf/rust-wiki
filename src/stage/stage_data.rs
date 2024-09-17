@@ -100,7 +100,15 @@ pub mod csv_types {
     }
 }
 
-pub struct Stage {}
+pub struct Stage {
+    // rewards: Option<StageRewards>,
+    // enemies: Vec<StageEnemy>,
+    // meta: StageMeta,
+    // stageCSVData,
+    // mapstagedata
+    // mapoptiondata as well
+    // restrictions
+}
 
 impl Stage {
     pub fn new(selector: &str) -> Option<Self> {
@@ -113,7 +121,15 @@ impl Stage {
         let map_data = GameMap::get_stage_data(md);
 
         println!("{stage_data:?}, {map_data:?}");
-        println!("{:?}", stage_data.unwrap().enemies.into_iter().map(StageEnemy::from).collect::<Vec<_>>());
+        println!(
+            "{:?}",
+            stage_data
+                .unwrap()
+                .enemies
+                .into_iter()
+                .map(StageEnemy::from)
+                .collect::<Vec<_>>()
+        );
 
         None
     }
