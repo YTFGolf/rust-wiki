@@ -5,3 +5,4 @@
 pub mod config;
 pub mod file_handler;
 pub mod stage;
+pub mod map;

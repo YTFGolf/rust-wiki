@@ -1,6 +1,5 @@
 //! Module that deals with getting information about stages.
-use super::{map_data::GameMap, stage_metadata::StageMeta};
-use crate::{file_handler::get_decommented_file_reader, stage::stage_enemy::StageEnemy};
+use crate::{file_handler::get_decommented_file_reader, map::map_data::GameMap, stage::{stage_enemy::StageEnemy, stage_metadata::StageMeta}};
 use csv_types::*;
 use std::path::PathBuf;
 
@@ -108,6 +107,7 @@ pub struct Stage {
     // mapstagedata
     // mapoptiondata as well
     // restrictions
+    // Difficulty/name/next stage? or for wikitext version
 }
 
 impl Stage {
