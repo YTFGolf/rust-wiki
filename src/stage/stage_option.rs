@@ -90,6 +90,31 @@ pub mod charagroups {
 
     /// If you want group 1 then do `CHARAGROUP[&0]`.
     pub static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        #[test]
+        fn test_indexes_are_valid() {
+            let path = get_file_location(FileLocation::GameData).join("DataLocal/Charagroup.csv");
+            let mut rdr = csv::ReaderBuilder::new()
+                .has_headers(false)
+                .flexible(true)
+                .from_path(path)
+                .unwrap();
+
+            let mut records = rdr.byte_records();
+            records.next();
+
+            let mut counter = 0;
+            for record in records {
+                let result = record.unwrap();
+                let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
+                counter += 1;
+                assert_eq!(fixed_data.group_id, counter);
+            }
+        }
+    }
 }
 /*
 class Restrictions:
