@@ -1,5 +1,9 @@
-use charagroups::CHARAGROUP;
+//! Module that deals with the `stage_option` file.
+use crate::file_handler::{get_file_location, FileLocation};
+use csv::ByteRecord;
+use std::{collections::HashMap, sync::LazyLock};
 
+/// Module that contains charagroup information.
 pub mod charagroups {
     use crate::file_handler::{get_file_location, FileLocation};
     use std::sync::LazyLock;
@@ -55,8 +59,8 @@ pub mod charagroups {
         }
 
         /// Get charagroup with id `id`.
-        pub fn get_charagroup(&self, id: u32) -> &CharaGroup {
-            &self.parsed_file[usize::try_from(id - 1).unwrap()]
+        pub fn get_charagroup(&self, id: u32) -> Option<&CharaGroup> {
+            self.parsed_file.get(usize::try_from(id - 1).unwrap())
         }
     }
 
@@ -109,48 +113,6 @@ pub mod charagroups {
             .collect()
     }
 }
-/*
-class Restrictions:
-    # ht15=Group
-    # ht16=Level
-
-    # DataLocal/Charagroup.csv
-    # DataLocal/Stage_option.csv
-
-    group:      Tuple[int, List[str]]
-    '''Specific charagroups e.g. Finale's restriction only allowing you to spawn
-    Cat. Arg 1 is mode (0 = only use, 2 = can't use), arg 2 is allowed units'''
-        # //mapID, compatible★, stageID, rarity limit, cat limit, slot formation limit, production cost limit, upper limit, groupID
-        # groupID requires using Charagroup.csv
-        self.group = self.get_group(line[8])
-
-    def get_group(self, lim) -> Tuple[int, List[str]]:
-        if lim == "0":
-            return (0, [])
-        self.get_charagroup()
-
-        for char in self.charagroups:
-            if char[0] == lim:
-                break
-
-        mode = int(char[2])
-        cats = []
-        for cat in char[3:]:
-            if not cat:
-                continue
-
-            cats.append(CatName.get_cat_link(cat))
-        return mode, cats
-
-    charagroups:    List[List[str]] = None
-    def get_charagroup(cls):
-        try:
-            if not cls.charagroups:
-                with open(f'{Options.data_mines}/DataLocal/Charagroup.csv', encoding='utf-8') as f:
-                    cls.charagroups = list(csv.reader(f))
-        except FileNotFoundError:
-            pass
-*/
 
 #[derive(Debug, serde::Deserialize)]
 #[allow(dead_code)]
@@ -164,10 +126,10 @@ pub struct StageOptionCSV {
     pub map_id: u32,
     /// Crown difficulties that restriction applies to. -1 = all crowns,
     /// otherwise it's just 0-based.
-    pub stars: u32,
+    pub stars: i32,
     /// If is -1 then applies to all stages in map. Otherwise only applies to
     /// the stage in the map with that id.
-    pub stage_id: u32,
+    pub stage_id: i32,
     /// Rarities allowed. Binary value.
     pub rarity: u32,
     /// Cat deploy limit.
@@ -178,12 +140,69 @@ pub struct StageOptionCSV {
     pub min_cost: u32,
     /// Maximum unit cost.
     pub max_cost: u32,
-    // TODO need to use charagroup to document this.
+    /// [CharaGroup][charagroups::CharaGroup] id.
     pub charagroup: u32,
 }
 
-// Okay how to do this
+/// Container for the [STAGE_OPTIONS] static.
+pub struct StageOptions {
+    map: LazyLock<HashMap<u32, Vec<StageOptionCSV>>>,
+}
+impl StageOptions {
+    const fn new() -> Self {
+        Self {
+            map: LazyLock::new(|| get_stage_option()),
+        }
+    }
 
-pub fn also_do_stuff() {
-    println!("{:?}", CHARAGROUP.get_charagroup(1));
+    /// Get the data for the map that `map_id` corresponds to.
+    pub fn get_map(&self, map_id: u32) -> Option<&Vec<StageOptionCSV>> {
+        self.map.get(&map_id)
+    }
+
+    /// Get all restrictions in the map where either the entire map has a
+    /// restriction or that specific stage has a restriction.
+    pub fn get_stage(
+        &self,
+        map_id: u32,
+        stage_id: i32,
+    ) -> Option<impl Iterator<Item = &StageOptionCSV>> {
+        Some(
+            self.map
+                .get(&map_id)?
+                .iter()
+                .filter(move |stage| [-1, stage_id].contains(&stage.stage_id)),
+        )
+    }
+}
+
+/// Map of valid `map_id`s to the `"DataLocal/Stage_option.csv"` file.
+pub static STAGE_OPTIONS: StageOptions = StageOptions::new();
+
+fn get_stage_option() -> HashMap<u32, Vec<StageOptionCSV>> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        // technically does have headers but that's an issue for another day
+        .flexible(true)
+        .from_path(get_file_location(FileLocation::GameData).join("DataLocal/Stage_option.csv"))
+        .unwrap();
+
+    let mut records = rdr.byte_records();
+    records.next();
+
+    let mut map: HashMap<u32, Vec<StageOptionCSV>> = HashMap::new();
+    // Since sorting by stage id will require looking at another field might as
+    // well just convert everything to a [StageOptionCSV] anyway.
+    for record in records {
+        let result: StageOptionCSV = record.unwrap().deserialize(None).unwrap();
+        let entry = map.get_mut(&result.map_id);
+        match entry {
+            Some(map_option) => map_option.push(result),
+            None => {
+                map.insert(result.map_id, vec![result]);
+            }
+        };
+    }
+
+    map
 }
