@@ -1,10 +1,12 @@
+//! Module that deals with the `Map_option` file.
+
 use crate::file_handler::{get_file_location, FileLocation};
 use csv::ByteRecord;
 use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the map option CSV.
-pub struct MapOptionCSV<'a> {
+pub struct MapOptionCSV {
     /// ID of map.
     ///
     /// Roughly follows the format of `str(type_id * 1000 + map_id)`, except for
@@ -43,7 +45,8 @@ pub struct MapOptionCSV<'a> {
     /// Something to do with double xp ads?
     _xp2倍広告: u32,
     /// Don't trust this.
-    _jpname: &'a str,
+    #[serde(skip)]
+    _jpname: &'static str,
 }
 
 /// Container for the [MAP_OPTION] static.
@@ -86,7 +89,10 @@ fn get_map_option() -> HashMap<u32, ByteRecord> {
     let records_iter = records.into_iter().map(|record| {
         let result = record.unwrap();
         (
-            std::str::from_utf8(&result[0]).unwrap().parse::<u32>().unwrap(),
+            std::str::from_utf8(&result[0])
+                .unwrap()
+                .parse::<u32>()
+                .unwrap(),
             result,
         )
     });
