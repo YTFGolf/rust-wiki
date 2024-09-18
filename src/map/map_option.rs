@@ -46,6 +46,7 @@ pub struct MapOptionCSV<'a> {
     _jpname: &'a str,
 }
 
+/// Container for the [MAP_OPTION] static.
 pub struct MapOption {
     map: LazyLock<HashMap<u32, ByteRecord>>,
 }
@@ -56,6 +57,7 @@ impl MapOption {
         }
     }
 
+    /// Get the map data that `map_id` corresponds to.
     pub fn get_map(&self, map_id: u32) -> Option<MapOptionCSV> {
         Some(
             self.map
@@ -67,8 +69,7 @@ impl MapOption {
     }
 }
 
-/// Hashmap of the `"DataLocal/Map_option.csv"` file. Individual records are
-/// left unparsed.
+/// Map of valid `map_id`s to the `"DataLocal/Map_option.csv"` file.
 pub static MAP_OPTION: MapOption = MapOption::new();
 
 fn get_map_option() -> HashMap<u32, ByteRecord> {
