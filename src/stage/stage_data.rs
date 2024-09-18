@@ -2,7 +2,7 @@
 use crate::{
     file_handler::get_decommented_file_reader,
     map::map_data::GameMap,
-    stage::{stage_enemy::StageEnemy, stage_metadata::StageMeta},
+    stage::stage_metadata::StageMeta,
 };
 use csv_types::*;
 use std::path::PathBuf;

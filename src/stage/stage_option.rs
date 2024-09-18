@@ -1,4 +1,4 @@
-use charagroups::get_charagroup;
+use charagroups::CHARAGROUP;
 
 pub mod charagroups {
     use crate::file_handler::{get_file_location, FileLocation};
@@ -43,13 +43,25 @@ pub mod charagroups {
         units: Vec<u32>,
     }
 
-    /// If you want group 1 then do `CHARAGROUP[&0]`.
-    static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
-
-    /// Get charagroup with id `id`.
-    pub fn get_charagroup(id: u32) -> &'static CharaGroup {
-        &CHARAGROUP[(id - 1) as usize]
+    /// Container for static data.
+    pub struct CharaGroups {
+        parsed_file: LazyLock<Vec<CharaGroup>>,
     }
+    impl CharaGroups {
+        const fn new() -> Self {
+            CharaGroups {
+                parsed_file: LazyLock::new(|| read_charagroup_file()),
+            }
+        }
+
+        /// Get charagroup with id `id`.
+        pub fn get_charagroup(&self, id: u32) -> &CharaGroup {
+            &self.parsed_file[usize::try_from(id - 1).unwrap()]
+        }
+    }
+
+    /// If you want group 1 then do `CHARAGROUP.get_charagroup(1)`.
+    pub static CHARAGROUP: CharaGroups = CharaGroups::new();
 
     /// Reads the charagroup file and passes it into a vec of
     /// [CharaGroups][CharaGroup].
@@ -173,5 +185,5 @@ pub struct StageOptionCSV {
 // Okay how to do this
 
 pub fn also_do_stuff() {
-    println!("{:?}", get_charagroup(1));
+    println!("{:?}", CHARAGROUP.get_charagroup(1));
 }
