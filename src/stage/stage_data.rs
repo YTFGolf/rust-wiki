@@ -1,7 +1,14 @@
 //! Module that deals with getting information about stages.
+use super::{
+    stage_enemy::StageEnemy,
+    stage_option::{StageOptionCSV, STAGE_OPTION},
+};
 use crate::{
     file_handler::get_decommented_file_reader,
-    map::map_data::GameMap,
+    map::{
+        map_data::{csv_types::StageDataCSV, GameMap},
+        map_option::{MapOptionCSV, MAP_OPTION},
+    },
     stage::stage_metadata::StageMeta,
 };
 use csv_types::*;
@@ -103,15 +110,11 @@ pub mod csv_types {
     }
 }
 
+/// Stores information about a stage.
 pub struct Stage {
-    // rewards: Option<StageRewards>,
-    // enemies: Vec<StageEnemy>,
-    // meta: StageMeta,
-    // stageCSVData,
-    // mapstagedata
-    // mapoptiondata as well
-    // restrictions
-    // Difficulty/name/next stage? or for wikitext version
+    pub enemies: Vec<StageEnemy>,
+    pub meta: StageMeta,
+    pub stage_csv_data: RawCSVData,
 }
 
 impl Stage {
@@ -122,9 +125,6 @@ impl Stage {
         let stage_file_reader = get_decommented_file_reader(stage_file).unwrap();
         let stage_data = Self::read_stage_csv(stage_file_reader);
 
-        let map_data = GameMap::get_stage_data(md);
-
-        // println!("{stage_data:?}, {map_data:?}");
         // println!(
         //     "{:?}",
         //     stage_data
@@ -138,7 +138,8 @@ impl Stage {
         None
     }
 
-    pub fn read_stage_csv<R: std::io::Read>(reader: R) -> Option<RawCSVData> {
+    /// Read a stage's csv file and obtain the data from it.
+    pub fn read_stage_csv<R: std::io::Read>(reader: R) -> RawCSVData {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)
@@ -183,11 +184,39 @@ impl Stage {
             enemies.push(record);
         }
 
-        Some(RawCSVData {
+        RawCSVData {
             header: csv_head,
             line2: csv_line_2,
             enemies,
-        })
+        }
+    }
+
+    /// Get `map_id` to use in map_option and stage_option.
+    fn get_map_id(&self) -> u32 {
+        if self.meta.type_num == 3 && [15, 16].contains(&self.meta.map_num) {
+            // CotC outbreaks have 22_000 as their map id
+            22_000 + self.meta.map_num
+        } else {
+            self.meta.type_num * 1000 + self.meta.map_num
+        }
+        // this is definitely very fragile
+    }
+
+    /// Get MapStageData data if it exists.
+    pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
+        GameMap::get_stage_data(&self.meta)
+    }
+
+    /// Get Map_option data if it exists.
+    pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
+        let map_id = self.get_map_id();
+        MAP_OPTION.get_map(map_id)
+    }
+
+    /// Get Stage_option data if it exists.
+    pub fn get_stage_option_data(&self) -> Option<impl Iterator<Item = &StageOptionCSV>> {
+        let map_id = self.get_map_id();
+        STAGE_OPTION.get_stage(map_id, self.meta.stage_num)
     }
 }
 

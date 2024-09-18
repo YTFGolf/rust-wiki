@@ -142,7 +142,7 @@ impl GameMap {
     ///
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
     /// Labyrinth stages above 100.
-    pub fn get_stage_data(md: StageMeta) -> Option<StageDataCSV> {
+    pub fn get_stage_data(md: &StageMeta) -> Option<StageDataCSV> {
         let map_file = get_file_location(GameData)
             .join("DataLocal")
             .join(&md.map_file_name);
