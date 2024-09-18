@@ -1,25 +1,19 @@
-use charagroups::CHARAGROUP;
+use charagroups::get_charagroup;
 
 pub mod charagroups {
+    use crate::file_handler::{get_file_location, FileLocation};
+    use std::sync::LazyLock;
+
     #[derive(Debug, serde::Deserialize)]
-    #[allow(dead_code)]
     /// Fixed csv data in Charagroup.csv.
-    pub struct CharaGroupFixedCSV {
+    struct CharaGroupFixedCSV {
         /// ID of charagroup.
-        pub group_id: u32,
+        group_id: u32,
         /// Basically just `stage_restriction_charagroup_{group_id}`.
         _text_id: String,
         /// 0 = Can only use, 2 = can't use
-        pub group_type: u32,
+        group_type: u32,
     }
-
-    use std::{
-        fs::File,
-        io::{BufRead, BufReader},
-        sync::LazyLock,
-    };
-
-    use crate::file_handler::{get_file_location, FileLocation};
 
     #[derive(Debug)]
     /// Type of the Charagroup.
@@ -89,7 +83,12 @@ pub mod charagroups {
     }
 
     /// If you want group 1 then do `CHARAGROUP[&0]`.
-    pub static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
+    static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
+
+    /// Get charagroup with id `id`.
+    pub fn get_charagroup(id: u32) -> &'static CharaGroup {
+        &CHARAGROUP[(id - 1) as usize]
+    }
 
     #[cfg(test)]
     mod tests {
@@ -192,6 +191,5 @@ pub struct StageOptionCSV {
 // Okay how to do this
 
 pub fn also_do_stuff() {
-    println!("useful");
-    let _ = &CHARAGROUP[0];
+    println!("{:?}", get_charagroup(1));
 }
