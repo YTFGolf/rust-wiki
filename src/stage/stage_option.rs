@@ -65,14 +65,21 @@ pub mod charagroups {
             .map(|record| {
                 let result = record.unwrap();
                 let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
+                let max_ind = if result[result.len() - 1].is_empty() {
+                    result.len() - 1
+                } else {
+                    result.len()
+                };
+
                 let mut units: Vec<u32> = vec![];
-                for i in 3..result.len() {
+                for i in 3..max_ind {
                     let n = std::str::from_utf8(&result[i])
                         .unwrap()
                         .parse::<u32>()
                         .unwrap();
                     units.push(n)
                 }
+
                 CharaGroup {
                     group_type: fixed_data.group_type.into(),
                     units,
