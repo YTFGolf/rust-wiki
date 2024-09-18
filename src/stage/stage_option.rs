@@ -43,6 +43,16 @@ pub mod charagroups {
         units: Vec<u32>,
     }
 
+    /// If you want group 1 then do `CHARAGROUP[&0]`.
+    static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
+
+    /// Get charagroup with id `id`.
+    pub fn get_charagroup(id: u32) -> &'static CharaGroup {
+        &CHARAGROUP[(id - 1) as usize]
+    }
+
+    /// Reads the charagroup file and passes it into a vec of
+    /// [CharaGroups][CharaGroup].
     fn read_charagroup_file() -> Vec<CharaGroup> {
         let path = get_file_location(FileLocation::GameData).join("DataLocal/Charagroup.csv");
         let mut rdr = csv::ReaderBuilder::new()
@@ -54,11 +64,16 @@ pub mod charagroups {
         let mut records = rdr.byte_records();
         records.next();
 
+        let mut count = 0;
         records
             .into_iter()
             .map(|record| {
                 let result = record.unwrap();
                 let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
+
+                count += 1;
+                debug_assert_eq!(count, fixed_data.group_id);
+
                 let max_ind = if result[result.len() - 1].is_empty() {
                     result.len() - 1
                 } else {
@@ -80,39 +95,6 @@ pub mod charagroups {
                 }
             })
             .collect()
-    }
-
-    /// If you want group 1 then do `CHARAGROUP[&0]`.
-    static CHARAGROUP: LazyLock<Vec<CharaGroup>> = LazyLock::new(|| read_charagroup_file());
-
-    /// Get charagroup with id `id`.
-    pub fn get_charagroup(id: u32) -> &'static CharaGroup {
-        &CHARAGROUP[(id - 1) as usize]
-    }
-
-    #[cfg(test)]
-    mod tests {
-        use super::*;
-        #[test]
-        fn test_indexes_are_valid() {
-            let path = get_file_location(FileLocation::GameData).join("DataLocal/Charagroup.csv");
-            let mut rdr = csv::ReaderBuilder::new()
-                .has_headers(false)
-                .flexible(true)
-                .from_path(path)
-                .unwrap();
-
-            let mut records = rdr.byte_records();
-            records.next();
-
-            let mut counter = 0;
-            for record in records {
-                let result = record.unwrap();
-                let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
-                counter += 1;
-                assert_eq!(fixed_data.group_id, counter);
-            }
-        }
     }
 }
 /*
