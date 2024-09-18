@@ -46,9 +46,30 @@ pub struct MapOptionCSV<'a> {
     _jpname: &'a str,
 }
 
+pub struct MapOption {
+    map: LazyLock<HashMap<u32, ByteRecord>>,
+}
+impl MapOption {
+    const fn new() -> Self {
+        Self {
+            map: LazyLock::new(|| get_map_option()),
+        }
+    }
+
+    pub fn get_map(&self, map_id: u32) -> Option<MapOptionCSV> {
+        Some(
+            self.map
+                .get_key_value(&map_id)?
+                .1
+                .deserialize(None)
+                .unwrap(),
+        )
+    }
+}
+
 /// Hashmap of the `"DataLocal/Map_option.csv"` file. Individual records are
 /// left unparsed.
-pub static MAP_OPTION: LazyLock<HashMap<u32, ByteRecord>> = LazyLock::new(|| get_map_option());
+pub static MAP_OPTION: MapOption = MapOption::new();
 
 fn get_map_option() -> HashMap<u32, ByteRecord> {
     let mut rdr = csv::ReaderBuilder::new()
@@ -79,7 +100,7 @@ mod tests {
 
     #[test]
     fn test_mo() {
-        let s = MAP_OPTION[&0].deserialize::<MapOptionCSV>(None).unwrap();
+        let s = MAP_OPTION.get_map(0).unwrap();
 
         assert_eq!(s.star4, 300);
     }

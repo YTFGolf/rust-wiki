@@ -70,6 +70,6 @@ pub fn do_stuff() {
     Stage::new("stage00.csv");
     // read_csv_file("DataLocal/stage.csv");
 
-    println!("{:?}", MAP_OPTION[&0]);
+    println!("{:?}", MAP_OPTION.get_map(0));
     also_do_stuff();
 }
