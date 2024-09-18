@@ -1,8 +1,5 @@
 //! Module that deals with getting information about stages.
-use super::{
-    stage_enemy::StageEnemy,
-    stage_option::{StageOptionCSV, STAGE_OPTION},
-};
+use super::stage_option::{StageOptionCSV, STAGE_OPTION};
 use crate::{
     file_handler::get_decommented_file_reader,
     map::{
@@ -112,7 +109,9 @@ pub mod csv_types {
 
 /// Stores information about a stage.
 pub struct StageData {
+    /// Stage's metadata.
     pub meta: StageMeta,
+    /// Data stored in the stage's CSV file.
     pub stage_csv_data: RawCSVData,
 }
 
