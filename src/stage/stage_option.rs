@@ -1,6 +1,5 @@
 //! Module that deals with the `stage_option` file.
 use crate::file_handler::{get_file_location, FileLocation};
-use csv::ByteRecord;
 use std::{collections::HashMap, sync::LazyLock};
 
 /// Module that contains charagroup information.
@@ -42,9 +41,9 @@ pub mod charagroups {
     /// Data about a CharaGroup.
     pub struct CharaGroup {
         /// Type of charagroup.
-        group_type: CharaGroupType,
+        pub group_type: CharaGroupType,
         /// Units in charagroup.
-        units: Vec<u32>,
+        pub units: Vec<u32>,
     }
 
     /// Container for static data.
@@ -165,13 +164,13 @@ impl StageOptions {
     pub fn get_stage(
         &self,
         map_id: u32,
-        stage_id: i32,
+        stage_id: u32,
     ) -> Option<impl Iterator<Item = &StageOptionCSV>> {
         Some(
             self.map
                 .get(&map_id)?
                 .iter()
-                .filter(move |stage| [-1, stage_id].contains(&stage.stage_id)),
+                .filter(move |stage| [-1, stage_id as i32].contains(&stage.stage_id)),
         )
     }
 }
