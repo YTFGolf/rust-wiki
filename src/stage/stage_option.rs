@@ -144,10 +144,10 @@ pub struct StageOptionCSV {
 }
 
 /// Container for the [STAGE_OPTIONS] static.
-pub struct StageOptions {
+pub struct StageOption {
     map: LazyLock<HashMap<u32, Vec<StageOptionCSV>>>,
 }
-impl StageOptions {
+impl StageOption {
     const fn new() -> Self {
         Self {
             map: LazyLock::new(|| get_stage_option()),
@@ -176,7 +176,7 @@ impl StageOptions {
 }
 
 /// Map of valid `map_id`s to the `"DataLocal/Stage_option.csv"` file.
-pub static STAGE_OPTIONS: StageOptions = StageOptions::new();
+pub static STAGE_OPTION: StageOption = StageOption::new();
 
 fn get_stage_option() -> HashMap<u32, Vec<StageOptionCSV>> {
     let mut rdr = csv::ReaderBuilder::new()

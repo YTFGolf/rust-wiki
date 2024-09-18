@@ -83,11 +83,11 @@ fn get_map_option() -> HashMap<u32, ByteRecord> {
     let mut records = rdr.byte_records();
     records.next();
 
-    let records_iter = records.into_iter().map(|a| {
-        let b = a.unwrap();
+    let records_iter = records.into_iter().map(|record| {
+        let result = record.unwrap();
         (
-            std::str::from_utf8(&b[0]).unwrap().parse::<u32>().unwrap(),
-            b,
+            std::str::from_utf8(&result[0]).unwrap().parse::<u32>().unwrap(),
+            result,
         )
     });
 
