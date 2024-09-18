@@ -1,4 +1,5 @@
-//! Module that deals with the `stage_option` file.
+//! Module that deals with the `Stage_option` file.
+
 use crate::file_handler::{get_file_location, FileLocation};
 use std::{collections::HashMap, sync::LazyLock};
 

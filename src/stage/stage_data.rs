@@ -111,31 +111,23 @@ pub mod csv_types {
 }
 
 /// Stores information about a stage.
-pub struct Stage {
-    pub enemies: Vec<StageEnemy>,
+pub struct StageData {
     pub meta: StageMeta,
     pub stage_csv_data: RawCSVData,
 }
 
-impl Stage {
+impl StageData {
     pub fn new(selector: &str) -> Option<Self> {
-        let md = StageMeta::new(selector).unwrap();
+        let meta = StageMeta::new(selector).unwrap();
 
-        let stage_file = PathBuf::from("DataLocal").join(&md.stage_file_name);
+        let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
         let stage_file_reader = get_decommented_file_reader(stage_file).unwrap();
-        let stage_data = Self::read_stage_csv(stage_file_reader);
+        let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
-        // println!(
-        //     "{:?}",
-        //     stage_data
-        //         .unwrap()
-        //         .enemies
-        //         .into_iter()
-        //         .map(StageEnemy::from)
-        //         .collect::<Vec<_>>()
-        // );
-
-        None
+        Some(StageData {
+            meta,
+            stage_csv_data,
+        })
     }
 
     /// Read a stage's csv file and obtain the data from it.
@@ -189,6 +181,21 @@ impl Stage {
             line2: csv_line_2,
             enemies,
         }
+
+        // /// temp
+        // pub fn read_csv_file(file_name: &str) {
+        //     Stage::read_stage_csv(get_decommented_file_reader(file_name).unwrap());
+        //     // check all stage files ig
+        //     // Encounters: check the head, if needs to be nexted then next it
+        //     // do split(',').next()
+        //     // if matches string version of target then do serde
+        //     // if is "0" then break
+        //     // Could make a tester that checks Ms. Sign with the idiomatic and the
+        //     // efficient way of doing it.
+        //     // Would need to benchmark it though.
+        //     // ByteRecord::from(thing.split().collect())
+        //     // Could even do just checking id, mag, amag
+        // }
     }
 
     /// Get `map_id` to use in map_option and stage_option.
@@ -220,21 +227,6 @@ impl Stage {
     }
 }
 
-// /// temp
-// pub fn read_csv_file(file_name: &str) {
-//     Stage::read_stage_csv(get_decommented_file_reader(file_name).unwrap());
-//     // check all stage files ig
-//     // Encounters: check the head, if needs to be nexted then next it
-//     // do split(',').next()
-//     // if matches string version of target then do serde
-//     // if is "0" then break
-//     // Could make a tester that checks Ms. Sign with the idiomatic and the
-//     // efficient way of doing it.
-//     // Would need to benchmark it though.
-//     // ByteRecord::from(thing.split().collect())
-//     // Could even do just checking id, mag, amag
-// }
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -250,7 +242,7 @@ mod tests {
             if !stage_file_re.is_match(&file_name) {
                 continue;
             };
-            Stage::new(&file_name);
+            StageData::new(&file_name);
         }
     }
 }
