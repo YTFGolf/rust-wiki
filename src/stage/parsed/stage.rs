@@ -50,15 +50,13 @@ impl ContinueStages {
 /// Crown difficulty data.
 struct CrownData {
     /// Max crown difficulty.
-    pub max_difficulty: u8,
-    /// 1-crown magnification.
-    pub star_1: Option<NonZeroU32>,
+    pub max_difficulty: std::num::NonZeroU8,
     /// 2-crown magnification.
-    pub star_2: Option<NonZeroU32>,
+    pub crown_2: Option<NonZeroU32>,
     /// 3-crown magnification.
-    pub star_3: Option<NonZeroU32>,
+    pub crown_3: Option<NonZeroU32>,
     /// 4-crown magnification.
-    pub star_4: Option<NonZeroU32>,
+    pub crown_4: Option<NonZeroU32>,
 }
 
 #[derive(Debug)]
@@ -94,8 +92,8 @@ struct Restriction {
     /// being able to deploy specific units.
     pub charagroup: Option<&'static CharaGroup>,
 }
-impl From<StageOptionCSV> for Restriction {
-    fn from(value: StageOptionCSV) -> Self {
+impl From<&StageOptionCSV> for Restriction {
+    fn from(value: &StageOptionCSV) -> Self {
         let charagroup = match NonZeroU32::new(value.charagroup) {
             Some(value) => Some(CHARAGROUP.get_charagroup(value.into()).unwrap()),
             None => None,
@@ -139,12 +137,21 @@ struct Stage {
     max_clears: Option<NonZeroU32>,
     cooldown: Option<NonZeroU32>,
     star_mask: Option<u32>,
-    restrictions: Vec<Restriction>,
-    crown_data: CrownData,
+    crown_data: Option<CrownData>,
+
+    restrictions: Option<Vec<Restriction>>,
 }
 impl From<StageData> for Stage {
     fn from(data: StageData) -> Self {
         let map_stage_data = data.get_map_stage_data();
+        let map_option_data = data.get_map_option_data();
+
+        let restrictions: Option<Vec<Restriction>>;
+        if let Some(data) = data.get_stage_option_data() {
+            restrictions = Some(data.into_iter().map(|r| r.into()).collect());
+        } else {
+            restrictions = None;
+        }
 
         let meta = data.meta;
 
@@ -192,12 +199,27 @@ impl From<StageData> for Stage {
             rewards = None;
         }
 
-        let max_clears = todo!();
-        let cooldown = todo!();
-        let star_mask = todo!();
-        let rewards = todo!();
-        let crown_data = todo!();
-        let restrictions = todo!();
+        let max_clears: Option<NonZeroU32>;
+        let cooldown: Option<NonZeroU32>;
+        let star_mask: Option<u32>;
+        let crown_data: Option<CrownData>;
+
+        if let Some(data) = map_option_data {
+            max_clears = NonZeroU32::new(data.max_clears);
+            cooldown = NonZeroU32::new(data.cooldown);
+            star_mask = Some(data.star_mask);
+            crown_data = Some(CrownData {
+                max_difficulty: data.max_difficulty,
+                crown_2: NonZeroU32::new(data.crown_2),
+                crown_3: NonZeroU32::new(data.crown_3),
+                crown_4: NonZeroU32::new(data.crown_4),
+            })
+        } else {
+            max_clears = None;
+            cooldown = None;
+            star_mask = None;
+            crown_data = None;
+        }
 
         todo!()
     }
