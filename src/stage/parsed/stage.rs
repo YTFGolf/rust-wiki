@@ -1,5 +1,5 @@
 //! Represents a full stage.
-#![allow(dead_code, unused, missing_docs)]
+#![allow(dead_code)]
 
 use super::stage_enemy::StageEnemy;
 use crate::{
@@ -17,7 +17,7 @@ use std::num::NonZeroU32;
 
 #[derive(Debug)]
 /// Rewards for the stage.
-struct StageRewards {
+pub struct StageRewards {
     /// Modifier for the treasure drop.
     pub treasure_type: TreasureType,
     /// Raw treasure drop data.
@@ -28,13 +28,13 @@ struct StageRewards {
 
 #[derive(Debug)]
 /// Possible continuation stages.
-struct ContinueStages {
+pub struct ContinueStages {
     /// Chance of continuing.
-    chance: u32,
+    pub chance: u32,
     /// EX stage map id.
-    map_id: u32,
+    pub map_id: u32,
     /// `(min, max)` pair of stage ids.
-    stage_ids: (u32, u32),
+    pub stage_ids: (u32, u32),
 }
 impl ContinueStages {
     fn new(chance: u32, map_id: u32, stage_id_min: u32, stage_id_max: u32) -> Self {
@@ -48,7 +48,7 @@ impl ContinueStages {
 
 #[derive(Debug)]
 /// Crown difficulty data.
-struct CrownData {
+pub struct CrownData {
     /// Max crown difficulty.
     pub max_difficulty: std::num::NonZeroU8,
     /// 2-crown magnification.
@@ -60,8 +60,11 @@ struct CrownData {
 }
 
 #[derive(Debug)]
+/// Crowns that restriction applies to.
 pub enum RestrictionCrowns {
+    /// All crown difficulties.
     All,
+    /// Only one difficulty.
     One(std::num::NonZeroU8),
 }
 impl From<i8> for RestrictionCrowns {
@@ -75,7 +78,7 @@ impl From<i8> for RestrictionCrowns {
 
 #[derive(Debug)]
 /// Stage's restriction.
-struct Restriction {
+pub struct Restriction {
     /// Crown difficulties that the restrictions apply to.
     pub crowns_applied: RestrictionCrowns,
     /// Rarities allowed.
@@ -111,35 +114,59 @@ impl From<&StageOptionCSV> for Restriction {
     }
 }
 
-struct Stage {
-    meta: StageMeta,
+/// Full stage struct.
+pub struct Stage {
+    /// Stage's metadata.
+    pub meta: StageMeta,
 
     // Data that always exists.
-    base_id: i32,
-    is_no_continues: bool,
-    continue_data: Option<ContinueStages>,
-    width: u32,
-    /// Note: if the stage has an animated base this is not the correct base hp.
-    base_hp: u32,
-    max_enemies: u32,
-    anim_base_id: Option<NonZeroU32>,
-    time_limit: Option<NonZeroU32>,
-    is_base_indestructible: bool,
-    background_id: u32,
-    enemies: Vec<StageEnemy>,
+    /// ID of enemy base (if [anim_base_id][Self::anim_base_id] exists then that
+    /// overrides this flag).
+    pub base_id: i32,
+    /// Does the stage have no continues.
+    pub is_no_continues: bool,
+    /// Data about possible continuation stages.
+    pub continue_data: Option<ContinueStages>,
+    /// Stage width.
+    pub width: u32,
+    /// Base's HP (if [anim_base_id][Self::anim_base_id] exists then base HP is
+    /// the HP of that enemy, not this field).
+    pub base_hp: u32,
+    /// Max enemies that can spawn.
+    pub max_enemies: u32,
+    /// ID of animated base.
+    pub anim_base_id: Option<NonZeroU32>,
+    /// Time limit of stage.
+    pub time_limit: Option<NonZeroU32>,
+    /// Is base indestructible until boss dies.
+    pub is_base_indestructible: bool,
+    /// ID of the stage's background.
+    pub background_id: u32,
+    /// List of enemies in stage.
+    pub enemies: Vec<StageEnemy>,
 
     // Data related to maps and stage rewards. Almost always exists, except for
     // like Labyrinth.
-    energy: Option<u32>,
-    xp: Option<u32>,
-    rewards: Option<StageRewards>,
+    /// Energy cost of stage.
+    // TODO figure out catamin stuff.
+    pub energy: Option<u32>,
+    /// Base XP reward of stage.
+    pub xp: Option<u32>,
+    /// Rewards available.
+    /// Note: if the stage has an animated base this is not the correct base hp.
+    pub rewards: Option<StageRewards>,
 
-    max_clears: Option<NonZeroU32>,
-    cooldown: Option<NonZeroU32>,
-    star_mask: Option<u32>,
-    crown_data: Option<CrownData>,
+    /// Max clears before stage disappears.
+    pub max_clears: Option<NonZeroU32>,
+    /// Gauntlet cooldown.
+    pub cooldown: Option<NonZeroU32>,
+    /// Binary mask of the star difficulty.
+    pub star_mask: Option<u16>,
+    /// Crown difficulties of stage.
+    pub crown_data: Option<CrownData>,
 
-    restrictions: Option<Vec<Restriction>>,
+    /// Stage's restrictions.
+    pub restrictions: Option<Vec<Restriction>>,
 }
 impl From<StageData> for Stage {
     fn from(data: StageData) -> Self {
@@ -201,7 +228,7 @@ impl From<StageData> for Stage {
 
         let max_clears: Option<NonZeroU32>;
         let cooldown: Option<NonZeroU32>;
-        let star_mask: Option<u32>;
+        let star_mask: Option<u16>;
         let crown_data: Option<CrownData>;
 
         if let Some(data) = map_option_data {
@@ -250,5 +277,12 @@ fn u8_to_bool(n: u8) -> bool {
         0 => false,
         1 => true,
         n => panic!("Value {n} is not a valid boolean number!"),
+    }
+}
+
+impl Stage {
+    /// Create a new stage object from `selector`.
+    pub fn new(selector: &str) -> Option<Self> {
+        Some(StageData::new(selector)?.into())
     }
 }

@@ -38,7 +38,7 @@ pub struct MapOptionCSV {
     /// "Challenge flag".
     _挑戦フラグ: u32,
     /// Binary representation of map's star difficulty.
-    pub star_mask: u32,
+    pub star_mask: u16,
     /// "Hide after clearing".
     // TODO figure out difference between this and max_clears
     _クリア後非表示: u32,
