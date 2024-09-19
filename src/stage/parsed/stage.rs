@@ -1,6 +1,5 @@
 //! Represents a full stage.
-
-use std::num::NonZeroU32;
+#![allow(dead_code, unused, missing_docs)]
 
 use super::stage_enemy::StageEnemy;
 use crate::{
@@ -14,6 +13,7 @@ use crate::{
         },
     },
 };
+use std::num::NonZeroU32;
 
 #[derive(Debug)]
 /// Rewards for the stage.
@@ -134,17 +134,18 @@ struct Stage {
     // like Labyrinth.
     energy: Option<u32>,
     xp: Option<u32>,
+    rewards: Option<StageRewards>,
+
     max_clears: Option<NonZeroU32>,
     cooldown: Option<NonZeroU32>,
     star_mask: Option<u32>,
-    rewards: StageRewards,
-
-    /// Data about
-    crown_data: CrownData,
     restrictions: Vec<Restriction>,
+    crown_data: CrownData,
 }
 impl From<StageData> for Stage {
     fn from(data: StageData) -> Self {
+        let map_stage_data = data.get_map_stage_data();
+
         let meta = data.meta;
 
         let base_id: i32 = data.stage_csv_data.header.base_id;
@@ -173,6 +174,30 @@ impl From<StageData> for Stage {
             .into_iter()
             .map(|e| e.into())
             .collect();
+
+        let energy: Option<u32>;
+        let xp: Option<u32>;
+        let rewards: Option<StageRewards>;
+        if let Some(data) = map_stage_data {
+            energy = Some(data.fixed_data.energy);
+            xp = Some(data.fixed_data.xp);
+            rewards = Some(StageRewards {
+                treasure_type: data.treasure_type,
+                treasure_drop: data.treasure_drop,
+                score_rewards: data.score_rewards,
+            });
+        } else {
+            energy = None;
+            xp = None;
+            rewards = None;
+        }
+
+        let max_clears = todo!();
+        let cooldown = todo!();
+        let star_mask = todo!();
+        let rewards = todo!();
+        let crown_data = todo!();
+        let restrictions = todo!();
 
         todo!()
     }
