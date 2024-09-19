@@ -1,5 +1,4 @@
 //! Represents a full stage.
-#![allow(dead_code)]
 
 use super::stage_enemy::StageEnemy;
 use crate::{
@@ -97,10 +96,8 @@ pub struct Restriction {
 }
 impl From<&StageOptionCSV> for Restriction {
     fn from(value: &StageOptionCSV) -> Self {
-        let charagroup = match NonZeroU32::new(value.charagroup) {
-            Some(value) => Some(CHARAGROUP.get_charagroup(value.into()).unwrap()),
-            None => None,
-        };
+        let charagroup = NonZeroU32::new(value.charagroup)
+            .map(|value| CHARAGROUP.get_charagroup(value.into()).unwrap());
 
         Self {
             crowns_applied: value.stars.into(),
@@ -284,5 +281,25 @@ impl Stage {
     /// Create a new stage object from `selector`.
     pub fn new(selector: &str) -> Option<Self> {
         Some(StageData::new(selector)?.into())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::file_handler::{get_file_location, FileLocation::GameData};
+    use regex::Regex;
+
+    #[test]
+    #[ignore]
+    fn get_all() {
+        let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
+        for f in std::fs::read_dir(get_file_location(GameData).join("DataLocal")).unwrap() {
+            let file_name = f.unwrap().file_name().into_string().unwrap();
+            if !stage_file_re.is_match(&file_name) {
+                continue;
+            };
+            let _stage = Stage::new(&file_name).unwrap();
+        }
     }
 }
