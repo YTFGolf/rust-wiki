@@ -1,9 +1,5 @@
 //! Contains functions to read data files.
-use crate::{
-    config::CONFIG,
-    map::map_option::MAP_OPTION,
-    stage::{stage_data::StageData, stage_option::STAGE_OPTION},
-};
+use crate::{config::CONFIG, map::map_option::MAP_OPTION, stage::stage_option::STAGE_OPTION};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Cursor},
@@ -60,20 +56,6 @@ pub fn get_decommented_file_reader<P: AsRef<Path>>(path: P) -> Result<Cursor<Str
 
 /// temp function
 pub fn do_stuff() {
-    StageData::new("stageRN000_00.csv");
-    StageData::new("stageRND000_00.csv");
-    StageData::new("stageRV006_19.csv");
-    StageData::new("stageRQ000_09.csv");
-    StageData::new("stageRC128_00.csv");
-    StageData::new("stageRS250_00.csv");
-    StageData::new("stageRS155_00.csv");
-    StageData::new("stageEX000_00.csv");
-    StageData::new("stageL000_18.csv");
-    StageData::new("stageW04_08.csv");
-    // Germany (Into the Future)
-    StageData::new("stage00.csv");
-    // read_csv_file("DataLocal/stage.csv");
-
     println!("{:?}", MAP_OPTION.get_map(0));
     println!("{:?}", STAGE_OPTION.get_map(0));
 }

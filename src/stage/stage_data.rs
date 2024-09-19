@@ -108,6 +108,7 @@ pub mod csv_types {
 }
 
 /// Stores information about a stage.
+#[derive(Debug)]
 pub struct StageData {
     /// Stage's metadata.
     pub meta: StageMeta,
@@ -116,6 +117,7 @@ pub struct StageData {
 }
 
 impl StageData {
+    /// Create new StageData object.
     pub fn new(selector: &str) -> Option<Self> {
         let meta = StageMeta::new(selector).unwrap();
 
@@ -229,8 +231,12 @@ impl StageData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::file_handler::{get_file_location, FileLocation::GameData};
+    use crate::{
+        file_handler::{get_file_location, FileLocation::GameData},
+        map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+    };
     use regex::Regex;
+    use std::vec;
 
     #[test]
     #[ignore]
@@ -241,7 +247,169 @@ mod tests {
             if !stage_file_re.is_match(&file_name) {
                 continue;
             };
-            StageData::new(&file_name);
+            let stage = StageData::new(&file_name).unwrap();
+            stage.get_map_stage_data();
+            stage.get_map_option_data();
+            stage.get_stage_option_data().into_iter().for_each(drop);
         }
+    }
+
+    #[test]
+    fn test_specific_things() {
+        let earthshaker = StageData::new("stageRN000_00.csv").unwrap();
+        let doge = &earthshaker.stage_csv_data.enemies[0];
+        assert_eq!(doge.amt, 50);
+        assert_eq!(doge.respawn_frame_min, 30);
+        assert_eq!(doge.base_hp, 100);
+        assert_eq!(doge.magnification, Some(200));
+
+        let whole_new_world = StageData::new("stageRND000_00.csv").unwrap();
+        let mdata = whole_new_world.get_map_stage_data().unwrap();
+        assert_eq!(
+            mdata.treasure_drop,
+            vec![
+                TreasureCSV {
+                    item_chance: 1,
+                    item_id: 6,
+                    item_amt: 10_000_000
+                },
+                TreasureCSV {
+                    item_chance: 1,
+                    item_id: 1,
+                    item_amt: 1
+                }
+            ]
+        );
+        assert_eq!(mdata.treasure_type, TreasureType::OnceThenUnlimited);
+
+        let it_floor_20 = StageData::new("stageRV006_19.csv").unwrap();
+        let mdata = it_floor_20.get_map_stage_data().unwrap();
+        assert_eq!(
+            mdata.treasure_drop,
+            vec![
+                TreasureCSV {
+                    item_chance: 33,
+                    item_id: 41,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 34,
+                    item_id: 160,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 33,
+                    item_id: 43,
+                    item_amt: 1
+                }
+            ]
+        );
+        assert_eq!(mdata.treasure_type, TreasureType::GuaranteedOnce);
+
+        let dja10 = StageData::new("stageRQ000_09.csv").unwrap();
+        assert_eq!(dja10.stage_csv_data.enemies[5].kill_count, Some(60));
+        assert_eq!(dja10.stage_csv_data.enemies[6].kill_count, Some(120));
+
+        let spring_popstar = StageData::new("stageRC128_00.csv").unwrap();
+        let mdata = spring_popstar.get_map_stage_data().unwrap();
+        assert_eq!(
+            mdata.treasure_drop,
+            vec![
+                TreasureCSV {
+                    item_chance: 1,
+                    item_id: 0,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 1,
+                    item_id: 3,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 1,
+                    item_id: 4,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 1,
+                    item_id: 5,
+                    item_amt: 1
+                }
+            ]
+        );
+        assert_eq!(mdata.treasure_type, TreasureType::GuaranteedUnlimited);
+
+        let proving_grounds = StageData::new("stageRS250_00.csv").unwrap();
+        assert_eq!(proving_grounds.stage_csv_data.header.no_cont, 1);
+        assert_eq!(proving_grounds.stage_csv_data.header.cont_chance, 100);
+        assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_idmin, 0);
+        assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_idmax, 1);
+        assert_eq!(proving_grounds.stage_csv_data.header.contmap_id, 27);
+
+        let taste_of_success = StageData::new("stageRS155_00.csv").unwrap();
+        let mdata = taste_of_success.get_map_stage_data().unwrap();
+        assert_eq!(
+            mdata.treasure_drop,
+            vec![
+                TreasureCSV {
+                    item_chance: 10,
+                    item_id: 6,
+                    item_amt: 2_030_000
+                },
+                TreasureCSV {
+                    item_chance: 30,
+                    item_id: 6,
+                    item_amt: 1_020_000
+                },
+                TreasureCSV {
+                    item_chance: 100,
+                    item_id: 6,
+                    item_amt: 510_000
+                }
+            ]
+        );
+        assert_eq!(mdata.treasure_type, TreasureType::OnceThenUnlimited);
+
+        let jubilee_green_night = StageData::new("stageEX000_00.csv").unwrap();
+        let mdata = jubilee_green_night.get_map_stage_data().unwrap();
+        assert_eq!(
+            mdata.treasure_drop,
+            vec![
+                TreasureCSV {
+                    item_chance: 70,
+                    item_id: 40,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 85,
+                    item_id: 38,
+                    item_amt: 1
+                },
+                TreasureCSV {
+                    item_chance: 100,
+                    item_id: 33,
+                    item_amt: 1
+                }
+            ]
+        );
+        assert_eq!(mdata.treasure_type, TreasureType::AllUnlimited);
+
+        let germany_itf_1 = StageData::new("stageW04_08.csv").unwrap();
+        let mdata = germany_itf_1.get_map_stage_data().unwrap();
+        assert_eq!(
+            mdata.score_rewards,
+            vec![
+                ScoreRewardsCSV {
+                    score: 8500,
+                    item_id: 13,
+                    item_amt: 10
+                },
+                ScoreRewardsCSV {
+                    score: 5000,
+                    item_id: 6,
+                    item_amt: 45000
+                }
+            ]
+        );
     }
 }
