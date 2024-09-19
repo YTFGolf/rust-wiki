@@ -19,15 +19,15 @@ pub mod csv_types {
         /// ID of base used.
         pub base_id: i32,
         /// Is no continues? Boolean value.
-        pub no_cont: u32,
+        pub no_cont: u8,
         /// % chance of continuation.
         pub cont_chance: u32,
         /// `map_num` of continuation stages.
-        pub contmap_id: u32,
+        pub cont_map_id: u32,
         /// Minimum `stage_num` of any continuation stage.
-        pub cont_stage_idmin: u32,
+        pub cont_stage_id_min: u32,
         /// Maximum `stage_num` of any continuation stage.
-        pub cont_stage_idmax: u32,
+        pub cont_stage_id_max: u32,
     }
 
     #[derive(Debug, serde::Deserialize)]
@@ -45,11 +45,11 @@ pub mod csv_types {
         /// Max enemies in stage.
         pub max_enemies: u32,
         /// ID of animated base (if 0 then no base).
-        pub animbase_id: u32,
+        pub anim_base_id: u32,
         /// Time limit (is this only used in Dojo stages?).
         pub time_limit: u32,
         /// Do you have the green barrier thing (boolean value).
-        pub indestructible: u32,
+        pub indestructible: u8,
         _unknown_3: Option<u32>,
     }
 
@@ -153,9 +153,9 @@ impl StageData {
                 base_id: 0,
                 no_cont: 0,
                 cont_chance: 0,
-                contmap_id: 0,
-                cont_stage_idmin: 0,
-                cont_stage_idmax: 0,
+                cont_map_id: 0,
+                cont_stage_id_min: 0,
+                cont_stage_id_max: 0,
             }
             // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
         };
@@ -340,9 +340,9 @@ mod tests {
         let proving_grounds = StageData::new("stageRS250_00.csv").unwrap();
         assert_eq!(proving_grounds.stage_csv_data.header.no_cont, 1);
         assert_eq!(proving_grounds.stage_csv_data.header.cont_chance, 100);
-        assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_idmin, 0);
-        assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_idmax, 1);
-        assert_eq!(proving_grounds.stage_csv_data.header.contmap_id, 27);
+        assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_id_min, 0);
+        assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_id_max, 1);
+        assert_eq!(proving_grounds.stage_csv_data.header.cont_map_id, 27);
 
         let taste_of_success = StageData::new("stageRS155_00.csv").unwrap();
         let mdata = taste_of_success.get_map_stage_data().unwrap();
