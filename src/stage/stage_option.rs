@@ -125,7 +125,7 @@ pub struct StageOptionCSV {
     pub map_id: u32,
     /// Crown difficulties that restriction applies to. -1 = all crowns,
     /// otherwise it's just 0-based.
-    pub stars: i32,
+    pub stars: i8,
     /// If is -1 then applies to all stages in map. Otherwise only applies to
     /// the stage in the map with that id.
     pub stage_id: i32,

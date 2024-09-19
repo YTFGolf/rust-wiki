@@ -1,42 +1,17 @@
 //! Represents a full stage.
-/*
-Meta
 
-/// Data that always exists.
-// definite data
-base_id: i32,
-width: u32,
-/// Note: if the stage has an animated base this is not the correct base hp.
-base_hp: u32,
-max_enemies: u32,
-is_no_continues: bool,
-anim_base_id: Option<std::num::NonZeroU32>,
-time_limit: Option<std::num::NonZeroU32>,
-is_base_indestructible: bool
-continue_data: Option<ContinueStages>
-background_id: u32,
-enemies: Vec<StageEnemy>,
-
-/// Data related to maps and stage rewards.
-// almost always exists, except for like Labyrinth
-energy: Option<u32>
-xp: Option<u32>
-max_clears: Option<std::num::NonZeroU32>
-cooldown: Option<std::num::NonZeroU32>
-star_mask: Option<u32>
-rewards (StageDataCSV): Option<new struct>
-
-/// Data about
-crown_data: Option<custom struct>
-restrictions: Option<Vec<<custom struct>>> with `None`s and labels star difficulty.
-*/
 use crate::{
     map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-    stage::stage_option::{
-        charagroups::{CharaGroup, CHARAGROUP},
-        StageOptionCSV,
+    stage::{
+        stage_metadata::StageMeta,
+        stage_option::{
+            charagroups::{CharaGroup, CHARAGROUP},
+            StageOptionCSV,
+        },
     },
 };
+
+use super::stage_enemy::StageEnemy;
 
 #[derive(Debug)]
 /// Rewards for the stage.
@@ -76,8 +51,24 @@ struct CrownData {
 }
 
 #[derive(Debug)]
+pub enum RestrictionCrowns {
+    All,
+    One(std::num::NonZeroU8),
+}
+impl From<i8> for RestrictionCrowns {
+    fn from(value: i8) -> Self {
+        match std::num::NonZeroU8::new((value + 1) as u8) {
+            None => Self::All,
+            Some(value) => Self::One(value),
+        }
+    }
+}
+
+#[derive(Debug)]
 /// Stage's restriction.
 struct Restriction {
+    /// Crown difficulties that the restrictions apply to.
+    pub crowns_applied: RestrictionCrowns,
     /// Rarities allowed.
     pub rarity: Option<std::num::NonZeroU8>,
     /// Cat deploy limit.
@@ -100,6 +91,7 @@ impl From<StageOptionCSV> for Restriction {
         };
 
         Self {
+            crowns_applied: value.stars.into(),
             rarity: std::num::NonZeroU8::new(value.rarity),
             deploy_limit: std::num::NonZeroU32::new(value.deploy_limit),
             rows: std::num::NonZeroU8::new(value.rows),
@@ -108,4 +100,37 @@ impl From<StageOptionCSV> for Restriction {
             charagroup,
         }
     }
+}
+
+struct Stage {
+    meta: StageMeta,
+
+    // Data that always exists.
+
+    base_id: i32,
+    width: u32,
+    /// Note: if the stage has an animated base this is not the correct base hp.
+    base_hp: u32,
+    max_enemies: u32,
+    is_no_continues: bool,
+    anim_base_id: Option<std::num::NonZeroU32>,
+    time_limit: Option<std::num::NonZeroU32>,
+    is_base_indestructible: bool,
+    continue_data: Option<ContinueStages>,
+    background_id: u32,
+    enemies: Vec<StageEnemy>,
+
+    // Data related to maps and stage rewards. Almost always exists, except for
+    // like Labyrinth.
+
+    energy: Option<u32>,
+    xp: Option<u32>,
+    max_clears: Option<std::num::NonZeroU32>,
+    cooldown: Option<std::num::NonZeroU32>,
+    star_mask: Option<u32>,
+    rewards: StageRewards,
+
+    /// Data about
+    crown_data: CrownData,
+    restrictions: Vec<Restriction>,
 }
