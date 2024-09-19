@@ -56,7 +56,7 @@ pub struct MapOption {
 impl MapOption {
     const fn new() -> Self {
         Self {
-            map: LazyLock::new(|| get_map_option()),
+            map: LazyLock::new(get_map_option),
         }
     }
 
@@ -86,7 +86,7 @@ fn get_map_option() -> HashMap<u32, ByteRecord> {
     let mut records = rdr.byte_records();
     records.next();
 
-    let records_iter = records.into_iter().map(|record| {
+    let records_iter = records.map(|record| {
         let result = record.unwrap();
         (
             std::str::from_utf8(&result[0])

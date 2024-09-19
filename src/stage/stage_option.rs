@@ -54,7 +54,7 @@ pub mod charagroups {
     impl CharaGroups {
         const fn new() -> Self {
             CharaGroups {
-                parsed_file: LazyLock::new(|| read_charagroup_file()),
+                parsed_file: LazyLock::new(read_charagroup_file),
             }
         }
 
@@ -82,7 +82,6 @@ pub mod charagroups {
 
         let mut count = 0;
         records
-            .into_iter()
             .map(|record| {
                 let result = record.unwrap();
                 let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
@@ -151,7 +150,7 @@ pub struct StageOption {
 impl StageOption {
     const fn new() -> Self {
         Self {
-            map: LazyLock::new(|| get_stage_option()),
+            map: LazyLock::new(get_stage_option),
         }
     }
 
