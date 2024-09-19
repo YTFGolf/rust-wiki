@@ -47,7 +47,7 @@ pub mod csv_types {
         _second_track: u32,
     }
 
-    #[derive(Debug, serde::Deserialize)]
+    #[derive(Debug, PartialEq, serde::Deserialize)]
     /// CSV data related to stage treasures.
     pub struct TreasureCSV {
         /// Chance the item will drop.
@@ -58,7 +58,7 @@ pub mod csv_types {
         pub item_amt: u32,
     }
 
-    #[derive(Debug, serde::Deserialize)]
+    #[derive(Debug, PartialEq, serde::Deserialize)]
     /// CSV data related to timed score rewards.
     pub struct ScoreRewardsCSV {
         /// Score required to get item.
@@ -69,7 +69,7 @@ pub mod csv_types {
         pub item_amt: u32,
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, PartialEq)]
     /// Treasure drop reward modifier.
     ///
     /// All descriptions are purely speculative based on BCU code; if you have

@@ -136,8 +136,6 @@ impl StageData {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)
-            // .from_reader(File::open(gd.join("DataLocal/stage00.csv")).unwrap())
-            // .from_reader(File::open(gd.join("DataLocal/stage.csv")).unwrap())
             .from_reader(reader);
 
         let mut records = rdr.byte_records();

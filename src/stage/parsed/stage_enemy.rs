@@ -24,12 +24,29 @@ impl From<u32> for BossType {
 }
 
 #[derive(Debug)]
+/// Amount of the enemy that spawns.
+pub enum EnemyAmount {
+    /// Infinite.
+    Infinite,
+    /// Limited.
+    Limit(std::num::NonZeroU32),
+}
+impl From<u32> for EnemyAmount {
+    fn from(value: u32) -> Self {
+        match std::num::NonZeroU32::new(value) {
+            None => Self::Infinite,
+            Some(n) => Self::Limit(n),
+        }
+    }
+}
+
+#[derive(Debug)]
 /// Representation of an enemy in a stage.
 pub struct StageEnemy {
     /// Wiki id (Doge is 0).
     pub id: u32,
-    /// Amount (0 is infinite).
-    pub amount: u32,
+    /// Amount.
+    pub amount: EnemyAmount,
     /// Start frame.
     pub start_frame: u32,
     /// Do you enforce `start_frame` even if enemy spawns after base hit.
@@ -46,13 +63,13 @@ pub struct StageEnemy {
     /// Either magnification or (hp, ap).
     pub magnification: Either<u32, (u32, u32)>,
     /// How many cats die before enemy appears.
-    pub kill_count: u32,
+    pub kill_count: Option<std::num::NonZeroU32>,
 }
 
 impl From<StageEnemyCSV> for StageEnemy {
     fn from(value: StageEnemyCSV) -> Self {
         let id = value.num - 2;
-        let amount = value.amt;
+        let amount = value.amt.into();
 
         let start_frame = value.start_frame * 2;
         let enforce_start_frame = match value.is_spawn_delay {
@@ -67,7 +84,7 @@ impl From<StageEnemyCSV> for StageEnemy {
         let respawn_time = (value.respawn_frame_min * 2, value.respawn_frame_max * 2);
         let base_hp = value.base_hp;
         let layer = (value.layer_min, value.layer_max);
-        let boss_type = BossType::from(value.boss_type);
+        let boss_type = value.boss_type.into();
 
         let hpmag = value.magnification.unwrap_or(100);
         let magnification = match value.attack_magnification {
@@ -78,7 +95,7 @@ impl From<StageEnemyCSV> for StageEnemy {
             },
         };
 
-        let kill_count = value.kill_count.unwrap_or(0);
+        let kill_count = std::num::NonZeroU32::new(value.kill_count.unwrap_or(0));
 
         Self {
             id,
