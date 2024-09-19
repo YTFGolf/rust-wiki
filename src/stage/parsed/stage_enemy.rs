@@ -1,6 +1,5 @@
 //! Module that deals with getting information about enemies in stages.
-
-use super::stage_data::csv_types::StageEnemyCSV;
+use crate::stage::stage_data::csv_types::StageEnemyCSV;
 use either::Either::{self, Left, Right};
 
 #[derive(Debug)]
