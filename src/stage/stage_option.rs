@@ -161,16 +161,13 @@ impl StageOption {
 
     /// Get all restrictions in the map where either the entire map has a
     /// restriction or that specific stage has a restriction.
-    pub fn get_stage(
-        &self,
-        map_id: u32,
-        stage_id: u32,
-    ) -> Option<impl Iterator<Item = &StageOptionCSV>> {
+    pub fn get_stage(&self, map_id: u32, stage_id: u32) -> Option<Vec<&StageOptionCSV>> {
         Some(
             self.map
                 .get(&map_id)?
                 .iter()
-                .filter(move |stage| [-1, stage_id as i32].contains(&stage.stage_id)),
+                .filter(move |stage| [-1, stage_id as i32].contains(&stage.stage_id))
+                .collect(),
         )
     }
 }

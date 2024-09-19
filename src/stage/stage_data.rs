@@ -220,7 +220,7 @@ impl StageData {
     }
 
     /// Get Stage_option data if it exists.
-    pub fn get_stage_option_data(&self) -> Option<impl Iterator<Item = &StageOptionCSV>> {
+    pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
         let map_id = self.get_map_id();
         STAGE_OPTION.get_stage(map_id, self.meta.stage_num)
     }
