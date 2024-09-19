@@ -3,6 +3,5 @@
 #![warn(missing_docs)]
 #![forbid(unsafe_code)]
 pub mod config;
+pub mod data;
 pub mod file_handler;
-pub mod map;
-pub mod stage;

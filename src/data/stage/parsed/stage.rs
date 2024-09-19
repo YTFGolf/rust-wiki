@@ -2,8 +2,8 @@
 
 use super::stage_enemy::StageEnemy;
 use crate::{
-    map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-    stage::{
+    data::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+    data::stage::{
         stage_data::StageData,
         stage_metadata::StageMeta,
         stage_option::{

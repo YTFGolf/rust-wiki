@@ -11,7 +11,7 @@ pub struct MapOptionCSV {
     ///
     /// Roughly follows the format of `str(type_id * 1000 + map_id)`, except for
     /// CotC Zombie Outbreaks where it's `str(22000 + map_id)`. Also used in
-    /// [stage_option][crate::stage::stage_option::StageOptionCSV::map_id].
+    /// [stage_option][crate::data::stage::stage_option::StageOptionCSV::map_id].
     pub map_id: u32,
     /// Highest crown difficulty the stage goes up to.
     pub max_difficulty: NonZero<u8>,

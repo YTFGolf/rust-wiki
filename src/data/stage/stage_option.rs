@@ -121,7 +121,7 @@ pub mod charagroups {
 /// If map has multiple restrictions it will have multiple entries in the file.
 /// If any restriction field is 0 then that restriction does not apply.
 pub struct StageOptionCSV {
-    /// Same as [`map_option`'s][crate::map::map_option::MapOptionCSV::map_id].
+    /// Same as [`map_option`'s][crate::data::map::map_option::MapOptionCSV::map_id].
     pub map_id: u32,
     /// Crown difficulties that restriction applies to. -1 = all crowns,
     /// otherwise it's just 0-based.

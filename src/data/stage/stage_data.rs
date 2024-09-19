@@ -1,12 +1,12 @@
 //! Module that deals with getting information about stages.
 use super::stage_option::{StageOptionCSV, STAGE_OPTION};
 use crate::{
-    file_handler::get_decommented_file_reader,
-    map::{
+    data::map::{
         map_data::{csv_types::StageDataCSV, GameMap},
         map_option::{MapOptionCSV, MAP_OPTION},
     },
-    stage::stage_metadata::StageMeta,
+    data::stage::stage_metadata::StageMeta,
+    file_handler::get_decommented_file_reader,
 };
 use csv_types::*;
 use std::path::PathBuf;
@@ -229,7 +229,7 @@ impl StageData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType};
+    use crate::data::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType};
     use std::vec;
 
     #[test]

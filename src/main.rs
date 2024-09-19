@@ -1,4 +1,4 @@
-use rust_wiki::{file_handler::do_stuff, stage::stage_metadata::StageMeta};
+use rust_wiki::{data::stage::stage_metadata::StageMeta, file_handler::do_stuff};
 
 // fn benchmark_stage_type(){
 //     let start = Instant::now();
