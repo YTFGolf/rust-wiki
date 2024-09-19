@@ -112,6 +112,8 @@ mod tests {
         assert_eq!(s.crown_4, 300);
     }
 
+    /// Assert that 1 <= difficulty <= 4, map id is not in `seen`, crown 1 =
+    /// 100.
     fn assert_conditions(record_parsed: MapOptionCSV, seen: &HashSet<u32>) -> u32 {
         let map_id = record_parsed.map_id;
         let d: u8 = record_parsed.max_difficulty.into();
@@ -177,6 +179,87 @@ mod tests {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
             "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+        );
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = result.unwrap();
+            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+
+            let map_id = assert_conditions(record_parsed, &seen);
+            seen.insert(map_id);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_difficulty_checker_works_0() {
+        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        let reader = Cursor::new(
+            "0,0,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+        );
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = result.unwrap();
+            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+
+            let map_id = assert_conditions(record_parsed, &seen);
+            seen.insert(map_id);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_difficulty_checker_works_5() {
+        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        let reader = Cursor::new(
+            "0,5,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+        );
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = result.unwrap();
+            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+
+            let map_id = assert_conditions(record_parsed, &seen);
+            seen.insert(map_id);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_crown_1_checker_works() {
+        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        let reader = Cursor::new(
+            "0,5,101,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
              0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
         );
         let rdr = csv::ReaderBuilder::new()
