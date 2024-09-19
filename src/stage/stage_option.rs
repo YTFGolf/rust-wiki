@@ -130,11 +130,11 @@ pub struct StageOptionCSV {
     /// the stage in the map with that id.
     pub stage_id: i32,
     /// Rarities allowed. Binary value.
-    pub rarity: u32,
+    pub rarity: u8,
     /// Cat deploy limit.
     pub deploy_limit: u32,
     /// Rows that you can deploy from.
-    pub rows: u32,
+    pub rows: u8,
     /// Minimum unit cost.
     pub min_cost: u32,
     /// Maximum unit cost.
