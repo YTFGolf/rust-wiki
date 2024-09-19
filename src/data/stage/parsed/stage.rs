@@ -111,6 +111,7 @@ impl From<&StageOptionCSV> for Restriction {
     }
 }
 
+#[derive(Debug)]
 /// Full stage struct.
 pub struct Stage {
     /// Stage's metadata.
