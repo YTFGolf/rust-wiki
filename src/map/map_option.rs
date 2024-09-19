@@ -2,7 +2,7 @@
 
 use crate::file_handler::{get_file_location, FileLocation};
 use csv::ByteRecord;
-use std::{collections::HashMap, sync::LazyLock};
+use std::{collections::HashMap, num::NonZero, sync::LazyLock};
 
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the map option CSV.
@@ -14,15 +14,15 @@ pub struct MapOptionCSV {
     /// [stage_option][crate::stage::stage_option::StageOptionCSV::map_id].
     pub map_id: u32,
     /// Highest crown difficulty the stage goes up to.
-    pub stars_max: u32,
-    /// Magnification on 1-crown difficulty.
-    pub star1: u32,
+    pub max_difficulty: NonZero<u8>,
+    /// Magnification on 1-crown difficulty (will always be 100).
+    _crown_1: u32,
     /// Magnification on 2-crown difficulty.
-    pub star2: u32,
+    pub crown_2: u32,
     /// Magnification on 3-crown difficulty.
-    pub star3: u32,
+    pub crown_3: u32,
     /// Magnification on 4-crown difficulty.
-    pub star4: u32,
+    pub crown_4: u32,
 
     /// Type of stage? (E.g. Catfruit, XP).
     _ゲリラset: u32,
@@ -109,11 +109,21 @@ mod tests {
     fn test_mo() {
         let s = MAP_OPTION.get_map(0).unwrap();
 
-        assert_eq!(s.star4, 300);
+        assert_eq!(s.crown_4, 300);
+    }
+
+    fn assert_conditions(record_parsed: MapOptionCSV, seen: &HashSet<u32>) -> u32 {
+        let map_id = record_parsed.map_id;
+        let d: u8 = record_parsed.max_difficulty.into();
+
+        assert!(1 <= d && d <= 4);
+        assert!(!seen.contains(&map_id));
+        assert_eq!(record_parsed._crown_1, 100);
+        map_id
     }
 
     #[test]
-    fn assert_parses_and_no_duplicates() {
+    fn assert_parses_and_no_duplicates_and_correct_fields() {
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             // technically does have headers but that's an issue for another day
@@ -129,9 +139,8 @@ mod tests {
         for result in records {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-            let map_id = record_parsed.map_id;
 
-            assert!(!seen.contains(&map_id));
+            let map_id = assert_conditions(record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -156,9 +165,8 @@ mod tests {
         for result in records {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-            let map_id = record_parsed.map_id;
 
-            assert!(!seen.contains(&map_id));
+            let map_id = assert_conditions(record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -184,9 +192,8 @@ mod tests {
         for result in records {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-            let map_id = record_parsed.map_id;
 
-            assert!(!seen.contains(&map_id));
+            let map_id = assert_conditions(record_parsed, &seen);
             seen.insert(map_id);
         }
     }
