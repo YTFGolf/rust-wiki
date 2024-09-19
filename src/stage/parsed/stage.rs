@@ -221,7 +221,28 @@ impl From<StageData> for Stage {
             crown_data = None;
         }
 
-        todo!()
+        Self {
+            meta,
+            base_id,
+            is_no_continues,
+            continue_data,
+            width,
+            base_hp,
+            max_enemies,
+            anim_base_id,
+            time_limit,
+            is_base_indestructible,
+            background_id,
+            enemies,
+            energy,
+            xp,
+            rewards,
+            max_clears,
+            cooldown,
+            star_mask,
+            crown_data,
+            restrictions,
+        }
     }
 }
 fn u8_to_bool(n: u8) -> bool {
