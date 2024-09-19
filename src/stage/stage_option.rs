@@ -143,7 +143,7 @@ pub struct StageOptionCSV {
     pub charagroup: u32,
 }
 
-/// Container for the [STAGE_OPTIONS] static.
+/// Container for the [STAGE_OPTION] static.
 pub struct StageOption {
     map: LazyLock<HashMap<u32, Vec<StageOptionCSV>>>,
 }
