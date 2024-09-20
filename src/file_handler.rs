@@ -1,6 +1,11 @@
 //! Contains functions to read data files.
 use crate::{
-    config::CONFIG, data::{map::map_option::MAP_OPTION, stage::{parsed::stage::Stage, stage_option::STAGE_OPTION}},
+    config::CONFIG,
+    data::{
+        map::map_option::MAP_OPTION,
+        stage::{parsed::stage::Stage, stage_option::STAGE_OPTION},
+    },
+    wiki_files::update_wiki_files,
 };
 use std::{
     fs::File,
@@ -61,4 +66,5 @@ pub fn do_stuff() {
     println!("{:?}", MAP_OPTION.get_map(0));
     println!("{:?}", STAGE_OPTION.get_map(0));
     println!("{:?}", Stage::new("n 0 0").unwrap());
+    let _ = update_wiki_files();
 }
