@@ -21,6 +21,8 @@ pub mod consts {
         /// Are files of the type `stageR{code}` or are they of the type
         /// `stage{code}`?
         pub has_r_prefix: bool,
+        /// Enum variant of the stage type.
+        pub type_enum: StageTypeEnum,
     }
 
     const fn initialise_stage_type(
@@ -28,12 +30,14 @@ pub mod consts {
         number: u32,
         code: &'static str,
         has_r_prefix: bool,
+        type_enum: StageTypeEnum,
     ) -> StageType {
         StageType {
             name,
             number,
             code,
             has_r_prefix,
+            type_enum,
         }
     }
 
@@ -86,11 +90,12 @@ pub mod consts {
     #[cfg(test)]
     mod tests {
         use super::*;
+        use StageTypeEnum::*;
 
         #[test]
         fn test_get_selector_type() {
-            assert_eq!(get_selector_type("ITF").unwrap().code, "main");
-            assert_eq!(get_selector_type("itf").unwrap().code, "main");
+            assert_eq!(get_selector_type("ITF").unwrap().type_enum, MainChapters);
+            assert_eq!(get_selector_type("itf").unwrap().type_enum, MainChapters);
             assert_eq!(get_selector_type("itf2"), None);
         }
 
@@ -100,28 +105,53 @@ pub mod consts {
         }
     }
 
+    /// All possible type of stage.
+    #[allow(missing_docs)]
+    #[derive(Debug, PartialEq, Clone, Copy)]
+    pub enum StageTypeEnum {
+        SoL,
+        Event,
+        Collab,
+        MainChapters,
+        Extra,
+        Dojo,
+        RankingDojo,
+        Tower,
+        Challenge,
+        UL,
+        Catamin,
+        Gauntlet,
+        Enigma,
+        CollabGauntlet,
+        Behemoth,
+        Labyrinth,
+        ZL,
+        Colosseum,
+    }
+    use StageTypeEnum::*;
+
     #[rustfmt::skip]
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
     pub const STAGE_TYPES: [StageType; 18] = [
-        initialise_stage_type("Stories of Legend",    000, "N",     true),
-        initialise_stage_type("Event Stages",         001, "S",     true),
-        initialise_stage_type("Collaboration Stages", 002, "C",     true),
-        initialise_stage_type("Main Chapters",        003, "main",  false),
-        initialise_stage_type("Extra Stages",         004, "RE|EX", false),
-        initialise_stage_type("Catclaw Dojo",         006, "T",     true),
-        initialise_stage_type("Towers",               007, "V",     true),
-        initialise_stage_type("Ranking Dojo",         011, "R",     true),
-        initialise_stage_type("Challenge Battle",     012, "M",     true),
-        initialise_stage_type("Uncanny Legends",      013, "NA",    true),
-        initialise_stage_type("Catamin Stages",       014, "B",     true),
-        initialise_stage_type("Gauntlets",            024, "A",     true),
-        initialise_stage_type("Enigma Stages",        025, "H",     true),
-        initialise_stage_type("Collab Gauntlets",     027, "CA",    true),
-        initialise_stage_type("Behemoth Culling",     031, "Q",     true),
-        initialise_stage_type("Labyrinth",            033, "L",     false),
-        initialise_stage_type("Zero Legends",         034, "ND",    true),
-        initialise_stage_type("Colosseum",            036, "SR",    true),
+        initialise_stage_type("Stories of Legend",    000, "N",     true,  SoL,),
+        initialise_stage_type("Event Stages",         001, "S",     true,  Event,),
+        initialise_stage_type("Collaboration Stages", 002, "C",     true,  Collab,),
+        initialise_stage_type("Main Chapters",        003, "main",  false, MainChapters,),
+        initialise_stage_type("Extra Stages",         004, "RE|EX", false, Extra,),
+        initialise_stage_type("Catclaw Dojo",         006, "T",     true,  Dojo,),
+        initialise_stage_type("Towers",               007, "V",     true,  RankingDojo,),
+        initialise_stage_type("Ranking Dojo",         011, "R",     true,  Tower,),
+        initialise_stage_type("Challenge Battle",     012, "M",     true,  Challenge,),
+        initialise_stage_type("Uncanny Legends",      013, "NA",    true,  UL,),
+        initialise_stage_type("Catamin Stages",       014, "B",     true,  Catamin,),
+        initialise_stage_type("Gauntlets",            024, "A",     true,  Gauntlet,),
+        initialise_stage_type("Enigma Stages",        025, "H",     true,  Enigma,),
+        initialise_stage_type("Collab Gauntlets",     027, "CA",    true,  CollabGauntlet,),
+        initialise_stage_type("Behemoth Culling",     031, "Q",     true,  Behemoth,),
+        initialise_stage_type("Labyrinth",            033, "L",     false, Labyrinth,),
+        initialise_stage_type("Zero Legends",         034, "ND",    true,  ZL,),
+        initialise_stage_type("Colosseum",            036, "SR",    true,  Colosseum,),
     ];
 
     lazy_static! {
@@ -134,6 +164,7 @@ pub mod consts {
     /// ‎
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
+    // TODO probably replace this with enums
     static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
@@ -157,7 +188,7 @@ pub mod consts {
     ];
     }
 }
-use consts::{get_selector_type, StageType, STAGE_TYPES};
+use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -197,6 +228,8 @@ pub struct StageMeta {
     pub type_code: &'static str,
     /// Numerical value of the [StageType].
     pub type_num: u32,
+    /// Enum variant of stage type.
+    pub type_enum: StageTypeEnum,
     /// Map number of the stage.
     pub map_num: u32,
     /// Stage number of the stage.
@@ -236,9 +269,9 @@ impl StageMeta {
 
     /// Parse space-delimited selector into [StageMeta] object.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::StageMeta;
+    /// # use rust_wiki::data::stage::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
     /// let selector = "N 0 0";
-    /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_selector(selector: &str) -> Result<StageMeta, StageMetaParseError> {
         let selector: Vec<&str> = selector.split(" ").collect();
@@ -249,8 +282,8 @@ impl StageMeta {
             return Err(StageMetaParseError::Invalid);
         };
 
-        match stage_type.code {
-            "main" => Self::from_selector_main(&selector),
+        match stage_type.type_enum {
+            StageTypeEnum::MainChapters => Self::from_selector_main(&selector),
             _ => {
                 // let chapter: u32 = stage_type.parse().unwrap();
                 let submap: u32 = selector[1].parse().unwrap();
@@ -306,9 +339,9 @@ impl StageMeta {
     /// `selector` can either be the full reference (with or without a leading
     /// `*`) or just the stage part.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::StageMeta;
+    /// # use rust_wiki::data::stage::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
-    /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta::from_ref("s00000-01").unwrap());
     /// ```
     pub fn from_ref(selector: &str) -> Result<StageMeta, StageMetaParseError> {
@@ -338,9 +371,9 @@ impl StageMeta {
 
     /// Get [StageMeta] from a selector split into variables.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::StageMeta;
+    /// # use rust_wiki::data::stage::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
     /// let st = StageMeta::from_split("SoL", 0, 0);
-    /// assert_eq!(st.unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
+    /// assert_eq!(st.unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_split(
         stage_type: &str,
@@ -362,6 +395,7 @@ impl StageMeta {
     ) -> Result<StageMeta, StageMetaParseError> {
         let type_name = stage_type.name;
         let type_num = stage_type.number;
+        let type_enum = stage_type.type_enum;
 
         let type_code;
         let map_file_name;
@@ -390,6 +424,7 @@ impl StageMeta {
             type_name,
             type_code,
             type_num,
+            type_enum,
             map_num,
             stage_num,
             map_file_name,
@@ -412,6 +447,7 @@ impl StageMeta {
         let type_name = code.name;
         let type_code = code.code;
         let type_num = code.number;
+        let type_enum = code.type_enum;
 
         let (map_num, stage_num, map_file_name, stage_file_name) =
             match selector[0].to_lowercase().as_str() {
@@ -484,6 +520,7 @@ impl StageMeta {
             type_name,
             type_code,
             type_num,
+            type_enum,
             map_num,
             stage_num,
             map_file_name,
@@ -495,8 +532,8 @@ impl StageMeta {
 #[cfg(test)]
 mod tests {
     use rand::random;
-
     use super::*;
+    use StageTypeEnum::*;
 
     #[test]
     fn test_from_split_sol() {
@@ -504,6 +541,7 @@ mod tests {
             type_name: "Stories of Legend",
             type_code: "N",
             type_num: 0,
+            type_enum: SoL,
             map_num: 0,
             stage_num: 0,
             map_file_name: "MapStageDataN_000.csv".to_string(),
@@ -526,6 +564,7 @@ mod tests {
             type_name: "Extra Stages",
             type_code: "EX",
             type_num: 4,
+            type_enum: Extra,
             map_num: 0,
             stage_num: 0,
             map_file_name: "MapStageDataRE_000.csv".to_string(),
@@ -553,6 +592,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 9,
                 stage_num: 0,
                 map_file_name: "stageNormal0.csv".to_string(),
@@ -567,6 +607,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 3,
                 stage_num: 0,
                 map_file_name: "stageNormal1_0.csv".to_string(),
@@ -581,6 +622,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 6,
                 stage_num: 0,
                 map_file_name: "stageNormal2_0.csv".to_string(),
@@ -595,6 +637,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 14,
                 stage_num: 0,
                 map_file_name: "MapStageDataDM_000.csv".to_string(),
@@ -609,6 +652,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 11,
                 stage_num: 0,
                 map_file_name: "stageNormal2_2_Invasion.csv".to_string(),
@@ -623,6 +667,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 15,
                 stage_num: 0,
                 map_file_name: "stageNormal2_0_Z.csv".to_string(),
@@ -646,6 +691,7 @@ mod tests {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
+                type_enum: SoL,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataN_000.csv".to_string(),
@@ -660,6 +706,7 @@ mod tests {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
+                type_enum: SoL,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataN_000.csv".to_string(),
@@ -674,6 +721,7 @@ mod tests {
                 type_name: "Catclaw Dojo",
                 type_code: "T",
                 type_num: 6,
+                type_enum: Dojo,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataT_000.csv".to_string(),
@@ -688,6 +736,7 @@ mod tests {
                 type_name: "Extra Stages",
                 type_code: "EX",
                 type_num: 4,
+                type_enum: Extra,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataRE_000.csv".to_string(),
@@ -702,6 +751,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 6,
                 stage_num: 0,
                 map_file_name: "stageNormal2_0.csv".to_string(),
@@ -719,6 +769,7 @@ mod tests {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
+                type_enum: SoL,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataN_000.csv".to_string(),
@@ -733,6 +784,7 @@ mod tests {
                 type_name: "Catclaw Dojo",
                 type_code: "T",
                 type_num: 6,
+                type_enum: Dojo,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataT_000.csv".to_string(),
@@ -747,6 +799,7 @@ mod tests {
                 type_name: "Labyrinth",
                 type_code: "L",
                 type_num: 33,
+                type_enum: Labyrinth,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataL_000.csv".to_string(),
@@ -761,6 +814,7 @@ mod tests {
                 type_name: "Extra Stages",
                 type_code: "EX",
                 type_num: 4,
+                type_enum: Extra,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataRE_000.csv".to_string(),
@@ -778,6 +832,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 6,
                 stage_num: 0,
                 map_file_name: "stageNormal2_0.csv".to_string(),
@@ -792,6 +847,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "stageNormal0_0_Z.csv".to_string(),
@@ -806,6 +862,7 @@ mod tests {
             type_name: "Stories of Legend",
             type_code: "N",
             type_num: 0,
+            type_enum: SoL,
             map_num: 0,
             stage_num: 0,
             map_file_name: "MapStageDataN_000.csv".to_string(),
@@ -830,6 +887,7 @@ mod tests {
                 type_name: "Event Stages",
                 type_code: "S",
                 type_num: 1,
+                type_enum: Event,
                 map_num: 382,
                 stage_num: 2,
                 map_file_name: "MapStageDataS_382.csv".to_string(),
@@ -845,6 +903,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 3,
                 stage_num: 48,
                 map_file_name: "stageNormal1_0.csv".to_string(),
@@ -860,6 +919,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 14,
                 stage_num: 0,
                 map_file_name: "MapStageDataDM_000.csv".to_string(),
@@ -875,6 +935,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 11,
                 stage_num: 0,
                 map_file_name: "stageNormal2_2_Invasion.csv".to_string(),
@@ -890,6 +951,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 12,
                 stage_num: 0,
                 map_file_name: "stageNormal1_1_Z.csv".to_string(),
@@ -905,6 +967,7 @@ mod tests {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
+                type_enum: SoL,
                 map_num: 13,
                 stage_num: 5,
                 map_file_name: "MapStageDataN_013.csv".to_string(),
@@ -920,6 +983,7 @@ mod tests {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
+                type_enum: SoL,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataN_000.csv".to_string(),
@@ -935,6 +999,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 3,
                 stage_num: 5,
                 map_file_name: "stageNormal1_0.csv".to_string(),
@@ -953,6 +1018,7 @@ mod tests {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
+                type_enum: MainChapters,
                 map_num: 3,
                 stage_num: 5,
                 map_file_name: "stageNormal1_0.csv".to_string(),
@@ -1051,6 +1117,7 @@ mod tests {
                         type_name: code.name,
                         type_code,
                         type_num: code.number,
+                        type_enum: code.type_enum,
                         map_num: map,
                         stage_num: stage,
 
@@ -1093,6 +1160,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
+                    type_enum: CODE.type_enum,
                     map_num: 9,
                     stage_num: stage,
                     map_file_name: st.map_file_name.to_string(),
@@ -1120,6 +1188,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
+                                        type_enum: CODE.type_enum,
                     map_num: map + 2,
                     // 3, 4, 5
                     stage_num: stage,
@@ -1152,6 +1221,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
+                                        type_enum: CODE.type_enum,
                     map_num: map + 5,
                     // 6, 7, 8
                     stage_num: stage,
@@ -1181,6 +1251,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
+                                        type_enum: CODE.type_enum,
                     map_num: 14,
                     stage_num: stage,
 
@@ -1209,6 +1280,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
+                                        type_enum: CODE.type_enum,
                     map_num: [0, 1, 2, 10, 12, 13, 15, 16][map - 1],
                     stage_num: stage,
 
