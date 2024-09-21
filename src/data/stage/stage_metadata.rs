@@ -134,24 +134,24 @@ pub mod consts {
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
     pub const STAGE_TYPES: [StageType; 18] = [
-        initialise_stage_type("Stories of Legend",    000, "N",     true,  SoL,),
-        initialise_stage_type("Event Stages",         001, "S",     true,  Event,),
-        initialise_stage_type("Collaboration Stages", 002, "C",     true,  Collab,),
-        initialise_stage_type("Main Chapters",        003, "main",  false, MainChapters,),
-        initialise_stage_type("Extra Stages",         004, "RE|EX", false, Extra,),
-        initialise_stage_type("Catclaw Dojo",         006, "T",     true,  Dojo,),
-        initialise_stage_type("Towers",               007, "V",     true,  RankingDojo,),
-        initialise_stage_type("Ranking Dojo",         011, "R",     true,  Tower,),
-        initialise_stage_type("Challenge Battle",     012, "M",     true,  Challenge,),
-        initialise_stage_type("Uncanny Legends",      013, "NA",    true,  UL,),
-        initialise_stage_type("Catamin Stages",       014, "B",     true,  Catamin,),
-        initialise_stage_type("Gauntlets",            024, "A",     true,  Gauntlet,),
-        initialise_stage_type("Enigma Stages",        025, "H",     true,  Enigma,),
-        initialise_stage_type("Collab Gauntlets",     027, "CA",    true,  CollabGauntlet,),
-        initialise_stage_type("Behemoth Culling",     031, "Q",     true,  Behemoth,),
-        initialise_stage_type("Labyrinth",            033, "L",     false, Labyrinth,),
-        initialise_stage_type("Zero Legends",         034, "ND",    true,  ZL,),
-        initialise_stage_type("Colosseum",            036, "SR",    true,  Colosseum,),
+        initialise_stage_type("Stories of Legend",    000, "N",     true,  SoL),
+        initialise_stage_type("Event Stages",         001, "S",     true,  Event),
+        initialise_stage_type("Collaboration Stages", 002, "C",     true,  Collab),
+        initialise_stage_type("Main Chapters",        003, "main",  false, MainChapters),
+        initialise_stage_type("Extra Stages",         004, "RE|EX", false, Extra),
+        initialise_stage_type("Catclaw Dojo",         006, "T",     true,  Dojo),
+        initialise_stage_type("Towers",               007, "V",     true,  RankingDojo),
+        initialise_stage_type("Ranking Dojo",         011, "R",     true,  Tower),
+        initialise_stage_type("Challenge Battle",     012, "M",     true,  Challenge),
+        initialise_stage_type("Uncanny Legends",      013, "NA",    true,  UL),
+        initialise_stage_type("Catamin Stages",       014, "B",     true,  Catamin),
+        initialise_stage_type("Gauntlets",            024, "A",     true,  Gauntlet),
+        initialise_stage_type("Enigma Stages",        025, "H",     true,  Enigma),
+        initialise_stage_type("Collab Gauntlets",     027, "CA",    true,  CollabGauntlet),
+        initialise_stage_type("Behemoth Culling",     031, "Q",     true,  Behemoth),
+        initialise_stage_type("Labyrinth",            033, "L",     false, Labyrinth),
+        initialise_stage_type("Zero Legends",         034, "ND",    true,  ZL),
+        initialise_stage_type("Colosseum",            036, "SR",    true,  Colosseum),
     ];
 
     lazy_static! {
@@ -531,8 +531,8 @@ impl StageMeta {
 
 #[cfg(test)]
 mod tests {
-    use rand::random;
     use super::*;
+    use rand::random;
     use StageTypeEnum::*;
 
     #[test]
@@ -1188,7 +1188,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
-                                        type_enum: CODE.type_enum,
+                    type_enum: CODE.type_enum,
                     map_num: map + 2,
                     // 3, 4, 5
                     stage_num: stage,
@@ -1221,7 +1221,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
-                                        type_enum: CODE.type_enum,
+                    type_enum: CODE.type_enum,
                     map_num: map + 5,
                     // 6, 7, 8
                     stage_num: stage,
@@ -1251,7 +1251,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
-                                        type_enum: CODE.type_enum,
+                    type_enum: CODE.type_enum,
                     map_num: 14,
                     stage_num: stage,
 
@@ -1280,7 +1280,7 @@ mod tests {
                     type_name: CODE.name,
                     type_code: CODE.code,
                     type_num: CODE.number,
-                                        type_enum: CODE.type_enum,
+                    type_enum: CODE.type_enum,
                     map_num: [0, 1, 2, 10, 12, 13, 15, 16][map - 1],
                     stage_num: stage,
 
