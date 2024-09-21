@@ -29,10 +29,10 @@ const FILES: [(&str, &str); 7] = [
     ),
 ];
 
-fn get_file_diff(old_content: String, new_content: String) -> String {
+fn get_file_diff(old_content: &str, new_content: &str) -> String {
     // This is largely copied from the implementation of `similar`'s unified
     // diff's format trait.
-    let binding = TextDiff::configure().diff_lines(&old_content, &new_content);
+    let binding = TextDiff::configure().diff_lines(old_content, new_content);
     let diff = binding.unified_diff();
 
     let mut buf = Vec::new();
@@ -55,6 +55,14 @@ fn get_file_diff(old_content: String, new_content: String) -> String {
     a
 }
 
+fn strip_pre(content: &str) -> &str {
+    if content.starts_with("<pre>\n") {
+        &content["<pre>\n".len()..content.len() - "</pre>".len()]
+    } else {
+        content
+    }
+}
+
 ///
 pub fn update_wiki_files() -> Result<(), ureq::Error> {
     let directory = get_file_location(FileLocation::WikiData);
@@ -66,7 +74,8 @@ pub fn update_wiki_files() -> Result<(), ureq::Error> {
         let response = ureq::get(&uri)
             .set(USER_AGENT.as_str(), &user_agent)
             .call()?;
-        let content = response.into_string()?;
+        let res_str = response.into_string()?;
+        let content = strip_pre(&res_str);
 
         let path = directory.join(file_name);
         let file = File::options().read(true).open(&path);
@@ -75,7 +84,7 @@ pub fn update_wiki_files() -> Result<(), ureq::Error> {
             Ok(mut f) => {
                 let mut buf = String::new();
                 f.read_to_string(&mut buf).unwrap();
-                get_file_diff(buf, content)
+                get_file_diff(&buf, content)
             }
             Err(e) => match e.kind() {
                 std::io::ErrorKind::NotFound => "File created".to_string(),
@@ -89,8 +98,12 @@ pub fn update_wiki_files() -> Result<(), ureq::Error> {
 
         println!("{:#>80}\n{file_name}", '#');
         println!("{diff}\n");
-        let x = File::options().write(true).create(true).open(&path);
-        panic!("{x:?}")
+        let mut f_write = File::options()
+            .write(true)
+            .create(true)
+            .open(&path)
+            .unwrap();
+        f_write.write_all(content.as_bytes()).unwrap();
     }
 
     Ok(())
