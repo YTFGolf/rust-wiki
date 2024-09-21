@@ -1,4 +1,7 @@
-use rust_wiki::{data::stage::stage_metadata::StageMeta, file_handler::do_stuff};
+use rust_wiki::data::{
+    map::map_option::MAP_OPTION,
+    stage::{parsed::stage::Stage, stage_metadata::StageMeta, stage_option::STAGE_OPTION},
+};
 
 // fn benchmark_stage_type(){
 //     let start = Instant::now();
@@ -17,4 +20,11 @@ fn main() {
     println!("{:?}", StageMeta::new("ex 0 0").unwrap());
 
     do_stuff();
+}
+
+/// temp function
+fn do_stuff() {
+    println!("{:?}", MAP_OPTION.get_map(0));
+    println!("{:?}", STAGE_OPTION.get_map(0));
+    println!("{:?}", Stage::new("n 0 0").unwrap());
 }
