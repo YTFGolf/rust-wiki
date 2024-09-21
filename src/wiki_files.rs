@@ -5,7 +5,11 @@ use crate::{
     file_handler::{get_file_location, FileLocation},
 };
 use http::header::USER_AGENT;
-use std::{fs::File, io::Read};
+use similar::{Algorithm, ChangeTag, TextDiff};
+use std::{
+    fs::File,
+    io::{Read, Write},
+};
 const WIKI_URL: &str = "https://battlecats.miraheze.org/wiki";
 
 /// (file name, wiki page name)
@@ -26,13 +30,29 @@ const FILES: [(&str, &str); 7] = [
 ];
 
 fn get_file_diff(old_content: String, new_content: String) -> String {
-    // let a = text_diff::diff(&old_content, &new_content, "\n");
-    // text_diff::print_diff(&old_content, &new_content, "\n");
-    // for b in a.1.iter(){
-    //     println!("{:?}", b.)
-    // }
-    // println!("{}", );
-    todo!()
+    // This is largely copied from the implementation of `similar`'s unified
+    // diff's format trait.
+    let binding = TextDiff::configure().diff_lines(&old_content, &new_content);
+    let diff = binding.unified_diff();
+
+    let mut buf = Vec::new();
+
+    for hunk in diff.iter_hunks() {
+        for (idx, change) in hunk.iter_changes().enumerate() {
+            if idx == 0 {
+                writeln!(buf, "{}", hunk.header()).unwrap();
+            }
+            match change.tag() {
+                ChangeTag::Insert => write!(buf, "\x1b[38;2;0;200;0m").unwrap(),
+                ChangeTag::Delete => write!(buf, "\x1b[38;2;200;0;0m").unwrap(),
+                _ => (),
+            };
+            write!(buf, "{}{}", change.tag(), change.to_string_lossy()).unwrap();
+            write!(buf, "\x1b[38;2;255;255;255m").unwrap();
+        }
+    }
+    let a: String = String::from_utf8(buf).unwrap();
+    a
 }
 
 ///
@@ -63,14 +83,15 @@ pub fn update_wiki_files() -> Result<(), ureq::Error> {
             },
         };
 
+        if diff.is_empty() {
+            continue;
+        }
+
         println!("{:#>80}\n{file_name}", '#');
-        println!("{diff}");
+        println!("{diff}\n");
         let x = File::options().write(true).create(true).open(&path);
         panic!("{x:?}")
     }
 
     Ok(())
 }
-
-// let mut out = File::create("test").expect("failed to create file");
-// io::copy(&mut resp, &mut out).expect("failed to copy content");
