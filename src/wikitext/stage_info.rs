@@ -10,7 +10,7 @@ use crate::{
 };
 use std::io::Write;
 
-use super::data_files::stage_names::{MapData, StageData};
+use super::{data_files::stage_names::{MapData, StageData}, wiki_utils::extract_name};
 
 const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
@@ -109,7 +109,7 @@ impl StageInfo {
     }
 
     pub fn intro(buf: &mut Vec<u8>, stage: &Stage, data: &StageWikiData) {
-        write!(buf, "'''{name}''' is the ", name = data.stage_name.name,).unwrap();
+        write!(buf, "'''{name}''' is the ", name = extract_name(&data.stage_name.name)).unwrap();
 
         let num = stage.meta.stage_num;
         match (num, data.stage_map.get(num + 1)) {
@@ -129,6 +129,7 @@ impl StageInfo {
                 .unwrap();
             }
         };
+        // only/nth/nth and final
 
         write!(
             buf,
@@ -173,5 +174,26 @@ fn get_ordinal(n: u32) -> String {
         format!("{n}rd")
     } else {
         format!("{n}th")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_intro() {
+        let ht30 = Stage::new("v 0 29").unwrap();
+        let stage_map = STAGE_NAMES
+            .stage_map(ht30.meta.type_num, ht30.meta.map_num)
+            .unwrap();
+        let stage_name = stage_map.get(ht30.meta.stage_num).unwrap();
+        let stage_wiki_data = StageWikiData {
+            stage_map,
+            stage_name,
+        };
+        let mut buf = vec![];
+        StageInfo::intro(&mut buf, &ht30, &stage_wiki_data);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
     }
 }
