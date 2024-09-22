@@ -16,14 +16,14 @@ pub struct TypeData {
 }
 
 #[derive(Debug)]
-struct MapData {
+pub struct MapData {
     name: String,
     num: u32,
     stages: Vec<StageData>,
 }
 
 #[derive(Debug)]
-struct StageData {
+pub struct StageData {
     name: String,
     num: u32,
 }
@@ -41,6 +41,12 @@ impl StageNames {
             None => None,
             Some(t) => Some(&t),
         }
+    }
+    pub fn stage_map(&self, type_id: u32, map_id: u32) -> Option<&MapData> {
+        self.stage_type(type_id)?.maps.get(&map_id)
+    }
+    pub fn stage(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&StageData> {
+        self.stage_map(type_id, map_id)?.stages.get(stage_id as usize)
     }
 }
 
