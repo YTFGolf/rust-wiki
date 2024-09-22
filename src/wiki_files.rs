@@ -69,7 +69,7 @@ fn strip_pre(content: &str) -> &str {
 
 /// Goes through all files stored on teh wiki and updates the local versions of
 /// each.
-pub fn update_wiki_files() -> Result<(), ureq::Error> {
+pub fn update_wiki_files() {
     let directory = get_file_location(FileLocation::WikiData);
     std::fs::create_dir_all(directory).unwrap();
 
@@ -78,8 +78,9 @@ pub fn update_wiki_files() -> Result<(), ureq::Error> {
         let uri = format!("{WIKI_URL}/{page_name}?action=raw");
         let response = ureq::get(&uri)
             .set(USER_AGENT.as_str(), &user_agent)
-            .call()?;
-        let res_str = response.into_string()?;
+            .call()
+            .expect("Couldn't get the data from the wiki.");
+        let res_str = response.into_string().unwrap();
         let content = strip_pre(&res_str);
 
         let path = directory.join(file_name);
@@ -106,10 +107,9 @@ pub fn update_wiki_files() -> Result<(), ureq::Error> {
         let mut f_write = File::options()
             .write(true)
             .create(true)
+            .truncate(true)
             .open(&path)
             .unwrap();
         f_write.write_all(content.as_bytes()).unwrap();
     }
-
-    Ok(())
 }

@@ -1,8 +1,12 @@
 //! Prints information about a stage.
 
+#![allow(clippy::unused_io_amount)]
 use crate::{
     data::stage::parsed::stage::Stage,
-    wikitext::{data_files::stage_names::STAGE_NAMES, format_parser::{parse_si_format, ParseType}},
+    wikitext::{
+        data_files::stage_names::STAGE_NAMES,
+        format_parser::{parse_si_format, ParseType},
+    },
 };
 use std::io::Write;
 

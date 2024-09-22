@@ -46,11 +46,13 @@ impl StageNames {
         self.stage_type(type_id)?.maps.get(&map_id)
     }
     pub fn stage(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&StageData> {
-        self.stage_map(type_id, map_id)?.stages.get(stage_id as usize)
+        self.stage_map(type_id, map_id)?
+            .stages
+            .get(stage_id as usize)
     }
 }
 
-pub const STAGE_NAMES: StageNames = StageNames {
+pub static STAGE_NAMES: StageNames = StageNames {
     stage_name_map: LazyLock::new(get_stage_name_map),
     continue_stages: (),
 };
@@ -98,7 +100,9 @@ fn get_stage_name_map() -> StageNameMap {
             }
             (t, Some(m), Some(s)) => {
                 let mut map = &mut map[t as usize].as_mut().unwrap().maps.get_mut(&m);
-                let mut map_data = map.as_mut().unwrap_or_else(|| panic!("Map {m} not found when attempting to insert stage {s}"));
+                let mut map_data = map.as_mut().unwrap_or_else(|| {
+                    panic!("Map {m} not found when attempting to insert stage {s}")
+                });
                 let mut stages = &mut map_data.stages;
 
                 assert_eq!(
