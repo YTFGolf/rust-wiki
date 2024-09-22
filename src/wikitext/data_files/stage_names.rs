@@ -14,12 +14,22 @@ pub struct TypeData {
     num: u32,
     maps: HashMap<u32, MapData>,
 }
+impl TypeData {
+    fn get(&self, map_id: u32) -> Option<&MapData> {
+        self.maps.get(&map_id)
+    }
+}
 
 #[derive(Debug)]
 pub struct MapData {
     name: String,
     num: u32,
     stages: Vec<StageData>,
+}
+impl MapData {
+    fn get(&self, stage_id: u32) -> Option<&StageData> {
+        self.stages.get(stage_id as usize)
+    }
 }
 
 #[derive(Debug)]
@@ -37,18 +47,13 @@ pub struct StageNames {
 }
 impl StageNames {
     pub fn stage_type(&self, id: u32) -> Option<&TypeData> {
-        match self.stage_name_map.get(id as usize)? {
-            None => None,
-            Some(t) => Some(t),
-        }
+        self.stage_name_map.get(id as usize)?.into()
     }
     pub fn stage_map(&self, type_id: u32, map_id: u32) -> Option<&MapData> {
-        self.stage_type(type_id)?.maps.get(&map_id)
+        self.stage_type(type_id)?.get(map_id)
     }
     pub fn stage(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&StageData> {
-        self.stage_map(type_id, map_id)?
-            .stages
-            .get(stage_id as usize)
+        self.stage_map(type_id, map_id)?.get(stage_id)
     }
 }
 
