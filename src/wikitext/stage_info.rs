@@ -12,7 +12,7 @@ use std::io::Write;
 
 use super::{
     data_files::stage_names::{MapData, StageData},
-    wiki_utils::extract_name,
+    wiki_utils::{extract_name, REGEXES},
 };
 
 const DEFAULT_FORMAT: &str = "\
@@ -50,7 +50,6 @@ ${battlegrounds}
 ==Reference==
 *${reference}\
 ";
-// TODO add another thing that can invalidate some lines.
 
 struct StageWikiData {
     stage_map: &'static MapData,
@@ -112,7 +111,18 @@ impl StageInfo {
     }
 
     pub fn intro(buf: &mut Vec<u8>, stage: &Stage, data: &StageWikiData) {
-        // TODO Ranking Dojo
+        if stage.meta.type_enum == StageTypeEnum::RankingDojo {
+            write!(
+                buf,
+                "'''{extracted_name}''' is the {num} [[Arena of Honor]] of the [[Catclaw Dojo]].",
+                extracted_name = extract_name(&data.stage_name.name),
+                num = get_ordinal(stage.meta.map_num + 1)
+            )
+            .unwrap();
+
+            return;
+        }
+
         write!(
             buf,
             "'''{name}''' is the ",
@@ -142,13 +152,18 @@ impl StageInfo {
 
         write!(
             buf,
-            " {stage_in} {map_name}.",
+            " {stage_in} {map_name}{punct}",
             stage_in = match stage.meta.type_enum {
                 StageTypeEnum::Tower => "floor of",
                 _ => "stage in",
             },
-            map_name = data.stage_map.name,
-            // TODO punctuation at end
+            map_name = REGEXES
+                .old_or_removed_sub
+                .replace(&data.stage_map.name, "$1"),
+            punct = match extract_name(&data.stage_map.name).chars().last().unwrap() {
+                '!' | '.' => "",
+                _ => ".",
+            }
         )
         .unwrap();
 
@@ -224,15 +239,19 @@ mod tests {
             "'''Earthshaker''' is the first stage in [[The Legend Begins]]."
         );
 
-        let earthshaker = Stage::new("c 206 1").unwrap();
+        let refusal_type = Stage::new("c 206 1").unwrap();
         let mut buf = vec![];
-        let stage_wiki_data = get_stage_wiki_data(&earthshaker);
-        StageInfo::intro(&mut buf, &earthshaker, &stage_wiki_data);
-        assert_eq!(&String::from_utf8(buf).unwrap(), "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]]. This is a [[No Continues]] stage.");
-        // assert_eq!(&String::from_utf8(buf).unwrap(), "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
-        // TODO fix the !.
+        let stage_wiki_data = get_stage_wiki_data(&refusal_type);
+        StageInfo::intro(&mut buf, &refusal_type, &stage_wiki_data);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
 
-        // TODO arena of honor
-        // '''Crimson Trial''' is the first [[Arena of Honor]] of the [[Catclaw Dojo]].
+        let crimson_trial = Stage::new("r 20 0").unwrap();
+        let mut buf = vec![];
+        let stage_wiki_data = get_stage_wiki_data(&crimson_trial);
+        StageInfo::intro(&mut buf, &crimson_trial, &stage_wiki_data);
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "'''Crimson Trial''' is the 21st [[Arena of Honor]] of the [[Catclaw Dojo]]."
+        );
     }
 }

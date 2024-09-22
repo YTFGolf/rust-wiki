@@ -204,6 +204,7 @@ struct FilePatterns {
     default: Regex,
 }
 lazy_static! {
+    // TODO remove lazy static dependency
     /// Captures `"s00000-01"` in
     /// `"*https://battlecats-db.com/stage/s00000-01.html"`.
     static ref DB_REFERENCE_FULL: Regex =
