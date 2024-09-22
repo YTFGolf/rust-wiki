@@ -2,3 +2,4 @@
 
 pub mod stage_info;
 pub mod format_parser;
+pub mod data_files;

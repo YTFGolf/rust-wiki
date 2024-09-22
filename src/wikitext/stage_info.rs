@@ -2,7 +2,7 @@
 
 use crate::{
     data::stage::parsed::stage::Stage,
-    wikitext::format_parser::{parse_si_format, ParseType},
+    wikitext::{data_files::stage_names::STAGE_NAMES, format_parser::{parse_si_format, ParseType}},
 };
 use std::io::Write;
 
@@ -48,7 +48,10 @@ fn do_thing_internal() {
     let parsed = parse_si_format(&format);
 
     let mut buf = vec![];
-    let stage = Stage::new("n 0 0").unwrap();
+    let stage = Stage::new("v 0 29").unwrap();
+
+    println!("{:?}", STAGE_NAMES.stage_type(0));
+    println!("{:?}", STAGE_NAMES);
 
     for node in parsed {
         if node.ptype == ParseType::Text {
@@ -101,6 +104,7 @@ impl StageInfo {
 
     pub fn restrictions_section(buf: &mut Vec<u8>, stage: &Stage) {
         buf.truncate(buf.len() - "\n\n==Restrictions==\n".len());
+        let _ = stage;
     }
 }
 
