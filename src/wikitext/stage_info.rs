@@ -109,15 +109,30 @@ impl StageInfo {
     }
 
     pub fn intro(buf: &mut Vec<u8>, stage: &Stage, data: &StageWikiData) {
+        write!(buf, "'''{name}''' is the ", name = data.stage_name.name,).unwrap();
+
+        let num = stage.meta.stage_num;
+        match (num, data.stage_map.get(num + 1)) {
+            (0, None) => {
+                buf.write(b"only").unwrap();
+            }
+            (n, next) => {
+                write!(
+                    buf,
+                    "{ord}{is_last}",
+                    ord = get_ordinal(n + 1),
+                    is_last = match next {
+                        None => " and final",
+                        _ => "",
+                    }
+                )
+                .unwrap();
+            }
+        };
+
         write!(
             buf,
-            "'''{name}''' is the {ordinal}{is_final} {stage_in} {map_name}.",
-            name = data.stage_name.name,
-            ordinal = get_ordinal(stage.meta.stage_num + 1),
-            is_final = match data.stage_map.get(stage.meta.stage_num + 1) {
-                None => " and final",
-                _ => "",
-            },
+            " {stage_in} {map_name}.",
             stage_in = match stage.meta.type_enum {
                 StageTypeEnum::Tower => "floor of",
                 _ => "stage in",
