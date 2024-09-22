@@ -6,3 +6,4 @@ pub mod config;
 pub mod data;
 pub mod file_handler;
 pub mod wiki_files;
+pub mod wikitext;
