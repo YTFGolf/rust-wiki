@@ -10,7 +10,10 @@ use crate::{
 };
 use std::io::Write;
 
-use super::{data_files::stage_names::{MapData, StageData}, wiki_utils::extract_name};
+use super::{
+    data_files::stage_names::{MapData, StageData},
+    wiki_utils::extract_name,
+};
 
 const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
@@ -109,7 +112,13 @@ impl StageInfo {
     }
 
     pub fn intro(buf: &mut Vec<u8>, stage: &Stage, data: &StageWikiData) {
-        write!(buf, "'''{name}''' is the ", name = extract_name(&data.stage_name.name)).unwrap();
+        // TODO Ranking Dojo
+        write!(
+            buf,
+            "'''{name}''' is the ",
+            name = extract_name(&data.stage_name.name)
+        )
+        .unwrap();
 
         let num = stage.meta.stage_num;
         match (num, data.stage_map.get(num + 1)) {
@@ -181,19 +190,49 @@ fn get_ordinal(n: u32) -> String {
 mod tests {
     use super::*;
 
+    fn get_stage_wiki_data(stage: &Stage) -> StageWikiData {
+        let stage_map = STAGE_NAMES
+            .stage_map(stage.meta.type_num, stage.meta.map_num)
+            .unwrap();
+        let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
+        StageWikiData {
+            stage_map,
+            stage_name,
+        }
+    }
+
     #[test]
     fn test_intro() {
         let ht30 = Stage::new("v 0 29").unwrap();
-        let stage_map = STAGE_NAMES
-            .stage_map(ht30.meta.type_num, ht30.meta.map_num)
-            .unwrap();
-        let stage_name = stage_map.get(ht30.meta.stage_num).unwrap();
-        let stage_wiki_data = StageWikiData {
-            stage_map,
-            stage_name,
-        };
         let mut buf = vec![];
+        let stage_wiki_data = get_stage_wiki_data(&ht30);
         StageInfo::intro(&mut buf, &ht30, &stage_wiki_data);
         assert_eq!(&String::from_utf8(buf).unwrap(), "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
+
+        let whole_new = Stage::new("zl 0 0").unwrap();
+        let mut buf = vec![];
+        let stage_wiki_data = get_stage_wiki_data(&whole_new);
+        StageInfo::intro(&mut buf, &whole_new, &stage_wiki_data);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
+
+        let earthshaker = Stage::new("sol 0 0").unwrap();
+        let mut buf = vec![];
+        let stage_wiki_data = get_stage_wiki_data(&earthshaker);
+        StageInfo::intro(&mut buf, &earthshaker, &stage_wiki_data);
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "'''Earthshaker''' is the first stage in [[The Legend Begins]]."
+        );
+
+        let earthshaker = Stage::new("c 206 1").unwrap();
+        let mut buf = vec![];
+        let stage_wiki_data = get_stage_wiki_data(&earthshaker);
+        StageInfo::intro(&mut buf, &earthshaker, &stage_wiki_data);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]]. This is a [[No Continues]] stage.");
+        // assert_eq!(&String::from_utf8(buf).unwrap(), "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
+        // TODO fix the !.
+
+        // TODO arena of honor
+        // '''Crimson Trial''' is the first [[Arena of Honor]] of the [[Catclaw Dojo]].
     }
 }
