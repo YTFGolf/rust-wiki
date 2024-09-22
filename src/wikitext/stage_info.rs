@@ -8,10 +8,13 @@ use crate::{
         format_parser::{parse_si_format, ParseType},
     },
 };
-use std::io::Write;
+use std::{collections::HashSet, io::Write};
 
 use super::{
-    data_files::stage_names::{MapData, StageData},
+    data_files::{
+        enemy_data::ENEMY_DATA,
+        stage_names::{MapData, StageData},
+    },
     wiki_utils::{extract_name, REGEXES},
 };
 
@@ -101,11 +104,15 @@ struct StageInfo;
 impl StageInfo {
     pub fn enemies_appearing(buf: &mut Vec<u8>, stage: &Stage) {
         buf.write(b"{{EnemiesAppearing").unwrap();
-        for enemy in stage.enemies.iter() {
-            if enemy.id == 21 {
-                continue;
-            }
-            write!(buf, "|{}", enemy.id).unwrap();
+
+        let mut displayed = HashSet::new();
+        let enemies = stage
+            .enemies
+            .iter()
+            .filter(|e| e.id != 21 && displayed.insert(e.id));
+
+        for enemy in enemies {
+            write!(buf, "|{}", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
         }
         buf.write(b"}}").unwrap();
     }
@@ -253,5 +260,23 @@ mod tests {
             &String::from_utf8(buf).unwrap(),
             "'''Crimson Trial''' is the 21st [[Arena of Honor]] of the [[Catclaw Dojo]]."
         );
+    }
+
+    #[test]
+    fn test_enemies_appearing(){
+        let crazed_cat = Stage::new("s 17 0").unwrap();
+        let mut buf = vec![];
+        StageInfo::enemies_appearing(&mut buf, &crazed_cat);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing|Le'boin|Teacher Bear|Doge|Snache|Croco|Crazed Cat}}");
+
+        let tada = Stage::new("ex 63 0").unwrap();
+        let mut buf = vec![];
+        StageInfo::enemies_appearing(&mut buf, &tada);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing}}");
+
+        let not_alone = Stage::new("c 176 4").unwrap();
+        let mut buf = vec![];
+        StageInfo::enemies_appearing(&mut buf, &not_alone);
+        assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
     }
 }
