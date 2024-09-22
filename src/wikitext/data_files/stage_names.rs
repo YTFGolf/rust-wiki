@@ -19,7 +19,7 @@ pub struct TypeData {
 struct MapData {
     name: String,
     num: u32,
-    stages: HashMap<u32, StageData>,
+    stages: Vec<StageData>,
 }
 
 #[derive(Debug)]
@@ -86,29 +86,27 @@ fn get_stage_name_map() -> StageNameMap {
                     MapData {
                         name: record.s_link,
                         num: m,
-                        stages: HashMap::new(),
+                        stages: Vec::new(),
                     },
                 );
             }
             (t, Some(m), Some(s)) => {
-                let mut map = &mut map[t as usize]
-                    .as_mut()
-                    .unwrap()
-                    .maps
-                    .get_mut(&m);
-                let mut map_data = map
-                    .as_mut()
-                    .expect(&format!(
-                        "Map {m} not found when attempting to insert stage {s}"
-                    ));
+                let mut map = &mut map[t as usize].as_mut().unwrap().maps.get_mut(&m);
+                let mut map_data = map.as_mut().expect(&format!(
+                    "Map {m} not found when attempting to insert stage {s}"
+                ));
+                let mut stages = &mut map_data.stages;
 
-                map_data.stages.insert(
+                assert_eq!(
                     s,
-                    StageData {
-                        name: record.s_link,
-                        num: s,
-                    },
+                    stages.len() as u32,
+                    "Error parsing stage names record {record:?}: data is out of order."
                 );
+
+                stages.push(StageData {
+                    name: record.s_link,
+                    num: s,
+                });
             }
             _ => (),
         }
