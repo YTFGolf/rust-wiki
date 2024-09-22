@@ -2,13 +2,15 @@
 
 #![allow(clippy::unused_io_amount)]
 use crate::{
-    data::stage::parsed::stage::Stage,
+    data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
     wikitext::{
         data_files::stage_names::STAGE_NAMES,
         format_parser::{parse_si_format, ParseType},
     },
 };
 use std::io::Write;
+
+use super::data_files::stage_names::{MapData, StageData};
 
 const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
@@ -47,6 +49,11 @@ ${battlegrounds}
 ";
 // TODO add another thing that can invalidate some lines.
 
+struct StageWikiData {
+    stage_map: &'static MapData,
+    stage_name: &'static StageData,
+}
+
 fn do_thing_internal() {
     let format = DEFAULT_FORMAT;
     let parsed = parse_si_format(format);
@@ -54,8 +61,15 @@ fn do_thing_internal() {
     let mut buf = vec![];
     let stage = Stage::new("v 0 29").unwrap();
 
-    println!("{:?}", STAGE_NAMES.stage_type(0));
-    println!("{:?}", STAGE_NAMES);
+    let stage_map = STAGE_NAMES
+        .stage_map(stage.meta.type_num, stage.meta.map_num)
+        .unwrap();
+    let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
+
+    let stage_wiki_data = StageWikiData {
+        stage_map,
+        stage_name,
+    };
 
     for node in parsed {
         if node.ptype == ParseType::Text {
@@ -65,7 +79,7 @@ fn do_thing_internal() {
 
         match node.content {
             "enemies_appearing" => StageInfo::enemies_appearing(&mut buf, &stage),
-            "intro" => StageInfo::intro(&mut buf, &stage),
+            "intro" => StageInfo::intro(&mut buf, &stage, &stage_wiki_data),
             "restrictions_section" => StageInfo::restrictions_section(&mut buf, &stage),
 
             _ => (),
@@ -94,12 +108,24 @@ impl StageInfo {
         buf.write(b"}}").unwrap();
     }
 
-    pub fn intro(buf: &mut Vec<u8>, stage: &Stage) {
-        buf.write(b"'''{}''' is the ").unwrap();
-        write!(buf, "{}", get_ordinal(stage.meta.stage_num + 1)).unwrap();
-        buf.write(b"{is_final}").unwrap();
-        buf.write(b" stage in").unwrap();
-        buf.write(b" {}.").unwrap();
+    pub fn intro(buf: &mut Vec<u8>, stage: &Stage, data: &StageWikiData) {
+        write!(
+            buf,
+            "'''{name}''' is the {ordinal}{is_final} {stage_in} {map_name}.",
+            name = data.stage_name.name,
+            ordinal = get_ordinal(stage.meta.stage_num + 1),
+            is_final = match data.stage_map.get(stage.meta.stage_num + 1) {
+                None => " and final",
+                _ => "",
+            },
+            stage_in = match stage.meta.type_enum {
+                StageTypeEnum::Tower => "floor of",
+                _ => "stage in",
+            },
+            map_name = data.stage_map.name,
+            // TODO punctuation at end
+        )
+        .unwrap();
 
         if stage.is_no_continues {
             buf.write(b" This is a [[No Continues]] stage.").unwrap();

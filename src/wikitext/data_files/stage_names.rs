@@ -10,31 +10,31 @@ use std::{collections::HashMap, mem::MaybeUninit, sync::LazyLock};
 
 #[derive(Debug)]
 pub struct TypeData {
-    name: String,
+    pub name: String,
     num: u32,
     maps: HashMap<u32, MapData>,
 }
 impl TypeData {
-    fn get(&self, map_id: u32) -> Option<&MapData> {
+    pub fn get(&self, map_id: u32) -> Option<&MapData> {
         self.maps.get(&map_id)
     }
 }
 
 #[derive(Debug)]
 pub struct MapData {
-    name: String,
+    pub name: String,
     num: u32,
     stages: Vec<StageData>,
 }
 impl MapData {
-    fn get(&self, stage_id: u32) -> Option<&StageData> {
+    pub fn get(&self, stage_id: u32) -> Option<&StageData> {
         self.stages.get(stage_id as usize)
     }
 }
 
 #[derive(Debug)]
 pub struct StageData {
-    name: String,
+    pub name: String,
     num: u32,
 }
 
