@@ -79,6 +79,37 @@ fn get_stage_name_map() -> StageNameMap {
                     maps: HashMap::new(),
                 })
             }
+            (t, Some(m), None) => {
+                let mut type_data = map[t as usize].as_mut().unwrap();
+                type_data.maps.insert(
+                    m,
+                    MapData {
+                        name: record.s_link,
+                        num: m,
+                        stages: HashMap::new(),
+                    },
+                );
+            }
+            (t, Some(m), Some(s)) => {
+                let mut map = &mut map[t as usize]
+                    .as_mut()
+                    .unwrap()
+                    .maps
+                    .get_mut(&m);
+                let mut map_data = map
+                    .as_mut()
+                    .expect(&format!(
+                        "Map {m} not found when attempting to insert stage {s}"
+                    ));
+
+                map_data.stages.insert(
+                    s,
+                    StageData {
+                        name: record.s_link,
+                        num: s,
+                    },
+                );
+            }
             _ => (),
         }
     }
