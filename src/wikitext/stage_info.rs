@@ -58,6 +58,7 @@ fn do_thing_internal() {
 
         match node.content {
             "enemies_appearing" => StageInfo::enemies_appearing(&mut buf, &stage),
+            "intro" => StageInfo::intro(&mut buf, &stage),
             "restrictions_section" => StageInfo::restrictions_section(&mut buf, &stage),
 
             _ => (),
@@ -86,7 +87,42 @@ impl StageInfo {
         buf.write(b"}}").unwrap();
     }
 
+    pub fn intro(buf: &mut Vec<u8>, stage: &Stage) {
+        buf.write(b"'''{}''' is the ").unwrap();
+        write!(buf, "{}", get_ordinal(stage.meta.stage_num + 1)).unwrap();
+        buf.write(b"{is_final}").unwrap();
+        buf.write(b" stage in").unwrap();
+        buf.write(b" {}.").unwrap();
+
+        if stage.is_no_continues {
+            buf.write(b" This is a [[No Continues]] stage.").unwrap();
+        }
+    }
+
     pub fn restrictions_section(buf: &mut Vec<u8>, stage: &Stage) {
         buf.truncate(buf.len() - "\n\n==Restrictions==\n".len());
+    }
+}
+
+fn get_ordinal(n: u32) -> String {
+    const SMALL_ORDS: [&str; 9] = [
+        "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
+    ];
+
+    if n as usize <= SMALL_ORDS.len() {
+        return SMALL_ORDS[n as usize - 1].to_string();
+    }
+
+    let n = n % 100;
+    if 11 <= n && n <= 13 {
+        format!("{n}th")
+    } else if n % 10 == 1 {
+        format!("{n}st")
+    } else if n % 10 == 2 {
+        format!("{n}nd")
+    } else if n % 10 == 3 {
+        format!("{n}rd")
+    } else {
+        format!("{n}th")
     }
 }
