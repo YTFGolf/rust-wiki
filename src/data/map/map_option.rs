@@ -118,7 +118,7 @@ mod tests {
         let map_id = record_parsed.map_id;
         let d: u8 = record_parsed.max_difficulty.into();
 
-        assert!(1 <= d && d <= 4);
+        assert!((1..=4).contains(&d));
         assert!(!seen.contains(&map_id));
         assert_eq!(record_parsed._crown_1, 100);
         map_id

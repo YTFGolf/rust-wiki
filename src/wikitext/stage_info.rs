@@ -45,7 +45,7 @@ ${battlegrounds}
 
 fn do_thing_internal() {
     let format = DEFAULT_FORMAT;
-    let parsed = parse_si_format(&format);
+    let parsed = parse_si_format(format);
 
     let mut buf = vec![];
     let stage = Stage::new("v 0 29").unwrap();
@@ -118,7 +118,7 @@ fn get_ordinal(n: u32) -> String {
     }
 
     let n = n % 100;
-    if 11 <= n && n <= 13 {
+    if (11..=13).contains(&n) {
         format!("{n}th")
     } else if n % 10 == 1 {
         format!("{n}st")

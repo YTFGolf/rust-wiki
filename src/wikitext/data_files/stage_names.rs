@@ -39,7 +39,7 @@ impl StageNames {
     pub fn stage_type(&self, id: u32) -> Option<&TypeData> {
         match self.stage_name_map.get(id as usize)? {
             None => None,
-            Some(t) => Some(&t),
+            Some(t) => Some(t),
         }
     }
     pub fn stage_map(&self, type_id: u32, map_id: u32) -> Option<&MapData> {
@@ -98,9 +98,7 @@ fn get_stage_name_map() -> StageNameMap {
             }
             (t, Some(m), Some(s)) => {
                 let mut map = &mut map[t as usize].as_mut().unwrap().maps.get_mut(&m);
-                let mut map_data = map.as_mut().expect(&format!(
-                    "Map {m} not found when attempting to insert stage {s}"
-                ));
+                let mut map_data = map.as_mut().unwrap_or_else(|| panic!("Map {m} not found when attempting to insert stage {s}"));
                 let mut stages = &mut map_data.stages;
 
                 assert_eq!(
