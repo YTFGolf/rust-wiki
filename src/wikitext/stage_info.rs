@@ -9,7 +9,13 @@ use super::{
     wiki_utils::{extract_name, REGEXES},
 };
 use crate::{
-    data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
+    data::stage::{
+        parsed::{
+            stage::Stage,
+            stage_enemy::{BossType, StageEnemy},
+        },
+        stage_metadata::consts::StageTypeEnum,
+    },
     wikitext::{
         data_files::stage_names::STAGE_NAMES,
         format_parser::{parse_si_format, ParseType},
@@ -94,6 +100,9 @@ fn do_thing_internal() {
                 .map(|param| param.to_u8s())
                 .unwrap_or(b"".to_vec()),
             "base_hp" => StageInfo::base_hp(&stage)
+                .into_iter()
+                .fold(vec![], param_vec_fold),
+            "enemies_list" => StageInfo::enemies_list(&stage)
                 .into_iter()
                 .fold(vec![], param_vec_fold),
             "restrictions_section" => StageInfo::restrictions_section(&stage),
@@ -336,6 +345,103 @@ impl StageInfo {
         }
 
         params
+    }
+
+    pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
+        struct EnemyListWithDupes<'a> {
+            base: Vec<&'a StageEnemy>,
+            enemies: Vec<&'a StageEnemy>,
+            boss: Vec<&'a StageEnemy>,
+        }
+        let anim_base_id = stage.anim_base_id.map(|i| u32::from(i)).unwrap_or(1);
+
+        let mut enemy_list = EnemyListWithDupes {
+            base: vec![],
+            enemies: vec![],
+            boss: vec![],
+        };
+        for enemy in stage.enemies.iter() {
+            if enemy.id + 2 == anim_base_id {
+                enemy_list.base.push(enemy);
+            } else if enemy.boss_type == BossType::None {
+                enemy_list.enemies.push(enemy);
+            } else {
+                enemy_list.boss.push(enemy);
+            }
+        }
+
+        assert!(enemy_list.base.len() <= 1);
+
+        let mut enemy_list_seen = HashSet::new();
+        let filtered_enemies = enemy_list
+            .enemies
+            .iter()
+            .filter(|e| e.id != 21 && enemy_list_seen.insert((e.id, e.magnification)));
+
+        let mut boss_list_seen = HashSet::new();
+        let filtered_boss = enemy_list
+            .boss
+            .iter()
+            .filter(|e| e.id != 21 && boss_list_seen.insert((e.id, e.magnification)));
+        // remove duplicates
+
+        let write_enemy = |buf: &mut Vec<u8>, enemy: &StageEnemy| {
+            write!(buf, "|{}|", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
+            match &enemy.magnification {
+                Left(m) => buf.write_formatted(m, &Locale::en).unwrap(),
+                _ => todo!(),
+            };
+            buf.write(b"%").unwrap();
+        };
+
+        let mut buf = vec![];
+        if !enemy_list.base.is_empty() {
+            let mut base_buf = vec![];
+
+            let base = enemy_list.base[0];
+            base_buf.write(b"{{Magnification").unwrap();
+            write_enemy(&mut base_buf, &base);
+            base_buf.write(b"}}").unwrap();
+
+            buf.push(TemplateParameter::new(b"base", base_buf));
+        }
+
+        // use regex for other mags
+        let enemy_items = filtered_enemies
+            .map(|e| {
+                let mut buf = vec![];
+                write_enemy(&mut buf, e);
+                buf
+            })
+            .collect::<Vec<Vec<u8>>>()
+            .join(&b'\n');
+        if !enemy_items.is_empty() {
+            let mut enemy_buf = vec![];
+            enemy_buf.write(b"{{Magnification").unwrap();
+            enemy_buf.extend(enemy_items);
+            enemy_buf.write(b"}}").unwrap();
+
+            buf.push(TemplateParameter::new(b"enemies", enemy_buf));
+        }
+
+        let boss_items = filtered_boss
+            .map(|e| {
+                let mut buf = vec![];
+                write_enemy(&mut buf, e);
+                buf
+            })
+            .collect::<Vec<Vec<u8>>>()
+            .join(&b'\n');
+        if !boss_items.is_empty() {
+            let mut boss_buf = vec![];
+            boss_buf.write(b"{{Magnification").unwrap();
+            boss_buf.extend(boss_items);
+            boss_buf.write(b"}}").unwrap();
+
+            buf.push(TemplateParameter::new(b"boss", boss_buf));
+        }
+
+        buf
     }
 
     pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
@@ -614,4 +720,8 @@ mod tests {
         // StageInfo::base_hp(&just_friends).into_iter().map(|a|
         // String::from_utf8(a.to_u8s())).collect::<Vec<_>>());
     }
+
+    // mag tests
+    // tada
+    // something with the old 979 errors
 }

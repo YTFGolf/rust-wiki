@@ -2,7 +2,7 @@
 use crate::data::stage::stage_data::csv_types::StageEnemyCSV;
 use either::Either::{self, Left, Right};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// Type of boss.
 pub enum BossType {
     /// Isn't a boss.
