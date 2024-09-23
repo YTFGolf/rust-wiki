@@ -132,7 +132,7 @@ pub struct Stage {
     pub base_hp: u32,
     /// Max enemies that can spawn.
     pub max_enemies: u32,
-    /// ID of animated base.
+    /// ID of animated base (Doge = 2).
     pub anim_base_id: Option<NonZeroU32>,
     /// Time limit of stage.
     pub time_limit: Option<NonZeroU32>,
@@ -233,11 +233,25 @@ impl From<StageData> for Stage {
             max_clears = NonZeroU32::new(data.max_clears);
             cooldown = NonZeroU32::new(data.cooldown);
             star_mask = Some(data.star_mask);
+
+            let difficulty = u8::from(data.max_difficulty);
             crown_data = Some(CrownData {
                 max_difficulty: data.max_difficulty,
-                crown_2: NonZeroU32::new(data.crown_2),
-                crown_3: NonZeroU32::new(data.crown_3),
-                crown_4: NonZeroU32::new(data.crown_4),
+                crown_2: if difficulty >= 2 {
+                    NonZeroU32::new(data.crown_2)
+                } else {
+                    None
+                },
+                crown_3: if difficulty >= 3 {
+                    NonZeroU32::new(data.crown_3)
+                } else {
+                    None
+                },
+                crown_4: if difficulty >= 4 {
+                    NonZeroU32::new(data.crown_4)
+                } else {
+                    None
+                },
             })
         } else {
             max_clears = None;

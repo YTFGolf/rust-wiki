@@ -15,6 +15,7 @@ use crate::{
         format_parser::{parse_si_format, ParseType},
     },
 };
+use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use regex::Regex;
 use std::{collections::HashSet, io::Write};
@@ -78,6 +79,12 @@ fn do_thing_internal() {
         stage_name,
     };
 
+    fn param_vec_fold(mut buf: Vec<u8>, param: TemplateParameter) -> Vec<u8> {
+        let smallbuf = param.to_u8s();
+        buf.extend(smallbuf.iter());
+        buf
+    }
+
     for node in parsed {
         if node.ptype == ParseType::Text {
             buf.write(node.content.as_bytes()).unwrap();
@@ -90,8 +97,11 @@ fn do_thing_internal() {
             "stage_name" => StageInfo::stage_name(&stage).to_u8s(),
             "stage_location" => StageInfo::stage_location(&stage).to_u8s(),
             "energy" => StageInfo::energy(&stage)
-                .map(|tp| tp.to_u8s())
+                .map(|param| param.to_u8s())
                 .unwrap_or(b"".to_vec()),
+            "base_hp" => StageInfo::base_hp(&stage)
+                .into_iter()
+                .fold(vec![], param_vec_fold),
             "restrictions_section" => StageInfo::restrictions_section(&stage),
 
             _ => continue,
@@ -255,6 +265,83 @@ impl StageInfo {
         };
 
         Some(TemplateParameter::new(b"energy", buf))
+    }
+
+    pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
+        const PARAM_NAME: &[u8] = b"enemy castle hp";
+        const PARAM_NAME_2: &[u8] = b"enemy castle hp2";
+        const PARAM_NAME_3: &[u8] = b"enemy castle hp3";
+        const PARAM_NAME_4: &[u8] = b"enemy castle hp4";
+
+        if stage.time_limit.is_some() {
+            return vec![TemplateParameter::new(PARAM_NAME, b"Unlimited".to_vec())];
+        }
+        if stage.anim_base_id.is_none() {
+            let mut buf = vec![];
+            buf.write_formatted(&stage.base_hp, &Locale::en).unwrap();
+            buf.write(b" HP").unwrap();
+            return vec![TemplateParameter::new(PARAM_NAME, buf)];
+        }
+
+        let anim_base_id = <u32>::from(stage.anim_base_id.unwrap()) - 2;
+        let hp = ENEMY_DATA.get_data(anim_base_id).hp;
+        let mag_either = || {
+            for enemy in &stage.enemies {
+                if enemy.id == anim_base_id {
+                    return enemy.magnification;
+                }
+            }
+            unreachable!()
+        };
+        let mag = match mag_either() {
+            Left(m) => m,
+            Right((hp, _ap)) => hp,
+        };
+
+        let magnification_hp = mag * hp / 100;
+        if stage.crown_data.is_none() {
+            let mut buf = vec![];
+            buf.write_formatted(&magnification_hp, &Locale::en).unwrap();
+            buf.write(b" HP").unwrap();
+            return vec![TemplateParameter::new(PARAM_NAME, buf)];
+        }
+
+        let mut params = vec![];
+        let get_new_param = |key, value| {
+            let mut buf = vec![];
+            buf.write_formatted(&value, &Locale::en).unwrap();
+            buf.write(b" HP").unwrap();
+            TemplateParameter::new(key, buf)
+        };
+
+        if let Some(crown_data) = &stage.crown_data {
+            params.push(get_new_param(PARAM_NAME, magnification_hp));
+
+            if let Some(m) = crown_data.crown_2 {
+                params.push(get_new_param(
+                    PARAM_NAME_2,
+                    magnification_hp * u32::from(m) / 100,
+                ));
+            }
+
+            if let Some(m) = crown_data.crown_3 {
+                params.push(get_new_param(
+                    PARAM_NAME_3,
+                    magnification_hp * u32::from(m) / 100,
+                ));
+            }
+
+            if let Some(m) = crown_data.crown_4 {
+                if u32::from(m) != 100 {
+                    params.push(get_new_param(
+                        PARAM_NAME_4,
+                        magnification_hp * u32::from(m) / 100,
+                    ));
+                }
+            }
+        }
+
+        params
     }
 
     pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
@@ -440,5 +527,75 @@ mod tests {
 
         let labyrinth_67 = Stage::new("l 0 66").unwrap();
         assert_eq!(StageInfo::energy(&labyrinth_67), None);
+    }
+
+    #[test]
+    fn test_base_hp() {
+        let ht30 = Stage::new("v 0 29").unwrap();
+        assert_eq!(
+            StageInfo::base_hp(&ht30),
+            vec![TemplateParameter::new(
+                b"enemy castle hp",
+                b"1,000,000 HP".to_vec()
+            )]
+        );
+
+        let dojo = Stage::new("t 0 0").unwrap();
+        assert_eq!(
+            StageInfo::base_hp(&dojo),
+            vec![TemplateParameter::new(
+                b"enemy castle hp",
+                b"Unlimited".to_vec()
+            )]
+        );
+
+        let just_friends = Stage::new("s 302 2").unwrap();
+        assert_eq!(just_friends.base_hp, 10);
+        assert_eq!(
+            StageInfo::base_hp(&just_friends),
+            vec![TemplateParameter::new(
+                b"enemy castle hp",
+                b"30,000 HP".to_vec()
+            )]
+        );
+
+        let finale = Stage::new("c 209 0").unwrap();
+        assert_eq!(finale.base_hp, 1_000);
+        assert_eq!(
+            StageInfo::base_hp(&finale),
+            vec![TemplateParameter::new(
+                b"enemy castle hp",
+                b"50 HP".to_vec()
+            )]
+        );
+
+        let rongorongo = Stage::new("s 129 5").unwrap();
+        assert_eq!(rongorongo.base_hp, 300_000);
+        assert_eq!(
+            StageInfo::base_hp(&rongorongo),
+            vec![
+                TemplateParameter::new(b"enemy castle hp", b"300,000 HP".to_vec()),
+                TemplateParameter::new(b"enemy castle hp2", b"450,000 HP".to_vec()),
+                TemplateParameter::new(b"enemy castle hp3", b"600,000 HP".to_vec()),
+                TemplateParameter::new(b"enemy castle hp4", b"900,000 HP".to_vec()),
+            ]
+        );
+
+        let pile_of_guts = Stage::new("ul 31 5").unwrap();
+        assert_eq!(pile_of_guts.base_hp, 1_000_000);
+        assert_eq!(
+            StageInfo::base_hp(&pile_of_guts),
+            vec![
+                TemplateParameter::new(b"enemy castle hp", b"1,200,000 HP".to_vec()),
+                TemplateParameter::new(b"enemy castle hp2", b"1,560,000 HP".to_vec()),
+                TemplateParameter::new(b"enemy castle hp3", b"2,040,000 HP".to_vec()),
+            ]
+        );
+        // As of 13.6 this is the only stage where base hp != actual stat and
+        // also has 4 crowns.
+
+        // println!("{:?}",
+        // StageInfo::base_hp(&just_friends).into_iter().map(|a|
+        // String::from_utf8(a.to_u8s())).collect::<Vec<_>>());
     }
 }
