@@ -178,6 +178,18 @@ impl StageInfo {
         }
     }
 
+    pub fn stage_name(stage: &Stage) {
+        let mut buf: Vec<u8> = vec![];
+
+        if let Some(id) = stage.anim_base_id {
+            let id: u32 = u32::from(id) - 2;
+            const RESIZE: [u32; 5] = [657, 669, 678, 681, 693];
+            if RESIZE.contains(&id) {
+                write!(buf, "[[File:E {id}.png]]").unwrap();
+            }
+        }
+    }
+
     pub fn restrictions_section(buf: &mut Vec<u8>, stage: &Stage) {
         buf.truncate(buf.len() - "\n\n==Restrictions==\n".len());
         let _ = stage;
