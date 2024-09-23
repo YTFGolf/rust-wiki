@@ -15,6 +15,7 @@ use crate::{
         format_parser::{parse_si_format, ParseType},
     },
 };
+use num_format::{Locale, WriteFormatted};
 use regex::Regex;
 use std::{collections::HashSet, io::Write};
 
@@ -60,6 +61,7 @@ struct StageWikiData {
 }
 
 fn do_thing_internal() {
+    // Something to do with the old pre and post
     let format = DEFAULT_FORMAT;
     let parsed = parse_si_format(format);
 
@@ -87,6 +89,9 @@ fn do_thing_internal() {
             "intro" => StageInfo::intro(&stage, &stage_wiki_data),
             "stage_name" => StageInfo::stage_name(&stage).to_u8s(),
             "stage_location" => StageInfo::stage_location(&stage).to_u8s(),
+            "energy" => StageInfo::energy(&stage)
+                .map(|tp| tp.to_u8s())
+                .unwrap_or(b"".to_vec()),
             "restrictions_section" => StageInfo::restrictions_section(&stage),
 
             _ => continue,
@@ -237,6 +242,22 @@ impl StageInfo {
         TemplateParameter::new(b"stage location", buf)
     }
 
+    pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
+        let energy = stage.energy?;
+        // TODO check Catamin and EX
+        let mut buf = vec![];
+        match stage.meta.type_enum {
+            StageTypeEnum::Catamin | StageTypeEnum::Extra => {
+                let _ = buf.write(b"N/A").unwrap();
+            }
+            _ => {
+                let _ = buf.write_formatted(&energy, &Locale::en).unwrap();
+            }
+        };
+
+        Some(TemplateParameter::new(b"energy", buf))
+    }
+
     pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
         vec![]
     }
@@ -349,11 +370,45 @@ mod tests {
             [[File:Mapsn017 05 n en.png]]\n\
             |stage location = [[File:Mapname017 n en.png]]\
             "
-        )
-        // Test all 3 at once
-        // basic stage, great escaper
-        // enigma stage
-        // goodbye all cats
-        // clown base one
+        );
+
+        let red_summit = Stage::new("h 10 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::stage_name(&red_summit).to_u8s());
+        buf.write(b"\n").unwrap();
+        buf.extend(StageInfo::stage_location(&red_summit).to_u8s());
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "\
+            |stage name = [[File:rc002.png]]\n\
+            [[File:Mapsn010 00 h en.png]]\n\
+            |stage location = [[File:Mapname010 h en.png]]\
+            "
+        );
+
+        let finale = Stage::new("c 209 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::stage_name(&finale).to_u8s());
+        buf.write(b"\n").unwrap();
+        buf.extend(StageInfo::stage_location(&finale).to_u8s());
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "\
+            |stage name = [[File:E 651.png]]\n\
+            [[File:Mapsn209 00 c en.png]]\n\
+            |stage location = [[File:Mapname209 c en.png]]\
+            "
+        );
+
+        let relay_1600m = Stage::new("ex 61 2").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::stage_name(&relay_1600m).to_u8s());
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "\
+            |stage name = [[File:E 657.png|250px]]\n\
+            [[File:Mapsn061 02 ex en.png]]\
+            "
+        );
     }
 }
