@@ -5,8 +5,7 @@ use super::{
     data_files::{
         enemy_data::ENEMY_DATA,
         stage_names::{MapData, StageData},
-    },
-    wiki_utils::{extract_name, REGEXES},
+    }, template_parameter::TemplateParameter, wiki_utils::{extract_name, REGEXES}
 };
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
@@ -85,6 +84,7 @@ fn do_thing_internal() {
         let new_buf = match node.content {
             "enemies_appearing" => StageInfo::enemies_appearing(&stage),
             "intro" => StageInfo::intro(&stage, &stage_wiki_data),
+            "stage_name" => StageInfo::stage_name(&stage).into(),
             "restrictions_section" => StageInfo::restrictions_section(&stage),
 
             _ => continue,
@@ -194,16 +194,33 @@ impl StageInfo {
         buf
     }
 
-    pub fn stage_name(stage: &Stage) {
+    pub fn stage_name(stage: &Stage) -> TemplateParameter {
         let mut buf: Vec<u8> = vec![];
 
-        if let Some(id) = stage.anim_base_id {
-            let id: u32 = u32::from(id) - 2;
-            const RESIZE: [u32; 5] = [657, 669, 678, 681, 693];
-            if RESIZE.contains(&id) {
-                write!(buf, "[[File:E {id}.png]]").unwrap();
+        match stage.anim_base_id {
+            None => write!(buf, "[[File:rc{base_id:03}.png]]", base_id = stage.base_id).unwrap(),
+            Some(id) => {
+                let id: u32 = u32::from(id) - 2;
+                const RESIZE: [u32; 5] = [657, 669, 678, 681, 693];
+                if RESIZE.contains(&id) {
+                    write!(buf, "[[File:E {id}.png|250px]]").unwrap();
+                } else {
+                    write!(buf, "[[File:E {id}.png]]").unwrap();
+                    // maybe just put the 250px there always
+                }
             }
-        }
+        };
+
+        write!(
+            buf,
+            "\n[[File:Mapsn{map_num:03} {stage_num:02} {type_code} en.png]]",
+            map_num = stage.meta.map_num,
+            stage_num = stage.meta.stage_num,
+            type_code = stage.meta.type_code.to_lowercase(),
+        )
+        .unwrap();
+
+        TemplateParameter::new(b"stage name", buf)
     }
 
     pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
