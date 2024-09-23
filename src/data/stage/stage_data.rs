@@ -1,5 +1,8 @@
 //! Module that deals with getting information about stages.
-use super::stage_option::{StageOptionCSV, STAGE_OPTION};
+use super::{
+    stage_metadata::consts::StageTypeEnum,
+    stage_option::{StageOptionCSV, STAGE_OPTION},
+};
 use crate::{
     data::map::{
         map_data::{csv_types::StageDataCSV, GameMap},
@@ -210,6 +213,9 @@ impl StageData {
 
     /// Get MapStageData data if it exists.
     pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
+        if self.meta.type_enum == StageTypeEnum::Labyrinth {
+            return None;
+        }
         GameMap::get_stage_data(&self.meta)
     }
 

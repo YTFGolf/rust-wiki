@@ -58,7 +58,7 @@ pub struct CrownData {
     pub crown_4: Option<NonZeroU32>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// Crowns that restriction applies to.
 pub enum RestrictionCrowns {
     /// All crown difficulties.
@@ -75,7 +75,7 @@ impl From<i8> for RestrictionCrowns {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// Stage's restriction.
 pub struct Restriction {
     /// Crown difficulties that the restrictions apply to.
@@ -302,5 +302,13 @@ mod tests {
             };
             let _stage = Stage::new(&file_name).unwrap();
         }
+    }
+
+    #[test]
+    fn test_labyrinth() {
+        let labyrinth_stage_1 = Stage::new("l 0 0").unwrap();
+        assert_eq!(labyrinth_stage_1.energy, None);
+        assert_eq!(labyrinth_stage_1.star_mask, None);
+        assert_eq!(labyrinth_stage_1.restrictions, None);
     }
 }
