@@ -29,7 +29,7 @@ pub struct EnemyData {
     pub name: String,
     #[serde(rename = "Link")]
     /// Page (blank if same as name).
-    pub link: String,
+    pub link: Option<String>,
     #[serde(rename = "HP")]
     /// Enemy HP.
     pub hp: u32,
@@ -130,5 +130,14 @@ mod tests {
                 extract_name(&enemy.name)
             );
         }
+    }
+
+    #[test]
+    fn test_string_none() {
+        let hermit = ENEMY_DATA.get_data(354);
+        assert_eq!(hermit.link, Some("Hermit Cat (Enemy)".to_string()));
+
+        let doge = ENEMY_DATA.get_data(0);
+        assert_eq!(doge.link, None);
     }
 }
