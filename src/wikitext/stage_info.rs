@@ -1,6 +1,13 @@
 //! Prints information about a stage.
 
 #![allow(clippy::unused_io_amount)]
+use super::{
+    data_files::{
+        enemy_data::ENEMY_DATA,
+        stage_names::{MapData, StageData},
+    },
+    wiki_utils::{extract_name, REGEXES},
+};
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
     wikitext::{
@@ -9,14 +16,6 @@ use crate::{
     },
 };
 use std::{collections::HashSet, io::Write};
-
-use super::{
-    data_files::{
-        enemy_data::ENEMY_DATA,
-        stage_names::{MapData, StageData},
-    },
-    wiki_utils::{extract_name, REGEXES},
-};
 
 const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
@@ -263,11 +262,14 @@ mod tests {
     }
 
     #[test]
-    fn test_enemies_appearing(){
+    fn test_enemies_appearing() {
         let crazed_cat = Stage::new("s 17 0").unwrap();
         let mut buf = vec![];
         StageInfo::enemies_appearing(&mut buf, &crazed_cat);
-        assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing|Le'boin|Teacher Bear|Doge|Snache|Croco|Crazed Cat}}");
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "{{EnemiesAppearing|Le'boin|Teacher Bear|Doge|Snache|Croco|Crazed Cat}}"
+        );
 
         let tada = Stage::new("ex 63 0").unwrap();
         let mut buf = vec![];
