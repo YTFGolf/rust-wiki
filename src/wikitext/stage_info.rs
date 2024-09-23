@@ -1,6 +1,8 @@
 //! Prints information about a stage.
 
 #![allow(clippy::unused_io_amount)]
+use regex::Regex;
+
 use super::{
     data_files::{
         enemy_data::ENEMY_DATA,
@@ -81,16 +83,25 @@ fn do_thing_internal() {
             continue;
         }
 
-        match node.content {
-            "enemies_appearing" => StageInfo::enemies_appearing(&mut buf, &stage),
-            "intro" => StageInfo::intro(&mut buf, &stage, &stage_wiki_data),
-            "restrictions_section" => StageInfo::restrictions_section(&mut buf, &stage),
+        let new_buf = match node.content {
+            "enemies_appearing" => StageInfo::enemies_appearing(&stage),
+            "intro" => StageInfo::intro(&stage, &stage_wiki_data),
+            "restrictions_section" => StageInfo::restrictions_section(&stage),
 
-            _ => (),
+            _ => continue,
         };
+        buf.extend(new_buf.into_iter());
     }
 
-    println!("{}", String::from_utf8(buf).unwrap());
+    let string_buf = String::from_utf8(buf).unwrap();
+    let string_buf = Regex::new(r"\n+(\||\}\})")
+        .unwrap()
+        .replace_all(&string_buf, "\n$1");
+    let string_buf = Regex::new(r"\n==.*==\n\n")
+        .unwrap()
+        .replace_all(&string_buf, "");
+
+    println!("{}", string_buf);
 }
 
 /// temp
@@ -101,7 +112,8 @@ pub fn do_stuff() {
 
 struct StageInfo;
 impl StageInfo {
-    pub fn enemies_appearing(buf: &mut Vec<u8>, stage: &Stage) {
+    pub fn enemies_appearing(stage: &Stage) -> Vec<u8> {
+        let mut buf: Vec<u8> = vec![];
         buf.write(b"{{EnemiesAppearing").unwrap();
 
         let mut displayed = HashSet::new();
@@ -114,9 +126,12 @@ impl StageInfo {
             write!(buf, "|{}", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
         }
         buf.write(b"}}").unwrap();
+
+        buf
     }
 
-    pub fn intro(buf: &mut Vec<u8>, stage: &Stage, data: &StageWikiData) {
+    pub fn intro(stage: &Stage, data: &StageWikiData) -> Vec<u8> {
+        let mut buf: Vec<u8> = vec![];
         if stage.meta.type_enum == StageTypeEnum::RankingDojo {
             write!(
                 buf,
@@ -126,7 +141,7 @@ impl StageInfo {
             )
             .unwrap();
 
-            return;
+            return buf;
         }
 
         write!(
@@ -176,6 +191,8 @@ impl StageInfo {
         if stage.is_no_continues {
             buf.write(b" This is a [[No Continues]] stage.").unwrap();
         }
+
+        buf
     }
 
     pub fn stage_name(stage: &Stage) {
@@ -190,9 +207,8 @@ impl StageInfo {
         }
     }
 
-    pub fn restrictions_section(buf: &mut Vec<u8>, stage: &Stage) {
-        buf.truncate(buf.len() - "\n\n==Restrictions==\n".len());
-        let _ = stage;
+    pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
+        vec![]
     }
 }
 
