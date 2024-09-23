@@ -5,7 +5,9 @@ use super::{
     data_files::{
         enemy_data::ENEMY_DATA,
         stage_names::{MapData, StageData},
-    }, template_parameter::TemplateParameter, wiki_utils::{extract_name, REGEXES}
+    },
+    template_parameter::TemplateParameter,
+    wiki_utils::{extract_name, REGEXES},
 };
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
@@ -84,7 +86,8 @@ fn do_thing_internal() {
         let new_buf = match node.content {
             "enemies_appearing" => StageInfo::enemies_appearing(&stage),
             "intro" => StageInfo::intro(&stage, &stage_wiki_data),
-            "stage_name" => StageInfo::stage_name(&stage).into(),
+            "stage_name" => StageInfo::stage_name(&stage).to_u8s(),
+            "stage_location" => StageInfo::stage_location(&stage).to_u8s(),
             "restrictions_section" => StageInfo::restrictions_section(&stage),
 
             _ => continue,
@@ -223,10 +226,25 @@ impl StageInfo {
         TemplateParameter::new(b"stage name", buf)
     }
 
-    pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
+    pub fn stage_location(stage: &Stage) -> TemplateParameter {
+        let mut buf = vec![];
+        write!(
+            &mut buf,
+            "[[File:Mapname{map_num:03} {type_code} en.png]]",
+            map_num = stage.meta.map_num,
+            type_code = stage.meta.type_code.to_lowercase(),
+        )
+        .unwrap();
+        TemplateParameter::new(b"stage location", buf)
+    }
+
+    pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
         vec![]
     }
 }
+
+// No context stage enemy line, just takes &enemy and show_mag. if base then can
+// just write it in the function directly, and ** can be written there too.
 
 fn get_ordinal(n: u32) -> String {
     const SMALL_ORDS: [&str; 9] = [
@@ -316,5 +334,27 @@ mod tests {
         let not_alone = Stage::new("c 176 4").unwrap();
         let buf = StageInfo::enemies_appearing(&not_alone);
         assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
+    }
+
+    #[test]
+    fn test_stage_name_and_loc() {
+        let great_escaper = Stage::new("n 17 5").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::stage_name(&great_escaper).to_u8s());
+        buf.write(b"\n").unwrap();
+        buf.extend(StageInfo::stage_location(&great_escaper).to_u8s());
+        assert_eq!(
+            &String::from_utf8(buf).unwrap(),
+            "\
+            |stage name = [[File:rc006.png]]\n\
+            [[File:Mapsn017 05 n en.png]]\n\
+            |stage location = [[File:Mapname017 n en.png]]\
+            "
+        )
+        // Test all 3 at once
+        // basic stage, great escaper
+        // enigma stage
+        // goodbye all cats
+        // clown base one
     }
 }
