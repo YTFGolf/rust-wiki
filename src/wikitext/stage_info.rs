@@ -244,7 +244,6 @@ impl StageInfo {
 
     pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
         let energy = stage.energy?;
-        // TODO check Catamin and EX
         let mut buf = vec![];
         match stage.meta.type_enum {
             StageTypeEnum::Catamin | StageTypeEnum::Extra => {
@@ -410,5 +409,36 @@ mod tests {
             [[File:Mapsn061 02 ex en.png]]\
             "
         );
+    }
+
+    #[test]
+    fn test_energy() {
+        let aac = Stage::new("ul 0 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::energy(&aac).unwrap().to_u8s());
+        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 200");
+
+        let challenge = Stage::new("challenge 0 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::energy(&challenge).unwrap().to_u8s());
+        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 0");
+
+        let door_opens = Stage::new("ex 47 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::energy(&door_opens).unwrap().to_u8s());
+        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = N/A");
+
+        let facing_danger = Stage::new("b 5 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::energy(&facing_danger).unwrap().to_u8s());
+        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = N/A");
+
+        let mining_epic = Stage::new("s 326 0").unwrap();
+        let mut buf: Vec<u8> = vec![];
+        buf.extend(StageInfo::energy(&mining_epic).unwrap().to_u8s());
+        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 1,000");
+
+        let labyrinth_67 = Stage::new("l 0 66").unwrap();
+        assert_eq!(StageInfo::energy(&labyrinth_67), None);
     }
 }

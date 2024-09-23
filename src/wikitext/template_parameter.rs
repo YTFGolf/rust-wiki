@@ -2,6 +2,7 @@
 
 use std::io::Write;
 
+#[derive(Debug, PartialEq)]
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
     key: &'static [u8],
