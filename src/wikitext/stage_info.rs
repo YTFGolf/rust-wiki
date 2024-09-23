@@ -1,6 +1,5 @@
 //! Prints information about a stage.
 
-#![allow(clippy::unused_io_amount)]
 use super::{
     data_files::{
         enemy_data::ENEMY_DATA,

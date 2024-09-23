@@ -55,7 +55,7 @@ impl EnemyDataContainer {
     }
     /// Get the data of the enemy.
     pub fn get_data(&self, id: u32) -> &EnemyData {
-        &self.data.get(&id).unwrap()
+        self.data.get(&id).unwrap()
     }
 }
 /// Contains enemy data.
@@ -72,8 +72,7 @@ fn get_enemy_names() -> Vec<EnemyName> {
 
     rdr.unwrap()
         .deserialize::<EnemyName>()
-        .into_iter()
-        .map(|r| r.unwrap().into())
+        .map(|r| r.unwrap())
         .collect()
 }
 fn get_enemy_data() -> HashMap<u32, EnemyData> {
@@ -83,7 +82,6 @@ fn get_enemy_data() -> HashMap<u32, EnemyData> {
 
     rdr.unwrap()
         .deserialize::<EnemyData>()
-        .into_iter()
         .map(|r| {
             let enemy: EnemyData = r.unwrap();
             (enemy._image, enemy)

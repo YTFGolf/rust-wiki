@@ -14,9 +14,9 @@ impl TemplateParameter {
         Self { key, value }
     }
     /// Convert object to a vec of u8s.
-    pub fn to_u8s(&self) -> Vec<u8>{
+    pub fn to_u8s(&self) -> Vec<u8> {
         let mut buf = vec![];
-        for value in [b"|", self.key, b" = ", &self.value]{
+        for value in [b"|", self.key, b" = ", &self.value] {
             buf.write(value).unwrap();
         }
         buf
