@@ -1,8 +1,6 @@
 //! Prints information about a stage.
 
 #![allow(clippy::unused_io_amount)]
-use regex::Regex;
-
 use super::{
     data_files::{
         enemy_data::ENEMY_DATA,
@@ -17,6 +15,7 @@ use crate::{
         format_parser::{parse_si_format, ParseType},
     },
 };
+use regex::Regex;
 use std::{collections::HashSet, io::Write};
 
 const DEFAULT_FORMAT: &str = "\
@@ -253,36 +252,31 @@ mod tests {
     #[test]
     fn test_intro() {
         let ht30 = Stage::new("v 0 29").unwrap();
-        let mut buf = vec![];
         let stage_wiki_data = get_stage_wiki_data(&ht30);
-        StageInfo::intro(&mut buf, &ht30, &stage_wiki_data);
+        let buf = StageInfo::intro(&ht30, &stage_wiki_data);
         assert_eq!(&String::from_utf8(buf).unwrap(), "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
 
         let whole_new = Stage::new("zl 0 0").unwrap();
-        let mut buf = vec![];
         let stage_wiki_data = get_stage_wiki_data(&whole_new);
-        StageInfo::intro(&mut buf, &whole_new, &stage_wiki_data);
+        let buf = StageInfo::intro(&whole_new, &stage_wiki_data);
         assert_eq!(&String::from_utf8(buf).unwrap(), "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
 
         let earthshaker = Stage::new("sol 0 0").unwrap();
-        let mut buf = vec![];
         let stage_wiki_data = get_stage_wiki_data(&earthshaker);
-        StageInfo::intro(&mut buf, &earthshaker, &stage_wiki_data);
+        let buf = StageInfo::intro(&earthshaker, &stage_wiki_data);
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "'''Earthshaker''' is the first stage in [[The Legend Begins]]."
         );
 
         let refusal_type = Stage::new("c 206 1").unwrap();
-        let mut buf = vec![];
         let stage_wiki_data = get_stage_wiki_data(&refusal_type);
-        StageInfo::intro(&mut buf, &refusal_type, &stage_wiki_data);
+        let buf = StageInfo::intro(&refusal_type, &stage_wiki_data);
         assert_eq!(&String::from_utf8(buf).unwrap(), "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
 
         let crimson_trial = Stage::new("r 20 0").unwrap();
-        let mut buf = vec![];
         let stage_wiki_data = get_stage_wiki_data(&crimson_trial);
-        StageInfo::intro(&mut buf, &crimson_trial, &stage_wiki_data);
+        let buf = StageInfo::intro(&crimson_trial, &stage_wiki_data);
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "'''Crimson Trial''' is the 21st [[Arena of Honor]] of the [[Catclaw Dojo]]."
@@ -292,21 +286,18 @@ mod tests {
     #[test]
     fn test_enemies_appearing() {
         let crazed_cat = Stage::new("s 17 0").unwrap();
-        let mut buf = vec![];
-        StageInfo::enemies_appearing(&mut buf, &crazed_cat);
+        let buf = StageInfo::enemies_appearing(&crazed_cat);
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "{{EnemiesAppearing|Le'boin|Teacher Bear|Doge|Snache|Croco|Crazed Cat}}"
         );
 
         let tada = Stage::new("ex 63 0").unwrap();
-        let mut buf = vec![];
-        StageInfo::enemies_appearing(&mut buf, &tada);
+        let buf = StageInfo::enemies_appearing(&tada);
         assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing}}");
 
         let not_alone = Stage::new("c 176 4").unwrap();
-        let mut buf = vec![];
-        StageInfo::enemies_appearing(&mut buf, &not_alone);
+        let buf = StageInfo::enemies_appearing(&not_alone);
         assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
     }
 }
