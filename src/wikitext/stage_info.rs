@@ -369,79 +369,84 @@ impl StageInfo {
                 enemy_list.boss.push(enemy);
             }
         }
+        // get all enemies
 
         assert!(enemy_list.base.len() <= 1);
-
         let mut enemy_list_seen = HashSet::new();
         let filtered_enemies = enemy_list
             .enemies
-            .iter()
-            .filter(|e| e.id != 21 && enemy_list_seen.insert((e.id, e.magnification)));
-
+            .into_iter()
+            .filter(|e| e.id != 21 && enemy_list_seen.insert((e.id, e.magnification)))
+            .collect::<Vec<&StageEnemy>>();
         let mut boss_list_seen = HashSet::new();
         let filtered_boss = enemy_list
             .boss
-            .iter()
-            .filter(|e| e.id != 21 && boss_list_seen.insert((e.id, e.magnification)));
+            .into_iter()
+            .filter(|e| e.id != 21 && boss_list_seen.insert((e.id, e.magnification)))
+            .collect::<Vec<&StageEnemy>>();
         // remove duplicates
 
-        let write_enemy = |buf: &mut Vec<u8>, enemy: &StageEnemy| {
+        /// Write `|{enemy}|{mag}%` to `buf`.
+        fn write_enemy(buf: &mut Vec<u8>, enemy: &StageEnemy) {
             write!(buf, "|{}|", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
             match &enemy.magnification {
                 Left(m) => buf.write_formatted(m, &Locale::en).unwrap(),
                 _ => todo!(),
             };
             buf.write(b"%").unwrap();
-        };
+        }
+        /// Collect all enemies in the vec to a newline-separated byte string.
+        fn collect_all_enemies<'a>(filtered_enemies_vec: Vec<&'a StageEnemy>) -> Vec<u8> {
+            filtered_enemies_vec
+                .iter()
+                .map(|e| {
+                    let mut buf = vec![];
+                    write_enemy(&mut buf, e);
+                    buf
+                })
+                .collect::<Vec<Vec<u8>>>()
+                .join(&b'\n')
+        }
+        // util functions
 
-        let mut buf = vec![];
-        if !enemy_list.base.is_empty() {
+        let mut enemy_vec: Vec<TemplateParameter> = vec![];
+        let mut add_to_enemy_vec = |key: &'static [u8], list: Vec<u8>| {
             let mut base_buf = vec![];
-
-            let base = enemy_list.base[0];
             base_buf.write(b"{{Magnification").unwrap();
-            write_enemy(&mut base_buf, &base);
+            base_buf.extend(list);
             base_buf.write(b"}}").unwrap();
 
-            buf.push(TemplateParameter::new(b"base", base_buf));
+            enemy_vec.push(TemplateParameter::new(key, base_buf));
+        };
+        // return value and another util function (has to be a mutable closure
+        // since it uses `enemy_vec`).
+
+        if !enemy_list.base.is_empty() {
+            let base_items = collect_all_enemies(enemy_list.base);
+            add_to_enemy_vec(b"base", base_items);
+        }
+        if !filtered_enemies.is_empty() {
+            let enemy_items = collect_all_enemies(filtered_enemies);
+            add_to_enemy_vec(b"enemies", enemy_items);
+        }
+        if !filtered_boss.is_empty() {
+            let boss_items = collect_all_enemies(filtered_boss);
+            add_to_enemy_vec(b"boss", boss_items);
         }
 
-        // use regex for other mags
-        let enemy_items = filtered_enemies
-            .map(|e| {
-                let mut buf = vec![];
-                write_enemy(&mut buf, e);
-                buf
-            })
-            .collect::<Vec<Vec<u8>>>()
-            .join(&b'\n');
-        if !enemy_items.is_empty() {
-            let mut enemy_buf = vec![];
-            enemy_buf.write(b"{{Magnification").unwrap();
-            enemy_buf.extend(enemy_items);
-            enemy_buf.write(b"}}").unwrap();
+        // let crowns = match &stage.crown_data {
+        //     None => return enemy_vec,
+        //     Some(c) => c,
+        // };
+        // let difficulty: u8 = crowns.max_difficulty.into();
+        // if difficulty == 1 {
+        //     return enemy_vec;
+        // }
 
-            buf.push(TemplateParameter::new(b"enemies", enemy_buf));
-        }
+        // TODO other crowns
+        // TODO disable for gauntlets/dojo
 
-        let boss_items = filtered_boss
-            .map(|e| {
-                let mut buf = vec![];
-                write_enemy(&mut buf, e);
-                buf
-            })
-            .collect::<Vec<Vec<u8>>>()
-            .join(&b'\n');
-        if !boss_items.is_empty() {
-            let mut boss_buf = vec![];
-            boss_buf.write(b"{{Magnification").unwrap();
-            boss_buf.extend(boss_items);
-            boss_buf.write(b"}}").unwrap();
-
-            buf.push(TemplateParameter::new(b"boss", boss_buf));
-        }
-
-        buf
+        enemy_vec
     }
 
     pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
@@ -724,4 +729,8 @@ mod tests {
     // mag tests
     // tada
     // something with the old 979 errors
+    // differing magnifications
+    // bases
+    // star ocean
+    // kugel schreiber
 }
