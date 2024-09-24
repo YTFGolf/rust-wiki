@@ -386,22 +386,28 @@ impl StageInfo {
             .collect::<Vec<&StageEnemy>>();
         // remove duplicates
 
-        /// Write `|{enemy}|{mag}%` to `buf`.
-        fn write_enemy(buf: &mut Vec<u8>, enemy: &StageEnemy) {
+        /// Write `|{enemy}|{mag}%` to `buf`. Multiplier is raw % i.e. 100 = *1.
+        fn write_enemy(buf: &mut Vec<u8>, enemy: &StageEnemy, multiplier: u32) {
             write!(buf, "|{}|", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
             match &enemy.magnification {
-                Left(m) => buf.write_formatted(m, &Locale::en).unwrap(),
+                Left(m) => buf
+                    .write_formatted(&(m * multiplier / 100), &Locale::en)
+                    .unwrap(),
                 _ => todo!(),
             };
             buf.write(b"%").unwrap();
         }
         /// Collect all enemies in the vec to a newline-separated byte string.
-        fn collect_all_enemies<'a>(filtered_enemies_vec: Vec<&'a StageEnemy>) -> Vec<u8> {
+        /// Multiplier is raw % i.e. 100 = *1.
+        fn collect_all_enemies<'a>(
+            filtered_enemies_vec: &Vec<&'a StageEnemy>,
+            multiplier: u32,
+        ) -> Vec<u8> {
             filtered_enemies_vec
                 .iter()
                 .map(|e| {
                     let mut buf = vec![];
-                    write_enemy(&mut buf, e);
+                    write_enemy(&mut buf, e, multiplier);
                     buf
                 })
                 .collect::<Vec<Vec<u8>>>()
@@ -411,39 +417,88 @@ impl StageInfo {
 
         let mut enemy_vec: Vec<TemplateParameter> = vec![];
         let mut add_to_enemy_vec = |key: &'static [u8], list: Vec<u8>| {
-            let mut base_buf = vec![];
-            base_buf.write(b"{{Magnification").unwrap();
-            base_buf.extend(list);
-            base_buf.write(b"}}").unwrap();
+            let mut buf = vec![];
+            buf.write(b"{{Magnification").unwrap();
+            buf.extend(list);
+            buf.write(b"}}").unwrap();
 
-            enemy_vec.push(TemplateParameter::new(key, base_buf));
+            enemy_vec.push(TemplateParameter::new(key, buf));
         };
         // return value and another util function (has to be a mutable closure
         // since it uses `enemy_vec`).
 
         if !enemy_list.base.is_empty() {
-            let base_items = collect_all_enemies(enemy_list.base);
+            let base_items = collect_all_enemies(&enemy_list.base, 100);
             add_to_enemy_vec(b"base", base_items);
         }
         if !filtered_enemies.is_empty() {
-            let enemy_items = collect_all_enemies(filtered_enemies);
+            let enemy_items = collect_all_enemies(&filtered_enemies, 100);
             add_to_enemy_vec(b"enemies", enemy_items);
         }
         if !filtered_boss.is_empty() {
-            let boss_items = collect_all_enemies(filtered_boss);
+            let boss_items = collect_all_enemies(&filtered_boss, 100);
             add_to_enemy_vec(b"boss", boss_items);
         }
 
-        // let crowns = match &stage.crown_data {
-        //     None => return enemy_vec,
-        //     Some(c) => c,
-        // };
-        // let difficulty: u8 = crowns.max_difficulty.into();
-        // if difficulty == 1 {
-        //     return enemy_vec;
-        // }
+        let crowns = match &stage.crown_data {
+            None => return enemy_vec,
+            Some(c) => c,
+        };
+        let difficulty: u8 = crowns.max_difficulty.into();
+        if difficulty == 1 {
+            return enemy_vec;
+        }
 
-        // TODO other crowns
+        let magnif_2: u32 = stage.crown_data.as_ref().unwrap().crown_2.unwrap().into();
+        if !enemy_list.base.is_empty() {
+            let base_items = collect_all_enemies(&enemy_list.base, magnif_2);
+            add_to_enemy_vec(b"base2", base_items);
+        }
+        if !filtered_enemies.is_empty() {
+            let enemy_items = collect_all_enemies(&filtered_enemies, magnif_2);
+            add_to_enemy_vec(b"enemies2", enemy_items);
+        }
+        if !filtered_boss.is_empty() {
+            let boss_items = collect_all_enemies(&filtered_boss, magnif_2);
+            add_to_enemy_vec(b"boss2", boss_items);
+        }
+        if difficulty == 2 {
+            return enemy_vec;
+        }
+
+        let magnif_3: u32 = stage.crown_data.as_ref().unwrap().crown_3.unwrap().into();
+        if !enemy_list.base.is_empty() {
+            let base_items = collect_all_enemies(&enemy_list.base, magnif_3);
+            add_to_enemy_vec(b"base3", base_items);
+        }
+        if !filtered_enemies.is_empty() {
+            let enemy_items = collect_all_enemies(&filtered_enemies, magnif_3);
+            add_to_enemy_vec(b"enemies3", enemy_items);
+        }
+        if !filtered_boss.is_empty() {
+            let boss_items = collect_all_enemies(&filtered_boss, magnif_3);
+            add_to_enemy_vec(b"boss3", boss_items);
+        }
+        if difficulty == 3 {
+            return enemy_vec;
+        }
+
+        let magnif_4: u32 = stage.crown_data.as_ref().unwrap().crown_4.unwrap().into();
+        if magnif_4 == 100 {
+            return enemy_vec;
+        }
+        if !enemy_list.base.is_empty() {
+            let base_items = collect_all_enemies(&enemy_list.base, magnif_4);
+            add_to_enemy_vec(b"base4", base_items);
+        }
+        if !filtered_enemies.is_empty() {
+            let enemy_items = collect_all_enemies(&filtered_enemies, magnif_4);
+            add_to_enemy_vec(b"enemies4", enemy_items);
+        }
+        if !filtered_boss.is_empty() {
+            let boss_items = collect_all_enemies(&filtered_boss, magnif_4);
+            add_to_enemy_vec(b"boss4", boss_items);
+        }
         // TODO disable for gauntlets/dojo
 
         enemy_vec
