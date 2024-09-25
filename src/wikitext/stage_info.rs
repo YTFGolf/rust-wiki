@@ -449,7 +449,7 @@ impl StageInfo {
             return enemy_vec;
         }
 
-        let magnif_2: u32 = stage.crown_data.as_ref().unwrap().crown_2.unwrap().into();
+        let magnif_2: u32 = crowns.crown_2.unwrap().into();
         if !enemy_list.base.is_empty() {
             let base_items = collect_all_enemies(&enemy_list.base, magnif_2);
             add_to_enemy_vec(b"base2", base_items);
@@ -466,7 +466,7 @@ impl StageInfo {
             return enemy_vec;
         }
 
-        let magnif_3: u32 = stage.crown_data.as_ref().unwrap().crown_3.unwrap().into();
+        let magnif_3: u32 = crowns.crown_3.unwrap().into();
         if !enemy_list.base.is_empty() {
             let base_items = collect_all_enemies(&enemy_list.base, magnif_3);
             add_to_enemy_vec(b"base3", base_items);
@@ -483,7 +483,7 @@ impl StageInfo {
             return enemy_vec;
         }
 
-        let magnif_4: u32 = stage.crown_data.as_ref().unwrap().crown_4.unwrap().into();
+        let magnif_4: u32 = crowns.crown_4.unwrap().into();
         if magnif_4 == 100 {
             return enemy_vec;
         }
