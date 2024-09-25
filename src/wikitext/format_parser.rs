@@ -6,7 +6,6 @@ pub enum ParseType {
     Variable,
     Text,
 }
-use ParseType::*;
 
 #[derive(Debug)]
 pub struct ParseNode<'a> {
@@ -21,7 +20,7 @@ pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
         if n != 0 {
             parsed.push(ParseNode {
                 content: &format[0..n],
-                ptype: Text,
+                ptype: ParseType::Text,
             });
             format = &format[n..];
             n = 0;
@@ -32,7 +31,7 @@ pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
         let var_name = &format[n + 2..end];
         parsed.push(ParseNode {
             content: var_name,
-            ptype: Variable,
+            ptype: ParseType::Variable,
         });
 
         format = &format[end + 1..];
@@ -40,7 +39,7 @@ pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
     if !format.is_empty() {
         parsed.push(ParseNode {
             content: format,
-            ptype: Text,
+            ptype: ParseType::Text,
         });
     }
 

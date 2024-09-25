@@ -11,7 +11,7 @@ use crate::{
     data::stage::stage_metadata::StageMeta,
     file_handler::get_decommented_file_reader,
 };
-use csv_types::*;
+use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
 use std::path::PathBuf;
 
 /// Types to deserialise csv files.
