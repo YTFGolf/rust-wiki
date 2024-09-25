@@ -2,8 +2,8 @@
 
 /// Contains constant/static values to be used by the rest of the module.
 pub mod consts {
-    use lazy_static::lazy_static;
     use regex::{Regex, RegexBuilder};
+    use std::sync::LazyLock;
 
     #[derive(Debug, PartialEq)]
     /// Struct that contains information about each stage type.
@@ -153,7 +153,6 @@ pub mod consts {
         initialise_stage_type("Colosseum",            036, "SR",    true,  T::Colosseum),
     ];
 
-    lazy_static! {
     #[rustfmt::skip]
     /// Map of regex matchers to code used in [STAGE_TYPES].
     ///
@@ -164,7 +163,7 @@ pub mod consts {
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
     // TODO probably replace this with enums
-    static ref STAGE_TYPE_MAP: [StageTypeMap; 19] = [
+    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 19]> = LazyLock::new(|| {[
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
@@ -184,12 +183,11 @@ pub mod consts {
         initialise_type_map("ZL|34|ND|RND",                             "ND"),
         initialise_type_map("Colosseum|36|SR|RSR",                      "SR"),
         initialise_type_map("EoC|ItF|W|CotC|Space|Aku|DM|Z|Filibuster", "main")
-    ];
-    }
+    ]});
 }
 use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
-use lazy_static::lazy_static;
 use regex::Regex;
+use std::sync::LazyLock;
 
 /// Struct to contain [struct@FILE_PATTERNS].
 struct FilePatterns {
@@ -202,22 +200,20 @@ struct FilePatterns {
     /// number (e.g. `["RND", "106", "702"]` in `"stageRND106_702.csv"`).
     default: Regex,
 }
-lazy_static! {
-    // TODO remove lazy static dependency
-    /// Captures `"s00000-01"` in
-    /// `"*https://battlecats-db.com/stage/s00000-01.html"`.
-    static ref DB_REFERENCE_FULL: Regex =
-        Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap();
-    /// Captures `["01", "001", "999"]` in `"s01001-999"`.
-    static ref DB_REFERENCE_STAGE: Regex = Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap();
+/// Captures `"s00000-01"` in
+/// `"*https://battlecats-db.com/stage/s00000-01.html"`.
+static DB_REFERENCE_FULL: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap());
+/// Captures `["01", "001", "999"]` in `"s01001-999"`.
+static DB_REFERENCE_STAGE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
 
-    /// Static container for file-related regexes.
-    static ref FILE_PATTERNS: FilePatterns = FilePatterns {
-        eoc: Regex::new(r"^stage(\d{2})\.csv$").unwrap(),
-        other_main: Regex::new(r"^stage(W|Space|DM|Z)\d\d.*\.csv$").unwrap(),
-        default: Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap(),
-    };
-}
+/// Static container for file-related regexes.
+static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
+    eoc: Regex::new(r"^stage(\d{2})\.csv$").unwrap(),
+    other_main: Regex::new(r"^stage(W|Space|DM|Z)\d\d.*\.csv$").unwrap(),
+    default: Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap(),
+});
 
 #[derive(Debug, PartialEq)]
 /// Contains metadata about a given stage.
