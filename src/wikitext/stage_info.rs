@@ -781,11 +781,98 @@ mod tests {
         // String::from_utf8(a.to_u8s())).collect::<Vec<_>>());
     }
 
+    #[test]
+    fn test_enemies_list() {
+        let aac = Stage::new("ul 0 0").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&aac),
+            vec![
+                TemplateParameter::new(b"enemies", b"{{Magnification|Relic Doge|100%}}".to_vec()),
+                TemplateParameter::new(b"boss", b"{{Magnification|Relic Bun-Bun|100%}}".to_vec()),
+                TemplateParameter::new(b"enemies2", b"{{Magnification|Relic Doge|150%}}".to_vec()),
+                TemplateParameter::new(b"boss2", b"{{Magnification|Relic Bun-Bun|150%}}".to_vec()),
+                TemplateParameter::new(b"enemies3", b"{{Magnification|Relic Doge|200%}}".to_vec()),
+                TemplateParameter::new(b"boss3", b"{{Magnification|Relic Bun-Bun|200%}}".to_vec()),
+            ]
+        );
+
+        let tada = Stage::new("ex 63 0").unwrap();
+        assert_eq!(StageInfo::enemies_list(&tada), vec![]);
+
+        let celestial_seas = Stage::new("n 32 3").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&celestial_seas),
+            vec![
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Doge|3,000%\n\
+                    |Those Guys|2,000%\n\
+                    |Gabriel|400%\n\
+                    |Gabriel|600%\n\
+                    |Gabriel|700%\n\
+                    |Gabriel|800%\n\
+                    |Gabriel|900%\n\
+                    |Gabriel|1,000%\n\
+                    |Gabriel|2,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss", b"{{Magnification|Le'boin|10,000%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Doge|3,600%\n\
+                    |Those Guys|2,400%\n\
+                    |Gabriel|480%\n\
+                    |Gabriel|720%\n\
+                    |Gabriel|840%\n\
+                    |Gabriel|960%\n\
+                    |Gabriel|1,080%\n\
+                    |Gabriel|1,200%\n\
+                    |Gabriel|2,400%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss2", b"{{Magnification|Le'boin|12,000%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Doge|4,200%\n\
+                    |Those Guys|2,800%\n\
+                    |Gabriel|560%\n\
+                    |Gabriel|840%\n\
+                    |Gabriel|980%\n\
+                    |Gabriel|1,120%\n\
+                    |Gabriel|1,260%\n\
+                    |Gabriel|1,400%\n\
+                    |Gabriel|2,800%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss3", b"{{Magnification|Le'boin|14,000%}}".to_vec()),
+            ]
+        );
+
+        let it_25 = Stage::new("n 32 3").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&it_25),
+            vec![TemplateParameter::new(
+                b"enemies",
+                b"{{Magnification|Pigeon de Sable|300%\n\
+                |Elizabeth the LVIth|2,000%\n\
+                |Bore Jr.|100%\n\
+                |Kory|600%\n\
+                |Berserkory|200%\n\
+                |Heavy Assault C.A.T.|100/150%\n\
+                |Mr. Angel|300%}}"
+                    .to_vec()
+            )]
+        )
+    }
+
     // mag tests
-    // tada
-    // something with the old 979 errors
-    // differing magnifications
-    // bases
+    // differing magnifications (infernal tower, uruvu journals)
+    // bases (look above for examples with anim bases)
     // star ocean
     // kugel schreiber
+    // Sleeping Lion
+    // Noble tribe
+    // Revenant Road
+
+    // Should probably also test param_vec_fold
 }
