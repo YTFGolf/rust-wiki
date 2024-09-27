@@ -23,7 +23,8 @@ pub struct Config<'a> {
 
 /// Static variable representing the config.
 // TODO read a config file instead of writing it here.
+// TODO remove dependency on static variable.
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
-    data_mines: expand_home("~/Downloads/Version 13.6.0 EN"),
+    data_mines: expand_home("~/Downloads/Version 13.7.0 JP"),
     user_name: "TheWWRNerdGuy",
 });
