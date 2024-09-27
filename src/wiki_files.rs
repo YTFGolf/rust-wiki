@@ -61,7 +61,7 @@ fn get_file_diff(old_content: &str, new_content: &str) -> String {
 /// Get rid of the `<pre>` and `</pre>` parts of the page's content.
 fn strip_pre(content: &str) -> &str {
     if content.starts_with("<pre>\n") {
-        &content["<pre>\n".len()..content.len() - "</pre>".len()]
+        &content["<pre>\n".len()..content.len() - "</pre>\n".len()]
     } else {
         content
     }
@@ -80,7 +80,8 @@ pub fn update_wiki_files() {
             .set(USER_AGENT.as_str(), &user_agent)
             .call()
             .expect("Couldn't get the data from the wiki.");
-        let res_str = response.into_string().unwrap();
+        let mut res_str = response.into_string().unwrap();
+        res_str.push('\n');
         let content = strip_pre(&res_str);
 
         let path = directory.join(file_name);

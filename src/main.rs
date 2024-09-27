@@ -4,6 +4,7 @@ use rust_wiki::{data::stage::stage_metadata::StageMeta, wikitext::stage_info::do
 fn main() {
     println!("{:?}", StageMeta::new("sol 0 0").unwrap());
     println!("{:?}", StageMeta::new("ex 0 0").unwrap());
+    // update_wiki_files();
 
     do_stuff();
 }
