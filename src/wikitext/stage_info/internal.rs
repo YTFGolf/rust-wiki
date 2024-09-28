@@ -1,3 +1,5 @@
+//! Internal functions for stage info.
+
 use super::StageWikiData;
 mod enemies_list;
 use crate::{
