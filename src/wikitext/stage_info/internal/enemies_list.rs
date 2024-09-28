@@ -73,10 +73,7 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
     }
     /// Collect all enemies in the vec to a newline-separated byte string.
     /// Multiplier is raw % i.e. 100 = *1.
-    fn collect_all_enemies(
-        filtered_enemies_vec: &[&StageEnemy],
-        multiplier: u32,
-    ) -> Vec<u8> {
+    fn collect_all_enemies(filtered_enemies_vec: &[&StageEnemy], multiplier: u32) -> Vec<u8> {
         filtered_enemies_vec
             .iter()
             .map(|e| {
@@ -183,7 +180,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_enemies_list() {
+    fn simple_case() {
         let aac = Stage::new("ul 0 0").unwrap();
         assert_eq!(
             enemies_list(&aac),
@@ -196,10 +193,19 @@ mod tests {
                 TemplateParameter::new(b"boss3", b"{{Magnification|Relic Bun-Bun|200%}}".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn blank_enemy_list() {
         let tada = Stage::new("ex 63 0").unwrap();
         assert_eq!(enemies_list(&tada), vec![]);
+    }
 
+    #[test]
+    fn repeat_and_floating_error() {
+        // i.e. Gabriel appears at different magnifications *and* it houses the
+        // infamous 700% magnification with a 1.4x multiplier on 3-star, which
+        // on Python always used to evaluate as 979%.
         let celestial_seas = Stage::new("n 32 3").unwrap();
         assert_eq!(
             enemies_list(&celestial_seas),
@@ -248,7 +254,10 @@ mod tests {
                 TemplateParameter::new(b"boss3", b"{{Magnification|Le'boin|14,000%}}".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn with_separate_mags() {
         let it_25 = Stage::new("v 6 24").unwrap();
         assert_eq!(
             enemies_list(&it_25),
@@ -284,7 +293,10 @@ mod tests {
                 )
             ]
         );
+    }
 
+    #[test]
+    fn simple_4_crown() {
         let sleeping_lion = Stage::new("sol 0 7").unwrap();
         assert_eq!(
             enemies_list(&sleeping_lion),
@@ -335,7 +347,10 @@ mod tests {
                 TemplateParameter::new(b"boss4", b"{{Magnification|Squire Rel|300%}}".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn with_repeated_enemy() {
         let star_ocean = Stage::new("sol 15 7").unwrap();
         assert_eq!(
             enemies_list(&star_ocean),
@@ -398,7 +413,10 @@ mod tests {
                 TemplateParameter::new(b"boss4", b"{{Magnification|H. Nah|400%}}".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn with_multiple_bosses() {
         let kugel_schreiber = Stage::new("sol 24 2").unwrap();
         assert_eq!(
             enemies_list(&kugel_schreiber),
@@ -449,7 +467,10 @@ mod tests {
                 )
             ]
         );
+    }
 
+    #[test]
+    fn insane_magnifications() {
         let noble_tribe = Stage::new("sol 43 2").unwrap();
         assert_eq!(
             enemies_list(&noble_tribe),
@@ -480,7 +501,11 @@ mod tests {
                 TemplateParameter::new(b"boss3", b"{{Magnification|Hippoe|156,000%}}".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn floating_point_error_2() {
+        // Make sure B.B.Bunny in 3-star doesn't give me 3,919%
         let revenant_road = Stage::new("sol 33 3").unwrap();
         assert_eq!(
             enemies_list(&revenant_road),
@@ -526,7 +551,10 @@ mod tests {
                 ),
             ]
         );
+    }
 
+    #[test]
+    fn with_base() {
         let finale = Stage::new("c 209 0").unwrap();
         assert_eq!(
             enemies_list(&finale),
@@ -535,7 +563,10 @@ mod tests {
                 b"{{Magnification|Finale Base|100%}}".to_vec()
             ),]
         );
+    }
 
+    #[test]
+    fn with_insane_base() {
         let relay_1600m = Stage::new("ex 61 2").unwrap();
         assert_eq!(
             enemies_list(&relay_1600m),
@@ -558,7 +589,11 @@ mod tests {
                 TemplateParameter::new(b"boss", b"{{Magnification|Le'noir|150%}}".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn with_weird_base() {
+        // basically just here for same reasons it was in information's tests
         let pile_of_guts = Stage::new("ul 31 5").unwrap();
         assert_eq!(
             enemies_list(&pile_of_guts),
