@@ -12,13 +12,14 @@ use num_format::{Locale, WriteFormatted};
 use std::{collections::HashSet, io::Write};
 
 /// Get list of enemies and their magnifications.
+// TODO suppress magnification option for gauntlets
 pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
     struct EnemyListWithDupes<'a> {
         base: Vec<&'a StageEnemy>,
         enemies: Vec<&'a StageEnemy>,
         boss: Vec<&'a StageEnemy>,
     }
-    let anim_base_id = stage.anim_base_id.map(|i| u32::from(i)).unwrap_or(1);
+    let anim_base_id = stage.anim_base_id.map(u32::from).unwrap_or(1);
 
     let mut enemy_list = EnemyListWithDupes {
         base: vec![],
@@ -72,8 +73,8 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
     }
     /// Collect all enemies in the vec to a newline-separated byte string.
     /// Multiplier is raw % i.e. 100 = *1.
-    fn collect_all_enemies<'a>(
-        filtered_enemies_vec: &Vec<&'a StageEnemy>,
+    fn collect_all_enemies(
+        filtered_enemies_vec: &[&StageEnemy],
         multiplier: u32,
     ) -> Vec<u8> {
         filtered_enemies_vec
