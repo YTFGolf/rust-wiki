@@ -1,8 +1,5 @@
 //! Module for the [enemies_list] function.
 
-use std::{collections::HashSet, io::Write};
-use either::Either::{Left, Right};
-use num_format::{Locale, WriteFormatted};
 use crate::{
     data::stage::parsed::{
         stage::Stage,
@@ -10,6 +7,9 @@ use crate::{
     },
     wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
 };
+use either::Either::{Left, Right};
+use num_format::{Locale, WriteFormatted};
+use std::{collections::HashSet, io::Write};
 
 /// Get list of enemies and their magnifications.
 pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
