@@ -47,7 +47,7 @@ pub mod consts {
         /// Regex matching any valid pattern for the stage type.
         pub matcher: Regex,
         /// Code as in [STAGE_TYPES].
-        pub stage_type: &'static str,
+        pub stage_type: StageType,
     }
 
     fn initialise_type_map(pattern: &'static str, stage_type: &'static str) -> StageTypeMap {
@@ -58,14 +58,12 @@ pub mod consts {
             .unwrap();
         StageTypeMap {
             matcher,
-            stage_type,
+            stage_type: get_stage_type_code(stage_type),
         }
     }
 
     /// Get the [StageType] that `stage_type` corresponds to from
     /// [STAGE_TYPES].
-    // TODO probably could make these functions more efficient with a different
-    // data structure.
     fn get_stage_type_code(stage_type: &str) -> StageType {
         for code in STAGE_TYPES {
             if stage_type == code.code {
@@ -77,10 +75,10 @@ pub mod consts {
     }
 
     /// Get [StageType] that `selector_type` refers to.
-    pub fn get_selector_type(selector_type: &str) -> Option<StageType> {
+    pub fn get_selector_type(selector_type: &str) -> Option<&StageType> {
         for selector_map in STAGE_TYPE_MAP.iter() {
             if selector_map.matcher.is_match(selector_type) {
-                return Some(get_stage_type_code(selector_map.stage_type));
+                return Some(&selector_map.stage_type);
             }
         }
 
@@ -163,7 +161,7 @@ pub mod consts {
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
     // TODO probably replace this with enums
-    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 19]> = LazyLock::new(|| {[
+    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 18]> = LazyLock::new(|| {[
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
@@ -174,7 +172,7 @@ pub mod consts {
         initialise_type_map("Challenge|12|M|RM",                        "M"),
         initialise_type_map("UL|13|NA|RNA",                             "NA"),
         initialise_type_map("Catamin|14|B|RB",                          "B"),
-        initialise_type_map("LQ|16|D",                                  "Why would you want to do Legend Quest"),
+        // initialise_type_map("LQ|16|D",                                  "Why would you want to do Legend Quest"),
         initialise_type_map("Gauntlet|Baron|24|A|RA",                   "A"),
         initialise_type_map("Enigma|25|H|RH",                           "H"),
         initialise_type_map("27|CA|RCA",                                "CA"),
@@ -284,7 +282,7 @@ impl StageMeta {
                 // let chapter: u32 = stage_type.parse().unwrap();
                 let submap: u32 = selector[1].parse().unwrap();
                 let stage: u32 = selector[2].parse::<u32>().unwrap();
-                Self::from_split_parsed(&stage_type, submap, stage)
+                Self::from_split_parsed(stage_type, submap, stage)
             }
         }
     }
@@ -379,7 +377,7 @@ impl StageMeta {
         let Some(stage_type) = get_selector_type(stage_type) else {
             return Err(StageMetaParseError::Invalid);
         };
-        Self::from_split_parsed(&stage_type, map_num, stage_num)
+        Self::from_split_parsed(stage_type, map_num, stage_num)
     }
 
     /// [from_split][StageMeta::from_split] but with `stage_type` being a code
