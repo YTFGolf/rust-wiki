@@ -1,6 +1,6 @@
 //! Prints information about a stage.
 
-mod stage_info_internal;
+mod internal;
 use super::data_files::stage_names::{MapData, StageData};
 use crate::{
     data::stage::parsed::stage::Stage,
@@ -10,7 +10,6 @@ use crate::{
     },
 };
 use regex::Regex;
-use stage_info_internal as internal;
 use std::io::Write;
 
 const DEFAULT_FORMAT: &str = "\

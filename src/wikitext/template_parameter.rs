@@ -29,3 +29,21 @@ impl From<TemplateParameter> for String {
         String::from_utf8(value.to_u8s()).unwrap()
     }
 }
+
+/*
+# Code to turn any stage's infobox parameters into a TemplateParameter (mainly
+# for testing).
+import re
+def get_lines():
+    lines = input('Input things: ')
+    new = 1
+    while new:
+        new = input()
+        lines = f'{lines}\n{new}'
+    return lines[:-1]
+
+lines = get_lines()
+for key, value in re.findall(r'\|(\w+) = (\{\{(?:.|\n)*?\}\})', lines):
+    value = value.replace('%\n|', "%\\n\\" + f"\n{' ' * 20}|")
+    print(f'TemplateParameter::new(b"{key}", b"{value}".to_vec()),')
+*/
