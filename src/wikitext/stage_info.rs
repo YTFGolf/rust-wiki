@@ -390,12 +390,20 @@ impl StageInfo {
         fn write_enemy(buf: &mut Vec<u8>, enemy: &StageEnemy, multiplier: u32) {
             write!(buf, "|{}|", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
             match &enemy.magnification {
-                Left(m) => buf
-                    .write_formatted(&(m * multiplier / 100), &Locale::en)
-                    .unwrap(),
-                _ => todo!(),
+                Left(m) => {
+                    buf.write_formatted(&(m * multiplier / 100), &Locale::en)
+                        .unwrap();
+                    buf.write(b"%").unwrap();
+                }
+                Right((hp, ap)) => {
+                    buf.write_formatted(&(hp * multiplier / 100), &Locale::en)
+                        .unwrap();
+                    buf.write(b"/").unwrap();
+                    buf.write_formatted(&(ap * multiplier / 100), &Locale::en)
+                        .unwrap();
+                    buf.write(b"%").unwrap();
+                }
             };
-            buf.write(b"%").unwrap();
         }
         /// Collect all enemies in the vec to a newline-separated byte string.
         /// Multiplier is raw % i.e. 100 = *1.
@@ -608,6 +616,7 @@ mod tests {
         let not_alone = Stage::new("c 176 4").unwrap();
         let buf = StageInfo::enemies_appearing(&not_alone);
         assert_eq!(&String::from_utf8(buf).unwrap(), "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
+        // Star Ocean
     }
 
     #[test]
@@ -848,7 +857,7 @@ mod tests {
             ]
         );
 
-        let it_25 = Stage::new("n 32 3").unwrap();
+        let it_25 = Stage::new("v 6 24").unwrap();
         assert_eq!(
             StageInfo::enemies_list(&it_25),
             vec![TemplateParameter::new(
@@ -862,17 +871,363 @@ mod tests {
                 |Mr. Angel|300%}}"
                     .to_vec()
             )]
-        )
-    }
+        );
 
-    // mag tests
-    // differing magnifications (infernal tower, uruvu journals)
-    // bases (look above for examples with anim bases)
-    // star ocean
-    // kugel schreiber
-    // Sleeping Lion
-    // Noble tribe
-    // Revenant Road
+        let sacrifice_apprenticeship = Stage::new("nd 3 3").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&sacrifice_apprenticeship),
+            vec![
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Celeboodle|1,000%\n\
+                    |Relic Doge|150%\n\
+                    |Sir Rel|150%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss",
+                    b"{{Magnification|Ururun Wolf|300/500%\n\
+                    |Mystic Mask Yulala|100%}}"
+                        .to_vec()
+                )
+            ]
+        );
+
+        let sleeping_lion = Stage::new("sol 0 7").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&sleeping_lion),
+            vec![
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Doge|400%\n\
+                    |Snache|400%\n\
+                    |Those Guys|400%\n\
+                    |Gory|400%\n\
+                    |Hippoe|400%\n\
+                    |Doge Dark|100%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss", b"{{Magnification|Squire Rel|100%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Doge|600%\n\
+                    |Snache|600%\n\
+                    |Those Guys|600%\n\
+                    |Gory|600%\n\
+                    |Hippoe|600%\n\
+                    |Doge Dark|150%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss2", b"{{Magnification|Squire Rel|150%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Doge|800%\n\
+                    |Snache|800%\n\
+                    |Those Guys|800%\n\
+                    |Gory|800%\n\
+                    |Hippoe|800%\n\
+                    |Doge Dark|200%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss3", b"{{Magnification|Squire Rel|200%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies4",
+                    b"{{Magnification|Doge|1,200%\n\
+                    |Snache|1,200%\n\
+                    |Those Guys|1,200%\n\
+                    |Gory|1,200%\n\
+                    |Hippoe|1,200%\n\
+                    |Doge Dark|300%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss4", b"{{Magnification|Squire Rel|300%}}".to_vec()),
+            ]
+        );
+
+        let star_ocean = Stage::new("sol 15 7").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&star_ocean),
+            [
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Doge|2,000%\n\
+                    |Those Guys|400%\n\
+                    |Doge Dark|400%\n\
+                    |Doge Dark|500%\n\
+                    |Doge Dark|600%\n\
+                    |Doge Dark|800%\n\
+                    |Doge Dark|1,000%\n\
+                    |Doge Dark|1,200%\n\
+                    |Doge Dark|2,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss", b"{{Magnification|H. Nah|200%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Doge|3,000%\n\
+                    |Those Guys|600%\n\
+                    |Doge Dark|600%\n\
+                    |Doge Dark|750%\n\
+                    |Doge Dark|900%\n\
+                    |Doge Dark|1,200%\n\
+                    |Doge Dark|1,500%\n\
+                    |Doge Dark|1,800%\n\
+                    |Doge Dark|3,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss2", b"{{Magnification|H. Nah|300%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Doge|4,000%\n\
+                    |Those Guys|800%\n\
+                    |Doge Dark|800%\n\
+                    |Doge Dark|1,000%\n\
+                    |Doge Dark|1,200%\n\
+                    |Doge Dark|1,600%\n\
+                    |Doge Dark|2,000%\n\
+                    |Doge Dark|2,400%\n\
+                    |Doge Dark|4,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss3", b"{{Magnification|H. Nah|400%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies4",
+                    b"{{Magnification|Doge|4,000%\n\
+                    |Those Guys|800%\n\
+                    |Doge Dark|800%\n\
+                    |Doge Dark|1,000%\n\
+                    |Doge Dark|1,200%\n\
+                    |Doge Dark|1,600%\n\
+                    |Doge Dark|2,000%\n\
+                    |Doge Dark|2,400%\n\
+                    |Doge Dark|4,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss4", b"{{Magnification|H. Nah|400%}}".to_vec()),
+            ]
+        );
+
+        let kugel_schreiber = Stage::new("sol 24 2").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&kugel_schreiber),
+            vec![
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Assassin Bear|200%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss",
+                    b"{{Magnification|Dober P.D|100%\n\
+                    |R.Ost|100%\n\
+                    |THE SLOTH|200%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Assassin Bear|240%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss2",
+                    b"{{Magnification|Dober P.D|120%\n\
+                    |R.Ost|120%\n\
+                    |THE SLOTH|240%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Assassin Bear|280%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss3",
+                    b"{{Magnification|Dober P.D|140%\n\
+                    |R.Ost|140%\n\
+                    |THE SLOTH|280%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies4",
+                    b"{{Magnification|Assassin Bear|220%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss4",
+                    b"{{Magnification|Dober P.D|110%\n\
+                    |R.Ost|110%\n\
+                    |THE SLOTH|220%}}"
+                        .to_vec()
+                )
+            ]
+        );
+
+        let noble_tribe = Stage::new("sol 43 2").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&noble_tribe),
+            vec![
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Doge|120,000%\n\
+                    |Snache|120,000%\n\
+                    |Those Guys|120,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss", b"{{Magnification|Hippoe|120,000%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Doge|144,000%\n\
+                    |Snache|144,000%\n\
+                    |Those Guys|144,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss2", b"{{Magnification|Hippoe|144,000%}}".to_vec()),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Doge|156,000%\n\
+                    |Snache|156,000%\n\
+                    |Those Guys|156,000%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss3", b"{{Magnification|Hippoe|156,000%}}".to_vec()),
+            ]
+        );
+
+        let revenant_road = Stage::new("sol 33 3").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&revenant_road),
+            vec![
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Zroco|200%\n\
+                    |Zir Zeal|200%\n\
+                    |Zigge|200%\n\
+                    |Zomboe|200%\n\
+                    |B.B.Bunny|2,800%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss",
+                    b"{{Magnification|Teacher Bun Bun|1,500%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Zroco|240%\n\
+                    |Zir Zeal|240%\n\
+                    |Zigge|240%\n\
+                    |Zomboe|240%\n\
+                    |B.B.Bunny|3,360%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss2",
+                    b"{{Magnification|Teacher Bun Bun|1,800%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Zroco|280%\n\
+                    |Zir Zeal|280%\n\
+                    |Zigge|280%\n\
+                    |Zomboe|280%\n\
+                    |B.B.Bunny|3,920%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(
+                    b"boss3",
+                    b"{{Magnification|Teacher Bun Bun|2,100%}}".to_vec()
+                ),
+            ]
+        );
+
+        let finale = Stage::new("c 209 0").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&finale),
+            vec![TemplateParameter::new(
+                b"base",
+                b"{{Magnification|Finale Base|100%}}".to_vec()
+            ),]
+        );
+
+        let relay_1600m = Stage::new("ex 61 2").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&relay_1600m),
+            vec![
+                TemplateParameter::new(
+                    b"base",
+                    b"{{Magnification|Relay Base|7,500,000%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|White Wind|700%\n\
+                    |Duche|300%\n\
+                    |Red Wind|700%\n\
+                    |Gory Black|200%\n\
+                    |Black Wind|700%\n\
+                    |R.Ost|100%\n\
+                    |Bore|200%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss", b"{{Magnification|Le'noir|150%}}".to_vec()),
+            ]
+        );
+
+        let pile_of_guts = Stage::new("ul 31 5").unwrap();
+        assert_eq!(
+            StageInfo::enemies_list(&pile_of_guts),
+            vec![
+                TemplateParameter::new(
+                    b"base",
+                    b"{{Magnification|Relic Doge Base|40,000%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies",
+                    b"{{Magnification|Bore Jr.|100%\n\
+                    |Celeboodle|1,000%\n\
+                    |R.Ost|300%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss", b"{{Magnification|THE SLOTH|400%}}".to_vec()),
+                TemplateParameter::new(
+                    b"base2",
+                    b"{{Magnification|Relic Doge Base|52,000%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies2",
+                    b"{{Magnification|Bore Jr.|130%\n\
+                    |Celeboodle|1,300%\n\
+                    |R.Ost|390%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss2", b"{{Magnification|THE SLOTH|520%}}".to_vec()),
+                TemplateParameter::new(
+                    b"base3",
+                    b"{{Magnification|Relic Doge Base|68,000%}}".to_vec()
+                ),
+                TemplateParameter::new(
+                    b"enemies3",
+                    b"{{Magnification|Bore Jr.|170%\n\
+                    |Celeboodle|1,700%\n\
+                    |R.Ost|510%}}"
+                        .to_vec()
+                ),
+                TemplateParameter::new(b"boss3", b"{{Magnification|THE SLOTH|680%}}".to_vec()),
+            ]
+        );
+
+        // println!("{:?}", StageInfo::enemies_list(&it_25).into_iter().map(String::from).collect::<Vec<_>>());
+
+        /*
+        import re
+        def get_lines():
+            lines = input('Input things: ')
+            new = 1
+            while new:
+                new = input()
+                lines = f'{lines}\n{new}'
+            return lines[:-1]
+
+        lines = get_lines()
+        for key, value in re.findall(r'\|(\w+) = (\{\{(?:.|\n)*?\}\})', lines):
+            value = value.replace('%\n|', "%\\n\\" + f"\n{' ' * 20}|")
+            print(f'TemplateParameter::new(b"{key}", b"{value}".to_vec()),')
+        */
+    }
 
     // Should probably also test param_vec_fold
 }

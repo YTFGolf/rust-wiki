@@ -23,3 +23,9 @@ impl TemplateParameter {
         buf
     }
 }
+
+impl From<TemplateParameter> for String {
+    fn from(value: TemplateParameter) -> Self {
+        String::from_utf8(value.to_u8s()).unwrap()
+    }
+}
