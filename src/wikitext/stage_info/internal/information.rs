@@ -153,10 +153,10 @@ mod tests {
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "\
-        |stage name = [[File:rc006.png]]\n\
-        [[File:Mapsn017 05 n en.png]]\n\
-        |stage location = [[File:Mapname017 n en.png]]\
-        "
+            |stage name = [[File:rc006.png]]\n\
+            [[File:Mapsn017 05 n en.png]]\n\
+            |stage location = [[File:Mapname017 n en.png]]\
+            "
         );
 
         let red_summit = Stage::new("h 10 0").unwrap();
@@ -167,10 +167,10 @@ mod tests {
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "\
-        |stage name = [[File:rc002.png]]\n\
-        [[File:Mapsn010 00 h en.png]]\n\
-        |stage location = [[File:Mapname010 h en.png]]\
-        "
+            |stage name = [[File:rc002.png]]\n\
+            [[File:Mapsn010 00 h en.png]]\n\
+            |stage location = [[File:Mapname010 h en.png]]\
+            "
         );
 
         let finale = Stage::new("c 209 0").unwrap();
@@ -181,10 +181,10 @@ mod tests {
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "\
-        |stage name = [[File:E 651.png]]\n\
-        [[File:Mapsn209 00 c en.png]]\n\
-        |stage location = [[File:Mapname209 c en.png]]\
-        "
+            |stage name = [[File:E 651.png]]\n\
+            [[File:Mapsn209 00 c en.png]]\n\
+            |stage location = [[File:Mapname209 c en.png]]\
+            "
         );
 
         let relay_1600m = Stage::new("ex 61 2").unwrap();
@@ -193,45 +193,60 @@ mod tests {
         assert_eq!(
             &String::from_utf8(buf).unwrap(),
             "\
-        |stage name = [[File:E 657.png|250px]]\n\
-        [[File:Mapsn061 02 ex en.png]]\
-        "
+            |stage name = [[File:E 657.png|250px]]\n\
+            [[File:Mapsn061 02 ex en.png]]\
+            "
         );
     }
 
     #[test]
-    fn test_energy() {
+    fn test_energy_normal() {
         let aac = Stage::new("ul 0 0").unwrap();
         let mut buf: Vec<u8> = vec![];
         buf.extend(energy(&aac).unwrap().to_u8s());
         assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 200");
+    }
 
+    #[test]
+    fn test_energy_0() {
         let challenge = Stage::new("challenge 0 0").unwrap();
         let mut buf: Vec<u8> = vec![];
         buf.extend(energy(&challenge).unwrap().to_u8s());
         assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 0");
+    }
 
+    #[test]
+    fn test_energy_ex() {
         let door_opens = Stage::new("ex 47 0").unwrap();
         let mut buf: Vec<u8> = vec![];
         buf.extend(energy(&door_opens).unwrap().to_u8s());
         assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = N/A");
+    }
 
+    #[test]
+    fn test_energy_catamin() {
         let facing_danger = Stage::new("b 5 0").unwrap();
         let mut buf: Vec<u8> = vec![];
         buf.extend(energy(&facing_danger).unwrap().to_u8s());
         assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = N/A");
+    }
 
+    #[test]
+    fn test_energy_1_000() {
         let mining_epic = Stage::new("s 326 0").unwrap();
         let mut buf: Vec<u8> = vec![];
         buf.extend(energy(&mining_epic).unwrap().to_u8s());
         assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 1,000");
+    }
 
+    #[test]
+    fn test_energy_labyrinth() {
         let labyrinth_67 = Stage::new("l 0 66").unwrap();
         assert_eq!(energy(&labyrinth_67), None);
     }
 
     #[test]
-    fn test_base_hp() {
+    fn test_base_hp_normal() {
         let ht30 = Stage::new("v 0 29").unwrap();
         assert_eq!(
             base_hp(&ht30),
@@ -240,7 +255,10 @@ mod tests {
                 b"1,000,000 HP".to_vec()
             )]
         );
+    }
 
+    #[test]
+    fn test_base_hp_dojo() {
         let dojo = Stage::new("t 0 0").unwrap();
         assert_eq!(
             base_hp(&dojo),
@@ -249,7 +267,11 @@ mod tests {
                 b"Unlimited".to_vec()
             )]
         );
+    }
 
+    #[test]
+    fn test_base_hp_mismatch() {
+        // where stage.base_hp != actual base hp
         let just_friends = Stage::new("s 302 2").unwrap();
         assert_eq!(just_friends.base_hp, 10);
         assert_eq!(
@@ -269,7 +291,10 @@ mod tests {
                 b"50 HP".to_vec()
             )]
         );
+    }
 
+    #[test]
+    fn test_base_hp_starred() {
         let rongorongo = Stage::new("s 129 5").unwrap();
         assert_eq!(rongorongo.base_hp, 300_000);
         assert_eq!(
@@ -281,7 +306,10 @@ mod tests {
                 TemplateParameter::new(b"enemy castle hp4", b"900,000 HP".to_vec()),
             ]
         );
+    }
 
+    #[test]
+    fn test_base_hp_mismatch_starred() {
         let pile_of_guts = Stage::new("ul 31 5").unwrap();
         assert_eq!(pile_of_guts.base_hp, 1_000_000);
         assert_eq!(
