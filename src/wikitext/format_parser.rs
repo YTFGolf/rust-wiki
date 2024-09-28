@@ -1,18 +1,24 @@
 //! Parses the stage info format.
 
-#![allow(dead_code, missing_docs)]
 #[derive(Debug, PartialEq)]
+/// Description of a [ParseNode].
 pub enum ParseType {
+    /// Variable (i.e. function call).
     Variable,
+    /// Plain text, should be left as-is.
     Text,
 }
 
 #[derive(Debug)]
+/// Node of the parse tree.
 pub struct ParseNode<'a> {
+    /// Content of node.
     pub content: &'a str,
+    /// Type variant of node.
     pub ptype: ParseType,
 }
 
+/// Parses the string format into a Vec of ParseNodes.
 pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
     let mut parsed = vec![];
     let mut format = format;

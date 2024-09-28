@@ -189,7 +189,7 @@ use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
 use regex::Regex;
 use std::sync::LazyLock;
 
-/// Struct to contain [struct@FILE_PATTERNS].
+/// Struct to contain [FILE_PATTERNS].
 struct FilePatterns {
     /// Captures the stage number (e.g. `"40"` in `"stage40.csv"`).
     eoc: Regex,

@@ -114,7 +114,6 @@ pub mod charagroups {
 }
 
 #[derive(Debug, serde::Deserialize)]
-#[allow(dead_code)]
 /// Data stored in the stage option CSV. Details the restrictions on individual
 /// stages within the map.
 ///
