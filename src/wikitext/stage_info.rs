@@ -24,7 +24,7 @@ ${base_hp}
 ${enemies_list}
 ${treasure}
 ${restrictions_info}
-${score_reward}
+${score_rewards}
 ${xp}
 ${width}
 ${max_enemies}
@@ -91,6 +91,13 @@ fn do_thing_internal() {
             "enemies_list" => internal::enemies_list(&stage)
                 .into_iter()
                 .fold(vec![], internal::param_vec_fold),
+            "treasure" => internal::treasure(&stage)
+                .map(|param| param.to_u8s())
+                .unwrap_or(b"".to_vec()),
+            // _
+            "score_rewards" => internal::score_rewards(&stage)
+                .map(|param| param.to_u8s())
+                .unwrap_or(b"".to_vec()),
             "restrictions_section" => internal::restrictions_section(&stage),
 
             _ => continue,

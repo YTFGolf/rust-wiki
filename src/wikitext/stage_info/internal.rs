@@ -1,13 +1,16 @@
 //! Internal functions for stage info.
 
+// TODO document these
 mod beginning;
 mod enemies_list;
 mod information;
+mod treasure;
 pub mod test_util;
 use crate::{data::stage::parsed::stage::Stage, wikitext::template_parameter::TemplateParameter};
 pub use beginning::{enemies_appearing, intro};
 pub use enemies_list::enemies_list;
 pub use information::{base_hp, energy, stage_location, stage_name};
+pub use treasure::{score_rewards, treasure};
 use std::io::Write;
 
 pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {

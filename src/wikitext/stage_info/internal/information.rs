@@ -1,3 +1,5 @@
+//! Deals with the basic fixed information at the top of the infobox.
+
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
     wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},

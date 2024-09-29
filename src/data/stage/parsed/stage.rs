@@ -151,7 +151,6 @@ pub struct Stage {
     /// Base XP reward of stage.
     pub xp: Option<u32>,
     /// Rewards available.
-    /// Note: if the stage has an animated base this is not the correct base hp.
     pub rewards: Option<StageRewards>,
 
     /// Max clears before stage disappears.
