@@ -116,7 +116,7 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
         T::AllUnlimited => all_unlimited(rewards),
         // -1 => TreasureType::UnclearMaybeRaw,
         T::GuaranteedOnce => guaranteed_once(rewards),
-        T::GuaranteedUnlimited=>guaranteed_unlimited(rewards),
+        T::GuaranteedUnlimited => guaranteed_unlimited(rewards),
         _ => todo!(),
     };
 

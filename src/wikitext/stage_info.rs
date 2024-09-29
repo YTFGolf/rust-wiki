@@ -94,7 +94,9 @@ fn do_thing_internal() {
             "treasure" => internal::treasure(&stage)
                 .map(|param| param.to_u8s())
                 .unwrap_or(b"".to_vec()),
-            // _
+            "restrictions_info" => internal::restrictions_info(&stage)
+                .map(|param| param.to_u8s())
+                .unwrap_or(b"".to_vec()),
             "score_rewards" => internal::score_rewards(&stage)
                 .map(|param| param.to_u8s())
                 .unwrap_or(b"".to_vec()),

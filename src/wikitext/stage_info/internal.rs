@@ -4,18 +4,16 @@
 mod beginning;
 mod enemies_list;
 mod information;
-mod treasure;
+mod restrictions;
 pub mod test_util;
+mod treasure;
 use crate::{data::stage::parsed::stage::Stage, wikitext::template_parameter::TemplateParameter};
 pub use beginning::{enemies_appearing, intro};
 pub use enemies_list::enemies_list;
 pub use information::{base_hp, energy, stage_location, stage_name};
-pub use treasure::{score_rewards, treasure};
+pub use restrictions::{restrictions_info, restrictions_section};
 use std::io::Write;
-
-pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
-    vec![]
-}
+pub use treasure::{score_rewards, treasure};
 
 pub fn param_vec_fold(mut buf: Vec<u8>, param: TemplateParameter) -> Vec<u8> {
     let smallbuf = param.to_u8s();
