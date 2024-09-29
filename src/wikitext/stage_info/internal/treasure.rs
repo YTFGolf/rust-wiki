@@ -136,7 +136,7 @@ mod tests {
             treasure(&it29),
             Some(TemplateParameter::new(
                 b"treasure",
-                b"One of the following (1 time):\n\
+                b"One of the following (1 time):<br>\n\
                 - Bricks +5<br>\n\
                 - Feathers +5<br>\n\
                 - Coal +5<br>\n\
@@ -158,7 +158,7 @@ mod tests {
             treasure(&sakura_dance),
             Some(TemplateParameter::new(
                 b"treasure",
-                b"One of the following (unlimited):\n\
+                b"One of the following (unlimited):<br>\n\
                 - [[Battle Items#Speed Up|Speed Up]] +4<br>\n\
                 - [[Battle Items#Treasure Radar|Treasure Radar]] +2<br>\n\
                 - [[Battle Items#Rich Cat|Rich Cat]] +2<br>\n\
