@@ -28,9 +28,9 @@ fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
 
     buf.write(b"- ").unwrap();
     write_name_and_amount(&mut buf, &t[0]);
-    let mut total_allowed: f64 = 100.0;
     write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
 
+    let mut total_allowed: f64 = 100.0;
     for item in &t[1..] {
         if item.item_chance == 0 {
             continue;
@@ -46,11 +46,77 @@ fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
     buf
 }
 
+fn all_unlimited(rewards: &StageRewards) -> Vec<u8> {
+    let mut buf = vec![];
+    let t = &rewards.treasure_drop;
+
+    let mut total_allowed: f64 = 100.0;
+    for item in t {
+        if item.item_chance == 0 {
+            continue;
+        }
+        buf.write(b"- ").unwrap();
+        write_name_and_amount(&mut buf, &item);
+
+        let chance = total_allowed * f64::from(item.item_chance) / 100.0;
+        total_allowed -= chance;
+        let precision = if chance % 1.0 == 0.0 { 0 } else { 1 };
+        write!(buf, " ({:.1$}%, unlimited)", chance, precision).unwrap();
+        buf.write(b"<br>\n").unwrap();
+    }
+
+    buf.truncate(buf.len() - "<br>\n".len());
+    buf
+}
+
+fn guaranteed_once(rewards: &StageRewards) -> Vec<u8> {
+    let mut buf = vec![];
+    let t = &rewards.treasure_drop;
+    if t.len() == 1 {
+        buf.write(b"- ").unwrap();
+        write_name_and_amount(&mut buf, &t[0]);
+        buf.write(b" (100%, 1 time)").unwrap();
+        return buf;
+    };
+
+    buf.write(b"One of the following (1 time):").unwrap();
+    for item in t {
+        buf.write(b"<br>\n- ").unwrap();
+        write_name_and_amount(&mut buf, &item);
+    }
+
+    buf
+}
+
+fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
+    let mut buf = vec![];
+    let t = &rewards.treasure_drop;
+    if t.len() == 1 {
+        todo!()
+        // buf.write(b"- ").unwrap();
+        // write_name_and_amount(&mut buf, &t[0]);
+        // buf.write(b" (100%, 1 time)").unwrap();
+        // return buf;
+    };
+
+    buf.write(b"One of the following (unlimited):").unwrap();
+    for item in t {
+        buf.write(b"<br>\n- ").unwrap();
+        write_name_and_amount(&mut buf, &item);
+    }
+
+    buf
+}
+
 pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
     let rewards = stage.rewards.as_ref()?;
 
     let treasure_text = match rewards.treasure_type {
         T::OnceThenUnlimited => once_then_unlimited(rewards),
+        T::AllUnlimited => all_unlimited(rewards),
+        // -1 => TreasureType::UnclearMaybeRaw,
+        T::GuaranteedOnce => guaranteed_once(rewards),
+        T::GuaranteedUnlimited=>guaranteed_unlimited(rewards),
         _ => todo!(),
     };
 
@@ -132,6 +198,7 @@ mod tests {
     #[test]
     fn guaranteed_once_many() {
         let it29 = Stage::new("v 6 28").unwrap();
+        println!("{:?}", String::from(treasure(&it29).unwrap()));
         assert_eq!(
             treasure(&it29),
             Some(TemplateParameter::new(
