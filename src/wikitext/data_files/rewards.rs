@@ -1,14 +1,19 @@
+//! Get information about stage rewards.
+
 use crate::file_handler::{get_file_location, FileLocation};
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Debug, Deserialize)]
+/// Entry in the Treasures.csv file.
 pub struct TreasureEntry {
     _id: u32,
+    /// Name of treasure.
     pub name: String,
 }
 
 type MapStructure = HashMap<u32, TreasureEntry>;
+/// Container for [TREASURE_DATA].
 pub struct TreasureMap {
     map: LazyLock<MapStructure>,
 }
@@ -18,12 +23,14 @@ impl TreasureMap {
             .get(&id)
             .unwrap_or_else(|| panic!("Treasure id not found: {id}."))
     }
+    /// Get the name of the treasure.
     pub fn get_treasure_name(&self, id: u32) -> &str {
         &self.get_treasure(id).name
     }
 }
 
-pub static Treasure_data: TreasureMap = TreasureMap {
+/// Contains data about treasures.
+pub static TREASURE_DATA: TreasureMap = TreasureMap {
     map: LazyLock::new(get_treasure_data),
 };
 

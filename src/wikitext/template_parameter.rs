@@ -42,8 +42,17 @@ def get_lines():
         lines = f'{lines}\n{new}'
     return lines[:-1]
 
+type = "opt"
+if type == "opt":
+    indent = 4
+else:
+    indent = 5
 lines = get_lines()
-for key, value in re.findall(r'\|(\w+) = (\{\{(?:.|\n)*?\}\})', lines):
-    value = value.replace('%\n|', "%\\n\\" + f"\n{' ' * 20}|")
-    print(f'TemplateParameter::new(b"{key}", b"{value}".to_vec()),')
+for key, value in re.findall(r'\|(\w+) = ((?:.|\n)*?)(?=\n\||$)', lines):
+    value = value.replace('\n', "\\n\\" + f"\n{' ' * indent * 4}")
+    if type == "opt":
+        print(f'Some(TemplateParameter::new(b"{key}", b"{value}".to_vec()))')
+    else:
+        print(f'TemplateParameter::new(b"{key}", b"{value}".to_vec()),')
+
 */
