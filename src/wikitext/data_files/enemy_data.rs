@@ -1,10 +1,8 @@
 //! Module that gets information about enemy names and data.
 
-use std::{collections::HashMap, sync::LazyLock};
-
-use serde::Deserialize;
-
 use crate::file_handler::{get_file_location, FileLocation};
+use serde::Deserialize;
+use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Debug, Deserialize)]
 /// Name of enemy.
