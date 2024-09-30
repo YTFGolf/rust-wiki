@@ -8,6 +8,7 @@ fn main() {
     println!("{:?}", StageMeta::new("sol 0 0").unwrap());
     println!("{:?}", StageMeta::new("ex 0 0").unwrap());
     if false {
+    // if true {
         update_wiki_files();
     }
 

@@ -7,7 +7,7 @@ mod information;
 mod restrictions;
 pub mod test_util;
 mod treasure;
-use crate::{data::stage::parsed::stage::Stage, wikitext::template_parameter::TemplateParameter};
+use crate::wikitext::template_parameter::TemplateParameter;
 pub use beginning::{enemies_appearing, intro};
 pub use enemies_list::enemies_list;
 pub use information::{base_hp, energy, stage_location, stage_name};
