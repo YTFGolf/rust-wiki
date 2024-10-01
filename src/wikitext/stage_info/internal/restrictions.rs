@@ -1,3 +1,5 @@
+use num_format::{Locale, WriteFormatted};
+
 use crate::{
     data::stage::parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
     wikitext::template_parameter::TemplateParameter,
@@ -64,6 +66,35 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
         let buf = get_rarity_restriction(rarity);
         restrictions.push(buf);
     }
+    if let Some(limit) = restriction.deploy_limit {
+        let mut buf = vec![];
+        write!(buf, "Max # of Deployable Cats: {}", limit).unwrap();
+        restrictions.push(buf);
+    }
+    if let Some(row) = restriction.rows {
+        let mut buf = vec![];
+        write!(buf, "Deploy from Row {} only", row).unwrap();
+        restrictions.push(buf);
+    }
+    if let Some(min) = restriction.min_cost {
+        let mut buf = vec![];
+        buf.write(b"Cat Deploy Cost: Only ").unwrap();
+        buf.write_formatted(&min, &Locale::en).unwrap();
+        buf.write(b"\xA2 or more").unwrap();
+        // \xA2 = ¢
+        restrictions.push(buf);
+    }
+    if let Some(max) = restriction.max_cost {
+        let mut buf = vec![];
+        buf.write(b"Cat Deploy Cost: Only ").unwrap();
+        buf.write_formatted(&max, &Locale::en).unwrap();
+        buf.write(b"\xA2 or less").unwrap();
+        // \xA2 = ¢
+        restrictions.push(buf);
+    }
+    if let Some(group) = restriction.charagroup {
+        todo!()
+    }
 
     restrictions
 }
@@ -109,7 +140,6 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
 pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     const PARAM_NAME: &[u8] = b"restriction";
 
-    // use fold
     let restrictions = get_restriction_list(stage);
     let r = match restrictions {
         None => {
@@ -218,6 +248,99 @@ mod tests {
         let wahwah = Stage::new("s 158 0").unwrap();
         assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_vec() )) );
         assert_eq!( &restrictions_section(&wahwah), b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
+    }
+
+    #[test]
+    fn restriction_deploy_limit() {
+        let wrath_w_cyclone = Stage::new("s 176 0").unwrap();
+        assert_eq!(
+            restrictions_info(&wrath_w_cyclone),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Max # of Deployable Cats: 10".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&wrath_w_cyclone),
+            b"Max # of Deployable Cats: 10"
+        );
+    }
+
+    #[test]
+    fn restriction_rows() {
+        let uranus = Stage::new("cotc 2 7").unwrap();
+        assert_eq!(
+            restrictions_info(&uranus),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Deploy from Row 1 only".to_vec()
+            ))
+        );
+        assert_eq!(&restrictions_section(&uranus), b"Deploy from Row 1 only");
+    }
+
+    #[test]
+    fn restriction_min_cost_1() {
+        let saturn = Stage::new("cotc 2 3").unwrap();
+        assert_eq!(
+            restrictions_info(&saturn),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Cat Deploy Cost: Only 300\xA2 or more".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&saturn),
+            b"Cat Deploy Cost: Only 300\xA2 or more"
+        );
+    }
+
+    #[test]
+    fn restriction_min_cost_2() {
+        let skelling = Stage::new("cotc 2 40").unwrap();
+        assert_eq!(
+            restrictions_info(&skelling),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Cat Deploy Cost: Only 1,200\xA2 or more".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&skelling),
+            b"Cat Deploy Cost: Only 1,200\xA2 or more"
+        );
+    }
+
+    #[test]
+    fn restriction_max_cost_1() {
+        let buutara = Stage::new("cotc 1 27").unwrap();
+        assert_eq!(
+            restrictions_info(&buutara),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Cat Deploy Cost: Only 1,200\xA2 or less".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&buutara),
+            b"Cat Deploy Cost: Only 1,200\xA2 or less"
+        );
+    }
+
+    #[test]
+    fn restriction_max_cost_2() {
+        let catseye_nebula = Stage::new("cotc 1 13").unwrap();
+        assert_eq!(
+            restrictions_info(&catseye_nebula),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Cat Deploy Cost: Only 4,000\xA2 or less".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&catseye_nebula),
+            b"Cat Deploy Cost: Only 4,000\xA2 or less"
+        );
     }
 
     #[test]
