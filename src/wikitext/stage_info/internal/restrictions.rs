@@ -1,5 +1,4 @@
 use num_format::{Locale, WriteFormatted};
-
 use crate::{
     data::stage::parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
     wikitext::template_parameter::TemplateParameter,

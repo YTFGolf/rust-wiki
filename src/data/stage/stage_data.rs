@@ -120,6 +120,8 @@ pub struct StageData {
 }
 
 impl StageData {
+    // Refactoring job: use a version object. Contains directory and static
+    // data.
     /// Create new StageData object.
     pub fn new(selector: &str) -> Option<Self> {
         let meta = StageMeta::new(selector).unwrap();

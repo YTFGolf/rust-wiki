@@ -1,14 +1,9 @@
 //! Prints information about a stage.
 
 mod internal;
-use super::data_files::stage_names::{MapData, StageData};
-use crate::{
-    data::stage::parsed::stage::Stage,
-    wikitext::{
-        data_files::stage_names::STAGE_NAMES,
-        format_parser::{parse_si_format, ParseType},
-    },
-};
+use super::data_files::stage_page_data::{MapData, StageData, STAGE_NAMES};
+use super::format_parser::{parse_si_format, ParseType};
+use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
 use std::io::Write;
 

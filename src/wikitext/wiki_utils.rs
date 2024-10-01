@@ -36,3 +36,5 @@ pub fn extract_name(name: &str) -> &str {
         name
     }
 }
+
+// TODO put all wiki files into here
