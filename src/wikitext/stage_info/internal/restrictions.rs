@@ -2,7 +2,10 @@ use crate::{
     data::stage::parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
     wikitext::template_parameter::TemplateParameter,
 };
-use std::num::{NonZero, NonZeroU8};
+use std::{
+    io::Write,
+    num::{NonZero, NonZeroU8},
+};
 
 const fn non_zero_u8(value: u8) -> NonZero<u8> {
     match NonZeroU8::new(value) {
@@ -20,13 +23,52 @@ const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
     charagroup: None,
 };
 
-fn get_restriction_list(restriction: &Restriction) -> Vec<Vec<u8>> {
-    let _ = restriction;
-    todo!()
+fn get_rarity_restriction(rarity: NonZero<u8>) -> Vec<u8> {
+    let rarities: Vec<&[u8]> = (0..6)
+        .filter_map(|i| {
+            let rarity_bit = u8::from(rarity) & (1 << i);
+            if rarity_bit == 0 {
+                return None;
+            };
+
+            let rarity: &[u8] = match i {
+                0 => b"[[:Category:Normal Cats|Normal]]",
+                1 => b"[[:Category:Special Cats|Special]]",
+                2 => b"[[:Category:Rare Cats|Rare]]",
+                3 => b"[[:Category:Super Rare Cats|Super Rare]]",
+                4 => b"[[:Category:Uber Rare Cats|Uber Rare]]",
+                5 => b"[[:Category:Legend Rare Cats|Legend Rare]]",
+                _ => unreachable!(),
+            };
+            Some(rarity)
+        })
+        .collect();
+
+    let mut buf = b"Rarity: Only ".to_vec();
+    if rarities.len() == 1 {
+        buf.write(rarities[0]).unwrap();
+    } else {
+        let (last, first) = rarities.split_last().unwrap();
+        let grouped = first.join(b", ".as_slice());
+        buf.write(&grouped).unwrap();
+        buf.write(b" and ").unwrap();
+        buf.write(last).unwrap();
+    }
+    buf
 }
 
-pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
-    const PARAM_NAME: &[u8] = b"restriction";
+fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
+    let mut restrictions = vec![];
+
+    if let Some(rarity) = restriction.rarity {
+        let buf = get_rarity_restriction(rarity);
+        restrictions.push(buf);
+    }
+
+    restrictions
+}
+
+fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
     let restrictions = stage.restrictions.as_ref()?;
 
     if restrictions.len() == 1 {
@@ -36,6 +78,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 
         let restriction = &restrictions[0];
         if restriction.crowns_applied != Crowns::All
+            && stage.crown_data.is_some()
             && (stage.crown_data.as_ref().unwrap().max_difficulty > non_zero_u8(1)
                 || restriction.crowns_applied != Crowns::One(non_zero_u8(1)))
         // invalidate if either:
@@ -50,10 +93,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
             panic!("Unexpected crown error in stage: {stage:?}");
         }
 
-        return Some(TemplateParameter::new(
-            PARAM_NAME,
-            get_restriction_list(restriction).join(b"<br>\n".as_slice()),
-        ));
+        return Some(get_single_restriction(restriction));
     }
 
     assert_eq!(
@@ -63,16 +103,30 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     );
     // There may be cases where restrictions len > 2, but this relies on PONOS
     // being bad at their jobs so I'll deal with it when it comes up.
-
     todo!()
 }
 
-pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
-    vec![]
+pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
+    const PARAM_NAME: &[u8] = b"restriction";
+
+    Some(TemplateParameter::new(
+        PARAM_NAME,
+        get_restriction_list(stage)?.join(b"<br>\n".as_slice()),
+    ))
 }
 
-// finale
-// cotc stages esp. black hole
+pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
+    let restrictions = match get_restriction_list(stage) {
+        None => return vec![],
+        Some(r) => r,
+    };
+
+    if restrictions.len() == 1 {
+        return restrictions.into_iter().next().unwrap();
+    }
+
+    todo!()
+}
 
 #[cfg(test)]
 mod tests {
@@ -98,6 +152,13 @@ mod tests {
     }
 
     #[test]
+    fn restriction_rarity_1() {
+        let sighter_star = Stage::new("cotc 3 24").unwrap();
+        assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_vec() )) );
+        assert_eq!( &restrictions_section(&sighter_star), b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
+    }
+
+    #[test]
     fn restriction_only_cat() {
         let finale = Stage::new("c 209 0").unwrap();
         assert_eq!(
@@ -106,6 +167,12 @@ mod tests {
                 b"restriction",
                 b"Unit Restriction: Only [[Cat (Normal Cat)|Cat]]".to_vec()
             ))
-        )
+        );
+        assert_eq!(
+            &restrictions_section(&finale),
+            b"Unit Restriction: Only [[Cat (Normal Cat)|Cat]]"
+        );
     }
+
+    // cotc stages esp. black hole
 }
