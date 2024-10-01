@@ -30,8 +30,8 @@ impl CatDataContainer {
         let cat = self.get_cat(id);
         format!(
             "[[{link}|{name}]]",
-            link = Self::get_cat_wiki_name(&cat.normal),
-            name = cat.normal
+            link = cat.page,
+            name = Self::get_cat_wiki_name(&cat.normal),
         )
     }
 

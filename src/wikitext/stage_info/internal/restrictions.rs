@@ -1,6 +1,9 @@
 use crate::{
-    data::stage::parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
-    wikitext::template_parameter::TemplateParameter,
+    data::stage::{
+        parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
+        stage_option::charagroups::{CharaGroup, CharaGroupType},
+    },
+    wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameter},
 };
 use num_format::{Locale, WriteFormatted};
 use std::{
@@ -58,6 +61,33 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> Vec<u8> {
     buf
 }
 
+fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
+    let mut buf = b"Unit Restriction: ".to_vec();
+    let mode: &[u8] = match group.group_type {
+        CharaGroupType::OnlyUse => b"Only",
+        CharaGroupType::CannotUse => b"Cannot use",
+    };
+    buf.write(mode).unwrap();
+    buf.write(b" ").unwrap();
+    let groupunits: Vec<String> = group
+        .units
+        .iter()
+        .map(|unit| CAT_DATA.get_cat_link(*unit))
+        .collect();
+
+    if groupunits.len() == 1 {
+        buf.write(groupunits[0].as_bytes()).unwrap();
+    } else {
+        let (last, first) = groupunits.split_last().unwrap();
+        let grouped = first.join(", ");
+        buf.write(&grouped.as_bytes()).unwrap();
+        buf.write(b" and ").unwrap();
+        buf.write(last.as_bytes()).unwrap();
+    }
+
+    buf
+}
+
 fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
     let mut restrictions = vec![];
 
@@ -92,7 +122,8 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
         restrictions.push(buf);
     }
     if let Some(group) = restriction.charagroup {
-        todo!()
+        let buf = get_charagroup_restriction(group);
+        restrictions.push(buf)
     }
 
     restrictions
@@ -345,6 +376,7 @@ mod tests {
     #[test]
     fn restriction_only_cat() {
         let finale = Stage::new("c 209 0").unwrap();
+        println!("{}", String::from(restrictions_info(&finale).unwrap()));
         assert_eq!(
             restrictions_info(&finale),
             Some(TemplateParameter::new(

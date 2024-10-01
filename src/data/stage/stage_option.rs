@@ -43,7 +43,7 @@ pub mod charagroups {
     pub struct CharaGroup {
         /// Type of charagroup.
         pub group_type: CharaGroupType,
-        /// Units in charagroup.
+        /// Units in charagroup (Cat = 0).
         pub units: Vec<u32>,
     }
 
