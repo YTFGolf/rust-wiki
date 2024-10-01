@@ -87,10 +87,14 @@ fn do_thing_internal() {
                 .unwrap_or(b"".to_vec()),
             "base_hp" => internal::base_hp(&stage)
                 .into_iter()
-                .fold(vec![], internal::param_vec_fold),
+                .map(|p| p.to_u8s())
+                .collect::<Vec<Vec<u8>>>()
+                .join(&b"\n"[..]),
             "enemies_list" => internal::enemies_list(&stage)
                 .into_iter()
-                .fold(vec![], internal::param_vec_fold),
+                .map(|p| p.to_u8s())
+                .collect::<Vec<Vec<u8>>>()
+                .join(b"\n".as_slice()),
             "treasure" => internal::treasure(&stage)
                 .map(|param| param.to_u8s())
                 .unwrap_or(b"".to_vec()),
@@ -126,3 +130,18 @@ pub fn do_stuff() {
 
 // No context stage enemy line, just takes &enemy and show_mag. if base then can
 // just write it in the function directly, and ** can be written there too.
+
+/*
+        let rong_buf = base_hp(&rongorongo)
+            .into_iter()
+            .fold(vec![], param_vec_fold);
+        assert_eq!(
+            &String::from_utf8(rong_buf).unwrap(),
+            "\
+        |enemy castle hp = 300,000 HP\n\
+        |enemy castle hp2 = 450,000 HP\n\
+        |enemy castle hp3 = 600,000 HP\n\
+        |enemy castle hp4 = 900,000 HP\
+        "
+        );
+*/
