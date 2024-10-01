@@ -62,6 +62,7 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> Vec<u8> {
 }
 
 fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
+    // Alternatively, hardcode the list
     let mut buf = b"Unit Restriction: ".to_vec();
     let mode: &[u8] = match group.group_type {
         CharaGroupType::OnlyUse => b"Only",
@@ -202,7 +203,14 @@ pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
         return restrictions.into_iter().next().unwrap();
     }
 
-    todo!()
+    let mut buf = vec![];
+    for restriction in restrictions {
+        buf.write(b"*").unwrap();
+        buf.write(&restriction).unwrap();
+        buf.write(b"\n").unwrap();
+    }
+    buf.truncate(buf.len() - 1);
+    buf
 }
 
 #[cfg(test)]
@@ -390,5 +398,57 @@ mod tests {
         );
     }
 
-    // cotc stages esp. black hole
+    #[test]
+    fn restriction_only_jra() {
+        let final_race = Stage::new("c 179 0").unwrap();
+        assert_eq!(
+            restrictions_info(&final_race),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&final_race),
+            b"Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]"
+        );
+    }
+
+    #[test]
+    fn restriction_exclude_madoka() {
+        let sorry = Stage::new("c 178 4").unwrap();
+        assert_eq!(
+            restrictions_info(&sorry),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]<br>\n[[No Continues]]".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&sorry),
+            b"Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]"
+        );
+    }
+
+    #[test]
+    fn restriction_multiple_cotc() {
+        let black_hole = Stage::new("cotc 2 46").unwrap();
+        assert_eq!(
+            restrictions_info(&black_hole),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], \
+                [[:Category:Uber Rare Cats|Uber Rare]] and \
+                [[:Category:Legend Rare Cats|Legend Rare]]<br>\n\
+                Max # of Deployable Cats: 10"
+                    .to_vec()
+            ))
+        );
+        println!("{}", String::from_utf8(restrictions_section(&black_hole)).unwrap());
+        assert_eq!(
+            restrictions_section(&black_hole),
+            b"*Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]\n\
+            *Max # of Deployable Cats: 10"
+        );
+    }
 }
