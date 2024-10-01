@@ -109,10 +109,27 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
 pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     const PARAM_NAME: &[u8] = b"restriction";
 
-    Some(TemplateParameter::new(
-        PARAM_NAME,
-        get_restriction_list(stage)?.join(b"<br>\n".as_slice()),
-    ))
+    // use fold
+    let restrictions = get_restriction_list(stage);
+    let r = match restrictions {
+        None => {
+            if !stage.is_no_continues {
+                return None;
+            }
+            return Some(TemplateParameter::new(
+                &PARAM_NAME,
+                b"[[No Continues]]".to_vec(),
+            ));
+        }
+        Some(r) => r,
+    };
+
+    let mut buf = r.join(b"<br>\n".as_slice());
+    if stage.is_no_continues {
+        buf.write(b"<br>\n[[No Continues]]").unwrap();
+    }
+
+    Some(TemplateParameter::new(PARAM_NAME, buf))
 }
 
 pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
@@ -134,9 +151,23 @@ mod tests {
 
     #[test]
     fn no_restrictions() {
+        let boxing_clever = Stage::new("s 50 1").unwrap();
+        assert_eq!(boxing_clever.restrictions, None);
+        assert_eq!(restrictions_info(&boxing_clever), None);
+        assert_eq!(restrictions_section(&boxing_clever), vec![]);
+    }
+
+    #[test]
+    fn no_continues() {
         let realm_of_carnage = Stage::new("s 117 0").unwrap();
         assert_eq!(realm_of_carnage.restrictions, None);
-        assert_eq!(restrictions_info(&realm_of_carnage), None);
+        assert_eq!(
+            restrictions_info(&realm_of_carnage),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"[[No Continues]]".to_vec()
+            ))
+        );
         assert_eq!(restrictions_section(&realm_of_carnage), vec![]);
     }
 
@@ -156,6 +187,37 @@ mod tests {
         let sighter_star = Stage::new("cotc 3 24").unwrap();
         assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_vec() )) );
         assert_eq!( &restrictions_section(&sighter_star), b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
+    }
+
+    #[test]
+    fn restriction_rarity_2() {
+        let babies_first = Stage::new("s 375 0").unwrap();
+        assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_vec() )) );
+        assert_eq!( &restrictions_section(&babies_first), b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
+    }
+
+    #[test]
+    fn restriction_rarity_3() {
+        let somolon = Stage::new("cotc 3 37").unwrap();
+        println!("{}", String::from(restrictions_info(&somolon).unwrap()));
+        assert_eq!(
+            restrictions_info(&somolon),
+            Some(TemplateParameter::new(
+                b"restriction",
+                b"Rarity: Only [[:Category:Special Cats|Special]]".to_vec()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&somolon),
+            b"Rarity: Only [[:Category:Special Cats|Special]]"
+        );
+    }
+
+    #[test]
+    fn restriction_rarity_4() {
+        let wahwah = Stage::new("s 158 0").unwrap();
+        assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_vec() )) );
+        assert_eq!( &restrictions_section(&wahwah), b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
     }
 
     #[test]
