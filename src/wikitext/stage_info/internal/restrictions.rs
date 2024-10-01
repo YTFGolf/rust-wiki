@@ -2,14 +2,16 @@ use crate::{
     data::stage::parsed::stage::{Restriction, RestrictionCrowns, Stage},
     wikitext::template_parameter::TemplateParameter,
 };
-use std::num::NonZeroU8;
+use std::num::{NonZero, NonZeroU8};
 
-const NON_ZERO_FOUR: NonZeroU8 = match NonZeroU8::new(4) {
-    Some(v) => v,
-    None => [][0],
-};
+const fn non_zero_u8(value: u8) -> NonZero<u8> {
+    match NonZeroU8::new(value) {
+        Some(v) => v,
+        None => panic!("Value must be non-zero!"),
+    }
+}
 const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
-    crowns_applied: RestrictionCrowns::One(NON_ZERO_FOUR),
+    crowns_applied: RestrictionCrowns::One(non_zero_u8(4)),
     rarity: NonZeroU8::new(0b000110),
     deploy_limit: None,
     rows: None,
@@ -23,12 +25,29 @@ fn get_restriction_list(restriction: &Restriction) -> Vec<Vec<u8>> {
 }
 
 pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
+    const PARAM_NAME: &[u8] = b"restriction";
     let restrictions = stage.restrictions.as_ref()?;
 
     if restrictions.len() == 1 {
         if restrictions == &[FOUR_CROWN_DEFAULT_RESTRICTION] {
             return None;
         }
+
+        let restriction = &restrictions[0];
+        const VALID_ONE_CROWN: [RestrictionCrowns; 2] = [
+            RestrictionCrowns::One(non_zero_u8(1)),
+            RestrictionCrowns::All,
+        ];
+        if stage.crown_data.as_ref().unwrap().max_difficulty > non_zero_u8(1)
+            || VALID_ONE_CROWN.contains(&restriction.crowns_applied)
+        {
+            panic!("Unexpected crown error in stage: {stage:?}");
+        }
+
+        return Some(TemplateParameter::new(
+            &PARAM_NAME,
+            get_restriction_list(&restriction).join(b"<br>\n".as_slice()),
+        ));
     }
 
     todo!()
@@ -38,8 +57,6 @@ pub fn restrictions_section(_stage: &Stage) -> Vec<u8> {
     vec![]
 }
 
-// Realm of Carnage
-// earthshaker
 // finale
 // cotc stages esp. black hole
 
