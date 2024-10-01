@@ -45,10 +45,12 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
         }
 
         return Some(TemplateParameter::new(
-            &PARAM_NAME,
-            get_restriction_list(&restriction).join(b"<br>\n".as_slice()),
+            PARAM_NAME,
+            get_restriction_list(restriction).join(b"<br>\n".as_slice()),
         ));
     }
+
+    assert_eq!(restrictions.len(), 2, "Restrictions length is more than 2! (stage: {stage:?})");
 
     todo!()
 }

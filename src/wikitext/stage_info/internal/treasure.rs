@@ -36,7 +36,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
             continue;
         }
         buf.write(b"<br>\n- ").unwrap();
-        write_name_and_amount(&mut buf, &item);
+        write_name_and_amount(&mut buf, item);
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
@@ -56,7 +56,7 @@ fn all_unlimited(rewards: &StageRewards) -> Vec<u8> {
             continue;
         }
         buf.write(b"- ").unwrap();
-        write_name_and_amount(&mut buf, &item);
+        write_name_and_amount(&mut buf, item);
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
@@ -82,7 +82,7 @@ fn guaranteed_once(rewards: &StageRewards) -> Vec<u8> {
     buf.write(b"One of the following (1 time):").unwrap();
     for item in t {
         buf.write(b"<br>\n- ").unwrap();
-        write_name_and_amount(&mut buf, &item);
+        write_name_and_amount(&mut buf, item);
     }
 
     buf
@@ -102,7 +102,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
     buf.write(b"One of the following (unlimited):").unwrap();
     for item in t {
         buf.write(b"<br>\n- ").unwrap();
-        write_name_and_amount(&mut buf, &item);
+        write_name_and_amount(&mut buf, item);
     }
 
     buf
