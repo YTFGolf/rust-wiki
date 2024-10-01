@@ -131,7 +131,7 @@ mod tests {
     }
 
     #[test]
-    fn test_string_none() {
+    fn test_blank_link_is_none() {
         let hermit = ENEMY_DATA.get_data(354);
         assert_eq!(hermit.link, Some("Hermit Cat (Enemy)".to_string()));
 

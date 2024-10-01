@@ -1,8 +1,8 @@
-use num_format::{Locale, WriteFormatted};
 use crate::{
     data::stage::parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
     wikitext::template_parameter::TemplateParameter,
 };
+use num_format::{Locale, WriteFormatted};
 use std::{
     io::Write,
     num::{NonZero, NonZeroU8},
