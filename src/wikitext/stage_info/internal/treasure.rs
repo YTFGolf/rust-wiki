@@ -134,6 +134,9 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
 /// Get the `score reward` section of Stage Info.
 pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
     let rewards = &stage.rewards.as_ref()?.score_rewards;
+    if rewards.is_empty() {
+        return None;
+    }
 
     let scores = rewards
         .iter()
@@ -165,6 +168,7 @@ mod tests {
                 b"- [[Cat Capsule#Rare Cat Capsule|Rare Ticket]] +3 (100%, 1 time)".to_vec()
             ))
         );
+        assert_eq!(score_rewards(&ht30), None);
     }
 
     #[test]
@@ -181,6 +185,7 @@ mod tests {
                     .to_vec()
             ))
         );
+        assert_eq!(score_rewards(&merciless_xp), None);
     }
 
     #[test]
@@ -197,6 +202,7 @@ mod tests {
                     .to_vec()
             ))
         );
+        assert_eq!(score_rewards(&jubilee_night), None);
     }
 
     #[test]
@@ -208,7 +214,8 @@ mod tests {
                 b"treasure",
                 b"- [[Catfruit|Gold Catfruit Seed]] +1 (100%, 1 time)".to_vec()
             ))
-        )
+        );
+        assert_eq!(score_rewards(&it30), None);
     }
 
     #[test]
@@ -231,6 +238,7 @@ mod tests {
                     .to_vec()
             ))
         );
+        assert_eq!(score_rewards(&it29), None);
     }
     // other it one with 33, 34, 33 (it20?)
 
@@ -251,6 +259,7 @@ mod tests {
                     .to_vec()
             ))
         );
+        assert_eq!(score_rewards(&sakura_dance), None);
     }
 
     #[test]
