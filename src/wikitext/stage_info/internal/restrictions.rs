@@ -444,7 +444,10 @@ mod tests {
                     .to_vec()
             ))
         );
-        println!("{}", String::from_utf8(restrictions_section(&black_hole)).unwrap());
+        println!(
+            "{}",
+            String::from_utf8(restrictions_section(&black_hole)).unwrap()
+        );
         assert_eq!(
             restrictions_section(&black_hole),
             b"*Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]\n\
