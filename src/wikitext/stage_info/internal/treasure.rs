@@ -10,6 +10,7 @@ use crate::{
 use num_format::{Locale, WriteFormatted};
 use std::io::Write;
 
+/// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
 fn write_name_and_amount(buf: &mut Vec<u8>, data: &TreasureCSV) {
     if data.item_id == 6 {
         // XP is a special case from the rest
@@ -22,6 +23,7 @@ fn write_name_and_amount(buf: &mut Vec<u8>, data: &TreasureCSV) {
     buf.write_formatted(&data.item_amt, &Locale::en).unwrap();
 }
 
+/// When treasure type is first item drops once then rest are all unlimited.
 fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
     let mut buf = vec![];
     let t = &rewards.treasure_drop;
@@ -46,6 +48,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
     buf
 }
 
+/// When treasure type is that all items have unlimited drop potential.
 fn all_unlimited(rewards: &StageRewards) -> Vec<u8> {
     let mut buf = vec![];
     let t = &rewards.treasure_drop;
@@ -69,6 +72,8 @@ fn all_unlimited(rewards: &StageRewards) -> Vec<u8> {
     buf
 }
 
+/// When treasure type is that a treasure is guaranteed but can only be received
+/// once.
 fn guaranteed_once(rewards: &StageRewards) -> Vec<u8> {
     let mut buf = vec![];
     let t = &rewards.treasure_drop;
@@ -88,6 +93,8 @@ fn guaranteed_once(rewards: &StageRewards) -> Vec<u8> {
     buf
 }
 
+/// When treasure type is that a treasure is guaranteed and the stage has
+/// unlimited drops.
 fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
     let mut buf = vec![];
     let t = &rewards.treasure_drop;
@@ -108,6 +115,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
     buf
 }
 
+/// Get the `treasure` section of Stage Info.
 pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
     let rewards = stage.rewards.as_ref()?;
 
@@ -123,7 +131,7 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
     Some(TemplateParameter::new(b"treasure", treasure_text))
 }
 
-// TODO move to different file
+/// Get the `score reward` section of Stage Info.
 pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
     let rewards = match &stage.rewards {
         None => return None,
