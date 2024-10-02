@@ -37,7 +37,10 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
     }
     // get all enemies
 
-    assert!(enemy_list.base.len() <= 1);
+    assert!(
+        enemy_list.base.len() <= 1,
+        "Stage has multiple enemy bases!"
+    );
     let mut enemy_list_seen = HashSet::new();
     let filtered_enemies = enemy_list
         .enemies
@@ -71,7 +74,7 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
             }
         };
     }
-    /// Collect all enemies in the vec to a newline-separated byte string.
+    /// Get the `...` of `{{Magnification...}}`.
     /// Multiplier is raw % i.e. 100 = *1.
     fn collect_all_enemies(filtered_enemies_vec: &[&StageEnemy], multiplier: u32) -> Vec<u8> {
         filtered_enemies_vec
@@ -170,7 +173,6 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
         let boss_items = collect_all_enemies(&filtered_boss, magnif_4);
         add_to_enemy_vec(b"boss4", boss_items);
     }
-    // TODO disable for gauntlets/dojo
 
     enemy_vec
 }

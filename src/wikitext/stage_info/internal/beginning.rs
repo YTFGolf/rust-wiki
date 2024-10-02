@@ -146,7 +146,10 @@ mod tests {
 
         let star_ocean = Stage::new("sol 15 7").unwrap();
         let buf = enemies_appearing(&star_ocean);
-        assert_eq!(buf, b"{{EnemiesAppearing|Doge|Those Guys|Doge Dark|H. Nah}}");
+        assert_eq!(
+            buf,
+            b"{{EnemiesAppearing|Doge|Those Guys|Doge Dark|H. Nah}}"
+        );
         // doge dark has multiple entries in enemies_list
     }
 

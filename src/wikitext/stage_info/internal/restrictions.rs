@@ -1,3 +1,5 @@
+//! Get the stage's restrictions.
+
 use crate::{
     data::stage::{
         parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
