@@ -5,7 +5,7 @@ use crate::{
         map::map_data::csv_types::TreasureType as T,
         stage::parsed::stage::{Stage, StageRewards},
     },
-    wikitext::{data_files::rewards::TREASURE_DATA, template_parameter::TemplateParameter},
+    wikitext::{data_files::rewards::TREASURE_DATA, template_parameter::TemplateParameterU8},
 };
 use num_format::{Locale, WriteFormatted};
 use std::io::Write;
@@ -116,7 +116,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
 }
 
 /// Get the `treasure` section of Stage Info.
-pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
+pub fn treasure(stage: &Stage) -> Option<TemplateParameterU8> {
     let rewards = stage.rewards.as_ref()?;
 
     let treasure_text = match rewards.treasure_type {
@@ -128,11 +128,11 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
         _ => todo!(),
     };
 
-    Some(TemplateParameter::new(b"treasure", treasure_text))
+    Some(TemplateParameterU8::new(b"treasure", treasure_text))
 }
 
 /// Get the `score reward` section of Stage Info.
-pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
+pub fn score_rewards(stage: &Stage) -> Option<TemplateParameterU8> {
     let rewards = &stage.rewards.as_ref()?.score_rewards;
     if rewards.is_empty() {
         return None;
@@ -151,7 +151,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
         .collect::<Vec<Vec<u8>>>()
         .join(b"<br>\n".as_slice());
 
-    Some(TemplateParameter::new(b"score reward", scores))
+    Some(TemplateParameterU8::new(b"score reward", scores))
 }
 
 #[cfg(test)]
@@ -163,7 +163,7 @@ mod tests {
         let ht30 = Stage::new("v 0 29").unwrap();
         assert_eq!(
             treasure(&ht30),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"treasure",
                 b"- [[Cat Capsule#Rare Cat Capsule|Rare Ticket]] +3 (100%, 1 time)".to_vec()
             ))
@@ -177,7 +177,7 @@ mod tests {
         println!("{:?}", String::from(treasure(&merciless_xp).unwrap()));
         assert_eq!(
             treasure(&merciless_xp),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"treasure",
                 b"- 2,030,000 XP (10%, 1 time)<br>\n\
                 - 1,020,000 XP (30%, unlimited)<br>\n\
@@ -194,7 +194,7 @@ mod tests {
         println!("{:?}", String::from(treasure(&jubilee_night).unwrap()));
         assert_eq!(
             treasure(&jubilee_night),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"treasure",
                 b"- [[Catfruit|Epic Catfruit]] +1 (70%, unlimited)<br>\n\
                 - [[Catfruit|Purple Catfruit]] +1 (25.5%, unlimited)<br>\n\
@@ -210,7 +210,7 @@ mod tests {
         let it30 = Stage::new("v 6 29").unwrap();
         assert_eq!(
             treasure(&it30),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"treasure",
                 b"- [[Catfruit|Gold Catfruit Seed]] +1 (100%, 1 time)".to_vec()
             ))
@@ -224,7 +224,7 @@ mod tests {
         println!("{:?}", String::from(treasure(&it29).unwrap()));
         assert_eq!(
             treasure(&it29),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"treasure",
                 b"One of the following (1 time):<br>\n\
                 - Bricks +5<br>\n\
@@ -247,7 +247,7 @@ mod tests {
         let sakura_dance = Stage::new("c 128 2").unwrap();
         assert_eq!(
             treasure(&sakura_dance),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"treasure",
                 b"One of the following (unlimited):<br>\n\
                 - [[Battle Items#Speed Up|Speed Up]] +4<br>\n\
@@ -275,7 +275,7 @@ mod tests {
         let korea = Stage::new("itf 1 1").unwrap();
         assert_eq!(
             score_rewards(&korea),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"score reward",
                 b"'''8,500''': [[Cat Food]] +10<br>\n\
                 '''5,000''': 25,000 XP"

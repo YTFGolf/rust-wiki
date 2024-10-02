@@ -5,7 +5,7 @@ use crate::{
         parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
         stage_option::charagroups::{CharaGroup, CharaGroupType},
     },
-    wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameter},
+    wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameterU8},
 };
 use num_format::{Locale, WriteFormatted};
 use std::{
@@ -179,7 +179,7 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
 }
 
 /// Get restrictions for Stage Info template (including no continues).
-pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
+pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameterU8> {
     const PARAM_NAME: &[u8] = b"restriction";
 
     let restrictions = get_restriction_list(stage);
@@ -188,7 +188,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
             if !stage.is_no_continues {
                 return None;
             }
-            return Some(TemplateParameter::new(
+            return Some(TemplateParameterU8::new(
                 &PARAM_NAME,
                 b"[[No Continues]]".to_vec(),
             ));
@@ -201,7 +201,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
         buf.write(b"<br>\n[[No Continues]]").unwrap();
     }
 
-    Some(TemplateParameter::new(PARAM_NAME, buf))
+    Some(TemplateParameterU8::new(PARAM_NAME, buf))
 }
 
 /// Get content of restrictions section.
@@ -243,7 +243,7 @@ mod tests {
         assert_eq!(realm_of_carnage.restrictions, None);
         assert_eq!(
             restrictions_info(&realm_of_carnage),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"[[No Continues]]".to_vec()
             ))
@@ -265,14 +265,14 @@ mod tests {
     #[test]
     fn restriction_rarity_1() {
         let sighter_star = Stage::new("cotc 3 24").unwrap();
-        assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_vec() )) );
+        assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameterU8::new( b"restriction", b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_vec() )) );
         assert_eq!( &restrictions_section(&sighter_star), b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
     }
 
     #[test]
     fn restriction_rarity_2() {
         let babies_first = Stage::new("s 375 0").unwrap();
-        assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_vec() )) );
+        assert_eq!( restrictions_info (&babies_first), Some(TemplateParameterU8::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_vec() )) );
         assert_eq!( &restrictions_section(&babies_first), b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
     }
 
@@ -282,7 +282,7 @@ mod tests {
         println!("{}", String::from(restrictions_info(&somolon).unwrap()));
         assert_eq!(
             restrictions_info(&somolon),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Rarity: Only [[:Category:Special Cats|Special]]".to_vec()
             ))
@@ -296,7 +296,7 @@ mod tests {
     #[test]
     fn restriction_rarity_4() {
         let wahwah = Stage::new("s 158 0").unwrap();
-        assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_vec() )) );
+        assert_eq!( restrictions_info (&wahwah), Some(TemplateParameterU8::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_vec() )) );
         assert_eq!( &restrictions_section(&wahwah), b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
     }
 
@@ -305,7 +305,7 @@ mod tests {
         let wrath_w_cyclone = Stage::new("s 176 0").unwrap();
         assert_eq!(
             restrictions_info(&wrath_w_cyclone),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Max # of Deployable Cats: 10".to_vec()
             ))
@@ -321,7 +321,7 @@ mod tests {
         let uranus = Stage::new("cotc 2 7").unwrap();
         assert_eq!(
             restrictions_info(&uranus),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Deploy from Row 1 only".to_vec()
             ))
@@ -334,7 +334,7 @@ mod tests {
         let saturn = Stage::new("cotc 2 3").unwrap();
         assert_eq!(
             restrictions_info(&saturn),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Cat Deploy Cost: Only 300\xA2 or more".to_vec()
             ))
@@ -350,7 +350,7 @@ mod tests {
         let skelling = Stage::new("cotc 2 40").unwrap();
         assert_eq!(
             restrictions_info(&skelling),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Cat Deploy Cost: Only 1,200\xA2 or more".to_vec()
             ))
@@ -366,7 +366,7 @@ mod tests {
         let buutara = Stage::new("cotc 1 27").unwrap();
         assert_eq!(
             restrictions_info(&buutara),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Cat Deploy Cost: Only 1,200\xA2 or less".to_vec()
             ))
@@ -382,7 +382,7 @@ mod tests {
         let catseye_nebula = Stage::new("cotc 1 13").unwrap();
         assert_eq!(
             restrictions_info(&catseye_nebula),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Cat Deploy Cost: Only 4,000\xA2 or less".to_vec()
             ))
@@ -399,7 +399,7 @@ mod tests {
         println!("{}", String::from(restrictions_info(&finale).unwrap()));
         assert_eq!(
             restrictions_info(&finale),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Unit Restriction: Only [[Cat (Normal Cat)|Cat]]".to_vec()
             ))
@@ -415,7 +415,7 @@ mod tests {
         let final_race = Stage::new("c 179 0").unwrap();
         assert_eq!(
             restrictions_info(&final_race),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]".to_vec()
             ))
@@ -431,7 +431,7 @@ mod tests {
         let sorry = Stage::new("c 178 4").unwrap();
         assert_eq!(
             restrictions_info(&sorry),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]<br>\n[[No Continues]]".to_vec()
             ))
@@ -447,7 +447,7 @@ mod tests {
         let black_hole = Stage::new("cotc 2 46").unwrap();
         assert_eq!(
             restrictions_info(&black_hole),
-            Some(TemplateParameter::new(
+            Some(TemplateParameterU8::new(
                 b"restriction",
                 b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], \
                 [[:Category:Uber Rare Cats|Uber Rare]] and \

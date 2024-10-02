@@ -5,7 +5,7 @@ use crate::{
         stage::Stage,
         stage_enemy::{BossType, StageEnemy},
     },
-    wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
+    wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameterU8},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -13,7 +13,7 @@ use std::{collections::HashSet, io::Write};
 
 /// Get list of enemies and their magnifications.
 // TODO suppress magnification option for gauntlets
-pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
+pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameterU8> {
     struct EnemyListWithDupes<'a> {
         base: Vec<&'a StageEnemy>,
         enemies: Vec<&'a StageEnemy>,
@@ -89,14 +89,14 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
     }
     // util functions
 
-    let mut enemy_vec: Vec<TemplateParameter> = vec![];
+    let mut enemy_vec: Vec<TemplateParameterU8> = vec![];
     let mut add_to_enemy_vec = |key: &'static [u8], list: Vec<u8>| {
         let mut buf = vec![];
         buf.write(b"{{Magnification").unwrap();
         buf.extend(list);
         buf.write(b"}}").unwrap();
 
-        enemy_vec.push(TemplateParameter::new(key, buf));
+        enemy_vec.push(TemplateParameterU8::new(key, buf));
     };
     // return value and another util function (has to be a mutable closure
     // since it uses `enemy_vec`).
@@ -187,12 +187,12 @@ mod tests {
         assert_eq!(
             enemies_list(&aac),
             vec![
-                TemplateParameter::new(b"enemies", b"{{Magnification|Relic Doge|100%}}".to_vec()),
-                TemplateParameter::new(b"boss", b"{{Magnification|Relic Bun-Bun|100%}}".to_vec()),
-                TemplateParameter::new(b"enemies2", b"{{Magnification|Relic Doge|150%}}".to_vec()),
-                TemplateParameter::new(b"boss2", b"{{Magnification|Relic Bun-Bun|150%}}".to_vec()),
-                TemplateParameter::new(b"enemies3", b"{{Magnification|Relic Doge|200%}}".to_vec()),
-                TemplateParameter::new(b"boss3", b"{{Magnification|Relic Bun-Bun|200%}}".to_vec()),
+                TemplateParameterU8::new(b"enemies", b"{{Magnification|Relic Doge|100%}}".to_vec()),
+                TemplateParameterU8::new(b"boss", b"{{Magnification|Relic Bun-Bun|100%}}".to_vec()),
+                TemplateParameterU8::new(b"enemies2", b"{{Magnification|Relic Doge|150%}}".to_vec()),
+                TemplateParameterU8::new(b"boss2", b"{{Magnification|Relic Bun-Bun|150%}}".to_vec()),
+                TemplateParameterU8::new(b"enemies3", b"{{Magnification|Relic Doge|200%}}".to_vec()),
+                TemplateParameterU8::new(b"boss3", b"{{Magnification|Relic Bun-Bun|200%}}".to_vec()),
             ]
         );
     }
@@ -212,7 +212,7 @@ mod tests {
         assert_eq!(
             enemies_list(&celestial_seas),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Doge|3,000%\n\
                     |Those Guys|2,000%\n\
@@ -225,8 +225,8 @@ mod tests {
                     |Gabriel|2,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss", b"{{Magnification|Le'boin|10,000%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss", b"{{Magnification|Le'boin|10,000%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Doge|3,600%\n\
                     |Those Guys|2,400%\n\
@@ -239,8 +239,8 @@ mod tests {
                     |Gabriel|2,400%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss2", b"{{Magnification|Le'boin|12,000%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss2", b"{{Magnification|Le'boin|12,000%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Doge|4,200%\n\
                     |Those Guys|2,800%\n\
@@ -253,7 +253,7 @@ mod tests {
                     |Gabriel|2,800%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss3", b"{{Magnification|Le'boin|14,000%}}".to_vec()),
+                TemplateParameterU8::new(b"boss3", b"{{Magnification|Le'boin|14,000%}}".to_vec()),
             ]
         );
     }
@@ -263,7 +263,7 @@ mod tests {
         let it_25 = Stage::new("v 6 24").unwrap();
         assert_eq!(
             enemies_list(&it_25),
-            vec![TemplateParameter::new(
+            vec![TemplateParameterU8::new(
                 b"enemies",
                 b"{{Magnification|Pigeon de Sable|300%\n\
                 |Elizabeth the LVIth|2,000%\n\
@@ -280,14 +280,14 @@ mod tests {
         assert_eq!(
             enemies_list(&sacrifice_apprenticeship),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Celeboodle|1,000%\n\
                     |Relic Doge|150%\n\
                     |Sir Rel|150%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss",
                     b"{{Magnification|Ururun Wolf|300/500%\n\
                     |Mystic Mask Yulala|100%}}"
@@ -303,7 +303,7 @@ mod tests {
         assert_eq!(
             enemies_list(&sleeping_lion),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Doge|400%\n\
                     |Snache|400%\n\
@@ -313,8 +313,8 @@ mod tests {
                     |Doge Dark|100%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss", b"{{Magnification|Squire Rel|100%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss", b"{{Magnification|Squire Rel|100%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Doge|600%\n\
                     |Snache|600%\n\
@@ -324,8 +324,8 @@ mod tests {
                     |Doge Dark|150%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss2", b"{{Magnification|Squire Rel|150%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss2", b"{{Magnification|Squire Rel|150%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Doge|800%\n\
                     |Snache|800%\n\
@@ -335,8 +335,8 @@ mod tests {
                     |Doge Dark|200%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss3", b"{{Magnification|Squire Rel|200%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss3", b"{{Magnification|Squire Rel|200%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies4",
                     b"{{Magnification|Doge|1,200%\n\
                     |Snache|1,200%\n\
@@ -346,7 +346,7 @@ mod tests {
                     |Doge Dark|300%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss4", b"{{Magnification|Squire Rel|300%}}".to_vec()),
+                TemplateParameterU8::new(b"boss4", b"{{Magnification|Squire Rel|300%}}".to_vec()),
             ]
         );
     }
@@ -357,7 +357,7 @@ mod tests {
         assert_eq!(
             enemies_list(&star_ocean),
             [
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Doge|2,000%\n\
                     |Those Guys|400%\n\
@@ -370,8 +370,8 @@ mod tests {
                     |Doge Dark|2,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss", b"{{Magnification|H. Nah|200%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss", b"{{Magnification|H. Nah|200%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Doge|3,000%\n\
                     |Those Guys|600%\n\
@@ -384,8 +384,8 @@ mod tests {
                     |Doge Dark|3,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss2", b"{{Magnification|H. Nah|300%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss2", b"{{Magnification|H. Nah|300%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Doge|4,000%\n\
                     |Those Guys|800%\n\
@@ -398,8 +398,8 @@ mod tests {
                     |Doge Dark|4,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss3", b"{{Magnification|H. Nah|400%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss3", b"{{Magnification|H. Nah|400%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies4",
                     b"{{Magnification|Doge|4,000%\n\
                     |Those Guys|800%\n\
@@ -412,7 +412,7 @@ mod tests {
                     |Doge Dark|4,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss4", b"{{Magnification|H. Nah|400%}}".to_vec()),
+                TemplateParameterU8::new(b"boss4", b"{{Magnification|H. Nah|400%}}".to_vec()),
             ]
         );
     }
@@ -423,44 +423,44 @@ mod tests {
         assert_eq!(
             enemies_list(&kugel_schreiber),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Assassin Bear|200%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss",
                     b"{{Magnification|Dober P.D|100%\n\
                     |R.Ost|100%\n\
                     |THE SLOTH|200%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Assassin Bear|240%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss2",
                     b"{{Magnification|Dober P.D|120%\n\
                     |R.Ost|120%\n\
                     |THE SLOTH|240%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Assassin Bear|280%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss3",
                     b"{{Magnification|Dober P.D|140%\n\
                     |R.Ost|140%\n\
                     |THE SLOTH|280%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies4",
                     b"{{Magnification|Assassin Bear|220%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss4",
                     b"{{Magnification|Dober P.D|110%\n\
                     |R.Ost|110%\n\
@@ -477,30 +477,30 @@ mod tests {
         assert_eq!(
             enemies_list(&noble_tribe),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Doge|120,000%\n\
                     |Snache|120,000%\n\
                     |Those Guys|120,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss", b"{{Magnification|Hippoe|120,000%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss", b"{{Magnification|Hippoe|120,000%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Doge|144,000%\n\
                     |Snache|144,000%\n\
                     |Those Guys|144,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss2", b"{{Magnification|Hippoe|144,000%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss2", b"{{Magnification|Hippoe|144,000%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Doge|156,000%\n\
                     |Snache|156,000%\n\
                     |Those Guys|156,000%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss3", b"{{Magnification|Hippoe|156,000%}}".to_vec()),
+                TemplateParameterU8::new(b"boss3", b"{{Magnification|Hippoe|156,000%}}".to_vec()),
             ]
         );
     }
@@ -512,7 +512,7 @@ mod tests {
         assert_eq!(
             enemies_list(&revenant_road),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Zroco|200%\n\
                     |Zir Zeal|200%\n\
@@ -521,11 +521,11 @@ mod tests {
                     |B.B.Bunny|2,800%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss",
                     b"{{Magnification|Teacher Bun Bun|1,500%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Zroco|240%\n\
                     |Zir Zeal|240%\n\
@@ -534,11 +534,11 @@ mod tests {
                     |B.B.Bunny|3,360%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss2",
                     b"{{Magnification|Teacher Bun Bun|1,800%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Zroco|280%\n\
                     |Zir Zeal|280%\n\
@@ -547,7 +547,7 @@ mod tests {
                     |B.B.Bunny|3,920%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"boss3",
                     b"{{Magnification|Teacher Bun Bun|2,100%}}".to_vec()
                 ),
@@ -560,7 +560,7 @@ mod tests {
         let finale = Stage::new("c 209 0").unwrap();
         assert_eq!(
             enemies_list(&finale),
-            vec![TemplateParameter::new(
+            vec![TemplateParameterU8::new(
                 b"base",
                 b"{{Magnification|Finale Base|100%}}".to_vec()
             ),]
@@ -573,11 +573,11 @@ mod tests {
         assert_eq!(
             enemies_list(&relay_1600m),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"base",
                     b"{{Magnification|Relay Base|7,500,000%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|White Wind|700%\n\
                     |Duche|300%\n\
@@ -588,7 +588,7 @@ mod tests {
                     |Bore|200%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss", b"{{Magnification|Le'noir|150%}}".to_vec()),
+                TemplateParameterU8::new(b"boss", b"{{Magnification|Le'noir|150%}}".to_vec()),
             ]
         );
     }
@@ -600,42 +600,42 @@ mod tests {
         assert_eq!(
             enemies_list(&pile_of_guts),
             vec![
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"base",
                     b"{{Magnification|Relic Doge Base|40,000%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies",
                     b"{{Magnification|Bore Jr.|100%\n\
                     |Celeboodle|1,000%\n\
                     |R.Ost|300%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss", b"{{Magnification|THE SLOTH|400%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss", b"{{Magnification|THE SLOTH|400%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"base2",
                     b"{{Magnification|Relic Doge Base|52,000%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies2",
                     b"{{Magnification|Bore Jr.|130%\n\
                     |Celeboodle|1,300%\n\
                     |R.Ost|390%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss2", b"{{Magnification|THE SLOTH|520%}}".to_vec()),
-                TemplateParameter::new(
+                TemplateParameterU8::new(b"boss2", b"{{Magnification|THE SLOTH|520%}}".to_vec()),
+                TemplateParameterU8::new(
                     b"base3",
                     b"{{Magnification|Relic Doge Base|68,000%}}".to_vec()
                 ),
-                TemplateParameter::new(
+                TemplateParameterU8::new(
                     b"enemies3",
                     b"{{Magnification|Bore Jr.|170%\n\
                     |Celeboodle|1,700%\n\
                     |R.Ost|510%}}"
                         .to_vec()
                 ),
-                TemplateParameter::new(b"boss3", b"{{Magnification|THE SLOTH|680%}}".to_vec()),
+                TemplateParameterU8::new(b"boss3", b"{{Magnification|THE SLOTH|680%}}".to_vec()),
             ]
         );
 
