@@ -11,12 +11,14 @@ use std::{
     num::{NonZero, NonZeroU8},
 };
 
+/// Sometimes I don't like Rust's type system.
 const fn non_zero_u8(value: u8) -> NonZero<u8> {
     match NonZeroU8::new(value) {
         Some(v) => v,
         None => panic!("Value must be non-zero!"),
     }
 }
+/// Specials and rares only and only applies to 4-crown.
 const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
     crowns_applied: Crowns::One(non_zero_u8(4)),
     rarity: NonZeroU8::new(0b000110),
@@ -27,6 +29,7 @@ const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
     charagroup: None,
 };
 
+/// Get only rarities allowed.
 fn get_rarity_restriction(rarity: NonZero<u8>) -> Vec<u8> {
     let rarities: Vec<&[u8]> = (0..6)
         .filter_map(|i| {
@@ -61,8 +64,10 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> Vec<u8> {
     buf
 }
 
+/// Get the restriction defined by the charagroup.
 fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
-    // Alternatively, hardcode the list
+    // Alternatively, hardcode some of these like heartbeat catcademy and JRA
+    // since they'll always be changing but will always have the same concept.
     let mut buf = b"Unit Restriction: ".to_vec();
     let mode: &[u8] = match group.group_type {
         CharaGroupType::OnlyUse => b"Only",
@@ -89,6 +94,8 @@ fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
     buf
 }
 
+/// Get a list of restrictions that a single [Restriction] object corresponds
+/// to.
 fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
     let mut restrictions = vec![];
 
@@ -130,6 +137,7 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
     restrictions
 }
 
+/// Get a list of stage restrictions if they exist.
 fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
     let restrictions = stage.restrictions.as_ref()?;
 
@@ -168,6 +176,7 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
     todo!()
 }
 
+/// Get restrictions for Stage Info template (including no continues).
 pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     const PARAM_NAME: &[u8] = b"restriction";
 
@@ -193,6 +202,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     Some(TemplateParameter::new(PARAM_NAME, buf))
 }
 
+/// Get content of restrictions section.
 pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
     let restrictions = match get_restriction_list(stage) {
         None => return vec![],
