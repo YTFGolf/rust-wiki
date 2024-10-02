@@ -91,13 +91,13 @@ fn do_thing_internal() {
                 .collect::<Vec<Vec<u8>>>()
                 .join(b"\n".as_slice()),
             "treasure" => internal::treasure(&stage)
-                .map(|param| param.to_u8s())
+                .map(|param| param.to_string().as_bytes().to_vec())
                 .unwrap_or(b"".to_vec()),
             "restrictions_info" => internal::restrictions_info(&stage)
                 .map(|param| param.to_u8s())
                 .unwrap_or(b"".to_vec()),
             "score_rewards" => internal::score_rewards(&stage)
-                .map(|param| param.to_u8s())
+                .map(|param| param.to_string().as_bytes().to_vec())
                 .unwrap_or(b"".to_vec()),
             "restrictions_section" => internal::restrictions_section(&stage),
 
