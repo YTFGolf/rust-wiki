@@ -8,6 +8,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use std::io::Write;
 
+/// Get the `|stage name` parameter.
 pub fn stage_name(stage: &Stage) -> TemplateParameter {
     let mut buf: Vec<u8> = vec![];
 
@@ -24,6 +25,7 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
             }
         }
     };
+    // base part
 
     write!(
         buf,
@@ -33,10 +35,12 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
         type_code = stage.meta.type_code.to_lowercase(),
     )
     .unwrap();
+    // stage name part
 
     TemplateParameter::new(b"stage name", buf)
 }
 
+/// Get the `|stage location` parameter.
 pub fn stage_location(stage: &Stage) -> TemplateParameter {
     let mut buf = vec![];
     write!(
@@ -49,6 +53,7 @@ pub fn stage_location(stage: &Stage) -> TemplateParameter {
     TemplateParameter::new(b"stage location", buf)
 }
 
+/// Get the `|energy` parameter.
 pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     let energy = stage.energy?;
     let mut buf = vec![];
@@ -64,6 +69,7 @@ pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     Some(TemplateParameter::new(b"energy", buf))
 }
 
+/// Get the `|enemy castle hp` parameters.
 pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     const PARAM_NAME: &[u8] = b"enemy castle hp";
     const PARAM_NAME_2: &[u8] = b"enemy castle hp2";
@@ -73,6 +79,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     if stage.time_limit.is_some() {
         return vec![TemplateParameter::new(PARAM_NAME, b"Unlimited".to_vec())];
     }
+    // Dojo
     if stage.anim_base_id.is_none() {
         let mut buf = vec![];
         buf.write_formatted(&stage.base_hp, &Locale::en).unwrap();
@@ -81,21 +88,23 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     }
 
     let anim_base_id = <u32>::from(stage.anim_base_id.unwrap()) - 2;
-    let hp = ENEMY_DATA.get_data(anim_base_id).hp;
-    let mag_either = || {
+    let base_hp = ENEMY_DATA.get_data(anim_base_id).hp;
+    let enemy_magnification = || {
         for enemy in &stage.enemies {
             if enemy.id == anim_base_id {
                 return enemy.magnification;
             }
+            // won't always be first enemy in stage e.g. clown bases so need to
+            // check all
         }
         unreachable!()
     };
-    let mag = match mag_either() {
+    let mag = match enemy_magnification() {
         Left(m) => m,
         Right((hp, _ap)) => hp,
     };
 
-    let magnification_hp = mag * hp / 100;
+    let magnification_hp = mag * base_hp / 100;
     if stage.crown_data.is_none() {
         let mut buf = vec![];
         buf.write_formatted(&magnification_hp, &Locale::en).unwrap();
@@ -111,31 +120,32 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
         TemplateParameter::new(key, buf)
     };
 
-    if let Some(crown_data) = &stage.crown_data {
-        params.push(get_new_param(PARAM_NAME, magnification_hp));
+    let crown_data = stage.crown_data.as_ref().unwrap();
+    params.push(get_new_param(PARAM_NAME, magnification_hp));
 
-        if let Some(m) = crown_data.crown_2 {
+    if let Some(m) = crown_data.crown_2 {
+        params.push(get_new_param(
+            PARAM_NAME_2,
+            magnification_hp * u32::from(m) / 100,
+        ));
+    }
+
+    if let Some(m) = crown_data.crown_3 {
+        params.push(get_new_param(
+            PARAM_NAME_3,
+            magnification_hp * u32::from(m) / 100,
+        ));
+    }
+
+    if let Some(m) = crown_data.crown_4 {
+        if u32::from(m) != 100 {
             params.push(get_new_param(
-                PARAM_NAME_2,
+                PARAM_NAME_4,
                 magnification_hp * u32::from(m) / 100,
             ));
         }
-
-        if let Some(m) = crown_data.crown_3 {
-            params.push(get_new_param(
-                PARAM_NAME_3,
-                magnification_hp * u32::from(m) / 100,
-            ));
-        }
-
-        if let Some(m) = crown_data.crown_4 {
-            if u32::from(m) != 100 {
-                params.push(get_new_param(
-                    PARAM_NAME_4,
-                    magnification_hp * u32::from(m) / 100,
-                ));
-            }
-        }
+        // wiki templates don't need 4-crown mags if they are the same as
+        // 1-crown
     }
 
     params
@@ -153,8 +163,8 @@ mod tests {
         buf.write(b"\n").unwrap();
         buf.extend(stage_location(&great_escaper).to_u8s());
         assert_eq!(
-            &String::from_utf8(buf).unwrap(),
-            "\
+            buf,
+            b"\
             |stage name = [[File:rc006.png]]\n\
             [[File:Mapsn017 05 n en.png]]\n\
             |stage location = [[File:Mapname017 n en.png]]\
@@ -167,8 +177,8 @@ mod tests {
         buf.write(b"\n").unwrap();
         buf.extend(stage_location(&red_summit).to_u8s());
         assert_eq!(
-            &String::from_utf8(buf).unwrap(),
-            "\
+            buf,
+            b"\
             |stage name = [[File:rc002.png]]\n\
             [[File:Mapsn010 00 h en.png]]\n\
             |stage location = [[File:Mapname010 h en.png]]\
@@ -181,8 +191,8 @@ mod tests {
         buf.write(b"\n").unwrap();
         buf.extend(stage_location(&finale).to_u8s());
         assert_eq!(
-            &String::from_utf8(buf).unwrap(),
-            "\
+            buf,
+            b"\
             |stage name = [[File:E 651.png]]\n\
             [[File:Mapsn209 00 c en.png]]\n\
             |stage location = [[File:Mapname209 c en.png]]\
@@ -193,8 +203,8 @@ mod tests {
         let mut buf: Vec<u8> = vec![];
         buf.extend(stage_name(&relay_1600m).to_u8s());
         assert_eq!(
-            &String::from_utf8(buf).unwrap(),
-            "\
+            buf,
+            b"\
             |stage name = [[File:E 657.png|250px]]\n\
             [[File:Mapsn061 02 ex en.png]]\
             "
@@ -204,41 +214,46 @@ mod tests {
     #[test]
     fn test_energy_normal() {
         let aac = Stage::new("ul 0 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(energy(&aac).unwrap().to_u8s());
-        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 200");
+        assert_eq!(
+            energy(&aac),
+            Some(TemplateParameter::new(b"energy", b"200".to_vec()))
+        );
     }
 
     #[test]
     fn test_energy_0() {
         let challenge = Stage::new("challenge 0 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(energy(&challenge).unwrap().to_u8s());
-        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 0");
+        assert_eq!(
+            energy(&challenge),
+            Some(TemplateParameter::new(b"energy", b"0".to_vec()))
+        );
     }
 
     #[test]
     fn test_energy_ex() {
         let door_opens = Stage::new("ex 47 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(energy(&door_opens).unwrap().to_u8s());
-        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = N/A");
+        assert_eq!(
+            energy(&door_opens),
+            Some(TemplateParameter::new(b"energy", b"N/A".to_vec()))
+        );
     }
 
     #[test]
     fn test_energy_catamin() {
         let facing_danger = Stage::new("b 5 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(energy(&facing_danger).unwrap().to_u8s());
-        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = N/A");
+        assert_eq!(
+            energy(&facing_danger),
+            Some(TemplateParameter::new(b"energy", b"N/A".to_vec()))
+        );
     }
 
     #[test]
     fn test_energy_1_000() {
         let mining_epic = Stage::new("s 326 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(energy(&mining_epic).unwrap().to_u8s());
-        assert_eq!(&String::from_utf8(buf).unwrap(), "|energy = 1,000");
+        assert_eq!(
+            energy(&mining_epic),
+            Some(TemplateParameter::new(b"energy", b"1,000".to_vec()))
+        );
     }
 
     #[test]
@@ -324,9 +339,5 @@ mod tests {
         );
         // As of 13.6 this is the only stage where base hp != actual stat and
         // also has 4 crowns.
-
-        // println!("{:?}",
-        // base_hp(&just_friends).into_iter().map(|a|
-        // String::from_utf8(a.to_u8s())).collect::<Vec<_>>());
     }
 }
