@@ -14,7 +14,7 @@ use crate::{
 };
 use std::num::NonZeroU32;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// Rewards for the stage.
 pub struct StageRewards {
     /// Modifier for the treasure drop.

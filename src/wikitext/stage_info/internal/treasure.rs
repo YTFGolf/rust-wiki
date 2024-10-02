@@ -2,7 +2,7 @@
 
 use crate::{
     data::{
-        map::map_data::csv_types::{TreasureCSV, TreasureType as T},
+        map::map_data::csv_types::TreasureType as T,
         stage::parsed::stage::{Stage, StageRewards},
     },
     wikitext::{data_files::rewards::TREASURE_DATA, template_parameter::TemplateParameter},
@@ -11,16 +11,16 @@ use num_format::{Locale, WriteFormatted};
 use std::io::Write;
 
 /// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
-fn write_name_and_amount(buf: &mut Vec<u8>, data: &TreasureCSV) {
-    if data.item_id == 6 {
+fn write_name_and_amount(buf: &mut Vec<u8>, id: u32, amt: u32) {
+    if id == 6 {
         // XP is a special case from the rest
-        buf.write_formatted(&data.item_amt, &Locale::en).unwrap();
-        write!(buf, " {}", TREASURE_DATA.get_treasure_name(data.item_id)).unwrap();
+        buf.write_formatted(&amt, &Locale::en).unwrap();
+        write!(buf, " {}", TREASURE_DATA.get_treasure_name(id)).unwrap();
         return;
     }
 
-    write!(buf, "{} +", TREASURE_DATA.get_treasure_name(data.item_id)).unwrap();
-    buf.write_formatted(&data.item_amt, &Locale::en).unwrap();
+    write!(buf, "{} +", TREASURE_DATA.get_treasure_name(id)).unwrap();
+    buf.write_formatted(&amt, &Locale::en).unwrap();
 }
 
 /// When treasure type is first item drops once then rest are all unlimited.
@@ -29,7 +29,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
     let t = &rewards.treasure_drop;
 
     buf.write(b"- ").unwrap();
-    write_name_and_amount(&mut buf, &t[0]);
+    write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
     write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
 
     let mut total_allowed: f64 = 100.0;
@@ -38,7 +38,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> Vec<u8> {
             continue;
         }
         buf.write(b"<br>\n- ").unwrap();
-        write_name_and_amount(&mut buf, item);
+        write_name_and_amount(&mut buf, item.item_id, item.item_amt);
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
@@ -59,7 +59,7 @@ fn all_unlimited(rewards: &StageRewards) -> Vec<u8> {
             continue;
         }
         buf.write(b"- ").unwrap();
-        write_name_and_amount(&mut buf, item);
+        write_name_and_amount(&mut buf, item.item_id, item.item_amt);
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
@@ -79,7 +79,7 @@ fn guaranteed_once(rewards: &StageRewards) -> Vec<u8> {
     let t = &rewards.treasure_drop;
     if t.len() == 1 {
         buf.write(b"- ").unwrap();
-        write_name_and_amount(&mut buf, &t[0]);
+        write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
         buf.write(b" (100%, 1 time)").unwrap();
         return buf;
     };
@@ -87,7 +87,7 @@ fn guaranteed_once(rewards: &StageRewards) -> Vec<u8> {
     buf.write(b"One of the following (1 time):").unwrap();
     for item in t {
         buf.write(b"<br>\n- ").unwrap();
-        write_name_and_amount(&mut buf, item);
+        write_name_and_amount(&mut buf, item.item_id, item.item_amt);
     }
 
     buf
@@ -101,7 +101,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
     if t.len() == 1 {
         todo!()
         // buf.write(b"- ").unwrap();
-        // write_name_and_amount(&mut buf, &t[0]);
+        // write_name_and_amount(&mut buf, &t[0].item_id, &t[0].item_amt);
         // buf.write(b" (100%, 1 time)").unwrap();
         // return buf;
     };
@@ -109,7 +109,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> Vec<u8> {
     buf.write(b"One of the following (unlimited):").unwrap();
     for item in t {
         buf.write(b"<br>\n- ").unwrap();
-        write_name_and_amount(&mut buf, item);
+        write_name_and_amount(&mut buf, item.item_id, item.item_amt);
     }
 
     buf
@@ -133,14 +133,22 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
 
 /// Get the `score reward` section of Stage Info.
 pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
-    let rewards = match &stage.rewards {
-        None => return None,
-        Some(t) => t,
-    };
-    println!("{:?}", rewards);
-    None
+    let rewards = &stage.rewards.as_ref()?.score_rewards;
 
-    // todo!()
+    let scores = rewards
+        .iter()
+        .map(|r| {
+            let mut buf = vec![];
+            buf.write(b"'''").unwrap();
+            buf.write_formatted(&r.score, &Locale::en).unwrap();
+            buf.write(b"''': ").unwrap();
+            write_name_and_amount(&mut buf, r.item_id, r.item_amt);
+            buf
+        })
+        .collect::<Vec<Vec<u8>>>()
+        .join(b"<br>\n".as_slice());
+
+    Some(TemplateParameter::new(b"score reward", scores))
 }
 
 #[cfg(test)]
@@ -248,6 +256,22 @@ mod tests {
     #[test]
     fn labyrinth() {
         let labyrinth_67 = Stage::new("l 0 66").unwrap();
+        assert_eq!(labyrinth_67.rewards, None);
         assert_eq!(treasure(&labyrinth_67), None);
+        assert_eq!(score_rewards(&labyrinth_67), None);
+    }
+
+    #[test]
+    fn score_basic() {
+        let korea = Stage::new("itf 1 1").unwrap();
+        assert_eq!(
+            score_rewards(&korea),
+            Some(TemplateParameter::new(
+                b"score reward",
+                b"'''8,500''': [[Cat Food]] +10<br>\n\
+                '''5,000''': 25,000 XP"
+                    .to_vec()
+            ))
+        );
     }
 }
