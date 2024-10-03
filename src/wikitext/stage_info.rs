@@ -94,12 +94,12 @@ fn do_thing_internal() {
                 .map(|param| param.to_string().as_bytes().to_vec())
                 .unwrap_or(b"".to_vec()),
             "restrictions_info" => internal::restrictions_info(&stage)
-                .map(|param| param.to_u8s())
+                .map(|param| param.to_string().as_bytes().to_vec())
                 .unwrap_or(b"".to_vec()),
             "score_rewards" => internal::score_rewards(&stage)
                 .map(|param| param.to_string().as_bytes().to_vec())
                 .unwrap_or(b"".to_vec()),
-            "restrictions_section" => internal::restrictions_section(&stage),
+            "restrictions_section" => internal::restrictions_section(&stage).as_bytes().to_vec(),
 
             _ => continue,
         };

@@ -5,11 +5,11 @@ use crate::{
         parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
         stage_option::charagroups::{CharaGroup, CharaGroupType},
     },
-    wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameterU8},
+    wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameter},
 };
 use num_format::{Locale, WriteFormatted};
 use std::{
-    io::Write,
+    fmt::Write,
     num::{NonZero, NonZeroU8},
 };
 
@@ -32,51 +32,51 @@ const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
 };
 
 /// Get only rarities allowed.
-fn get_rarity_restriction(rarity: NonZero<u8>) -> Vec<u8> {
-    let rarities: Vec<&[u8]> = (0..6)
+fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
+    let rarities: Vec<&str> = (0..6)
         .filter_map(|i| {
             let rarity_bit = u8::from(rarity) & (1 << i);
             if rarity_bit == 0 {
                 return None;
             };
 
-            let rarity: &[u8] = match i {
-                0 => b"[[:Category:Normal Cats|Normal]]",
-                1 => b"[[:Category:Special Cats|Special]]",
-                2 => b"[[:Category:Rare Cats|Rare]]",
-                3 => b"[[:Category:Super Rare Cats|Super Rare]]",
-                4 => b"[[:Category:Uber Rare Cats|Uber Rare]]",
-                5 => b"[[:Category:Legend Rare Cats|Legend Rare]]",
+            let rarity = match i {
+                0 => "[[:Category:Normal Cats|Normal]]",
+                1 => "[[:Category:Special Cats|Special]]",
+                2 => "[[:Category:Rare Cats|Rare]]",
+                3 => "[[:Category:Super Rare Cats|Super Rare]]",
+                4 => "[[:Category:Uber Rare Cats|Uber Rare]]",
+                5 => "[[:Category:Legend Rare Cats|Legend Rare]]",
                 _ => unreachable!(),
             };
             Some(rarity)
         })
         .collect();
 
-    let mut buf = b"Rarity: Only ".to_vec();
+    let mut buf = "Rarity: Only ".to_string();
     if rarities.len() == 1 {
-        buf.write(rarities[0]).unwrap();
+        buf.write_str(rarities[0]).unwrap();
     } else {
         let (last, first) = rarities.split_last().unwrap();
-        let grouped = first.join(b", ".as_slice());
-        buf.write(&grouped).unwrap();
-        buf.write(b" and ").unwrap();
-        buf.write(last).unwrap();
+        let grouped = first.join(", ");
+        buf.write_str(&grouped).unwrap();
+        buf.write_str(" and ").unwrap();
+        buf.write_str(last).unwrap();
     }
     buf
 }
 
 /// Get the restriction defined by the charagroup.
-fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
+fn get_charagroup_restriction(group: &CharaGroup) -> String {
     // Alternatively, hardcode some of these like heartbeat catcademy and JRA
     // since they'll always be changing but will always have the same concept.
-    let mut buf = b"Unit Restriction: ".to_vec();
-    let mode: &[u8] = match group.group_type {
-        CharaGroupType::OnlyUse => b"Only",
-        CharaGroupType::CannotUse => b"Cannot use",
+    let mut buf = "Unit Restriction: ".to_string();
+    let mode = match group.group_type {
+        CharaGroupType::OnlyUse => "Only",
+        CharaGroupType::CannotUse => "Cannot use",
     };
-    buf.write(mode).unwrap();
-    buf.write(b" ").unwrap();
+    buf.write_str(mode).unwrap();
+    buf.write_str(" ").unwrap();
     let groupunits: Vec<String> = group
         .units
         .iter()
@@ -84,13 +84,13 @@ fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
         .collect();
 
     if groupunits.len() == 1 {
-        buf.write(groupunits[0].as_bytes()).unwrap();
+        buf.write_str(&groupunits[0]).unwrap();
     } else {
         let (last, first) = groupunits.split_last().unwrap();
         let grouped = first.join(", ");
-        buf.write(&grouped.as_bytes()).unwrap();
-        buf.write(b" and ").unwrap();
-        buf.write(last.as_bytes()).unwrap();
+        buf.write_str(&grouped).unwrap();
+        buf.write_str(" and ").unwrap();
+        buf.write_str(last).unwrap();
     }
 
     buf
@@ -98,7 +98,7 @@ fn get_charagroup_restriction(group: &CharaGroup) -> Vec<u8> {
 
 /// Get a list of restrictions that a single [Restriction] object corresponds
 /// to.
-fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
+fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
     let mut restrictions = vec![];
 
     if let Some(rarity) = restriction.rarity {
@@ -106,29 +106,27 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
         restrictions.push(buf);
     }
     if let Some(limit) = restriction.deploy_limit {
-        let mut buf = vec![];
+        let mut buf = "".to_string();
         write!(buf, "Max # of Deployable Cats: {}", limit).unwrap();
         restrictions.push(buf);
     }
     if let Some(row) = restriction.rows {
-        let mut buf = vec![];
+        let mut buf = "".to_string();
         write!(buf, "Deploy from Row {} only", row).unwrap();
         restrictions.push(buf);
     }
     if let Some(min) = restriction.min_cost {
-        let mut buf = vec![];
-        buf.write(b"Cat Deploy Cost: Only ").unwrap();
+        let mut buf = "".to_string();
+        buf.write_str("Cat Deploy Cost: Only ").unwrap();
         buf.write_formatted(&min, &Locale::en).unwrap();
-        buf.write(b"\xA2 or more").unwrap();
-        // \xA2 = ¢
+        buf.write_str("¢ or more").unwrap();
         restrictions.push(buf);
     }
     if let Some(max) = restriction.max_cost {
-        let mut buf = vec![];
-        buf.write(b"Cat Deploy Cost: Only ").unwrap();
+        let mut buf = "".to_string();
+        buf.write_str("Cat Deploy Cost: Only ").unwrap();
         buf.write_formatted(&max, &Locale::en).unwrap();
-        buf.write(b"\xA2 or less").unwrap();
-        // \xA2 = ¢
+        buf.write_str("¢ or less").unwrap();
         restrictions.push(buf);
     }
     if let Some(group) = restriction.charagroup {
@@ -140,7 +138,7 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<Vec<u8>> {
 }
 
 /// Get a list of stage restrictions if they exist.
-fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
+fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
     let restrictions = stage.restrictions.as_ref()?;
 
     if restrictions.len() == 1 {
@@ -179,8 +177,8 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<Vec<u8>>> {
 }
 
 /// Get restrictions for Stage Info template (including no continues).
-pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameterU8> {
-    const PARAM_NAME: &[u8] = b"restriction";
+pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
+    const PARAM_NAME: &str = "restriction";
 
     let restrictions = get_restriction_list(stage);
     let r = match restrictions {
@@ -188,26 +186,26 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameterU8> {
             if !stage.is_no_continues {
                 return None;
             }
-            return Some(TemplateParameterU8::new(
+            return Some(TemplateParameter::new(
                 &PARAM_NAME,
-                b"[[No Continues]]".to_vec(),
+                "[[No Continues]]".to_string(),
             ));
         }
         Some(r) => r,
     };
 
-    let mut buf = r.join(b"<br>\n".as_slice());
+    let mut buf = r.join("<br>\n");
     if stage.is_no_continues {
-        buf.write(b"<br>\n[[No Continues]]").unwrap();
+        buf.write_str("<br>\n[[No Continues]]").unwrap();
     }
 
-    Some(TemplateParameterU8::new(PARAM_NAME, buf))
+    Some(TemplateParameter::new(PARAM_NAME, buf))
 }
 
 /// Get content of restrictions section.
-pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
+pub fn restrictions_section(stage: &Stage) -> String {
     let restrictions = match get_restriction_list(stage) {
-        None => return vec![],
+        None => return "".to_string(),
         Some(r) => r,
     };
 
@@ -215,11 +213,11 @@ pub fn restrictions_section(stage: &Stage) -> Vec<u8> {
         return restrictions.into_iter().next().unwrap();
     }
 
-    let mut buf = vec![];
+    let mut buf = "".to_string();
     for restriction in restrictions {
-        buf.write(b"*").unwrap();
-        buf.write(&restriction).unwrap();
-        buf.write(b"\n").unwrap();
+        buf.write_str("*").unwrap();
+        buf.write_str(&restriction).unwrap();
+        buf.write_str("\n").unwrap();
     }
     buf.truncate(buf.len() - 1);
     buf
@@ -234,7 +232,7 @@ mod tests {
         let boxing_clever = Stage::new("s 50 1").unwrap();
         assert_eq!(boxing_clever.restrictions, None);
         assert_eq!(restrictions_info(&boxing_clever), None);
-        assert_eq!(restrictions_section(&boxing_clever), vec![]);
+        assert_eq!(&restrictions_section(&boxing_clever), "");
     }
 
     #[test]
@@ -243,12 +241,12 @@ mod tests {
         assert_eq!(realm_of_carnage.restrictions, None);
         assert_eq!(
             restrictions_info(&realm_of_carnage),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"[[No Continues]]".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "[[No Continues]]".to_string()
             ))
         );
-        assert_eq!(restrictions_section(&realm_of_carnage), vec![]);
+        assert_eq!(&restrictions_section(&realm_of_carnage), "");
     }
 
     #[test]
@@ -259,21 +257,21 @@ mod tests {
             &[FOUR_CROWN_DEFAULT_RESTRICTION]
         );
         assert_eq!(restrictions_info(&earthshaker), None);
-        assert_eq!(restrictions_section(&earthshaker), vec![]);
+        assert_eq!(&restrictions_section(&earthshaker), "");
     }
 
     #[test]
     fn restriction_rarity_1() {
         let sighter_star = Stage::new("cotc 3 24").unwrap();
-        assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameterU8::new( b"restriction", b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_vec() )) );
-        assert_eq!( &restrictions_section(&sighter_star), b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
+        assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_string() )) );
+        assert_eq!( &restrictions_section(&sighter_star), "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
     }
 
     #[test]
     fn restriction_rarity_2() {
         let babies_first = Stage::new("s 375 0").unwrap();
-        assert_eq!( restrictions_info (&babies_first), Some(TemplateParameterU8::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_vec() )) );
-        assert_eq!( &restrictions_section(&babies_first), b"Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
+        assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_string() )) );
+        assert_eq!( &restrictions_section(&babies_first), "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
     }
 
     #[test]
@@ -282,22 +280,22 @@ mod tests {
         println!("{}", String::from(restrictions_info(&somolon).unwrap()));
         assert_eq!(
             restrictions_info(&somolon),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Rarity: Only [[:Category:Special Cats|Special]]".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Rarity: Only [[:Category:Special Cats|Special]]".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&somolon),
-            b"Rarity: Only [[:Category:Special Cats|Special]]"
+            "Rarity: Only [[:Category:Special Cats|Special]]"
         );
     }
 
     #[test]
     fn restriction_rarity_4() {
         let wahwah = Stage::new("s 158 0").unwrap();
-        assert_eq!( restrictions_info (&wahwah), Some(TemplateParameterU8::new( b"restriction", b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_vec() )) );
-        assert_eq!( &restrictions_section(&wahwah), b"Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
+        assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_string() )) );
+        assert_eq!( &restrictions_section(&wahwah), "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
     }
 
     #[test]
@@ -305,14 +303,14 @@ mod tests {
         let wrath_w_cyclone = Stage::new("s 176 0").unwrap();
         assert_eq!(
             restrictions_info(&wrath_w_cyclone),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Max # of Deployable Cats: 10".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Max # of Deployable Cats: 10".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&wrath_w_cyclone),
-            b"Max # of Deployable Cats: 10"
+            "Max # of Deployable Cats: 10"
         );
     }
 
@@ -321,12 +319,12 @@ mod tests {
         let uranus = Stage::new("cotc 2 7").unwrap();
         assert_eq!(
             restrictions_info(&uranus),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Deploy from Row 1 only".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Deploy from Row 1 only".to_string()
             ))
         );
-        assert_eq!(&restrictions_section(&uranus), b"Deploy from Row 1 only");
+        assert_eq!(&restrictions_section(&uranus), "Deploy from Row 1 only");
     }
 
     #[test]
@@ -334,14 +332,14 @@ mod tests {
         let saturn = Stage::new("cotc 2 3").unwrap();
         assert_eq!(
             restrictions_info(&saturn),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Cat Deploy Cost: Only 300\xA2 or more".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Cat Deploy Cost: Only 300¢ or more".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&saturn),
-            b"Cat Deploy Cost: Only 300\xA2 or more"
+            "Cat Deploy Cost: Only 300¢ or more"
         );
     }
 
@@ -350,14 +348,14 @@ mod tests {
         let skelling = Stage::new("cotc 2 40").unwrap();
         assert_eq!(
             restrictions_info(&skelling),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Cat Deploy Cost: Only 1,200\xA2 or more".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Cat Deploy Cost: Only 1,200¢ or more".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&skelling),
-            b"Cat Deploy Cost: Only 1,200\xA2 or more"
+            "Cat Deploy Cost: Only 1,200¢ or more"
         );
     }
 
@@ -366,14 +364,14 @@ mod tests {
         let buutara = Stage::new("cotc 1 27").unwrap();
         assert_eq!(
             restrictions_info(&buutara),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Cat Deploy Cost: Only 1,200\xA2 or less".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Cat Deploy Cost: Only 1,200¢ or less".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&buutara),
-            b"Cat Deploy Cost: Only 1,200\xA2 or less"
+            "Cat Deploy Cost: Only 1,200¢ or less"
         );
     }
 
@@ -382,14 +380,14 @@ mod tests {
         let catseye_nebula = Stage::new("cotc 1 13").unwrap();
         assert_eq!(
             restrictions_info(&catseye_nebula),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Cat Deploy Cost: Only 4,000\xA2 or less".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Cat Deploy Cost: Only 4,000¢ or less".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&catseye_nebula),
-            b"Cat Deploy Cost: Only 4,000\xA2 or less"
+            "Cat Deploy Cost: Only 4,000¢ or less"
         );
     }
 
@@ -399,14 +397,14 @@ mod tests {
         println!("{}", String::from(restrictions_info(&finale).unwrap()));
         assert_eq!(
             restrictions_info(&finale),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Unit Restriction: Only [[Cat (Normal Cat)|Cat]]".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Unit Restriction: Only [[Cat (Normal Cat)|Cat]]".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&finale),
-            b"Unit Restriction: Only [[Cat (Normal Cat)|Cat]]"
+            "Unit Restriction: Only [[Cat (Normal Cat)|Cat]]"
         );
     }
 
@@ -415,14 +413,14 @@ mod tests {
         let final_race = Stage::new("c 179 0").unwrap();
         assert_eq!(
             restrictions_info(&final_race),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&final_race),
-            b"Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]"
+            "Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]"
         );
     }
 
@@ -431,14 +429,14 @@ mod tests {
         let sorry = Stage::new("c 178 4").unwrap();
         assert_eq!(
             restrictions_info(&sorry),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]<br>\n[[No Continues]]".to_vec()
+            Some(TemplateParameter::new(
+                "restriction",
+                "Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]<br>\n[[No Continues]]".to_string()
             ))
         );
         assert_eq!(
             &restrictions_section(&sorry),
-            b"Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]"
+            "Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]"
         );
     }
 
@@ -447,22 +445,18 @@ mod tests {
         let black_hole = Stage::new("cotc 2 46").unwrap();
         assert_eq!(
             restrictions_info(&black_hole),
-            Some(TemplateParameterU8::new(
-                b"restriction",
-                b"Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], \
+            Some(TemplateParameter::new(
+                "restriction",
+                "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], \
                 [[:Category:Uber Rare Cats|Uber Rare]] and \
                 [[:Category:Legend Rare Cats|Legend Rare]]<br>\n\
                 Max # of Deployable Cats: 10"
-                    .to_vec()
+                    .to_string()
             ))
-        );
-        println!(
-            "{}",
-            String::from_utf8(restrictions_section(&black_hole)).unwrap()
         );
         assert_eq!(
             restrictions_section(&black_hole),
-            b"*Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]\n\
+            "*Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]\n\
             *Max # of Deployable Cats: 10"
         );
     }
