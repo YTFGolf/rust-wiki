@@ -73,8 +73,8 @@ fn do_thing_internal() {
         }
 
         let new_buf = match node.content {
-            "enemies_appearing" => internal::enemies_appearing(&stage),
-            "intro" => internal::intro(&stage, &stage_wiki_data),
+            "enemies_appearing" => internal::enemies_appearing(&stage).as_bytes().to_vec(),
+            "intro" => internal::intro(&stage, &stage_wiki_data).as_bytes().to_vec(),
             "stage_name" => internal::stage_name(&stage).to_u8s(),
             "stage_location" => internal::stage_location(&stage).to_u8s(),
             "energy" => internal::energy(&stage)

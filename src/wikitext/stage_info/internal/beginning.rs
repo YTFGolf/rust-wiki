@@ -8,12 +8,12 @@ use crate::{
         wiki_utils::{extract_name, REGEXES},
     },
 };
-use std::{collections::HashSet, io::Write};
+use std::{collections::HashSet, fmt::Write};
 
 /// Get the enemies appearing line.
-pub fn enemies_appearing(stage: &Stage) -> Vec<u8> {
-    let mut buf: Vec<u8> = vec![];
-    buf.write(b"{{EnemiesAppearing").unwrap();
+pub fn enemies_appearing(stage: &Stage) -> String {
+    let mut buf = "".to_string();
+    buf.write_str("{{EnemiesAppearing").unwrap();
 
     let mut displayed = HashSet::new();
     let enemies = stage
@@ -24,14 +24,14 @@ pub fn enemies_appearing(stage: &Stage) -> Vec<u8> {
     for enemy in enemies {
         write!(buf, "|{}", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
     }
-    buf.write(b"}}").unwrap();
+    buf.write_str("}}").unwrap();
 
     buf
 }
 
 /// Get the "{stage} is the nth stage in {map}." line.
-pub fn intro(stage: &Stage, data: &StageWikiData) -> Vec<u8> {
-    let mut buf: Vec<u8> = vec![];
+pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
+    let mut buf = "".to_string();
     if stage.meta.type_enum == StageTypeEnum::RankingDojo {
         write!(
             buf,
@@ -54,7 +54,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> Vec<u8> {
     let num = stage.meta.stage_num;
     match (num, data.stage_map.get(num + 1)) {
         (0, None) => {
-            buf.write(b"only").unwrap();
+            buf.write_str("only").unwrap();
         }
         (n, next) => {
             write!(
@@ -89,7 +89,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> Vec<u8> {
     .unwrap();
 
     if stage.is_no_continues {
-        buf.write(b" This is a [[No Continues]] stage.").unwrap();
+        buf.write_str(" This is a [[No Continues]] stage.").unwrap();
     }
 
     buf
@@ -129,26 +129,26 @@ mod tests {
         let crazed_cat = Stage::new("s 17 0").unwrap();
         let buf = enemies_appearing(&crazed_cat);
         assert_eq!(
-            buf,
-            b"{{EnemiesAppearing|Le'boin|Teacher Bear|Doge|Snache|Croco|Crazed Cat}}"
+            &buf,
+            "{{EnemiesAppearing|Le'boin|Teacher Bear|Doge|Snache|Croco|Crazed Cat}}"
         );
         // normal
 
         let tada = Stage::new("ex 63 0").unwrap();
         let buf = enemies_appearing(&tada);
-        assert_eq!(buf, b"{{EnemiesAppearing}}");
+        assert_eq!(&buf, "{{EnemiesAppearing}}");
         // blank
 
         let not_alone = Stage::new("c 176 4").unwrap();
         let buf = enemies_appearing(&not_alone);
-        assert_eq!(buf, b"{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
+        assert_eq!(&buf, "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
         // charlotte
 
         let star_ocean = Stage::new("sol 15 7").unwrap();
         let buf = enemies_appearing(&star_ocean);
         assert_eq!(
-            buf,
-            b"{{EnemiesAppearing|Doge|Those Guys|Doge Dark|H. Nah}}"
+            &buf,
+            "{{EnemiesAppearing|Doge|Those Guys|Doge Dark|H. Nah}}"
         );
         // doge dark has multiple entries in enemies_list
     }
@@ -158,36 +158,36 @@ mod tests {
         let ht30 = Stage::new("v 0 29").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&ht30);
         let buf = intro(&ht30, &stage_wiki_data);
-        assert_eq!(buf, b"'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
+        assert_eq!(&buf, "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
         // tower; no continues
 
         let whole_new = Stage::new("zl 0 0").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&whole_new);
         let buf = intro(&whole_new, &stage_wiki_data);
-        assert_eq!(buf, b"'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
+        assert_eq!(&buf, "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
         // only
 
         let earthshaker = Stage::new("sol 0 0").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&earthshaker);
         let buf = intro(&earthshaker, &stage_wiki_data);
         assert_eq!(
-            buf,
-            b"'''Earthshaker''' is the first stage in [[The Legend Begins]]."
+            &buf,
+            "'''Earthshaker''' is the first stage in [[The Legend Begins]]."
         );
         // normal stage
 
         let refusal_type = Stage::new("c 206 1").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&refusal_type);
         let buf = intro(&refusal_type, &stage_wiki_data);
-        assert_eq!(buf, b"'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
+        assert_eq!(&buf, "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
         // ! in map name; final
 
         let crimson_trial = Stage::new("r 20 0").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&crimson_trial);
         let buf = intro(&crimson_trial, &stage_wiki_data);
         assert_eq!(
-            buf,
-            b"'''Crimson Trial''' is the 21st [[Arena of Honor]] of the [[Catclaw Dojo]]."
+            &buf,
+            "'''Crimson Trial''' is the 21st [[Arena of Honor]] of the [[Catclaw Dojo]]."
         );
         // arena of honor
     }
