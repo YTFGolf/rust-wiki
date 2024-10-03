@@ -2,15 +2,15 @@
 
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
-    wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameterU8},
+    wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
-use std::io::Write;
+use std::fmt::Write;
 
 /// Get the `|stage name` parameter.
-pub fn stage_name(stage: &Stage) -> TemplateParameterU8 {
-    let mut buf: Vec<u8> = vec![];
+pub fn stage_name(stage: &Stage) -> TemplateParameter {
+    let mut buf = "".to_string();
 
     match stage.anim_base_id {
         None => write!(buf, "[[File:rc{base_id:03}.png]]", base_id = stage.base_id).unwrap(),
@@ -37,12 +37,12 @@ pub fn stage_name(stage: &Stage) -> TemplateParameterU8 {
     .unwrap();
     // stage name part
 
-    TemplateParameterU8::new(b"stage name", buf)
+    TemplateParameter::new("stage name", buf)
 }
 
 /// Get the `|stage location` parameter.
-pub fn stage_location(stage: &Stage) -> TemplateParameterU8 {
-    let mut buf = vec![];
+pub fn stage_location(stage: &Stage) -> TemplateParameter {
+    let mut buf = "".to_string();
     write!(
         &mut buf,
         "[[File:Mapname{map_num:03} {type_code} en.png]]",
@@ -50,41 +50,41 @@ pub fn stage_location(stage: &Stage) -> TemplateParameterU8 {
         type_code = stage.meta.type_code.to_lowercase(),
     )
     .unwrap();
-    TemplateParameterU8::new(b"stage location", buf)
+    TemplateParameter::new("stage location", buf)
 }
 
 /// Get the `|energy` parameter.
-pub fn energy(stage: &Stage) -> Option<TemplateParameterU8> {
+pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     let energy = stage.energy?;
-    let mut buf = vec![];
+    let mut buf = "".to_string();
     match stage.meta.type_enum {
         StageTypeEnum::Catamin | StageTypeEnum::Extra => {
-            let _ = buf.write(b"N/A").unwrap();
+            let _ = buf.write_str("N/A").unwrap();
         }
         _ => {
             let _ = buf.write_formatted(&energy, &Locale::en).unwrap();
         }
     };
 
-    Some(TemplateParameterU8::new(b"energy", buf))
+    Some(TemplateParameter::new("energy", buf))
 }
 
 /// Get the `|enemy castle hp` parameters.
-pub fn base_hp(stage: &Stage) -> Vec<TemplateParameterU8> {
-    const PARAM_NAME: &[u8] = b"enemy castle hp";
-    const PARAM_NAME_2: &[u8] = b"enemy castle hp2";
-    const PARAM_NAME_3: &[u8] = b"enemy castle hp3";
-    const PARAM_NAME_4: &[u8] = b"enemy castle hp4";
+pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
+    const PARAM_NAME: &str = "enemy castle hp";
+    const PARAM_NAME_2: &str = "enemy castle hp2";
+    const PARAM_NAME_3: &str = "enemy castle hp3";
+    const PARAM_NAME_4: &str = "enemy castle hp4";
 
     if stage.time_limit.is_some() {
-        return vec![TemplateParameterU8::new(PARAM_NAME, b"Unlimited".to_vec())];
+        return vec![TemplateParameter::new(PARAM_NAME, "Unlimited".to_string())];
     }
     // Dojo
     if stage.anim_base_id.is_none() {
-        let mut buf = vec![];
+        let mut buf = "".to_string();
         buf.write_formatted(&stage.base_hp, &Locale::en).unwrap();
-        buf.write(b" HP").unwrap();
-        return vec![TemplateParameterU8::new(PARAM_NAME, buf)];
+        buf.write_str(" HP").unwrap();
+        return vec![TemplateParameter::new(PARAM_NAME, buf)];
     }
 
     let anim_base_id = <u32>::from(stage.anim_base_id.unwrap()) - 2;
@@ -106,18 +106,18 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameterU8> {
 
     let magnification_hp = mag * base_hp / 100;
     if stage.crown_data.is_none() {
-        let mut buf = vec![];
+        let mut buf = "".to_string();
         buf.write_formatted(&magnification_hp, &Locale::en).unwrap();
-        buf.write(b" HP").unwrap();
-        return vec![TemplateParameterU8::new(PARAM_NAME, buf)];
+        buf.write_str(" HP").unwrap();
+        return vec![TemplateParameter::new(PARAM_NAME, buf)];
     }
 
     let mut params = vec![];
     let get_new_param = |key, value| {
-        let mut buf = vec![];
+        let mut buf = "".to_string();
         buf.write_formatted(&value, &Locale::en).unwrap();
-        buf.write(b" HP").unwrap();
-        TemplateParameterU8::new(key, buf)
+        buf.write_str(" HP").unwrap();
+        TemplateParameter::new(key, buf)
     };
 
     let crown_data = stage.crown_data.as_ref().unwrap();
@@ -158,13 +158,13 @@ mod tests {
     #[test]
     fn test_stage_name_and_loc() {
         let great_escaper = Stage::new("n 17 5").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(stage_name(&great_escaper).to_u8s());
-        buf.write(b"\n").unwrap();
-        buf.extend(stage_location(&great_escaper).to_u8s());
+        let mut buf = "".to_string();
+        buf.write_str(&stage_name(&great_escaper).to_string()).unwrap();
+        buf.write_str("\n").unwrap();
+        buf.write_str(&stage_location(&great_escaper).to_string()).unwrap();
         assert_eq!(
             buf,
-            b"\
+            "\
             |stage name = [[File:rc006.png]]\n\
             [[File:Mapsn017 05 n en.png]]\n\
             |stage location = [[File:Mapname017 n en.png]]\
@@ -172,13 +172,13 @@ mod tests {
         );
 
         let red_summit = Stage::new("h 10 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(stage_name(&red_summit).to_u8s());
-        buf.write(b"\n").unwrap();
-        buf.extend(stage_location(&red_summit).to_u8s());
+        let mut buf = "".to_string();
+        buf.write_str(&stage_name(&red_summit).to_string()).unwrap();
+        buf.write_str("\n").unwrap();
+        buf.write_str(&stage_location(&red_summit).to_string()).unwrap();
         assert_eq!(
             buf,
-            b"\
+            "\
             |stage name = [[File:rc002.png]]\n\
             [[File:Mapsn010 00 h en.png]]\n\
             |stage location = [[File:Mapname010 h en.png]]\
@@ -186,13 +186,13 @@ mod tests {
         );
 
         let finale = Stage::new("c 209 0").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(stage_name(&finale).to_u8s());
-        buf.write(b"\n").unwrap();
-        buf.extend(stage_location(&finale).to_u8s());
+        let mut buf = "".to_string();
+        buf.write_str(&stage_name(&finale).to_string()).unwrap();
+        buf.write_str("\n").unwrap();
+        buf.write_str(&stage_location(&finale).to_string()).unwrap();
         assert_eq!(
             buf,
-            b"\
+            "\
             |stage name = [[File:E 651.png]]\n\
             [[File:Mapsn209 00 c en.png]]\n\
             |stage location = [[File:Mapname209 c en.png]]\
@@ -200,11 +200,11 @@ mod tests {
         );
 
         let relay_1600m = Stage::new("ex 61 2").unwrap();
-        let mut buf: Vec<u8> = vec![];
-        buf.extend(stage_name(&relay_1600m).to_u8s());
+        let mut buf = "".to_string();
+        buf.write_str(&stage_name(&relay_1600m).to_string()).unwrap();
         assert_eq!(
             buf,
-            b"\
+            "\
             |stage name = [[File:E 657.png|250px]]\n\
             [[File:Mapsn061 02 ex en.png]]\
             "
@@ -216,7 +216,7 @@ mod tests {
         let aac = Stage::new("ul 0 0").unwrap();
         assert_eq!(
             energy(&aac),
-            Some(TemplateParameterU8::new(b"energy", b"200".to_vec()))
+            Some(TemplateParameter::new("energy", "200".to_string()))
         );
     }
 
@@ -225,7 +225,7 @@ mod tests {
         let challenge = Stage::new("challenge 0 0").unwrap();
         assert_eq!(
             energy(&challenge),
-            Some(TemplateParameterU8::new(b"energy", b"0".to_vec()))
+            Some(TemplateParameter::new("energy", "0".to_string()))
         );
     }
 
@@ -234,7 +234,7 @@ mod tests {
         let door_opens = Stage::new("ex 47 0").unwrap();
         assert_eq!(
             energy(&door_opens),
-            Some(TemplateParameterU8::new(b"energy", b"N/A".to_vec()))
+            Some(TemplateParameter::new("energy", "N/A".to_string()))
         );
     }
 
@@ -243,7 +243,7 @@ mod tests {
         let facing_danger = Stage::new("b 5 0").unwrap();
         assert_eq!(
             energy(&facing_danger),
-            Some(TemplateParameterU8::new(b"energy", b"N/A".to_vec()))
+            Some(TemplateParameter::new("energy", "N/A".to_string()))
         );
     }
 
@@ -252,7 +252,7 @@ mod tests {
         let mining_epic = Stage::new("s 326 0").unwrap();
         assert_eq!(
             energy(&mining_epic),
-            Some(TemplateParameterU8::new(b"energy", b"1,000".to_vec()))
+            Some(TemplateParameter::new("energy", "1,000".to_string()))
         );
     }
 
@@ -267,9 +267,9 @@ mod tests {
         let ht30 = Stage::new("v 0 29").unwrap();
         assert_eq!(
             base_hp(&ht30),
-            vec![TemplateParameterU8::new(
-                b"enemy castle hp",
-                b"1,000,000 HP".to_vec()
+            vec![TemplateParameter::new(
+                "enemy castle hp",
+                "1,000,000 HP".to_string()
             )]
         );
     }
@@ -279,9 +279,9 @@ mod tests {
         let dojo = Stage::new("t 0 0").unwrap();
         assert_eq!(
             base_hp(&dojo),
-            vec![TemplateParameterU8::new(
-                b"enemy castle hp",
-                b"Unlimited".to_vec()
+            vec![TemplateParameter::new(
+                "enemy castle hp",
+                "Unlimited".to_string()
             )]
         );
     }
@@ -293,9 +293,9 @@ mod tests {
         assert_eq!(just_friends.base_hp, 10);
         assert_eq!(
             base_hp(&just_friends),
-            vec![TemplateParameterU8::new(
-                b"enemy castle hp",
-                b"30,000 HP".to_vec()
+            vec![TemplateParameter::new(
+                "enemy castle hp",
+                "30,000 HP".to_string()
             )]
         );
 
@@ -303,9 +303,9 @@ mod tests {
         assert_eq!(finale.base_hp, 1_000);
         assert_eq!(
             base_hp(&finale),
-            vec![TemplateParameterU8::new(
-                b"enemy castle hp",
-                b"50 HP".to_vec()
+            vec![TemplateParameter::new(
+                "enemy castle hp",
+                "50 HP".to_string()
             )]
         );
     }
@@ -317,10 +317,10 @@ mod tests {
         assert_eq!(
             base_hp(&rongorongo),
             vec![
-                TemplateParameterU8::new(b"enemy castle hp", b"300,000 HP".to_vec()),
-                TemplateParameterU8::new(b"enemy castle hp2", b"450,000 HP".to_vec()),
-                TemplateParameterU8::new(b"enemy castle hp3", b"600,000 HP".to_vec()),
-                TemplateParameterU8::new(b"enemy castle hp4", b"900,000 HP".to_vec()),
+                TemplateParameter::new("enemy castle hp", "300,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp2", "450,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp3", "600,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp4", "900,000 HP".to_string()),
             ]
         );
     }
@@ -332,9 +332,9 @@ mod tests {
         assert_eq!(
             base_hp(&pile_of_guts),
             vec![
-                TemplateParameterU8::new(b"enemy castle hp", b"1,200,000 HP".to_vec()),
-                TemplateParameterU8::new(b"enemy castle hp2", b"1,560,000 HP".to_vec()),
-                TemplateParameterU8::new(b"enemy castle hp3", b"2,040,000 HP".to_vec()),
+                TemplateParameter::new("enemy castle hp", "1,200,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp2", "1,560,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp3", "2,040,000 HP".to_string()),
             ]
         );
         // As of 13.6 this is the only stage where base hp != actual stat and

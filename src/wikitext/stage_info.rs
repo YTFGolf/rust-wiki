@@ -75,14 +75,14 @@ fn do_thing_internal() {
         let new_buf = match node.content {
             "enemies_appearing" => internal::enemies_appearing(&stage).as_bytes().to_vec(),
             "intro" => internal::intro(&stage, &stage_wiki_data).as_bytes().to_vec(),
-            "stage_name" => internal::stage_name(&stage).to_u8s(),
-            "stage_location" => internal::stage_location(&stage).to_u8s(),
+            "stage_name" => internal::stage_name(&stage).to_string().as_bytes().to_vec(),
+            "stage_location" => internal::stage_location(&stage).to_string().as_bytes().to_vec(),
             "energy" => internal::energy(&stage)
-                .map(|param| param.to_u8s())
+                .map(|param| param.to_string().as_bytes().to_vec())
                 .unwrap_or(b"".to_vec()),
             "base_hp" => internal::base_hp(&stage)
                 .into_iter()
-                .map(|p| p.to_u8s())
+                .map(|p| p.to_string().as_bytes().to_vec())
                 .collect::<Vec<Vec<u8>>>()
                 .join(&b"\n"[..]),
             "enemies_list" => internal::enemies_list(&stage)
