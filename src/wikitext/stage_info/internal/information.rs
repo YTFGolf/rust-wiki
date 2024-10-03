@@ -159,9 +159,11 @@ mod tests {
     fn test_stage_name_and_loc() {
         let great_escaper = Stage::new("n 17 5").unwrap();
         let mut buf = "".to_string();
-        buf.write_str(&stage_name(&great_escaper).to_string()).unwrap();
+        buf.write_str(&stage_name(&great_escaper).to_string())
+            .unwrap();
         buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&great_escaper).to_string()).unwrap();
+        buf.write_str(&stage_location(&great_escaper).to_string())
+            .unwrap();
         assert_eq!(
             buf,
             "\
@@ -175,7 +177,8 @@ mod tests {
         let mut buf = "".to_string();
         buf.write_str(&stage_name(&red_summit).to_string()).unwrap();
         buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&red_summit).to_string()).unwrap();
+        buf.write_str(&stage_location(&red_summit).to_string())
+            .unwrap();
         assert_eq!(
             buf,
             "\
@@ -201,7 +204,8 @@ mod tests {
 
         let relay_1600m = Stage::new("ex 61 2").unwrap();
         let mut buf = "".to_string();
-        buf.write_str(&stage_name(&relay_1600m).to_string()).unwrap();
+        buf.write_str(&stage_name(&relay_1600m).to_string())
+            .unwrap();
         assert_eq!(
             buf,
             "\

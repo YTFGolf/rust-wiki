@@ -189,22 +189,10 @@ mod tests {
             vec![
                 TemplateParameter::new("enemies", "{{Magnification|Relic Doge|100%}}".to_string()),
                 TemplateParameter::new("boss", "{{Magnification|Relic Bun-Bun|100%}}".to_string()),
-                TemplateParameter::new(
-                    "enemies2",
-                    "{{Magnification|Relic Doge|150%}}".to_string()
-                ),
-                TemplateParameter::new(
-                    "boss2",
-                    "{{Magnification|Relic Bun-Bun|150%}}".to_string()
-                ),
-                TemplateParameter::new(
-                    "enemies3",
-                    "{{Magnification|Relic Doge|200%}}".to_string()
-                ),
-                TemplateParameter::new(
-                    "boss3",
-                    "{{Magnification|Relic Bun-Bun|200%}}".to_string()
-                ),
+                TemplateParameter::new("enemies2", "{{Magnification|Relic Doge|150%}}".to_string()),
+                TemplateParameter::new("boss2", "{{Magnification|Relic Bun-Bun|150%}}".to_string()),
+                TemplateParameter::new("enemies3", "{{Magnification|Relic Doge|200%}}".to_string()),
+                TemplateParameter::new("boss3", "{{Magnification|Relic Bun-Bun|200%}}".to_string()),
             ]
         );
     }
@@ -650,7 +638,5 @@ mod tests {
                 TemplateParameter::new("boss3", "{{Magnification|THE SLOTH|680%}}".to_string()),
             ]
         );
-
-        // println!("{:?}", enemies_list(&it_25).into_iter().map(String::from).collect::<Vec<_>>());
     }
 }

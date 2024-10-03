@@ -76,8 +76,7 @@ fn do_thing_internal() {
             "enemies_appearing" => internal::enemies_appearing(&stage),
             "intro" => internal::intro(&stage, &stage_wiki_data),
             "stage_name" => internal::stage_name(&stage).to_string(),
-            "stage_location" => internal::stage_location(&stage)
-                .to_string(),
+            "stage_location" => internal::stage_location(&stage).to_string(),
             "energy" => internal::energy(&stage)
                 .map(|param| param.to_string())
                 .unwrap_or("".to_string()),
@@ -110,9 +109,7 @@ fn do_thing_internal() {
     let buf = Regex::new(r"\n+(\||\}\})")
         .unwrap()
         .replace_all(&buf, "\n$1");
-    let buf = Regex::new(r"\n==.*==\n\n")
-        .unwrap()
-        .replace_all(&buf, "");
+    let buf = Regex::new(r"\n==.*==\n\n").unwrap().replace_all(&buf, "");
 
     println!("{}", buf);
 }
