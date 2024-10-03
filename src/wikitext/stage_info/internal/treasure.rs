@@ -174,7 +174,6 @@ mod tests {
     #[test]
     fn once_then_many() {
         let merciless_xp = Stage::new("s 155 0").unwrap();
-        println!("{:?}", String::from(treasure(&merciless_xp).unwrap()));
         assert_eq!(
             treasure(&merciless_xp),
             Some(TemplateParameter::new(
@@ -191,7 +190,6 @@ mod tests {
     #[test]
     fn many_unlimited() {
         let jubilee_night = Stage::new("ex 1 0").unwrap();
-        println!("{:?}", String::from(treasure(&jubilee_night).unwrap()));
         assert_eq!(
             treasure(&jubilee_night),
             Some(TemplateParameter::new(
@@ -221,7 +219,6 @@ mod tests {
     #[test]
     fn guaranteed_once_many() {
         let it29 = Stage::new("v 6 28").unwrap();
-        println!("{:?}", String::from(treasure(&it29).unwrap()));
         assert_eq!(
             treasure(&it29),
             Some(TemplateParameter::new(

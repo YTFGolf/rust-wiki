@@ -277,7 +277,6 @@ mod tests {
     #[test]
     fn restriction_rarity_3() {
         let somolon = Stage::new("cotc 3 37").unwrap();
-        println!("{}", String::from(restrictions_info(&somolon).unwrap()));
         assert_eq!(
             restrictions_info(&somolon),
             Some(TemplateParameter::new(
@@ -394,7 +393,6 @@ mod tests {
     #[test]
     fn restriction_only_cat() {
         let finale = Stage::new("c 209 0").unwrap();
-        println!("{}", String::from(restrictions_info(&finale).unwrap()));
         assert_eq!(
             restrictions_info(&finale),
             Some(TemplateParameter::new(
