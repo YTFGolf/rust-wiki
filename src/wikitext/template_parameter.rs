@@ -1,34 +1,6 @@
 //! Defines a template parameter class.
 
-use std::{fmt::Write, io::Write as uncoolWrite};
-
-#[derive(Debug, PartialEq)]
-/// Representation of a wikitext template parameter. Legacy implementation.
-pub struct TemplateParameterU8 {
-    key: &'static [u8],
-    value: Vec<u8>,
-}
-// maybe key and value could be generic args but that's for later.
-impl TemplateParameterU8 {
-    /// Create a parameter.
-    pub fn new(key: &'static [u8], value: Vec<u8>) -> TemplateParameterU8 {
-        Self { key, value }
-    }
-    /// Convert object to a vec of u8s.
-    pub fn to_u8s(&self) -> Vec<u8> {
-        let mut buf = vec![];
-        for value in [b"|", self.key, b" = ", &self.value] {
-            buf.write(value).unwrap();
-        }
-        buf
-    }
-}
-
-impl From<TemplateParameterU8> for String {
-    fn from(value: TemplateParameterU8) -> Self {
-        String::from_utf8(value.to_u8s()).unwrap()
-    }
-}
+use std::fmt::Write;
 
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template parameter.
@@ -75,11 +47,11 @@ if type == "opt":
 else:
     indent = 5
 lines = get_lines()
-for key, value in re.findall(r'\|(\w+) = ((?:.|\n)*?)(?=\n\||$)', lines):
+for key, value in re.findall(r'\|([\w ]+) = ((?:.|\n)*?)(?=\n\||$)', lines):
     value = value.replace('\n', "\\n\\" + f"\n{' ' * indent * 4}")
     if type == "opt":
-        print(f'Some(TemplateParameter::new(b"{key}", b"{value}".to_vec()))')
+        print(f'Some(TemplateParameter::new("{key}", "{value}".to_string()))')
     else:
-        print(f'TemplateParameter::new(b"{key}", b"{value}".to_vec()),')
+        print(f'TemplateParameter::new("{key}", "{value}".to_string()),')
 
 */
