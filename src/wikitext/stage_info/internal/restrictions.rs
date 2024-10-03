@@ -187,7 +187,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
                 return None;
             }
             return Some(TemplateParameter::new(
-                &PARAM_NAME,
+                PARAM_NAME,
                 "[[No Continues]]".to_string(),
             ));
         }

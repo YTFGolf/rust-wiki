@@ -59,10 +59,10 @@ pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     let mut buf = "".to_string();
     match stage.meta.type_enum {
         StageTypeEnum::Catamin | StageTypeEnum::Extra => {
-            let _ = buf.write_str("N/A").unwrap();
+            buf.write_str("N/A").unwrap();
         }
         _ => {
-            let _ = buf.write_formatted(&energy, &Locale::en).unwrap();
+            buf.write_formatted(&energy, &Locale::en).unwrap();
         }
     };
 

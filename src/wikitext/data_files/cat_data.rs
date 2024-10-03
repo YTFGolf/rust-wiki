@@ -33,7 +33,7 @@ pub struct CatDataContainer {
 impl CatDataContainer {
     /// Get cat data from wiki ID.
     pub fn get_cat(&self, id: u32) -> &CatName {
-        return &self.names[id as usize];
+        &self.names[id as usize]
     }
 
     /// Get cat link from wiki ID.
