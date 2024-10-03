@@ -72,6 +72,22 @@ fn all_unlimited(rewards: &StageRewards) -> String {
     buf
 }
 
+fn single_raw(rewards: &StageRewards) -> String {
+    let t = &rewards.treasure_drop;
+    assert_eq!(t.len(), 1);
+    if t[0].item_chance == 0 {
+        return "".to_string();
+    }
+
+    todo!();
+    // let mut buf = "".to_string();
+    // buf.write_str("- ").unwrap();
+    // write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
+    // write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
+
+    // buf
+}
+
 /// When treasure type is that a treasure is guaranteed but can only be received
 /// once.
 fn guaranteed_once(rewards: &StageRewards) -> String {
@@ -122,13 +138,16 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
     let treasure_text = match rewards.treasure_type {
         T::OnceThenUnlimited => once_then_unlimited(rewards),
         T::AllUnlimited => all_unlimited(rewards),
-        // -1 => TreasureType::UnclearMaybeRaw,
+        T::UnclearMaybeRaw => single_raw(rewards),
         T::GuaranteedOnce => guaranteed_once(rewards),
         T::GuaranteedUnlimited => guaranteed_unlimited(rewards),
-        _ => todo!(),
     };
 
-    Some(TemplateParameter::new("treasure", treasure_text))
+    if treasure_text.is_empty() {
+        None
+    } else {
+        Some(TemplateParameter::new("treasure", treasure_text))
+    }
 }
 
 /// Get the `score reward` section of Stage Info.
@@ -157,6 +176,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::data::map::map_data::csv_types::TreasureCSV;
 
     #[test]
     fn once_then_nothing() {
@@ -201,6 +221,24 @@ mod tests {
             ))
         );
         assert_eq!(score_rewards(&jubilee_night), None);
+    }
+
+    #[test]
+    fn treasure_radar() {
+        let round_4_trust_fund = Stage::new("sr 0 3").unwrap();
+        assert_eq!(
+            round_4_trust_fund.rewards,
+            Some(StageRewards {
+                treasure_type: T::UnclearMaybeRaw,
+                treasure_drop: vec![TreasureCSV {
+                    item_chance: 0,
+                    item_id: 1,
+                    item_amt: 1 // treasure radar with 0 chance
+                }],
+                score_rewards: vec![]
+            })
+        );
+        assert_eq!(treasure(&round_4_trust_fund), None);
     }
 
     #[test]
