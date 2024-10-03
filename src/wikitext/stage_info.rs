@@ -87,7 +87,7 @@ fn do_thing_internal() {
                 .join(&b"\n"[..]),
             "enemies_list" => internal::enemies_list(&stage)
                 .into_iter()
-                .map(|p| p.to_u8s())
+                .map(|p| p.to_string().as_bytes().to_vec())
                 .collect::<Vec<Vec<u8>>>()
                 .join(b"\n".as_slice()),
             "treasure" => internal::treasure(&stage)
