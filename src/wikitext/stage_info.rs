@@ -5,7 +5,7 @@ use super::data_files::stage_page_data::{MapData, StageData, STAGE_NAMES};
 use super::format_parser::{parse_si_format, ParseType};
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
-use std::io::Write;
+use std::fmt::Write;
 
 const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
@@ -53,7 +53,7 @@ fn do_thing_internal() {
     let format = DEFAULT_FORMAT;
     let parsed = parse_si_format(format);
 
-    let mut buf = vec![];
+    let mut buf = "".to_string();
     let stage = Stage::new("v 0 29").unwrap();
 
     let stage_map = STAGE_NAMES
@@ -68,53 +68,53 @@ fn do_thing_internal() {
 
     for node in parsed {
         if node.ptype == ParseType::Text {
-            buf.write(node.content.as_bytes()).unwrap();
+            buf.write_str(node.content).unwrap();
             continue;
         }
 
         let new_buf = match node.content {
-            "enemies_appearing" => internal::enemies_appearing(&stage).as_bytes().to_vec(),
-            "intro" => internal::intro(&stage, &stage_wiki_data).as_bytes().to_vec(),
-            "stage_name" => internal::stage_name(&stage).to_string().as_bytes().to_vec(),
-            "stage_location" => internal::stage_location(&stage).to_string().as_bytes().to_vec(),
+            "enemies_appearing" => internal::enemies_appearing(&stage),
+            "intro" => internal::intro(&stage, &stage_wiki_data),
+            "stage_name" => internal::stage_name(&stage).to_string(),
+            "stage_location" => internal::stage_location(&stage)
+                .to_string(),
             "energy" => internal::energy(&stage)
-                .map(|param| param.to_string().as_bytes().to_vec())
-                .unwrap_or(b"".to_vec()),
+                .map(|param| param.to_string())
+                .unwrap_or("".to_string()),
             "base_hp" => internal::base_hp(&stage)
                 .into_iter()
-                .map(|p| p.to_string().as_bytes().to_vec())
-                .collect::<Vec<Vec<u8>>>()
-                .join(&b"\n"[..]),
+                .map(|p| p.to_string())
+                .collect::<Vec<String>>()
+                .join("\n"),
             "enemies_list" => internal::enemies_list(&stage)
                 .into_iter()
-                .map(|p| p.to_string().as_bytes().to_vec())
-                .collect::<Vec<Vec<u8>>>()
-                .join(b"\n".as_slice()),
+                .map(|p| p.to_string())
+                .collect::<Vec<String>>()
+                .join("\n"),
             "treasure" => internal::treasure(&stage)
-                .map(|param| param.to_string().as_bytes().to_vec())
-                .unwrap_or(b"".to_vec()),
+                .map(|param| param.to_string())
+                .unwrap_or("".to_string()),
             "restrictions_info" => internal::restrictions_info(&stage)
-                .map(|param| param.to_string().as_bytes().to_vec())
-                .unwrap_or(b"".to_vec()),
+                .map(|param| param.to_string())
+                .unwrap_or("".to_string()),
             "score_rewards" => internal::score_rewards(&stage)
-                .map(|param| param.to_string().as_bytes().to_vec())
-                .unwrap_or(b"".to_vec()),
-            "restrictions_section" => internal::restrictions_section(&stage).as_bytes().to_vec(),
+                .map(|param| param.to_string())
+                .unwrap_or("".to_string()),
+            "restrictions_section" => internal::restrictions_section(&stage),
 
             _ => continue,
         };
-        buf.extend(new_buf.into_iter());
+        buf.write_str(&new_buf).unwrap();
     }
 
-    let string_buf = String::from_utf8(buf).unwrap();
-    let string_buf = Regex::new(r"\n+(\||\}\})")
+    let buf = Regex::new(r"\n+(\||\}\})")
         .unwrap()
-        .replace_all(&string_buf, "\n$1");
-    let string_buf = Regex::new(r"\n==.*==\n\n")
+        .replace_all(&buf, "\n$1");
+    let buf = Regex::new(r"\n==.*==\n\n")
         .unwrap()
-        .replace_all(&string_buf, "");
+        .replace_all(&buf, "");
 
-    println!("{}", string_buf);
+    println!("{}", buf);
 }
 
 /// temp
