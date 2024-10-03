@@ -1,6 +1,5 @@
 //! Deals with the stage's rewards.
 
-use std::fmt::Write;
 use crate::{
     data::{
         map::map_data::csv_types::TreasureType as T,
@@ -9,6 +8,7 @@ use crate::{
     wikitext::{data_files::rewards::TREASURE_DATA, template_parameter::TemplateParameter},
 };
 use num_format::{Locale, WriteFormatted};
+use std::fmt::Write;
 
 /// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
 fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
@@ -25,7 +25,7 @@ fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
 
 /// When treasure type is first item drops once then rest are all unlimited.
 fn once_then_unlimited(rewards: &StageRewards) -> String {
-    let mut buf :String= "".into();
+    let mut buf = "".to_string();
     let t = &rewards.treasure_drop;
 
     buf.write_str("- ").unwrap();
@@ -50,7 +50,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
 
 /// When treasure type is that all items have unlimited drop potential.
 fn all_unlimited(rewards: &StageRewards) -> String {
-    let mut buf :String= "".into();
+    let mut buf = "".to_string();
     let t = &rewards.treasure_drop;
 
     let mut total_allowed: f64 = 100.0;
@@ -75,7 +75,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
 /// When treasure type is that a treasure is guaranteed but can only be received
 /// once.
 fn guaranteed_once(rewards: &StageRewards) -> String {
-    let mut buf :String= "".into();
+    let mut buf = "".to_string();
     let t = &rewards.treasure_drop;
     if t.len() == 1 {
         buf.write_str("- ").unwrap();
@@ -96,7 +96,7 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
 /// When treasure type is that a treasure is guaranteed and the stage has
 /// unlimited drops.
 fn guaranteed_unlimited(rewards: &StageRewards) -> String {
-    let mut buf :String= "".into();
+    let mut buf = "".to_string();
     let t = &rewards.treasure_drop;
     if t.len() == 1 {
         todo!()
@@ -141,7 +141,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
     let scores = rewards
         .iter()
         .map(|r| {
-            let mut buf :String= "".into();
+            let mut buf = "".to_string();
             buf.write_str("'''").unwrap();
             buf.write_formatted(&r.score, &Locale::en).unwrap();
             buf.write_str("''': ").unwrap();
