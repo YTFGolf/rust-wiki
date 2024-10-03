@@ -1,6 +1,6 @@
 //! Defines a template parameter class.
 
-use std::fmt::Write;
+use std::fmt::Display;
 
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template parameter.
@@ -13,19 +13,15 @@ impl TemplateParameter {
     pub fn new(key: &'static str, value: String) -> TemplateParameter {
         Self { key, value }
     }
-    /// Get string representation of object.
-    pub fn to_string(&self) -> String {
-        let mut buf: String = "".into();
-        for value in ["|", self.key, " = ", &self.value] {
-            buf.write_str(value).unwrap();
-        }
-        buf
-    }
 }
-
-impl From<TemplateParameter> for String {
-    fn from(value: TemplateParameter) -> Self {
-        value.to_string()
+impl Display for TemplateParameter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Ok(write!(
+            f,
+            "|{key} = {value}",
+            key = self.key,
+            value = self.value
+        )?)
     }
 }
 
