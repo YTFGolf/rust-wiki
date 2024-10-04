@@ -119,7 +119,10 @@ fn do_thing_internal() {
                 .collect::<Vec<String>>()
                 .join("\n"),
             "restrictions_section" => internal::restrictions_section(&stage),
+            "battlegrounds" => internal::battlegrounds(&stage),
+            // "reference" => internal::reference(&stage),
 
+            // invalid => panic!("Variable {invalid:?} is not recognised!"),
             _ => continue,
         };
         buf.write_str(&new_buf).unwrap();

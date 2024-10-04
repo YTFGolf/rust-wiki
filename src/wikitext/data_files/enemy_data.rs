@@ -43,8 +43,9 @@ pub struct EnemyDataContainer {
     data: LazyLock<HashMap<u32, EnemyData>>,
 }
 impl EnemyDataContainer {
-    /// Get the name of an enemy based on their wiki id (Doge = 0).
-    pub fn get_name(&self, id: u32) -> &EnemyName {
+    /// Get the singular and plural names of an enemy based on their wiki id
+    /// (Doge = 0).
+    pub fn get_names(&self, id: u32) -> &EnemyName {
         &self.names[id as usize + 2]
     }
     /// Get the name of an enemy as used in Lua modules.

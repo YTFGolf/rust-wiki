@@ -23,7 +23,7 @@ impl From<u32> for BossType {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// Amount of the enemy that spawns.
 pub enum EnemyAmount {
     /// Infinite.
@@ -69,6 +69,7 @@ pub struct StageEnemy {
 }
 
 impl StageEnemy {
+    /// Create new StageEnemy out of raw data.
     pub fn new(old: StageEnemyCSV, anim_base_id: u32) -> Self {
         let id = old.num - 2;
         let amount = old.amt.into();
