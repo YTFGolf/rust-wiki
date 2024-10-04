@@ -19,15 +19,13 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
         enemies: Vec<&'a StageEnemy>,
         boss: Vec<&'a StageEnemy>,
     }
-    let anim_base_id = stage.anim_base_id.map(u32::from).unwrap_or(1);
-
     let mut enemy_list = EnemyListWithDupes {
         base: vec![],
         enemies: vec![],
         boss: vec![],
     };
     for enemy in stage.enemies.iter() {
-        if enemy.id + 2 == anim_base_id {
+        if enemy.is_base {
             enemy_list.base.push(enemy);
         } else if enemy.boss_type == BossType::None {
             enemy_list.enemies.push(enemy);

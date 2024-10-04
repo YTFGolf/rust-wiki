@@ -91,7 +91,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     let base_hp = ENEMY_DATA.get_data(anim_base_id).hp;
     let enemy_magnification = || {
         for enemy in &stage.enemies {
-            if enemy.id == anim_base_id {
+            if enemy.is_base {
                 return enemy.magnification;
             }
             // won't always be first enemy in stage e.g. clown bases so need to

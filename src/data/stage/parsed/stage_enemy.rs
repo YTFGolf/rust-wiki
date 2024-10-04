@@ -60,19 +60,21 @@ pub struct StageEnemy {
     pub layer: (u32, u32),
     /// Type of boss.
     pub boss_type: BossType,
+    /// Is this enemy an animated base.
+    pub is_base: bool,
     /// Either magnification or (hp, ap).
     pub magnification: Either<u32, (u32, u32)>,
     /// How many cats die before enemy appears.
     pub kill_count: Option<std::num::NonZeroU32>,
 }
 
-impl From<StageEnemyCSV> for StageEnemy {
-    fn from(value: StageEnemyCSV) -> Self {
-        let id = value.num - 2;
-        let amount = value.amt.into();
+impl StageEnemy {
+    pub fn new(old: StageEnemyCSV, anim_base_id: u32) -> Self {
+        let id = old.num - 2;
+        let amount = old.amt.into();
 
-        let start_frame = value.start_frame * 2;
-        let enforce_start_frame = match value.is_spawn_delay {
+        let start_frame = old.start_frame * 2;
+        let enforce_start_frame = match old.is_spawn_delay {
             None => false,
             Some(b) => match b {
                 0 => false,
@@ -81,13 +83,14 @@ impl From<StageEnemyCSV> for StageEnemy {
             },
         };
 
-        let respawn_time = (value.respawn_frame_min * 2, value.respawn_frame_max * 2);
-        let base_hp = value.base_hp;
-        let layer = (value.layer_min, value.layer_max);
-        let boss_type = value.boss_type.into();
+        let respawn_time = (old.respawn_frame_min * 2, old.respawn_frame_max * 2);
+        let base_hp = old.base_hp;
+        let layer = (old.layer_min, old.layer_max);
+        let boss_type = old.boss_type.into();
+        let is_base = old.num == anim_base_id;
 
-        let hpmag = value.magnification.unwrap_or(100);
-        let magnification = match value.attack_magnification {
+        let hpmag = old.magnification.unwrap_or(100);
+        let magnification = match old.attack_magnification {
             None => Left(hpmag),
             Some(a) => match a {
                 0 => Left(hpmag),
@@ -95,7 +98,7 @@ impl From<StageEnemyCSV> for StageEnemy {
             },
         };
 
-        let kill_count = std::num::NonZeroU32::new(value.kill_count.unwrap_or(0));
+        let kill_count = std::num::NonZeroU32::new(old.kill_count.unwrap_or(0));
 
         Self {
             id,
@@ -106,6 +109,7 @@ impl From<StageEnemyCSV> for StageEnemy {
             base_hp,
             layer,
             boss_type,
+            is_base,
             magnification,
             kill_count,
         }
