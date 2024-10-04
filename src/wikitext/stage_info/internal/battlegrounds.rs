@@ -14,7 +14,19 @@ pub fn battlegrounds(stage: &Stage) -> String {
     // Go through all enemies
     // sort into percentages (if >100 then goes in 100)
     // sort all percentages
-    todo!()
+
+    stage
+        .enemies
+        .iter()
+        .filter_map(|e| {
+            if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
+                None
+            } else {
+                Some(get_single_enemy_line(e, e.base_hp != 100, false))
+            }
+        })
+        .collect::<Vec<String>>()
+        .join("\n")
 }
 
 /// Matcher string for all enemy bases that should begin with "is a*n*" instead
@@ -24,12 +36,9 @@ const AN_ENEMY_MATCHER: &str = r"^([AEIOU]|11|18|8)";
 // just do edge cases described in The Battle Cats Wiki:Stage Structure
 // Page/Battlegrounds
 
-fn write_single_enemy(
-    buf: &mut String,
-    enemy: &StageEnemy,
-    is_base_hit: bool,
-    show_magnification: bool,
-) {
+fn get_single_enemy_line(enemy: &StageEnemy, is_base_hit: bool, show_magnification: bool) -> String {
+    let mut buf = "".to_string();
+
     if is_base_hit {
         buf.write_str("**").unwrap();
     } else {
@@ -47,7 +56,7 @@ fn write_single_enemy(
         };
 
         write!(buf, "The enemy base here is {an} {name}.").unwrap();
-        return;
+        return buf;
     };
 
     match enemy.amount {
@@ -92,10 +101,10 @@ fn write_single_enemy(
         }
     }
 
-    let is_instant_spawn = (enemy.start_frame == 0 || (is_base_hit && !enemy.enforce_start_frame));
+    let is_instant_spawn = enemy.start_frame == 0 || (is_base_hit && !enemy.enforce_start_frame);
     if !is_instant_spawn {
         buf.write_str(" after ").unwrap();
-        write_enemy_delay(buf, enemy);
+        write_single_spawn_s(&mut buf, enemy.start_frame);
         if enemy.start_frame == 1 {
             buf.write_str(" second<sup>").unwrap();
         } else {
@@ -115,10 +124,12 @@ fn write_single_enemy(
     }
 
     if !is_single_enemy {
-        write_enemy_delay(buf, enemy);
+        write_enemy_delay(&mut buf, enemy);
     }
 
     buf.write_char('.').unwrap();
+
+    buf
 }
 
 fn write_single_spawn_s(buf: &mut String, time_f: u32) {
