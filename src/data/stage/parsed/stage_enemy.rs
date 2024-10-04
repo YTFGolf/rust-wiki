@@ -51,7 +51,7 @@ pub struct StageEnemy {
     pub start_frame: u32,
     /// Do you enforce `start_frame` even if enemy spawns after base hit.
     pub enforce_start_frame: bool,
-    /// Respawn time.
+    /// Respawn time in frames.
     pub respawn_time: (u32, u32),
     /// Note: can be above 100%. Also for Dojo this is absolute damage, not
     /// percentage.
