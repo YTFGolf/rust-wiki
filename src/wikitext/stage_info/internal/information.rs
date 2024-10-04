@@ -1,4 +1,4 @@
-//! Deals with the basic fixed information at the top of the infobox.
+//! Deals with basic stage information in the infobox.
 
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
@@ -149,6 +149,33 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     }
 
     params
+}
+
+/// Get the xp drop of a stage.
+pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
+    let xp = stage.xp?;
+    let mut buf = "".to_string();
+    buf.write_formatted(&xp, &Locale::en).unwrap();
+    buf.write_str(" XP").unwrap();
+
+    Some(TemplateParameter::new("XP", buf))
+}
+
+/// Get the width of a stage.
+pub fn width(stage: &Stage) -> TemplateParameter {
+    let mut buf = "".to_string();
+    buf.write_formatted(&stage.width, &Locale::en).unwrap();
+
+    TemplateParameter::new("width", buf)
+}
+
+/// Get the max enemies of a stage.
+pub fn max_enemies(stage: &Stage) -> TemplateParameter {
+    let mut buf = "".to_string();
+    buf.write_formatted(&stage.max_enemies, &Locale::en)
+        .unwrap();
+
+    TemplateParameter::new("max enemies", buf)
 }
 
 #[cfg(test)]
@@ -343,5 +370,39 @@ mod tests {
         );
         // As of 13.6 this is the only stage where base hp != actual stat and
         // also has 4 crowns.
+    }
+
+    #[test]
+    fn test_misc_info() {
+        let earthshaker = Stage::new("n 0 0").unwrap();
+        assert_eq!(earthshaker.xp, Some(950));
+        assert_eq!(
+            xp(&earthshaker),
+            Some(TemplateParameter::new("XP", "950 XP".to_string()))
+        );
+        assert_eq!(earthshaker.width, 4_200);
+        assert_eq!(
+            width(&earthshaker),
+            TemplateParameter::new("width", "4,200".to_string())
+        );
+        assert_eq!(earthshaker.max_enemies, 7);
+        assert_eq!(
+            max_enemies(&earthshaker),
+            TemplateParameter::new("max enemies", "7".to_string())
+        );
+
+        let labyrinth_67 = Stage::new("l 0 66").unwrap();
+        assert_eq!(labyrinth_67.xp, None);
+        assert_eq!(xp(&labyrinth_67), None);
+        assert_eq!(labyrinth_67.width, 3_900);
+        assert_eq!(
+            width(&labyrinth_67),
+            TemplateParameter::new("width", "3,900".to_string())
+        );
+        assert_eq!(labyrinth_67.max_enemies, 30);
+        assert_eq!(
+            max_enemies(&labyrinth_67),
+            TemplateParameter::new("max enemies", "30".to_string())
+        );
     }
 }

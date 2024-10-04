@@ -99,6 +99,11 @@ fn do_thing_internal() {
             "score_rewards" => internal::score_rewards(&stage)
                 .map(|param| param.to_string())
                 .unwrap_or("".to_string()),
+            "xp" => internal::xp(&stage)
+                .map(|param| param.to_string())
+                .unwrap_or("".to_string()),
+            "width" => internal::width(&stage).to_string(),
+            "max_enemies" => internal::max_enemies(&stage).to_string(),
             "restrictions_section" => internal::restrictions_section(&stage),
 
             _ => continue,
