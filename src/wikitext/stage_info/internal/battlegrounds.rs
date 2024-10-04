@@ -1,7 +1,10 @@
 use crate::{
-    data::stage::parsed::{
-        stage::Stage,
-        stage_enemy::{BossType, EnemyAmount, StageEnemy},
+    data::stage::{
+        parsed::{
+            stage::Stage,
+            stage_enemy::{BossType, EnemyAmount, StageEnemy},
+        },
+        stage_metadata::consts::StageTypeEnum as T,
     },
     wikitext::{data_files::enemy_data::ENEMY_DATA, wiki_utils::extract_name},
 };
@@ -14,19 +17,77 @@ pub fn battlegrounds(stage: &Stage) -> String {
     // Go through all enemies
     // sort into percentages (if >100 then goes in 100)
     // sort all percentages
+    let is_dojo = match stage.meta.type_enum {
+        T::Dojo | T::RankingDojo => true,
+        _ => false,
+    };
 
-    stage
-        .enemies
-        .iter()
-        .filter_map(|e| {
-            if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
-                None
-            } else {
-                Some(get_single_enemy_line(e, e.base_hp != 100, false))
-            }
-        })
-        .collect::<Vec<String>>()
-        .join("\n")
+    let is_default_spawn = match is_dojo {
+        false => |enemy: &StageEnemy| enemy.base_hp >= 100,
+        true => |enemy: &StageEnemy| enemy.base_hp == 0,
+    };
+
+    let mut default_spawn: Vec<&StageEnemy> = vec![];
+    let mut other_spawn: Vec<(u32, Vec<&StageEnemy>)> = vec![];
+    for enemy in stage.enemies.iter() {
+        if is_default_spawn(enemy) {
+            default_spawn.push(enemy);
+            continue;
+        }
+
+        if let Some((_, percentage_vec)) = other_spawn
+            .iter_mut()
+            .find(|(percent, _)| *percent == enemy.base_hp)
+        {
+            percentage_vec.push(enemy);
+        } else {
+            other_spawn.push((enemy.base_hp, vec![enemy]))
+        }
+    }
+    let order_function: fn(
+        &(u32, Vec<&StageEnemy>),
+        &(u32, Vec<&StageEnemy>),
+    ) -> std::cmp::Ordering = match is_dojo {
+        false => |a, b| b.0.cmp(&a.0),
+        true => |a, b| a.0.cmp(&b.0),
+    };
+    other_spawn.sort_by(order_function);
+
+    // TODO sort individual lists
+    // TODO remove 0 when not dojo
+    // TODO assign duplicates
+    // ignore (i.e. == 0 for non-dojo and false for dojo)
+    // message
+
+    // this is not an abstraction, this is a convenience. having a bool here
+    // only works because I always know it's a bool
+    fn stringify_enemy_list(enemies: Vec<&StageEnemy>, is_base_hit: bool) -> String {
+        enemies
+            .iter()
+            .filter_map(|e| {
+                if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
+                    None
+                } else {
+                    Some(get_single_enemy_line(e, is_base_hit, false))
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("\n")
+    }
+
+    let mut buf = "".to_string();
+    if stage.is_base_indestructible {
+        buf += "*The enemy base is indestructible until the boss is defeated.\n"
+    }
+    buf += &stringify_enemy_list(default_spawn, false);
+
+    // TODO Dojo
+    for other in other_spawn {
+        buf += &format!("\n*When the base reaches {hp}% HP:\n", hp = other.0);
+        buf += &stringify_enemy_list(other.1, true);
+    }
+
+    buf
 }
 
 /// Matcher string for all enemy bases that should begin with "is a*n*" instead
@@ -36,7 +97,11 @@ const AN_ENEMY_MATCHER: &str = r"^([AEIOU]|11|18|8)";
 // just do edge cases described in The Battle Cats Wiki:Stage Structure
 // Page/Battlegrounds
 
-fn get_single_enemy_line(enemy: &StageEnemy, is_base_hit: bool, show_magnification: bool) -> String {
+fn get_single_enemy_line(
+    enemy: &StageEnemy,
+    is_base_hit: bool,
+    show_magnification: bool,
+) -> String {
     let mut buf = "".to_string();
 
     if is_base_hit {
