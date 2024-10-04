@@ -105,7 +105,11 @@ fn do_thing_internal() {
             "width" => internal::width(&stage).to_string(),
             "max_enemies" => internal::max_enemies(&stage).to_string(),
             "star" => internal::star(&stage).to_string(),
-            // ${chapter}
+            "chapter" => internal::chapter(&stage, &stage_wiki_data)
+                .into_iter()
+                .map(|p| p.to_string())
+                .collect::<Vec<String>>()
+                .join("\n"),
             // ${difficulty}
             // ${stage_nav}
             "restrictions_section" => internal::restrictions_section(&stage),
