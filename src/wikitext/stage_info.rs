@@ -104,6 +104,10 @@ fn do_thing_internal() {
                 .unwrap_or("".to_string()),
             "width" => internal::width(&stage).to_string(),
             "max_enemies" => internal::max_enemies(&stage).to_string(),
+            "star" => internal::star(&stage).to_string(),
+            // ${chapter}
+            // ${difficulty}
+            // ${stage_nav}
             "restrictions_section" => internal::restrictions_section(&stage),
 
             _ => continue,
