@@ -113,7 +113,11 @@ fn do_thing_internal() {
             "difficulty" => internal::difficulty(&stage)
                 .map(|param| param.to_string())
                 .unwrap_or("".to_string()),
-            // ${stage_nav}
+            "stage_nav" => internal::stage_nav(&stage, &stage_wiki_data)
+                .into_iter()
+                .map(|p| p.to_string())
+                .collect::<Vec<String>>()
+                .join("\n"),
             "restrictions_section" => internal::restrictions_section(&stage),
 
             _ => continue,

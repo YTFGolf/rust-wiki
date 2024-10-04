@@ -1,7 +1,11 @@
 use crate::{
-    data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum as T},
+    data::stage::{
+        parsed::stage::{ContinueStages, Stage},
+        stage_metadata::consts::StageTypeEnum as T,
+    },
     wikitext::{
-        data_files::stage_page_data::STAGE_NAMES, stage_info::StageWikiData,
+        data_files::stage_page_data::{StageData, STAGE_NAMES},
+        stage_info::StageWikiData,
         template_parameter::TemplateParameter,
     },
 };
@@ -56,3 +60,68 @@ pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
         format!("★{difficulty}"),
     ))
 }
+
+fn get_single_nav(location: Option<&StageData>) -> String {
+    match location {
+        None => "N/A".to_string(),
+        Some(location) => location.name.clone(),
+    }
+}
+
+fn get_continuation_stages(data: &ContinueStages) -> String {
+    let map = STAGE_NAMES
+        .stage_map(4, data.map_id)
+        .unwrap_or_else(|| panic!("Extra stages map with id {} was not found!", data.map_id));
+    let stage_names = (data.stage_ids.0 .. data.stage_ids.1 + 1).map(|id| {
+        let stage = &map.get(id).unwrap().name;
+
+        match data.chance {
+            100 => format!("{stage} (''Continuation Stage'')"),
+            chance => {
+                assert_eq!(data.stage_ids.0, data.stage_ids.1, "Feature currently not supported: non-guaranteed continuation stage with multiple possible stages to continue to.");
+                format!("{stage} (''Continuation Stage'', {chance}%)")
+            }
+        }
+    });
+
+    stage_names.collect::<Vec<String>>().join("<br>\n")
+}
+
+fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
+    let prev;
+    let next;
+    if [T::Extra].contains(&stage.meta.type_enum) {
+        prev = None;
+        next = None
+    } else {
+        prev = data.stage_map.get(stage.meta.stage_num - 1);
+        next = data.stage_map.get(stage.meta.stage_num + 1);
+    }
+
+    let continue_data = match stage.continue_data.as_ref() {
+        None => return (get_single_nav(prev), get_single_nav(next)),
+        Some(data) => data,
+    };
+
+    let prev_str = get_single_nav(prev);
+    let next_str = match next {
+        None => get_continuation_stages(continue_data),
+        Some(_) => get_single_nav(next) + "<br>\n" + &get_continuation_stages(continue_data),
+    };
+
+    (prev_str, next_str)
+}
+
+pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
+    if [T::Dojo, T::RankingDojo].contains(&stage.meta.type_enum) {
+        return vec![];
+    }
+
+    let (prev, next) = get_nav(stage, data);
+    vec![
+        TemplateParameter::new("prev stage", prev),
+        TemplateParameter::new("next stage", next),
+    ]
+}
+
+// proving grounds
