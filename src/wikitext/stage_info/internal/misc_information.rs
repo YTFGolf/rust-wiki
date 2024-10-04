@@ -1,9 +1,11 @@
-use regex::Regex;
-
 use crate::{
     data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum as T},
-    wikitext::{stage_info::StageWikiData, template_parameter::TemplateParameter},
+    wikitext::{
+        data_files::stage_page_data::STAGE_NAMES, stage_info::StageWikiData,
+        template_parameter::TemplateParameter,
+    },
 };
+use regex::Regex;
 
 pub fn star(stage: &Stage) -> TemplateParameter {
     let max_crowns: u8 = match stage.crown_data.as_ref() {
@@ -40,4 +42,17 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
             data.stage_map.name.clone(),
         )],
     }
+}
+
+pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
+    let difficulty = STAGE_NAMES.difficulty(
+        stage.meta.type_num,
+        stage.meta.map_num,
+        stage.meta.stage_num,
+    )?;
+
+    Some(TemplateParameter::new(
+        "difficulty",
+        format!("★{difficulty}"),
+    ))
 }

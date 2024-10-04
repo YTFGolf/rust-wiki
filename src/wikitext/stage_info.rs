@@ -110,7 +110,9 @@ fn do_thing_internal() {
                 .map(|p| p.to_string())
                 .collect::<Vec<String>>()
                 .join("\n"),
-            // ${difficulty}
+            "difficulty" => internal::difficulty(&stage)
+                .map(|param| param.to_string())
+                .unwrap_or("".to_string()),
             // ${stage_nav}
             "restrictions_section" => internal::restrictions_section(&stage),
 
