@@ -1,4 +1,4 @@
-//! Module that gets information about cat names
+//! Module that gets information about cat names.G
 
 use crate::file_handler::{get_file_location, FileLocation};
 use serde::Deserialize;

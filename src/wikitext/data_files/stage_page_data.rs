@@ -47,13 +47,15 @@ pub struct StageData {
 
 const MAX_TYPE_ID: usize = STAGE_TYPES[STAGE_TYPES.len() - 1].number as usize;
 type StageNameMap = [Option<TypeData>; MAX_TYPE_ID + 1];
+type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
 /// Container for [STAGE_NAMES] static.
-pub struct StageNames {
+pub struct StagePageData {
     stage_name_map: LazyLock<StageNameMap>,
     _continue_stages: (),
+    stage_difficulty_map: LazyLock<StageDifficultyMap>,
 }
-impl StageNames {
+impl StagePageData {
     /// Get stage type from stage type id.
     pub fn stage_type(&self, id: u32) -> Option<&TypeData> {
         self.stage_name_map.get(id as usize)?.into()
@@ -66,12 +68,22 @@ impl StageNames {
     pub fn stage(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&StageData> {
         self.stage_map(type_id, map_id)?.get(stage_id)
     }
+
+    /// Get stage difficulty.
+    pub fn difficulty(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&u8> {
+        self.difficulty_str(&format!("{type_id:03}-{map_id:03}-{stage_id:03}"))
+    }
+    /// Get stage difficulty.
+    fn difficulty_str(&self, id: &str) -> Option<&u8> {
+        self.stage_difficulty_map.get(id)
+    }
 }
 
 /// Contains parsed StageNames.csv file.
-pub static STAGE_NAMES: StageNames = StageNames {
+pub static STAGE_NAMES: StagePageData = StagePageData {
     stage_name_map: LazyLock::new(get_stage_name_map),
     _continue_stages: (),
+    stage_difficulty_map: LazyLock::new(get_stage_difficulty_map),
 };
 
 #[derive(Debug, Deserialize)]
@@ -84,6 +96,11 @@ struct StageNamesLine {
     s_stage: Option<u32>,
     #[serde(rename = "Link (EN)")]
     s_link: String,
+}
+#[derive(Debug, Deserialize)]
+struct StageDifficultyLine {
+    stage_id: String,
+    difficulty: u8,
 }
 
 fn get_stage_name_map() -> StageNameMap {
@@ -138,4 +155,20 @@ fn get_stage_name_map() -> StageNameMap {
     }
 
     map
+}
+
+fn get_stage_difficulty_map() -> StageDifficultyMap {
+    let rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        .delimiter(b'\t')
+        .comment(Some(b'#'))
+        .from_path(get_file_location(FileLocation::WikiData).join("Difficulty.txt"));
+
+    rdr.unwrap()
+        .deserialize::<StageDifficultyLine>()
+        .map(|d| {
+            let d = d.unwrap();
+            (d.stage_id, d.difficulty)
+        })
+        .collect()
 }
