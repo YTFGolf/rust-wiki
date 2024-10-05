@@ -522,6 +522,21 @@ mod tests {
     }
 
     #[test]
+    fn test_killcount() {
+        let deep_jungle_10 = Stage::new("q 0 9").unwrap();
+        assert_eq!(
+            battlegrounds(&deep_jungle_10),
+            "*Infinite [[Doge Dark]]s spawn after 6.67 seconds<sup>200f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
+            *1 [[THE FOLIVOREAN]] spawns as the boss after 20 seconds<sup>600f</sup>.\n\
+            *5 [[Wild Doge]]s spawn after 26.67 seconds<sup>800f</sup>, delay 26.67~30 seconds<sup>800f~900f</sup>.\n\
+            *2 [[Ragin' Gory|Ragin' Gories]] spawn after 46.67 seconds<sup>1,400f</sup>, delay 30~33.33 seconds<sup>900f~1,000f</sup>.\n\
+            *Infinite [[Wild Doge]]s spawn after 56.67 seconds<sup>1,700f</sup>, delay 33.33~40 seconds<sup>1,000f~1,200f</sup>.\n\
+            *2 [[Ragin' Gory|Ragin' Gories]] spawn once 60 Cat Units have been defeated, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
+            *2 [[Ragin' Gory|Ragin' Gories]] spawn once 120 Cat Units have been defeated, delay 20~23.33 seconds<sup>600f~700f</sup>."
+        )
+    }
+
+    #[test]
     fn test_dojo() {
         let anniv_11 = Stage::new("r 25 0").unwrap();
         // 11th anniversary is plural + general dojo layout
