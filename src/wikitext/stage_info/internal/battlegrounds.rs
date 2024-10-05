@@ -193,8 +193,9 @@ fn get_single_enemy_line(
     if !is_instant_spawn {
         buf.write_str(" after ").unwrap();
         write_single_spawn_s(&mut buf, enemy.start_frame);
-        if enemy.start_frame == 1 {
+        if enemy.start_frame == 30 {
             buf.write_str(" second<sup>").unwrap();
+            panic!("Debug panic: enemy start frame = 30.");
         } else {
             buf.write_str(" seconds<sup>").unwrap();
         }
