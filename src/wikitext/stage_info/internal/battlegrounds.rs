@@ -242,7 +242,7 @@ fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
         write_single_spawn_s(buf, enemy.respawn_time.1);
     }
 
-    if enemy.respawn_time == (1, 1) {
+    if enemy.respawn_time == (30, 30) {
         buf.write_str(" second").unwrap();
     } else {
         buf.write_str(" seconds").unwrap();
@@ -335,7 +335,7 @@ mod tests {
     }
 
     #[test]
-    fn test_multibase() {
+    fn test_multibase_with_1_second() {
         let mistakes_dont_matter = Stage::new("s 261 3").unwrap();
         let base = &mistakes_dont_matter.enemies[0];
         assert_eq!(base.amount, EnemyAmount::from(10));
@@ -433,7 +433,7 @@ mod tests {
     }
 
     #[test]
-    fn test_enforce_start_frame_2() {
+    fn test_enforce_start_frame_with_1_second() {
         let titanic_steakhouse = Stage::new("na 45 4").unwrap();
         assert_eq!(
             battlegrounds(&titanic_steakhouse),
