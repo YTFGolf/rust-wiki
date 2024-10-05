@@ -1,12 +1,14 @@
+use std::borrow::Cow;
 use crate::{
     data::stage::{
         parsed::stage::{ContinueStages, Stage},
         stage_metadata::consts::StageTypeEnum as T,
     },
     wikitext::{
-        data_files::stage_page_data::{StageData, STAGE_NAMES},
+        data_files::stage_page_data::{MapData, StageData, STAGE_NAMES},
         stage_info::StageWikiData,
         template_parameter::TemplateParameter,
+        wiki_utils::REGEXES,
     },
 };
 use regex::Regex;
@@ -21,11 +23,16 @@ pub fn star(stage: &Stage) -> TemplateParameter {
 }
 
 pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
+    #[inline]
+    fn get_map_name(map: &MapData) -> Cow<'_, str> {
+        REGEXES.old_or_removed_sub.replace_all(&map.name, "$1")
+    }
+
     match stage.meta.type_enum {
         T::MainChapters => vec![],
         T::SoL | T::UL | T::ZL => vec![TemplateParameter::new(
             "sub-chapter",
-            data.stage_map.name.clone(),
+            get_map_name(data.stage_map).to_string(),
         )],
         // TODO use a cow string instead of clone
         T::Collab | T::CollabGauntlet => {
@@ -38,12 +45,12 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
             let event = TemplateParameter::new("event", format!("[[{collab_name}]]"));
             vec![
                 event,
-                TemplateParameter::new("event-chapter", data.stage_map.name.clone()),
+                TemplateParameter::new("event-chapter", get_map_name(data.stage_map).to_string()),
             ]
         }
         _ => vec![TemplateParameter::new(
             "event-chapter",
-            data.stage_map.name.clone(),
+            get_map_name(data.stage_map).to_string(),
         )],
     }
 }
@@ -64,7 +71,10 @@ pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
 fn get_single_nav(location: Option<&StageData>) -> String {
     match location {
         None => "N/A".to_string(),
-        Some(location) => location.name.clone(),
+        Some(location) => location.name.clone(), // Some(location) => REGEXES
+                                                 //     .old_or_removed_sub
+                                                 //     .replace_all(&location.name, "$1")
+                                                 //     .to_string(),
     }
 }
 
@@ -128,5 +138,6 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> 
     ]
 }
 
-// proving grounds
-// Literally earthshaker
+// proving grounds (continuation stuff)
+// Literally earthshaker (prev stage = N/A)
+// Athletic Meet (event-chapter is (Old))
