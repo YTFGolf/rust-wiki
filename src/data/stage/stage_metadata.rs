@@ -246,19 +246,21 @@ pub enum StageMetaParseError {
 
 impl StageMeta {
     /// Catch-all method for parsing a selector.
-    pub fn new(selector: &str) -> Result<StageMeta, StageMetaParseError> {
+    pub fn new(selector: &str) -> Option<StageMeta> {
         // TODO optimise by checking selectors before running functions
+        // TODO check the type: if rejected go to next function, if rejected
+        // then return None.
         if let Ok(st) = Self::from_file(selector) {
-            return Ok(st);
+            return Some(st);
         };
         if let Ok(st) = Self::from_selector(selector) {
-            return Ok(st);
+            return Some(st);
         };
         if let Ok(st) = Self::from_ref(selector) {
-            return Ok(st);
+            return Some(st);
         };
 
-        Err(StageMetaParseError::Invalid)
+        None
     }
 
     /// Parse space-delimited selector into [StageMeta] object.
@@ -874,7 +876,10 @@ mod tests {
     #[test]
     fn test_new() {
         let selector = "*https://battlecats-db.com/stage/s01382-03.html";
-        assert_eq!(StageMeta::from_ref(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_ref(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::new(selector).unwrap(),
             StageMeta {
@@ -890,7 +895,10 @@ mod tests {
         );
 
         let selector = "ItF 1 48";
-        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
@@ -906,7 +914,10 @@ mod tests {
         );
 
         let selector = "DM 0";
-        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
@@ -922,7 +933,10 @@ mod tests {
         );
 
         let selector = "Filibuster";
-        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
@@ -938,7 +952,10 @@ mod tests {
         );
 
         let selector = "z 5 0";
-        assert_eq!(StageMeta::from_selector(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_selector(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
@@ -954,7 +971,10 @@ mod tests {
         );
 
         let selector = "stageRN013_05.csv";
-        assert_eq!(StageMeta::from_file(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_file(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_file(selector).unwrap(),
             StageMeta {
@@ -970,7 +990,10 @@ mod tests {
         );
 
         let selector = "stageRN000_00.csv";
-        assert_eq!(StageMeta::from_file(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_file(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_file(selector).unwrap(),
             StageMeta {
@@ -986,7 +1009,10 @@ mod tests {
         );
 
         let selector = "stageW04_05.csv";
-        assert_eq!(StageMeta::from_file(selector), StageMeta::new(selector));
+        assert_eq!(
+            StageMeta::from_file(selector).unwrap(),
+            StageMeta::new(selector).unwrap()
+        );
         assert_eq!(
             StageMeta::from_file(selector).unwrap(),
             StageMeta {
@@ -1025,7 +1051,7 @@ mod tests {
     fn test_stage_type_error() {
         assert_eq!(
             StageMeta::new("unknown 0"),
-            Err(StageMetaParseError::Invalid)
+            None
         );
         assert_eq!(
             StageMeta::from_file("file no exist"),

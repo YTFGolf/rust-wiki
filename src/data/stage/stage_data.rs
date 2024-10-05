@@ -124,7 +124,10 @@ impl StageData {
     // data.
     /// Create new StageData object.
     pub fn new(selector: &str) -> Option<Self> {
-        let meta = StageMeta::new(selector).unwrap();
+        let meta = match StageMeta::new(selector) {
+            Some(meta) => meta,
+            None => panic!("Invalid selector: {selector:?}"),
+        };
 
         let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
         let stage_file_reader = get_decommented_file_reader(stage_file).unwrap();

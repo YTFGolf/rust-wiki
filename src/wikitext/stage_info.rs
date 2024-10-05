@@ -48,7 +48,7 @@ struct StageWikiData {
     stage_name: &'static StageData,
 }
 
-pub fn get_stage_info(stage: &Stage)->String{
+pub fn get_stage_info(stage: &Stage) -> String {
     get_stage_info_formatted(stage, DEFAULT_FORMAT)
 }
 

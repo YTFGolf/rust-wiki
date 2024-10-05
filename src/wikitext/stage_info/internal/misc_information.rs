@@ -94,7 +94,11 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
         prev = None;
         next = None
     } else {
-        prev = data.stage_map.get(stage.meta.stage_num - 1);
+        prev = if stage.meta.stage_num == 0 {
+            None
+        } else {
+            data.stage_map.get(stage.meta.stage_num - 1)
+        };
         next = data.stage_map.get(stage.meta.stage_num + 1);
     }
 
@@ -125,3 +129,4 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> 
 }
 
 // proving grounds
+// Literally earthshaker
