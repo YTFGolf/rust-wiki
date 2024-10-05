@@ -17,18 +17,16 @@ pub fn battlegrounds(stage: &Stage) -> String {
     // Go through all enemies
     // sort into percentages (if >100 then goes in 100)
     // sort all percentages
-    let is_dojo = match stage.meta.type_enum {
-        T::Dojo | T::RankingDojo => true,
-        _ => false,
-    };
+    let is_dojo = matches!(stage.meta.type_enum, T::Dojo | T::RankingDojo);
 
     let is_default_spawn = match is_dojo {
         false => |enemy: &StageEnemy| enemy.base_hp >= 100,
         true => |enemy: &StageEnemy| enemy.base_hp == 0,
     };
 
+    type OtherSpawnItem<'a> = (u32, Vec<&'a StageEnemy>);
     let mut default_spawn: Vec<&StageEnemy> = vec![];
-    let mut other_spawn: Vec<(u32, Vec<&StageEnemy>)> = vec![];
+    let mut other_spawn: Vec<OtherSpawnItem> = vec![];
     let mut enemies_mags = vec![];
     let mut enemies_dupe = vec![];
     for enemy in stage.enemies.iter() {
@@ -54,10 +52,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
             other_spawn.push((enemy.base_hp, vec![enemy]))
         }
     }
-    let order_function: fn(
-        &(u32, Vec<&StageEnemy>),
-        &(u32, Vec<&StageEnemy>),
-    ) -> std::cmp::Ordering = match is_dojo {
+    let order_function: fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering = match is_dojo {
         false => |a, b| b.0.cmp(&a.0),
         true => |a, b| a.0.cmp(&b.0),
     };
@@ -73,7 +68,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
     fn stringify_enemy_list(
         enemies: Vec<&StageEnemy>,
         is_base_hit: bool,
-        enemies_dupe: &Vec<u32>,
+        enemies_dupe: &[u32],
     ) -> String {
         enemies
             .iter()
