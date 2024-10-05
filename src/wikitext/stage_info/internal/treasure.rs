@@ -19,6 +19,11 @@ fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
         return;
     }
 
+    if 1_000 <= id && id < 30_000 {
+        *buf += TREASURE_DATA.get_treasure_name(id);
+        return;
+    }
+
     write!(buf, "{} +", TREASURE_DATA.get_treasure_name(id)).unwrap();
     buf.write_formatted(&amt, &Locale::en).unwrap();
 }
@@ -177,6 +182,49 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 mod tests {
     use super::*;
     use crate::data::map::map_data::csv_types::TreasureCSV;
+
+    #[test]
+    fn write_name_and_amount_normal() {
+        const CAT_FOOD: u32 = 22;
+        let mut buf = "".to_string();
+        write_name_and_amount(&mut buf, CAT_FOOD, 22_222);
+        assert_eq!(buf, "[[Cat Food]] +22,222");
+    }
+
+    #[test]
+    fn write_name_and_amount_xp() {
+        const XP: u32 = 6;
+        let mut buf = "".to_string();
+        write_name_and_amount(&mut buf, XP, 40_000);
+        assert_eq!(buf, "40,000 XP");
+    }
+
+    #[test]
+    fn write_name_and_amount_unit() {
+        const CRAZED_CAT: u32 = 1_103;
+        let mut buf = "".to_string();
+        write_name_and_amount(&mut buf, CRAZED_CAT, 40_000);
+        assert_eq!(buf, "[[Crazed Cat (Super Rare Cat)|Crazed Cat]]");
+    }
+
+    #[test]
+    fn write_name_and_amount_tf() {
+        const MANIC_MOHAWK: u32 = 10_092;
+        let mut buf = "".to_string();
+        write_name_and_amount(&mut buf, MANIC_MOHAWK, 40_000);
+        assert_eq!(
+            buf,
+            "[[Crazed Cat (Super Rare Cat)|Crazed Cat]]'s [[True Form]]"
+        );
+    }
+
+    #[test]
+    fn write_name_and_amount_orb() {
+        const RED_ATTACK_ORB: u32 = 30_000;
+        let mut buf = "".to_string();
+        write_name_and_amount(&mut buf, RED_ATTACK_ORB, 1);
+        assert_eq!(buf, "Attack Up D [[Talent Orbs|Orb]]: Red +1");
+    }
 
     #[test]
     fn once_then_nothing() {

@@ -1049,10 +1049,7 @@ mod tests {
 
     #[test]
     fn test_stage_type_error() {
-        assert_eq!(
-            StageMeta::new("unknown 0"),
-            None
-        );
+        assert_eq!(StageMeta::new("unknown 0"), None);
         assert_eq!(
             StageMeta::from_file("file no exist"),
             Err(StageMetaParseError::Rejected)
