@@ -29,7 +29,17 @@ pub fn battlegrounds(stage: &Stage) -> String {
 
     let mut default_spawn: Vec<&StageEnemy> = vec![];
     let mut other_spawn: Vec<(u32, Vec<&StageEnemy>)> = vec![];
+    let mut enemies_mags = vec![];
+    let mut enemies_dupe = vec![];
     for enemy in stage.enemies.iter() {
+        if let Some((_id, mag)) = enemies_mags.iter().find(|(id, _mag)| *id == enemy.id) {
+            if *mag != enemy.magnification {
+                enemies_dupe.push(enemy.id);
+            }
+        } else {
+            enemies_mags.push((enemy.id, enemy.magnification))
+        }
+
         if is_default_spawn(enemy) {
             default_spawn.push(enemy);
             continue;
@@ -61,14 +71,22 @@ pub fn battlegrounds(stage: &Stage) -> String {
 
     // this is not an abstraction, this is a convenience. having a bool here
     // only works because I always know it's a bool
-    fn stringify_enemy_list(enemies: Vec<&StageEnemy>, is_base_hit: bool) -> String {
+    fn stringify_enemy_list(
+        enemies: Vec<&StageEnemy>,
+        is_base_hit: bool,
+        enemies_dupe: &Vec<u32>,
+    ) -> String {
         enemies
             .iter()
             .filter_map(|e| {
                 if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
                     None
                 } else {
-                    Some(get_single_enemy_line(e, is_base_hit, false))
+                    Some(get_single_enemy_line(
+                        e,
+                        is_base_hit,
+                        enemies_dupe.contains(&e.id),
+                    ))
                 }
             })
             .collect::<Vec<String>>()
@@ -79,12 +97,12 @@ pub fn battlegrounds(stage: &Stage) -> String {
     if stage.is_base_indestructible {
         buf += "*The enemy base is indestructible until the boss is defeated.\n"
     }
-    buf += &stringify_enemy_list(default_spawn, false);
+    buf += &stringify_enemy_list(default_spawn, false, &enemies_dupe);
 
     // TODO Dojo
     for other in other_spawn {
         buf += &format!("\n*When the base reaches {hp}% HP:\n", hp = other.0);
-        buf += &stringify_enemy_list(other.1, true);
+        buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
     }
 
     buf
