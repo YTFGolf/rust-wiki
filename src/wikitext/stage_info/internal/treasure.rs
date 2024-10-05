@@ -10,6 +10,11 @@ use crate::{
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
+#[inline]
+fn is_unit_drop(id: u32) -> bool {
+    1_000 <= id && id < 30_000
+}
+
 /// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
 fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
     if id == 6 {
@@ -19,7 +24,7 @@ fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
         return;
     }
 
-    if 1_000 <= id && id < 30_000 {
+    if is_unit_drop(id) {
         *buf += TREASURE_DATA.get_treasure_name(id);
         return;
     }
@@ -48,7 +53,12 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
         let precision = if chance % 1.0 == 0.0 { 0 } else { 1 };
-        write!(buf, " ({:.1$}%, unlimited)", chance, precision).unwrap();
+        let limit = if is_unit_drop(item.item_id) {
+            "1 time"
+        } else {
+            "unlimited"
+        };
+        write!(buf, " ({:.1$}%, {limit})", chance, precision).unwrap();
     }
     buf
 }
@@ -69,7 +79,12 @@ fn all_unlimited(rewards: &StageRewards) -> String {
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
         let precision = if chance % 1.0 == 0.0 { 0 } else { 1 };
-        write!(buf, " ({:.1$}%, unlimited)", chance, precision).unwrap();
+        let limit = if is_unit_drop(item.item_id) {
+            "1 time"
+        } else {
+            "unlimited"
+        };
+        write!(buf, " ({:.1$}%, {limit})", chance, precision).unwrap();
         buf.write_str("<br>\n").unwrap();
     }
 
@@ -237,6 +252,19 @@ mod tests {
             ))
         );
         assert_eq!(score_rewards(&ht30), None);
+    }
+
+    #[test]
+    fn unit_reward() {
+        let dark_souls = Stage::new("s 17 0").unwrap();
+        assert_eq!(
+            treasure(&dark_souls),
+            Some(TemplateParameter::new(
+                "treasure",
+                "- [[Crazed Cat (Super Rare Cat)|Crazed Cat]] (100%, 1 time)".to_string()
+            ))
+        );
+        assert_eq!(score_rewards(&dark_souls), None);
     }
 
     #[test]
