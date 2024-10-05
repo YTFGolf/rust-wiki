@@ -63,6 +63,11 @@ pub fn battlegrounds(stage: &Stage) -> String {
     };
     other_spawn.sort_by(order_function);
 
+    default_spawn.sort_by_key(|e| !e.is_base);
+    other_spawn
+        .iter_mut()
+        .for_each(|l| l.1.sort_by_key(|e| e.boss_type == BossType::None));
+
     // TODO sort individual lists
     // TODO remove 0 when not dojo
     // TODO assign duplicates
