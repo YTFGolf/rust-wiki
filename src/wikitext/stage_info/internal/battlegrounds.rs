@@ -68,12 +68,6 @@ pub fn battlegrounds(stage: &Stage) -> String {
         .iter_mut()
         .for_each(|l| l.1.sort_by_key(|e| e.boss_type == BossType::None));
 
-    // TODO sort individual lists
-    // TODO remove 0 when not dojo
-    // TODO assign duplicates
-    // ignore (i.e. == 0 for non-dojo and false for dojo)
-    // message
-
     // this is not an abstraction, this is a convenience. having a bool here
     // only works because I always know it's a bool
     fn stringify_enemy_list(
@@ -104,9 +98,19 @@ pub fn battlegrounds(stage: &Stage) -> String {
     }
     buf += &stringify_enemy_list(default_spawn, false, &enemies_dupe);
 
-    // TODO Dojo
     for other in other_spawn {
-        buf += &format!("\n*When the base reaches {hp}% HP:\n", hp = other.0);
+        if !is_dojo {
+            if other.0 == 0 {
+                continue;
+            }
+            buf += &format!("\n*When the base reaches {hp}% HP:\n", hp = other.0);
+            buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
+            continue;
+        }
+
+        buf += "\n*When the base takes ";
+        buf.write_formatted(&other.0, &Locale::en).unwrap();
+        buf += " damage:\n";
         buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
     }
 
