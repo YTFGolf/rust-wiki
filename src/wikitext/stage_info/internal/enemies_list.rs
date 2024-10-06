@@ -653,4 +653,82 @@ mod tests {
             ]
         );
     }
+
+    #[test]
+    fn gauntlet_suppress() {
+        let baron_seal = Stage::new("a 20 0").unwrap();
+        assert_eq!(
+            enemies_list(&baron_seal, true),
+            vec![
+                TemplateParameter::new(
+                    "enemies",
+                    "{{Magnification|Doge Dark|0\n\
+                    |Zoge|0\n\
+                    |Gory Black|0\n\
+                    |Zory|0\n\
+                    |Shadow Boxer K|0\n\
+                    |Zang Roo|0}}"
+                        .to_string()
+                ),
+                TemplateParameter::new("boss", "{{Magnification|Baron Seal|0}}".to_string()),
+            ]
+        )
+    }
+
+    #[test]
+    fn gauntlet_no_suppress() {
+        let baron_seal = Stage::new("a 20 0").unwrap();
+        assert_eq!(
+            enemies_list(&baron_seal, false),
+            vec![
+                TemplateParameter::new(
+                    "enemies",
+                    "{{Magnification|Doge Dark|500%\n\
+                    |Zoge|150%\n\
+                    |Gory Black|150%\n\
+                    |Zory|100%\n\
+                    |Shadow Boxer K|150%\n\
+                    |Zang Roo|100%}}"
+                        .to_string()
+                ),
+                TemplateParameter::new("boss", "{{Magnification|Baron Seal|6,000%}}".to_string()),
+            ]
+        )
+    }
+
+    #[test]
+    fn dojo() {
+        let wanderer_trial = Stage::new("t 0 0").unwrap();
+        assert_eq!(
+            enemies_list(&wanderer_trial, true),
+            vec![
+                TemplateParameter::new("base", "{{Magnification|Scarecrow|0}}".to_string()),
+                TemplateParameter::new(
+                    "enemies",
+                    "{{Magnification|One Horn|0\n\
+                    |Doge Dark|0\n\
+                    |St. Pigge the 2nd|0\n\
+                    |Squire Rel|0\n\
+                    |R.Ost|0\n\
+                    |Shadow Boxer K|0\n\
+                    |Dagshund|0\n\
+                    |Le'boin|0}}"
+                        .to_string()
+                ),
+                TemplateParameter::new(
+                    "boss",
+                    "{{Magnification|The Face|0\n\
+                    |Squire Rel|0\n\
+                    |R.Ost|0\n\
+                    |St. Pigge the 2nd|0\n\
+                    |Le'boin|0}}"
+                        .to_string()
+                ),
+            ]
+        );
+        assert_eq!(
+            enemies_list(&wanderer_trial, true),
+            enemies_list(&wanderer_trial, false),
+        );
+    }
 }
