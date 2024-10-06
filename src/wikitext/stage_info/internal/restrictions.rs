@@ -188,12 +188,13 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
 /// Get a list of stage restrictions if they exist.
 fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
     let restrictions = stage.restrictions.as_ref()?;
+    if restrictions.len() == 0 || restrictions == &[FOUR_CROWN_DEFAULT_RESTRICTION] {
+        return None;
+    }
 
-    if restrictions.len() == 1 {
-        if restrictions == &[FOUR_CROWN_DEFAULT_RESTRICTION] {
-            return None;
-        }
-
+    if restrictions.len() == 1
+    // || (restrictions.len() == 2 && restrictions[1] == FOUR_CROWN_DEFAULT_RESTRICTION)
+    {
         let restriction = &restrictions[0];
         if restriction.crowns_applied != Crowns::All
             && stage.crown_data.is_some()
@@ -218,7 +219,8 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
     assert_eq!(
         restrictions.len(),
         max_difficulty as usize,
-        "Mismatch of amount of restrictions and amount of crowns!"
+        "Mismatch of amount of restrictions and amount of crowns! \
+        Restrictions: {restrictions:?}"
     );
     Some(get_multi_restriction(restrictions, max_difficulty))
 }
@@ -524,6 +526,14 @@ mod tests {
             "*Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Special Cats|Special]] and [[:Category:Rare Cats|Rare]]\n\
             *4-Crown: Max # of Deployable Cats: 10"
         );
+    }
+
+    #[test]
+    fn blank_some_restrictions() {
+        let revenge_r_cyclone = Stage::new("s 169 1").unwrap();
+        assert_eq!(revenge_r_cyclone.restrictions, Some(vec![]));
+        assert_eq!(restrictions_info(&revenge_r_cyclone), None);
+        assert_eq!(restrictions_section(&revenge_r_cyclone), "");
     }
 
     #[test]
