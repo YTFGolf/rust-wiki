@@ -194,7 +194,6 @@ fn get_single_enemy_line(
         write_single_spawn_s(&mut buf, enemy.start_frame);
         if enemy.start_frame == 30 {
             buf.write_str(" second<sup>").unwrap();
-            panic!("Debug panic: enemy start frame = 30.");
         } else {
             buf.write_str(" seconds<sup>").unwrap();
         }
@@ -358,6 +357,19 @@ mod tests {
             **5 [[Wall Doge]]s spawn, delay 3.33 seconds<sup>100f</sup>."
         )
         // good candidate for ordering tests
+    }
+
+    #[test]
+    fn test_1_second_spawn() {
+        let cat_catharsis = Stage::new("n 27 2").unwrap();
+        assert_eq!(
+            battlegrounds(&cat_catharsis),
+            "*1 [[Dark Emperor Nyandam]] spawns after 1 second<sup>30f</sup>.\n\
+            *1 [[Director Kurosawah]] spawns after 33.33 seconds<sup>1,000f</sup>.\n\
+            *1 [[Galactic Overseer Nyandam]] spawns as the boss after 66.67 seconds<sup>2,000f</sup>.\n\
+            *1 [[Kory]] spawns after 4 seconds<sup>120f</sup>.\n\
+            *1 [[Berserkory]] spawns after 80 seconds<sup>2,400f</sup>."
+        )
     }
 
     #[test]
