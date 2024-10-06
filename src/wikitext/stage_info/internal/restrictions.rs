@@ -9,6 +9,7 @@ use crate::{
 };
 use num_format::{Locale, WriteFormatted};
 use std::{
+    collections::HashSet,
     fmt::Write,
     num::{NonZero, NonZeroU8},
 };
@@ -137,6 +138,53 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
     restrictions
 }
 
+fn add_restriction_or_crown(
+    restriction_crowns: &mut Vec<(String, Vec<u8>)>,
+    res_new: String,
+    crown: u8,
+) {
+    if let Some((_, crowns)) = restriction_crowns
+        .iter_mut()
+        .find(|(res_already, _)| res_already == &res_new)
+    {
+        crowns.push(crown)
+    } else {
+        restriction_crowns.push((res_new, vec![crown]))
+    }
+}
+
+fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
+    assert!(restriction_crowns.iter().all(|(_, crowns)| {
+        let mut seen = HashSet::new();
+        crowns.iter().all(|crown| seen.insert(crown))
+    }))
+}
+
+fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) -> Vec<String> {
+    let mut restriction_crowns: Vec<(String, Vec<u8>)> = vec![];
+    for restriction in restrictions {
+        let crown: u8 = match restriction.crowns_applied {
+            Crowns::One(c) => c.into(),
+            Crowns::All => panic!("Stage has multiple restrictions that do not apply equally!"),
+        };
+        for r in get_single_restriction(restriction) {
+            add_restriction_or_crown(&mut restriction_crowns, r, crown);
+        }
+    }
+
+    assert_all_restrictions_unique(&restriction_crowns);
+    assert!(restriction_crowns.len() >= 2, "PONOS is bad at their job.");
+
+    restriction_crowns
+        .into_iter()
+        .map(|(r, crowns)| match crowns.len() {
+            x if x == max_difficulty as usize => r,
+            1 => format!("{}-Crown: {}", crowns[0], r),
+            _ => panic!("Restrictions don't apply to all stages!"),
+        })
+        .collect()
+}
+
 /// Get a list of stage restrictions if they exist.
 fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
     let restrictions = stage.restrictions.as_ref()?;
@@ -166,14 +214,13 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
         return Some(get_single_restriction(restriction));
     }
 
+    let max_difficulty = u8::from(stage.crown_data.as_ref().unwrap().max_difficulty);
     assert_eq!(
         restrictions.len(),
-        2,
-        "Restrictions length is more than 2! (stage: {stage:?})"
+        max_difficulty as usize,
+        "Mismatch of amount of restrictions and amount of crowns!"
     );
-    // There may be cases where restrictions len > 2, but this relies on PONOS
-    // being bad at their jobs so I'll deal with it when it comes up.
-    todo!()
+    Some(get_multi_restriction(restrictions, max_difficulty))
 }
 
 /// Get restrictions for Stage Info template (including no continues).
@@ -457,5 +504,35 @@ mod tests {
             "*Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]\n\
             *Max # of Deployable Cats: 10"
         );
+    }
+
+    #[test]
+    fn individual_crown_restrictions() {
+        let feathered = Stage::new("c 86 0").unwrap();
+
+        assert_eq!(
+            restrictions_info(&feathered),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Special Cats|Special]] and [[:Category:Rare Cats|Rare]]<br>\n\
+                4-Crown: Max # of Deployable Cats: 10"
+                    .to_string()
+            )),
+        );
+        assert_eq!(
+            restrictions_section(&feathered),
+            "*Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Special Cats|Special]] and [[:Category:Rare Cats|Rare]]\n\
+            *4-Crown: Max # of Deployable Cats: 10"
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_assert_all_restrictions_unique() {
+        let restrictions: &[(std::string::String, Vec<u8>)] = &[
+            ("Rarity: Short lines".to_string(), [1, 1, 1, 1].to_vec()),
+            ("Max # of Deployable Cats: 10".to_string(), [4].to_vec()),
+        ];
+        assert_all_restrictions_unique(restrictions);
     }
 }
