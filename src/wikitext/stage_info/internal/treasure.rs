@@ -88,8 +88,12 @@ fn all_unlimited(rewards: &StageRewards) -> String {
         buf.write_str("<br>\n").unwrap();
     }
 
-    buf.truncate(buf.len() - "<br>\n".len());
-    buf
+    if buf.is_empty() {
+        "".to_string()
+    } else {
+        buf.truncate(buf.len() - "<br>\n".len());
+        buf
+    }
 }
 
 fn single_raw(rewards: &StageRewards) -> String {
@@ -196,7 +200,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::map::map_data::csv_types::TreasureCSV;
+    use crate::data::map::map_data::csv_types::{TreasureCSV, TreasureType};
 
     #[test]
     fn write_name_and_amount_normal() {
@@ -393,5 +397,23 @@ mod tests {
                     .to_string()
             ))
         );
+    }
+
+    #[test]
+    fn radar_impossible() {
+        let explosion_in_sky = Stage::new("s 112 0").unwrap();
+        assert_eq!(
+            explosion_in_sky.rewards,
+            Some(StageRewards {
+                treasure_type: TreasureType::AllUnlimited,
+                treasure_drop: vec![TreasureCSV {
+                    item_chance: 0,
+                    item_id: 1,
+                    item_amt: 1
+                }],
+                score_rewards: vec![]
+            })
+        );
+        assert_eq!(treasure(&explosion_in_sky), None)
     }
 }
