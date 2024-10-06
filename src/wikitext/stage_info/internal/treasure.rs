@@ -112,6 +112,20 @@ fn single_raw(rewards: &StageRewards) -> String {
     // buf
 }
 
+fn get_total_chance(treasure: &[TreasureCSV]) -> (bool, f64) {
+    let mut total = 0;
+    let mut is_equal_chance = true;
+    let first_chance = treasure[0].item_chance;
+    for item in treasure {
+        if item.item_chance != first_chance {
+            is_equal_chance = false;
+        }
+        total += item.item_chance;
+    }
+
+    (is_equal_chance, f64::from(total))
+}
+
 /// When treasure type is that a treasure is guaranteed but can only be received
 /// once.
 fn guaranteed_once(rewards: &StageRewards) -> String {
@@ -138,6 +152,7 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
 fn guaranteed_unlimited(rewards: &StageRewards) -> String {
     let mut buf = "".to_string();
     let t = &rewards.treasure_drop;
+
     if t.len() == 1 {
         todo!()
         // buf.write_str("- ").unwrap();
@@ -146,10 +161,17 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> String {
         // return buf;
     };
 
+    let (is_equal_chance, total) = get_total_chance(t);
+
     buf.write_str("One of the following (unlimited):").unwrap();
     for item in t {
         buf.write_str("<br>\n- ").unwrap();
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
+        if !is_equal_chance {
+            let item_chance = f64::from(100 * item.item_chance) / total;
+            let precision = if item_chance % 1.0 == 0.0 { 0 } else { 1 };
+            write!(buf, " ({item_chance:.0$}%)", precision).unwrap();
+        }
     }
 
     buf
@@ -415,5 +437,22 @@ mod tests {
             })
         );
         assert_eq!(treasure(&explosion_in_sky), None)
+    }
+
+    #[test]
+    fn guaranteed_unlimited_unequal_chance() {
+        let impact_site = Stage::new("s 150 0").unwrap();
+        assert_eq!(
+            treasure(&impact_site),
+            Some(TemplateParameter::new(
+                "treasure",
+                "One of the following (unlimited):<br>\n\
+                - Bricks +2 (11.5%)<br>\n\
+                - Meteorite +2 (11.5%)<br>\n\
+                - Bricks +1 (38.5%)<br>\n\
+                - Meteorite +1 (38.5%)"
+                    .to_string()
+            )),
+        )
     }
 }
