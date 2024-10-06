@@ -45,6 +45,8 @@ pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
 /// ```
 pub fn get_decommented_file_reader<P: AsRef<Path>>(path: P) -> Result<Cursor<String>, io::Error> {
     let gd = get_file_location(GameData);
+    // TODO just accept path and let user version take care of getting full
+    // path.
     let f = BufReader::new(File::open(gd.join(path))?)
         .lines()
         .map(|line| line.unwrap().split("//").next().unwrap().trim().to_owned())
