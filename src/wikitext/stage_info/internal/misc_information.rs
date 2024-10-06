@@ -92,15 +92,23 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
     let map = STAGE_NAMES
         .stage_map(4, data.map_id)
         .unwrap_or_else(|| panic!("Extra stages map with id {} was not found!", data.map_id));
-    let stage_names = (data.stage_ids.0 .. data.stage_ids.1 + 1).map(|id| {
+    let stage_names = (data.stage_ids.0..data.stage_ids.1 + 1).map(|id| {
         let stage = &map.get(id).unwrap().name;
 
         match data.chance {
             100 => format!("{stage} (''Continuation Stage'')"),
             chance => {
-                let single_cont_chance: f64 = f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
-                let precision = if single_cont_chance % 1.0 == 0.0 { 0 } else { 1 };
-                format!("{stage} (''Continuation Stage'', {single_cont_chance:.0$}%)", precision)
+                let single_cont_chance: f64 =
+                    f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
+                let precision = if single_cont_chance % 1.0 == 0.0 {
+                    0
+                } else {
+                    1
+                };
+                format!(
+                    "{stage} (''Continuation Stage'', {single_cont_chance:.0$}%)",
+                    precision
+                )
             }
         }
     });
