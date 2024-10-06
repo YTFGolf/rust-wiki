@@ -19,6 +19,9 @@ pub struct Config<'a> {
     pub data_mines: PathBuf,
     /// Your name.
     pub user_name: &'a str,
+    /// Make `Magnification` put `|name|0` on gauntlet pages rather than the
+    /// enemy's actual magnification.
+    pub suppress_gauntlet_magnification: bool,
 }
 
 /// Static variable representing the config.
@@ -27,4 +30,5 @@ pub struct Config<'a> {
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
     data_mines: expand_home("~/Downloads/Version 13.7.0 JP"),
     user_name: "TheWWRNerdGuy",
+    suppress_gauntlet_magnification: true,
 });

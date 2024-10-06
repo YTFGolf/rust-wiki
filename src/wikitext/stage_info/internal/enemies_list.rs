@@ -1,9 +1,12 @@
 //! Module for the [enemies_list] function.
 
 use crate::{
-    data::stage::parsed::{
-        stage::Stage,
-        stage_enemy::{BossType, StageEnemy},
+    data::stage::{
+        parsed::{
+            stage::Stage,
+            stage_enemy::{BossType, StageEnemy},
+        },
+        stage_metadata::consts::StageTypeEnum as S,
     },
     wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
 };
@@ -12,8 +15,10 @@ use num_format::{Locale, WriteFormatted};
 use std::{collections::HashSet, fmt::Write};
 
 /// Get list of enemies and their magnifications.
-// TODO suppress magnification option for gauntlets
-pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
+pub fn enemies_list(
+    stage: &Stage,
+    suppress_gauntlet_magnification: bool,
+) -> Vec<TemplateParameter> {
     struct EnemyListWithDupes<'a> {
         base: Vec<&'a StageEnemy>,
         enemies: Vec<&'a StageEnemy>,
@@ -72,29 +77,40 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
             }
         };
     }
-    /// Get the `...` of `{{Magnification...}}`.
-    /// Multiplier is raw % i.e. 100 = *1.
-    fn collect_all_enemies(filtered_enemies_vec: &[&StageEnemy], multiplier: u32) -> String {
+    /// Write `|{enemy}|0` to `buf`.
+    fn write_enemy_0(buf: &mut String, enemy: &StageEnemy, _: u32) {
+        write!(buf, "|{}|0", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
+    }
+
+    let suppress_magnification = matches!(stage.meta.type_enum, S::Dojo | S::RankingDojo)
+        || suppress_gauntlet_magnification
+            && matches!(stage.meta.type_enum, S::Gauntlet | S::CollabGauntlet);
+    let write_enemy_f = if suppress_magnification {
+        write_enemy_0
+    } else {
+        write_enemy
+    };
+    let collect_all_enemies = |filtered_enemies_vec: &[&StageEnemy], multiplier: u32| {
         filtered_enemies_vec
             .iter()
             .map(|e| {
                 let mut buf = "".to_string();
-                write_enemy(&mut buf, e, multiplier);
+                write_enemy_f(&mut buf, e, multiplier);
                 buf
             })
             .collect::<Vec<String>>()
             .join("\n")
-    }
+    };
     // util functions
 
-    let mut enemy_vec: Vec<TemplateParameter> = vec![];
+    let mut param_vec: Vec<TemplateParameter> = vec![];
     let mut add_to_enemy_vec = |key: &'static str, list: String| {
         let mut buf = "".to_string();
         buf.write_str("{{Magnification").unwrap();
         buf.write_str(&list).unwrap();
         buf.write_str("}}").unwrap();
 
-        enemy_vec.push(TemplateParameter::new(key, buf));
+        param_vec.push(TemplateParameter::new(key, buf));
     };
     // return value and another util function (has to be a mutable closure
     // since it uses `enemy_vec`).
@@ -113,12 +129,12 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
     }
 
     let crowns = match &stage.crown_data {
-        None => return enemy_vec,
+        None => return param_vec,
         Some(c) => c,
     };
     let difficulty: u8 = crowns.max_difficulty.into();
     if difficulty == 1 {
-        return enemy_vec;
+        return param_vec;
     }
 
     let magnif_2: u32 = crowns.crown_2.unwrap().into();
@@ -135,7 +151,7 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
         add_to_enemy_vec("boss2", boss_items);
     }
     if difficulty == 2 {
-        return enemy_vec;
+        return param_vec;
     }
 
     let magnif_3: u32 = crowns.crown_3.unwrap().into();
@@ -152,12 +168,12 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
         add_to_enemy_vec("boss3", boss_items);
     }
     if difficulty == 3 {
-        return enemy_vec;
+        return param_vec;
     }
 
     let magnif_4: u32 = crowns.crown_4.unwrap().into();
     if magnif_4 == 100 {
-        return enemy_vec;
+        return param_vec;
     }
     if !enemy_list.base.is_empty() {
         let base_items = collect_all_enemies(&enemy_list.base, magnif_4);
@@ -172,7 +188,7 @@ pub fn enemies_list(stage: &Stage) -> Vec<TemplateParameter> {
         add_to_enemy_vec("boss4", boss_items);
     }
 
-    enemy_vec
+    param_vec
 }
 
 #[cfg(test)]
@@ -183,7 +199,7 @@ mod tests {
     fn simple_case() {
         let aac = Stage::new("ul 0 0").unwrap();
         assert_eq!(
-            enemies_list(&aac),
+            enemies_list(&aac, true),
             vec![
                 TemplateParameter::new("enemies", "{{Magnification|Relic Doge|100%}}".to_string()),
                 TemplateParameter::new("boss", "{{Magnification|Relic Bun-Bun|100%}}".to_string()),
@@ -198,7 +214,7 @@ mod tests {
     #[test]
     fn blank_enemy_list() {
         let tada = Stage::new("ex 63 0").unwrap();
-        assert_eq!(enemies_list(&tada), vec![]);
+        assert_eq!(enemies_list(&tada, true), vec![]);
     }
 
     #[test]
@@ -208,7 +224,7 @@ mod tests {
         // on Python always used to evaluate as 979%.
         let celestial_seas = Stage::new("n 32 3").unwrap();
         assert_eq!(
-            enemies_list(&celestial_seas),
+            enemies_list(&celestial_seas, true),
             vec![
                 TemplateParameter::new(
                     "enemies",
@@ -260,7 +276,7 @@ mod tests {
     fn with_separate_mags() {
         let it_25 = Stage::new("v 6 24").unwrap();
         assert_eq!(
-            enemies_list(&it_25),
+            enemies_list(&it_25, true),
             vec![TemplateParameter::new(
                 "enemies",
                 "{{Magnification|Pigeon de Sable|300%\n\
@@ -276,7 +292,7 @@ mod tests {
 
         let sacrifice_apprenticeship = Stage::new("nd 3 3").unwrap();
         assert_eq!(
-            enemies_list(&sacrifice_apprenticeship),
+            enemies_list(&sacrifice_apprenticeship, true),
             vec![
                 TemplateParameter::new(
                     "enemies",
@@ -299,7 +315,7 @@ mod tests {
     fn simple_4_crown() {
         let sleeping_lion = Stage::new("sol 0 7").unwrap();
         assert_eq!(
-            enemies_list(&sleeping_lion),
+            enemies_list(&sleeping_lion, true),
             vec![
                 TemplateParameter::new(
                     "enemies",
@@ -353,7 +369,7 @@ mod tests {
     fn with_repeated_enemy() {
         let star_ocean = Stage::new("sol 15 7").unwrap();
         assert_eq!(
-            enemies_list(&star_ocean),
+            enemies_list(&star_ocean, true),
             [
                 TemplateParameter::new(
                     "enemies",
@@ -419,7 +435,7 @@ mod tests {
     fn with_multiple_bosses() {
         let kugel_schreiber = Stage::new("sol 24 2").unwrap();
         assert_eq!(
-            enemies_list(&kugel_schreiber),
+            enemies_list(&kugel_schreiber, true),
             vec![
                 TemplateParameter::new(
                     "enemies",
@@ -473,7 +489,7 @@ mod tests {
     fn insane_magnifications() {
         let noble_tribe = Stage::new("sol 43 2").unwrap();
         assert_eq!(
-            enemies_list(&noble_tribe),
+            enemies_list(&noble_tribe, true),
             vec![
                 TemplateParameter::new(
                     "enemies",
@@ -508,7 +524,7 @@ mod tests {
         // Make sure B.B.Bunny in 3-star doesn't give me 3,919%
         let revenant_road = Stage::new("sol 33 3").unwrap();
         assert_eq!(
-            enemies_list(&revenant_road),
+            enemies_list(&revenant_road, true),
             vec![
                 TemplateParameter::new(
                     "enemies",
@@ -557,7 +573,7 @@ mod tests {
     fn with_base() {
         let finale = Stage::new("c 209 0").unwrap();
         assert_eq!(
-            enemies_list(&finale),
+            enemies_list(&finale, true),
             vec![TemplateParameter::new(
                 "base",
                 "{{Magnification|Finale Base|100%}}".to_string()
@@ -569,7 +585,7 @@ mod tests {
     fn with_insane_base() {
         let relay_1600m = Stage::new("ex 61 2").unwrap();
         assert_eq!(
-            enemies_list(&relay_1600m),
+            enemies_list(&relay_1600m, true),
             vec![
                 TemplateParameter::new(
                     "base",
@@ -596,7 +612,7 @@ mod tests {
         // basically just here for same reasons it was in information's tests
         let pile_of_guts = Stage::new("ul 31 5").unwrap();
         assert_eq!(
-            enemies_list(&pile_of_guts),
+            enemies_list(&pile_of_guts, true),
             vec![
                 TemplateParameter::new(
                     "base",
