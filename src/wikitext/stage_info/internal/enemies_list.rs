@@ -40,21 +40,29 @@ pub fn enemies_list(
     }
     // get all enemies
 
+    let suppress_magnification: bool = matches!(stage.meta.type_enum, S::Dojo | S::RankingDojo)
+        || suppress_gauntlet_magnification
+            && matches!(stage.meta.type_enum, S::Gauntlet | S::CollabGauntlet);
+
     assert!(
         enemy_list.base.len() <= 1,
         "Stage has multiple enemy bases!"
     );
     let mut enemy_list_seen = HashSet::new();
+    let mag_filter = match suppress_magnification {
+        true => |_| Left(0),
+        false => |mag| mag,
+    };
     let filtered_enemies = enemy_list
         .enemies
         .into_iter()
-        .filter(|e| e.id != 21 && enemy_list_seen.insert((e.id, e.magnification)))
+        .filter(|e| e.id != 21 && enemy_list_seen.insert((e.id, mag_filter(e.magnification))))
         .collect::<Vec<&StageEnemy>>();
     let mut boss_list_seen = HashSet::new();
     let filtered_boss = enemy_list
         .boss
         .into_iter()
-        .filter(|e| e.id != 21 && boss_list_seen.insert((e.id, e.magnification)))
+        .filter(|e| e.id != 21 && boss_list_seen.insert((e.id, mag_filter(e.magnification))))
         .collect::<Vec<&StageEnemy>>();
     // remove duplicates
 
@@ -82,13 +90,9 @@ pub fn enemies_list(
         write!(buf, "|{}|0", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
     }
 
-    let suppress_magnification = matches!(stage.meta.type_enum, S::Dojo | S::RankingDojo)
-        || suppress_gauntlet_magnification
-            && matches!(stage.meta.type_enum, S::Gauntlet | S::CollabGauntlet);
-    let write_enemy_f = if suppress_magnification {
-        write_enemy_0
-    } else {
-        write_enemy
+    let write_enemy_f = match suppress_magnification {
+        true => write_enemy_0,
+        false => write_enemy,
     };
     let collect_all_enemies = |filtered_enemies_vec: &[&StageEnemy], multiplier: u32| {
         filtered_enemies_vec
