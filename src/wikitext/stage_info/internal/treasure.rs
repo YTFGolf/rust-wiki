@@ -103,13 +103,12 @@ fn single_raw(rewards: &StageRewards) -> String {
         return "".to_string();
     }
 
-    todo!();
-    // let mut buf = "".to_string();
-    // buf.write_str("- ").unwrap();
-    // write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
-    // write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
+    let mut buf = "".to_string();
+    buf.write_str("- ").unwrap();
+    write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
+    write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
 
-    // buf
+    buf
 }
 
 fn get_total_chance(treasure: &[TreasureCSV]) -> (bool, f64) {
@@ -460,6 +459,19 @@ mod tests {
                 - Meteorite +1 (38.5%)"
                     .to_string()
             )),
+        )
+    }
+
+    #[test]
+    fn test_single_raw() {
+        let not_fault = Stage::new("c 102 0").unwrap();
+        assert_eq!(
+            treasure(&not_fault),
+            Some(TemplateParameter::new(
+                "treasure",
+                "- [[Shinji & Cat (Rare Cat)|Shinji & Cat]]'s [[True Form]] (5%, 1 time)"
+                    .to_string()
+            ))
         )
     }
 }
