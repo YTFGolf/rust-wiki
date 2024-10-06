@@ -1,4 +1,3 @@
-use std::borrow::Cow;
 use crate::{
     data::stage::{
         parsed::stage::{ContinueStages, Stage},
@@ -12,6 +11,7 @@ use crate::{
     },
 };
 use regex::Regex;
+use std::borrow::Cow;
 
 pub fn star(stage: &Stage) -> TemplateParameter {
     let max_crowns: u8 = match stage.crown_data.as_ref() {
@@ -69,6 +69,16 @@ pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
 }
 
 fn get_single_nav(location: Option<&StageData>) -> String {
+    assert!(
+        location.is_none()
+            || matches!(
+                REGEXES
+                    .old_or_removed_sub
+                    .replace_all(&location.unwrap().name, "$1"),
+                Cow::Borrowed(_)
+            ),
+        "Debug assert: navigation function."
+    );
     match location {
         None => "N/A".to_string(),
         Some(location) => location.name.clone(), // Some(location) => REGEXES
@@ -88,8 +98,9 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
         match data.chance {
             100 => format!("{stage} (''Continuation Stage'')"),
             chance => {
-                assert_eq!(data.stage_ids.0, data.stage_ids.1, "Feature currently not supported: non-guaranteed continuation stage with multiple possible stages to continue to.");
-                format!("{stage} (''Continuation Stage'', {chance}%)")
+                let single_cont_chance: f64 = f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
+                let precision = if single_cont_chance % 1.0 == 0.0 { 0 } else { 1 };
+                format!("{stage} (''Continuation Stage'', {single_cont_chance:.0$}%)", precision)
             }
         }
     });
@@ -141,3 +152,4 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> 
 // proving grounds (continuation stuff)
 // Literally earthshaker (prev stage = N/A)
 // Athletic Meet (event-chapter is (Old))
+// Green envy continuation stages
