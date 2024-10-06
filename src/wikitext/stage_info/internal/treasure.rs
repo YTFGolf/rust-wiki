@@ -2,7 +2,7 @@
 
 use crate::{
     data::{
-        map::map_data::csv_types::TreasureType as T,
+        map::map_data::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
     wikitext::{data_files::rewards::TREASURE_DATA, template_parameter::TemplateParameter},
@@ -138,10 +138,17 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
         return buf;
     };
 
+    let (is_equal_chance, total) = get_total_chance(t);
+
     buf.write_str("One of the following (1 time):").unwrap();
     for item in t {
         buf.write_str("<br>\n- ").unwrap();
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
+        if !is_equal_chance {
+            let item_chance = f64::from(100 * item.item_chance) / total;
+            let precision = if item_chance % 1.0 == 0.0 { 0 } else { 1 };
+            write!(buf, " ({item_chance:.0$}%)", precision).unwrap();
+        }
     }
 
     buf
@@ -364,14 +371,14 @@ mod tests {
             Some(TemplateParameter::new(
                 "treasure",
                 "One of the following (1 time):<br>\n\
-                - Bricks +5<br>\n\
-                - Feathers +5<br>\n\
-                - Coal +5<br>\n\
-                - Sprockets +5<br>\n\
-                - Gold +5<br>\n\
-                - Meteorite +5<br>\n\
-                - Beast Bones +5<br>\n\
-                - Ammonite +5"
+                - Bricks +5 (13%)<br>\n\
+                - Feathers +5 (13%)<br>\n\
+                - Coal +5 (13%)<br>\n\
+                - Sprockets +5 (13%)<br>\n\
+                - Gold +5 (13%)<br>\n\
+                - Meteorite +5 (13%)<br>\n\
+                - Beast Bones +5 (13%)<br>\n\
+                - Ammonite +5 (9%)"
                     .to_string()
             ))
         );
