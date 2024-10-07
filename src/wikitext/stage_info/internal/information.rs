@@ -154,6 +154,9 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
 /// Get the xp drop of a stage.
 pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
     let xp = stage.xp?;
+    if matches!(stage.meta.type_enum, StageTypeEnum::RankingDojo) && xp == 0 {
+        return None;
+    }
     let mut buf = "".to_string();
     buf.write_formatted(&xp, &Locale::en).unwrap();
     buf.write_str(" XP").unwrap();
