@@ -27,6 +27,7 @@ ${max_enemies}
 |jpname = ?\n|script = ?\n|romaji = ?
 ${star}
 ${chapter}
+${max_clears}
 ${difficulty}
 ${stage_nav}
 }}
@@ -130,6 +131,9 @@ fn get_stage_variable(
             .map(|p| p.to_string())
             .collect::<Vec<String>>()
             .join("\n"),
+        "max_clears" => internal::max_clears(stage)
+            .map(|param| param.to_string())
+            .unwrap_or("".to_string()),
         "difficulty" => internal::difficulty(stage)
             .map(|param| param.to_string())
             .unwrap_or("".to_string()),

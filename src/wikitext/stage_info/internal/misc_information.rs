@@ -55,6 +55,13 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
     }
 }
 
+pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
+    Some(TemplateParameter::new(
+        "max clears",
+        stage.max_clears?.to_string(),
+    ))
+}
+
 pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
     let difficulty = STAGE_NAMES.difficulty(
         stage.meta.type_num,
@@ -161,3 +168,4 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> 
 // Literally earthshaker (prev stage = N/A)
 // Athletic Meet (event-chapter is (Old))
 // Green envy continuation stages
+// Facing danger
