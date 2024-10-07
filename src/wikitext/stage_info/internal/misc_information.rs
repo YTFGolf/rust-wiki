@@ -164,8 +164,67 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> 
     ]
 }
 
-// proving grounds (continuation stuff)
-// Literally earthshaker (prev stage = N/A)
-// Athletic Meet (event-chapter is (Old))
-// Green envy continuation stages
-// Facing danger
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::wikitext::stage_info::internal::test_util::get_stage_wiki_data;
+
+    #[test]
+    fn test_single_stage() {
+        let earthshaker = Stage::new("n 0 0").unwrap();
+        let data = get_stage_wiki_data(&earthshaker);
+        assert_eq!(
+            star(&earthshaker),
+            TemplateParameter::new("star", "4".to_string())
+        );
+        assert_eq!(
+            chapter(&earthshaker, &data),
+            vec![TemplateParameter::new(
+                "sub-chapter",
+                "[[The Legend Begins]]".to_string()
+            )]
+        );
+        assert_eq!(max_clears(&earthshaker), None);
+        assert_eq!(
+            difficulty(&earthshaker),
+            Some(TemplateParameter::new("difficulty", "★1".to_string()))
+        );
+        assert_eq!(
+            stage_nav(&earthshaker, &data),
+            vec![
+                TemplateParameter::new("prev stage", "N/A".to_string()),
+                TemplateParameter::new("next stage", "[[Return of Terror]]".to_string())
+            ]
+        );
+    }
+
+    #[test]
+    fn test_old_map() {
+        todo!()
+    }
+
+    #[test]
+    fn test_max_clears() {
+        todo!()
+    }
+
+    #[test]
+    fn test_conditional_continue_single() {
+        todo!()
+    }
+
+    #[test]
+    fn test_conditional_continue_multiple() {
+        todo!()
+    }
+
+    #[test]
+    fn test_continue_stage_nav() {
+        todo!()
+    }
+    // proving grounds (continuation stuff)
+    // Literally earthshaker (prev stage = N/A)
+    // Athletic Meet (event-chapter is (Old))
+    // Green envy continuation stages
+    // Facing danger
+}
