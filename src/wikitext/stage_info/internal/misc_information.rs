@@ -200,31 +200,85 @@ mod tests {
 
     #[test]
     fn test_old_map() {
-        todo!()
+        let athletic_meet = Stage::new("s 8 0").unwrap();
+        let data = get_stage_wiki_data(&athletic_meet);
+        assert_eq!(
+            data.stage_map.name,
+            "[[Autumn = Sports Day! (Monthly Event)#Autumn Sports Day|Autumn Sports Day]] (Removed)"
+        );
+        assert_eq!(
+            chapter(&athletic_meet, &data),
+            vec![TemplateParameter::new(
+                "event-chapter",
+                "[[Autumn = Sports Day! (Monthly Event)#Autumn Sports Day|Autumn Sports Day]]"
+                    .to_string()
+            )]
+        );
     }
 
     #[test]
     fn test_max_clears() {
-        todo!()
+        let steel_visage = Stage::new("s 78 0").unwrap();
+        assert_eq!(
+            max_clears(&steel_visage),
+            Some(TemplateParameter::new("max clears", "1".to_string()))
+        )
     }
 
     #[test]
     fn test_conditional_continue_single() {
-        todo!()
+        let spectrum_of_truth = Stage::new("s 222 0").unwrap();
+        let data = get_stage_wiki_data(&spectrum_of_truth);
+        assert_eq!(
+            stage_nav(&spectrum_of_truth, &data),
+            vec![
+                TemplateParameter::new("prev stage", "N/A".to_string()),
+                TemplateParameter::new(
+                    "next stage",
+                    "[[Miracle Iris (Deadly)]] (''Continuation Stage'', 40%)".to_string()
+                ),
+            ]
+        )
     }
 
     #[test]
     fn test_conditional_continue_multiple() {
-        todo!()
+        let green_envy_3 = Stage::new("s 97 2").unwrap();
+        let data = get_stage_wiki_data(&green_envy_3);
+        assert_eq!(
+            stage_nav(&green_envy_3, &data),
+            vec![
+                TemplateParameter::new("prev stage", "[[Green Envy (Expert)]]".to_string()),
+                TemplateParameter::new(
+                    "next stage",
+                    "[[Catfruit Jubilee]] (''Continuation Stage'', 5%)<br>\n\
+                    [[Catfruit Jubilee]] (''Continuation Stage'', 5%)<br>\n\
+                    [[Catfruit Jubilee]] (''Continuation Stage'', 5%)"
+                        .to_string()
+                )
+            ]
+        );
     }
 
     #[test]
     fn test_continue_stage_nav() {
-        todo!()
+        let proving_grounds = Stage::new("s 250 2").unwrap();
+        let data = get_stage_wiki_data(&proving_grounds);
+        assert_eq!(
+            max_clears(&proving_grounds),
+            Some(TemplateParameter::new("max clears", "1".to_string()))
+        );
+        assert_eq!(
+            stage_nav(&proving_grounds, &data),
+            vec![
+                TemplateParameter::new("prev stage", "[[First Round (Expert)]]".to_string()),
+                TemplateParameter::new(
+                    "next stage",
+                    "[[2nd Round: Dawn (Deadly)]] (''Continuation Stage'')<br>\n\
+                    [[2nd Round: Dusk (Deadly)]] (''Continuation Stage'')"
+                        .to_string()
+                )
+            ]
+        )
     }
-    // proving grounds (continuation stuff)
-    // Literally earthshaker (prev stage = N/A)
-    // Athletic Meet (event-chapter is (Old))
-    // Green envy continuation stages
-    // Facing danger
 }
