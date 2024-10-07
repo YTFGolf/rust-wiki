@@ -98,7 +98,10 @@ pub fn battlegrounds(stage: &Stage) -> String {
             if other.0 == 0 {
                 continue;
             }
-            buf += &format!("\n*When the base reaches {hp}% HP:\n", hp = other.0);
+            if !buf.is_empty() {
+                buf += "\n";
+            }
+            write!(buf, "*When the base reaches {hp}% HP:\n", hp = other.0).unwrap();
             buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
             continue;
         }
@@ -540,6 +543,19 @@ mod tests {
             *Infinite [[Wild Doge]]s spawn after 56.67 seconds<sup>1,700f</sup>, delay 33.33~40 seconds<sup>1,000f~1,200f</sup>.\n\
             *2 [[Ragin' Gory|Ragin' Gories]] spawn once 60 Cat Units have been defeated, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
             *2 [[Ragin' Gory|Ragin' Gories]] spawn once 120 Cat Units have been defeated, delay 20~23.33 seconds<sup>600f~700f</sup>."
+        )
+    }
+
+    #[test]
+    fn test_all_enemies_base_hit() {
+        let great_burglar_battle = Stage::new("c 132 0").unwrap();
+        assert_eq!(
+            battlegrounds(&great_burglar_battle),
+            "*When the base reaches 99% HP:\n\
+            **1 [[Rat Doge (Event Enemy)|Rat Doge]] (1%) spawns as the boss.\n\
+            **5 [[Rat Doge (Event Enemy)|Rat Doges]] (50%) spawn, delay 8~12 seconds<sup>240f~360f</sup>.\n\
+            **10 [[Rat Doge (Event Enemy)|Rat Doges]] (50%) spawn, delay 4~6 seconds<sup>120f~180f</sup>.\n\
+            **15 [[Rat Doge (Event Enemy)|Rat Doges]] (50%) spawn, delay 2~3 seconds<sup>60f~90f</sup>."
         )
     }
 
