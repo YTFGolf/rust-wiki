@@ -323,6 +323,49 @@ mod tests {
     }
 
     #[test]
+    fn test_simple_parse() {
+        let those_guys = Cursor::new("4,0,20,50,150,100,0,8,0,2400");
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .trim(csv::Trim::All)
+            .flexible(true)
+            .from_reader(those_guys);
+        let line = rdr.records().next().unwrap().unwrap();
+        assert_eq!(
+            deserialise_single_enemy(line)
+                .unwrap()
+                .magnification
+                .unwrap(),
+            2400
+        )
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_error_panics() {
+        let unparsable = Cursor::new("4,0,20,50,.,100,0,8,0,2400");
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .trim(csv::Trim::All)
+            .flexible(true)
+            .from_reader(unparsable);
+        let line = rdr.records().next().unwrap().unwrap();
+        deserialise_single_enemy(line);
+    }
+
+    #[test]
+    fn test_invalid_line_fails() {
+        let invalid = Cursor::new(",,,,,,,,,,");
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .trim(csv::Trim::All)
+            .flexible(true)
+            .from_reader(invalid);
+        let line = rdr.records().next().unwrap().unwrap();
+        assert_eq!(deserialise_single_enemy(line), None)
+    }
+
+    #[test]
     fn test_specific_things() {
         let earthshaker = StageData::new("stageRN000_00.csv").unwrap();
         let doge = &earthshaker.stage_csv_data.enemies[0];
