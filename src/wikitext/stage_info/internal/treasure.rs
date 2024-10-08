@@ -386,7 +386,22 @@ mod tests {
         );
         assert_eq!(score_rewards(&it29), None);
     }
-    // other it one with 33, 34, 33 (it20?)
+
+    #[test]
+    fn guaranteed_once_different_chance() {
+        let it2 = Stage::new("v 6 1").unwrap();
+        assert_eq!(
+            treasure(&it2),
+            Some(TemplateParameter::new(
+                "treasure",
+                "One of the following (1 time):<br>\n\
+                - [[Catamin]] [A] +3 (34%)<br>\n\
+                - [[Catamin]] [B] +3 (33%)<br>\n\
+                - [[Catamin]] [C] +3 (33%)"
+                    .to_string()
+            ))
+        );
+    }
 
     #[test]
     fn test_guaranteed_unlimited_one() {
