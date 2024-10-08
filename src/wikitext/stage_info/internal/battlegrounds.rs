@@ -164,6 +164,8 @@ fn get_single_enemy_line(
     buf
 }
 
+/// (base hit value, enemies that spawn at that base hit)
+type OtherSpawnItem<'a> = (u32, Vec<&'a StageEnemy>);
 /// Get enemies that spawn immediately, enemies that spawn after a certain
 /// amount of base hit, and enemies that appear multiple times at different
 /// magnifications.
@@ -171,8 +173,7 @@ fn get_enemy_spawns(
     stage: &Stage,
     is_default_spawn: fn(&StageEnemy) -> bool,
     is_dojo: bool,
-) -> (Vec<&StageEnemy>, Vec<(u32, Vec<&StageEnemy>)>, Vec<u32>) {
-    type OtherSpawnItem<'a> = (u32, Vec<&'a StageEnemy>);
+) -> (Vec<&StageEnemy>, Vec<OtherSpawnItem>, Vec<u32>) {
     let mut default_spawn: Vec<&StageEnemy> = vec![];
     let mut other_spawn: Vec<OtherSpawnItem> = vec![];
     let mut enemies_mags = vec![];
