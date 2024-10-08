@@ -404,6 +404,23 @@ mod tests {
     }
 
     #[test]
+    fn guaranteed_once_same_chance() {
+        let spring_popstar = Stage::new("c 128 0").unwrap();
+        assert_eq!(
+            treasure(&spring_popstar),
+            Some(TemplateParameter::new(
+                "treasure",
+                "One of the following (unlimited):<br>\n\
+                - [[Battle Items#Speed Up|Speed Up]] +1<br>\n\
+                - [[Battle Items#Cat CPU|Cat CPU]] +1<br>\n\
+                - [[Battle Items#Cat Jobs|Cat Jobs]] +1<br>\n\
+                - [[Battle Items#Sniper the Cat|Sniper the Cat]] +1"
+                    .to_string()
+            ))
+        );
+    }
+
+    #[test]
     fn test_guaranteed_unlimited_one() {
         let afternoon_bug_hunt = Stage::new("h 30 0").unwrap();
         assert_eq!(
