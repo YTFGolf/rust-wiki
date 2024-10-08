@@ -31,19 +31,15 @@ pub fn enemies_appearing(stage: &Stage) -> String {
 
 /// Get the "{stage} is the nth stage in {map}." line.
 pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
-    let mut buf = "".to_string();
     if stage.meta.type_enum == StageTypeEnum::RankingDojo {
-        write!(
-            buf,
+        return format!(
             "'''{extracted_name}''' is the {num} [[Arena of Honor]] of the [[Catclaw Dojo]].",
             extracted_name = extract_name(&data.stage_name.name),
             num = get_ordinal(stage.meta.map_num + 1)
-        )
-        .unwrap();
-
-        return buf;
+        );
     }
 
+    let mut buf = "".to_string();
     write!(
         buf,
         "'''{name}''' is the ",

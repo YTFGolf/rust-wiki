@@ -42,14 +42,11 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
 
 /// Get the `|stage location` parameter.
 pub fn stage_location(stage: &Stage) -> TemplateParameter {
-    let mut buf = "".to_string();
-    write!(
-        &mut buf,
+    let buf = format!(
         "[[File:Mapname{map_num:03} {type_code} en.png]]",
         map_num = stage.meta.map_num,
         type_code = stage.meta.type_code.to_lowercase(),
-    )
-    .unwrap();
+    );
     TemplateParameter::new("stage location", buf)
 }
 
