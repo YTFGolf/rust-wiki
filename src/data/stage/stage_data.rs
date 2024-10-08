@@ -56,7 +56,7 @@ pub mod csv_types {
         _unknown_3: Option<u32>,
     }
 
-    #[derive(Debug, serde::Deserialize)]
+    #[derive(Debug, serde::Deserialize, PartialEq)]
     /// CSV data for enemies. See [Stage Structure
     /// Page/Battlegrounds](https://battle-cats.fandom.com/wiki/Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds)
     /// for more complete documentation.
@@ -144,6 +144,7 @@ impl StageData {
     pub fn read_stage_csv<R: std::io::Read>(reader: R) -> RawCSVData {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
+            .trim(csv::Trim::All)
             .flexible(true)
             .from_reader(reader);
 
@@ -242,7 +243,20 @@ impl StageData {
 mod tests {
     use super::*;
     use crate::data::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType};
-    use std::vec;
+    use std::{io::Cursor, vec};
+
+    #[test]
+    fn test_whitespace() {
+        let aven_jazz_cafe_sirrel = Cursor::new("414,5 ,1430,10,15,75,6,9,0,150,");
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .trim(csv::Trim::All)
+            .flexible(true)
+            .from_reader(aven_jazz_cafe_sirrel);
+        let line = rdr.records().next().unwrap().unwrap();
+        let enemy = line.deserialize::<StageEnemyCSV>(None);
+        assert!(enemy.is_ok())
+    }
 
     #[test]
     fn test_specific_things() {
