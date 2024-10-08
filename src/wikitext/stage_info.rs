@@ -76,7 +76,7 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str) -> String {
             continue;
         }
 
-        let new_buf = get_stage_variable(node.content, &stage, &stage_wiki_data);
+        let new_buf = get_stage_variable(node.content, stage, &stage_wiki_data);
         buf.write_str(&new_buf).unwrap();
     }
 

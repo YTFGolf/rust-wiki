@@ -188,7 +188,7 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
 /// Get a list of stage restrictions if they exist.
 fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
     let restrictions = stage.restrictions.as_ref()?;
-    if restrictions.len() == 0 || restrictions == &[FOUR_CROWN_DEFAULT_RESTRICTION] {
+    if restrictions.is_empty() || restrictions == &[FOUR_CROWN_DEFAULT_RESTRICTION] {
         return None;
     }
 

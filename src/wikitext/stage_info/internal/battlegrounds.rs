@@ -101,7 +101,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
             if !buf.is_empty() {
                 buf += "\n";
             }
-            write!(buf, "*When the base reaches {hp}% HP:\n", hp = other.0).unwrap();
+            writeln!(buf, "*When the base reaches {hp}% HP:", hp = other.0).unwrap();
             buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
             continue;
         }

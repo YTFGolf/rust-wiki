@@ -12,7 +12,7 @@ use std::fmt::Write;
 
 #[inline]
 fn is_unit_drop(id: u32) -> bool {
-    1_000 <= id && id < 30_000
+    (1_000..30_000).contains(&id)
 }
 
 /// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
