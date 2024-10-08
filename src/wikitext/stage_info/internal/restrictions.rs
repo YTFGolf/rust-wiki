@@ -159,9 +159,9 @@ fn add_restriction_or_crown(
     }
 }
 
-/// Assert that the restriction hasn't been duplicated, which means that
-/// `restriction_crowns.len()` is the amount of crowns the restriction applies
-/// to.
+/// Assert that the restriction's crowns haven't been duplicated, which means
+/// that `restriction_crowns[i].len()` is the amount of crowns the restriction
+/// applies to.
 // Is this necessary, probably not
 fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
     assert!(restriction_crowns.iter().all(|(_, crowns)| {
