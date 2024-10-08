@@ -151,7 +151,9 @@ fn add_restriction_or_crown(
         .iter_mut()
         .find(|(res_already, _)| res_already == &res_new)
     {
-        crowns.push(crown)
+        if !crowns.contains(&crown) {
+            crowns.push(crown)
+        }
     } else {
         restriction_crowns.push((res_new, vec![crown]))
     }
@@ -183,7 +185,6 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
     }
 
     assert_all_restrictions_unique(&restriction_crowns);
-    assert!(restriction_crowns.len() >= 2, "PONOS is bad at their job.");
 
     restriction_crowns
         .into_iter()
@@ -226,12 +227,6 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
     }
 
     let max_difficulty = u8::from(stage.crown_data.as_ref().unwrap().max_difficulty);
-    assert_eq!(
-        restrictions.len(),
-        max_difficulty as usize,
-        "Mismatch of amount of restrictions and amount of crowns! \
-        Restrictions: {restrictions:?}"
-    );
     Some(get_multi_restriction(restrictions, max_difficulty))
 }
 
@@ -544,6 +539,24 @@ mod tests {
         assert_eq!(revenge_r_cyclone.restrictions, Some(vec![]));
         assert_eq!(restrictions_info(&revenge_r_cyclone), None);
         assert_eq!(restrictions_section(&revenge_r_cyclone), "");
+    }
+
+    #[test]
+    fn multiple_same_restriction() {
+        let vanguard_veteran = Stage::new("s 213 0").unwrap();
+        let restrictions = vanguard_veteran.restrictions.as_ref().unwrap();
+        assert_eq!(restrictions[0], restrictions[1]);
+        assert_eq!(
+            restrictions_info(&vanguard_veteran),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Max # of Deployable Cats: 1".to_string()
+            ))
+        );
+        assert_eq!(
+            restrictions_section(&vanguard_veteran),
+            "Max # of Deployable Cats: 1"
+        );
     }
 
     #[test]
