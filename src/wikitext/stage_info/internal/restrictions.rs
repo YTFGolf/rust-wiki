@@ -138,6 +138,10 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
     restrictions
 }
 
+/// Helper function for [get_multi_restriction]. If `res_new` is already in
+/// `restriction_crowns`, then add `crown` to that restriction crown's list.
+/// Otherwise, create a new `restriction_crowns` entry and place `crown` in that
+/// restriction crown's list.
 fn add_restriction_or_crown(
     restriction_crowns: &mut Vec<(String, Vec<u8>)>,
     res_new: String,
@@ -153,6 +157,10 @@ fn add_restriction_or_crown(
     }
 }
 
+/// Assert that the restriction hasn't been duplicated, which means that
+/// `restriction_crowns.len()` is the amount of crowns the restriction applies
+/// to.
+// Is this necessary, probably not
 fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
     assert!(restriction_crowns.iter().all(|(_, crowns)| {
         let mut seen = HashSet::new();
@@ -160,6 +168,8 @@ fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
     }))
 }
 
+/// Get restrictions when the stage has multiple restrictions being applied to
+/// it.
 fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) -> Vec<String> {
     let mut restriction_crowns: Vec<(String, Vec<u8>)> = vec![];
     for restriction in restrictions {
