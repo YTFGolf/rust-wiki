@@ -251,15 +251,14 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
                         std::num::IntErrorKind::InvalidDigit => {
                             let index: usize = err.field().unwrap().try_into().unwrap();
                             let field = result.get(index).unwrap();
-                            match field {
-                                "." => {
-                                    let mut r2 = result;
-                                    r2.truncate(index - 1);
-                                    // IDK if this is a good idea
-                                    return deserialise_single_enemy(r2);
-                                }
-                                _ => (),
+
+                            if matches!(field, ".") {
+                                assert_eq!(index + 1, result.len());
+                                let mut r2 = result;
+                                r2.truncate(index);
+                                return deserialise_single_enemy(r2);
                             }
+
                             println!("{field:?}");
                             println!("{result:?}");
                             panic!("{err:?}")
@@ -316,7 +315,8 @@ mod tests {
             .trim(csv::Trim::All)
             .flexible(true)
             .from_reader(tragedy_in_red_those_guys);
-        let line = rdr.records().next().unwrap().unwrap();
+        let mut line = rdr.records().next().unwrap().unwrap();
+        line.truncate(10);
         let enemy = line.deserialize::<StageEnemyCSV>(None);
         assert!(enemy.is_ok());
         assert_eq!(enemy.ok(), deserialise_single_enemy(line));
