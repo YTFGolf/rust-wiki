@@ -15,6 +15,7 @@ use num_format::{Locale, WriteFormatted};
 use regex::Regex;
 use std::{fmt::Write, num::NonZeroU32};
 
+/// Write the given spawn time in seconds;
 fn write_single_spawn_s(buf: &mut String, time_f: u32) {
     let respawn_s = f64::from(time_f) / 30.0;
     assert!(respawn_s < 1_000.0, "Spawn time is above 1,000 seconds!");
@@ -28,6 +29,7 @@ fn write_single_spawn_s(buf: &mut String, time_f: u32) {
     write!(buf, "{:.1$}", respawn_s, precision).unwrap();
 }
 
+/// Write the enemy delay part of the battlegrounds lines.
 fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
     *buf += ", delay ";
 
@@ -60,6 +62,7 @@ fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
 /// of "is a".
 const AN_ENEMY_MATCHER: &str = r"^([AEIOU]|11|18|8)";
 
+/// Get the battlegrounds line for a single enemy.
 fn get_single_enemy_line(
     enemy: &StageEnemy,
     is_base_hit: bool,
@@ -161,15 +164,14 @@ fn get_single_enemy_line(
     buf
 }
 
-/// Get the battlegrounds section of the stage.
-pub fn battlegrounds(stage: &Stage) -> String {
-    let is_dojo = matches!(stage.meta.type_enum, T::Dojo | T::RankingDojo);
-
-    let is_default_spawn = match is_dojo {
-        false => |enemy: &StageEnemy| enemy.base_hp >= 100,
-        true => |enemy: &StageEnemy| enemy.base_hp == 0,
-    };
-
+/// Get enemies that spawn immediately, enemies that spawn after a certain
+/// amount of base hit, and enemies that appear multiple times at different
+/// magnifications.
+fn get_enemy_spawns(
+    stage: &Stage,
+    is_default_spawn: fn(&StageEnemy) -> bool,
+    is_dojo: bool,
+) -> (Vec<&StageEnemy>, Vec<(u32, Vec<&StageEnemy>)>, Vec<u32>) {
     type OtherSpawnItem<'a> = (u32, Vec<&'a StageEnemy>);
     let mut default_spawn: Vec<&StageEnemy> = vec![];
     let mut other_spawn: Vec<OtherSpawnItem> = vec![];
@@ -208,6 +210,20 @@ pub fn battlegrounds(stage: &Stage) -> String {
     other_spawn
         .iter_mut()
         .for_each(|l| l.1.sort_by_key(|e| e.boss_type == BossType::None));
+    (default_spawn, other_spawn, enemies_dupe)
+}
+
+/// Get the battlegrounds section of the stage.
+pub fn battlegrounds(stage: &Stage) -> String {
+    let is_dojo = matches!(stage.meta.type_enum, T::Dojo | T::RankingDojo);
+
+    let is_default_spawn: fn(&StageEnemy) -> bool = match is_dojo {
+        false => |enemy: &StageEnemy| enemy.base_hp >= 100,
+        true => |enemy: &StageEnemy| enemy.base_hp == 0,
+    };
+
+    let (default_spawn, other_spawn, enemies_dupe) =
+        get_enemy_spawns(stage, is_default_spawn, is_dojo);
 
     // this is not an abstraction, this is a convenience. having a bool here
     // only works because I always know it's a bool
