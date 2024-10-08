@@ -1,3 +1,5 @@
+//! Gets the misc information of the stage infobox.
+
 use crate::{
     data::stage::{
         parsed::stage::{ContinueStages, Stage},
@@ -13,6 +15,7 @@ use crate::{
 use regex::Regex;
 use std::borrow::Cow;
 
+/// Get the max crown difficulty of a stage.
 pub fn star(stage: &Stage) -> TemplateParameter {
     let max_crowns: u8 = match stage.crown_data.as_ref() {
         Some(d) => d.max_difficulty.into(),
@@ -22,6 +25,7 @@ pub fn star(stage: &Stage) -> TemplateParameter {
     TemplateParameter::new("star", max_crowns.to_string())
 }
 
+/// Get the `event`, `event-chapter` or `sub-chapter` items.
 pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
     #[inline]
     fn get_map_name(map: &MapData) -> Cow<'_, str> {
@@ -55,6 +59,7 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
     }
 }
 
+/// Get max clears of stage.
 pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
     Some(TemplateParameter::new(
         "max clears",
@@ -62,6 +67,7 @@ pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
     ))
 }
 
+/// Get star difficulty of stage.
 pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
     let difficulty = STAGE_NAMES.difficulty(
         stage.meta.type_num,
@@ -75,6 +81,7 @@ pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
     ))
 }
 
+/// Get a single possible next or prev stage's string representation.
 fn get_single_nav(location: Option<&StageData>) -> String {
     assert!(
         location.is_none()
@@ -84,7 +91,8 @@ fn get_single_nav(location: Option<&StageData>) -> String {
                     .replace_all(&location.unwrap().name, "$1"),
                 Cow::Borrowed(_)
             ),
-        "Debug assert: navigation function."
+        "Debug assert: stage has (Old) or (Removed) and needs to be added to \
+        test suite."
     );
     match location {
         None => "N/A".to_string(),
@@ -95,6 +103,7 @@ fn get_single_nav(location: Option<&StageData>) -> String {
     }
 }
 
+/// Get all continuation stages possible from current stage.
 fn get_continuation_stages(data: &ContinueStages) -> String {
     let map = STAGE_NAMES
         .stage_map(4, data.map_id)
@@ -123,6 +132,7 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
     stage_names.collect::<Vec<String>>().join("<br>\n")
 }
 
+/// Get the prev and next stage nav items.
 fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
     let prev;
     let next;
@@ -152,6 +162,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
     (prev_str, next_str)
 }
 
+/// Get the `prev stage` and `next stage` infobox parameters.
 pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
     if [T::Dojo, T::RankingDojo].contains(&stage.meta.type_enum) {
         return vec![];
