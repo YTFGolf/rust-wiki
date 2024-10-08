@@ -11,6 +11,7 @@ use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
 #[inline]
+/// Is the reward a cat unit/true form.
 fn is_unit_drop(id: u32) -> bool {
     (1_000..30_000).contains(&id)
 }
@@ -96,6 +97,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
     }
 }
 
+/// For the treasure type that appears to be a single raw drop.
 fn single_raw(rewards: &StageRewards) -> String {
     let t = &rewards.treasure_drop;
     assert_eq!(t.len(), 1);
@@ -111,6 +113,8 @@ fn single_raw(rewards: &StageRewards) -> String {
     buf
 }
 
+/// Get the total chance of all treasures in list, also determine if all have
+/// the same chance.
 fn get_total_chance(treasure: &[TreasureCSV]) -> (bool, f64) {
     let mut total = 0;
     let mut is_equal_chance = true;

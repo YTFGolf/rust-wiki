@@ -18,6 +18,7 @@ pub use misc_information::{chapter, difficulty, max_clears, stage_nav, star};
 pub use restrictions::{restrictions_info, restrictions_section};
 pub use treasure::{score_rewards, treasure};
 
+/// Get the battlecats-db reference link.
 pub fn reference(stage: &Stage) -> String {
     format!(
         "https://battlecats-db.com/stage/s{type:02}{map:03}-{incremented_stage:02}.html",
