@@ -1,3 +1,5 @@
+//! Get the battlegrounds section of stage.
+
 use crate::{
     data::stage::{
         parsed::{
@@ -13,114 +15,50 @@ use num_format::{Locale, WriteFormatted};
 use regex::Regex;
 use std::{fmt::Write, num::NonZeroU32};
 
-pub fn battlegrounds(stage: &Stage) -> String {
-    // Go through all enemies
-    // sort into percentages (if >100 then goes in 100)
-    // sort all percentages
-    let is_dojo = matches!(stage.meta.type_enum, T::Dojo | T::RankingDojo);
-
-    let is_default_spawn = match is_dojo {
-        false => |enemy: &StageEnemy| enemy.base_hp >= 100,
-        true => |enemy: &StageEnemy| enemy.base_hp == 0,
+fn write_single_spawn_s(buf: &mut String, time_f: u32) {
+    let respawn_s = f64::from(time_f) / 30.0;
+    assert!(respawn_s < 1_000.0, "Spawn time is above 1,000 seconds!");
+    let precision = if time_f % 30 == 0 {
+        0
+    } else if time_f % 3 == 0 {
+        1
+    } else {
+        2
     };
+    write!(buf, "{:.1$}", respawn_s, precision).unwrap();
+}
 
-    type OtherSpawnItem<'a> = (u32, Vec<&'a StageEnemy>);
-    let mut default_spawn: Vec<&StageEnemy> = vec![];
-    let mut other_spawn: Vec<OtherSpawnItem> = vec![];
-    let mut enemies_mags = vec![];
-    let mut enemies_dupe = vec![];
-    for enemy in stage.enemies.iter() {
-        if let Some((_id, mag)) = enemies_mags.iter().find(|(id, _mag)| *id == enemy.id) {
-            if *mag != enemy.magnification {
-                enemies_dupe.push(enemy.id);
-            }
-        } else {
-            enemies_mags.push((enemy.id, enemy.magnification))
-        }
+fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
+    buf.write_str(", delay ").unwrap();
 
-        if is_default_spawn(enemy) {
-            default_spawn.push(enemy);
-            continue;
-        }
-
-        if let Some((_, percentage_vec)) = other_spawn
-            .iter_mut()
-            .find(|(percent, _)| *percent == enemy.base_hp)
-        {
-            percentage_vec.push(enemy);
-        } else {
-            other_spawn.push((enemy.base_hp, vec![enemy]))
-        }
-    }
-    let order_function: fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering = match is_dojo {
-        false => |a, b| b.0.cmp(&a.0),
-        true => |a, b| a.0.cmp(&b.0),
-    };
-    other_spawn.sort_by(order_function);
-
-    default_spawn.sort_by_key(|e| !e.is_base);
-    other_spawn
-        .iter_mut()
-        .for_each(|l| l.1.sort_by_key(|e| e.boss_type == BossType::None));
-
-    // this is not an abstraction, this is a convenience. having a bool here
-    // only works because I always know it's a bool
-    fn stringify_enemy_list(
-        enemies: Vec<&StageEnemy>,
-        is_base_hit: bool,
-        enemies_dupe: &[u32],
-    ) -> String {
-        enemies
-            .iter()
-            .filter_map(|e| {
-                if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
-                    None
-                } else {
-                    Some(get_single_enemy_line(
-                        e,
-                        is_base_hit,
-                        enemies_dupe.contains(&e.id),
-                    ))
-                }
-            })
-            .collect::<Vec<String>>()
-            .join("\n")
+    write_single_spawn_s(buf, enemy.respawn_time.0);
+    if enemy.respawn_time.1 > enemy.respawn_time.0 {
+        buf.write_char('~').unwrap();
+        write_single_spawn_s(buf, enemy.respawn_time.1);
     }
 
-    let mut buf = "".to_string();
-    if stage.is_base_indestructible {
-        buf += "*The enemy base is indestructible until the boss is defeated.\n"
-    }
-    buf += &stringify_enemy_list(default_spawn, false, &enemies_dupe);
-
-    for other in other_spawn {
-        if !is_dojo {
-            if other.0 == 0 {
-                continue;
-            }
-            if !buf.is_empty() {
-                buf += "\n";
-            }
-            writeln!(buf, "*When the base reaches {hp}% HP:", hp = other.0).unwrap();
-            buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
-            continue;
-        }
-
-        buf += "\n*When the base takes ";
-        buf.write_formatted(&other.0, &Locale::en).unwrap();
-        buf += " damage:\n";
-        buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
+    if enemy.respawn_time == (30, 30) {
+        buf.write_str(" second").unwrap();
+    } else {
+        buf.write_str(" seconds").unwrap();
     }
 
-    buf
+    buf.write_str("<sup>").unwrap();
+    buf.write_formatted(&enemy.respawn_time.0, &Locale::en)
+        .unwrap();
+    buf.write_char('f').unwrap();
+    if enemy.respawn_time.1 > enemy.respawn_time.0 {
+        buf.write_char('~').unwrap();
+        buf.write_formatted(&enemy.respawn_time.1, &Locale::en)
+            .unwrap();
+        buf.write_char('f').unwrap();
+    }
+    buf.write_str("</sup>").unwrap();
 }
 
 /// Matcher string for all enemy bases that should begin with "is a*n*" instead
 /// of "is a".
 const AN_ENEMY_MATCHER: &str = r"^([AEIOU]|11|18|8)";
-
-// just do edge cases described in The Battle Cats Wiki:Stage Structure
-// Page/Battlegrounds
 
 fn get_single_enemy_line(
     enemy: &StageEnemy,
@@ -222,45 +160,104 @@ fn get_single_enemy_line(
     buf
 }
 
-fn write_single_spawn_s(buf: &mut String, time_f: u32) {
-    let respawn_s = f64::from(time_f) / 30.0;
-    assert!(respawn_s < 1_000.0, "Spawn time is above 1,000 seconds!");
-    let precision = if time_f % 30 == 0 {
-        0
-    } else if time_f % 3 == 0 {
-        1
-    } else {
-        2
+/// Get the battlegrounds section of the stage.
+pub fn battlegrounds(stage: &Stage) -> String {
+    let is_dojo = matches!(stage.meta.type_enum, T::Dojo | T::RankingDojo);
+
+    let is_default_spawn = match is_dojo {
+        false => |enemy: &StageEnemy| enemy.base_hp >= 100,
+        true => |enemy: &StageEnemy| enemy.base_hp == 0,
     };
-    write!(buf, "{:.1$}", respawn_s, precision).unwrap();
-}
 
-fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
-    buf.write_str(", delay ").unwrap();
+    type OtherSpawnItem<'a> = (u32, Vec<&'a StageEnemy>);
+    let mut default_spawn: Vec<&StageEnemy> = vec![];
+    let mut other_spawn: Vec<OtherSpawnItem> = vec![];
+    let mut enemies_mags = vec![];
+    let mut enemies_dupe = vec![];
+    for enemy in stage.enemies.iter() {
+        if let Some((_id, mag)) = enemies_mags.iter().find(|(id, _mag)| *id == enemy.id) {
+            if *mag != enemy.magnification {
+                enemies_dupe.push(enemy.id);
+            }
+        } else {
+            enemies_mags.push((enemy.id, enemy.magnification))
+        }
 
-    write_single_spawn_s(buf, enemy.respawn_time.0);
-    if enemy.respawn_time.1 > enemy.respawn_time.0 {
-        buf.write_char('~').unwrap();
-        write_single_spawn_s(buf, enemy.respawn_time.1);
+        if is_default_spawn(enemy) {
+            default_spawn.push(enemy);
+            continue;
+        }
+
+        if let Some((_, percentage_vec)) = other_spawn
+            .iter_mut()
+            .find(|(percent, _)| *percent == enemy.base_hp)
+        {
+            percentage_vec.push(enemy);
+        } else {
+            other_spawn.push((enemy.base_hp, vec![enemy]))
+        }
+    }
+    let order_function: fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering = match is_dojo {
+        false => |a, b| b.0.cmp(&a.0),
+        true => |a, b| a.0.cmp(&b.0),
+    };
+    other_spawn.sort_by(order_function);
+
+    default_spawn.sort_by_key(|e| !e.is_base);
+    other_spawn
+        .iter_mut()
+        .for_each(|l| l.1.sort_by_key(|e| e.boss_type == BossType::None));
+
+    // this is not an abstraction, this is a convenience. having a bool here
+    // only works because I always know it's a bool
+    fn stringify_enemy_list(
+        enemies: Vec<&StageEnemy>,
+        is_base_hit: bool,
+        enemies_dupe: &[u32],
+    ) -> String {
+        enemies
+            .iter()
+            .filter_map(|e| {
+                if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
+                    None
+                } else {
+                    Some(get_single_enemy_line(
+                        e,
+                        is_base_hit,
+                        enemies_dupe.contains(&e.id),
+                    ))
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("\n")
     }
 
-    if enemy.respawn_time == (30, 30) {
-        buf.write_str(" second").unwrap();
-    } else {
-        buf.write_str(" seconds").unwrap();
+    let mut buf = "".to_string();
+    if stage.is_base_indestructible {
+        buf += "*The enemy base is indestructible until the boss is defeated.\n"
+    }
+    buf += &stringify_enemy_list(default_spawn, false, &enemies_dupe);
+
+    for other in other_spawn {
+        if !is_dojo {
+            if other.0 == 0 {
+                continue;
+            }
+            if !buf.is_empty() {
+                buf += "\n";
+            }
+            writeln!(buf, "*When the base reaches {hp}% HP:", hp = other.0).unwrap();
+            buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
+            continue;
+        }
+
+        buf += "\n*When the base takes ";
+        buf.write_formatted(&other.0, &Locale::en).unwrap();
+        buf += " damage:\n";
+        buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
     }
 
-    buf.write_str("<sup>").unwrap();
-    buf.write_formatted(&enemy.respawn_time.0, &Locale::en)
-        .unwrap();
-    buf.write_char('f').unwrap();
-    if enemy.respawn_time.1 > enemy.respawn_time.0 {
-        buf.write_char('~').unwrap();
-        buf.write_formatted(&enemy.respawn_time.1, &Locale::en)
-            .unwrap();
-        buf.write_char('f').unwrap();
-    }
-    buf.write_str("</sup>").unwrap();
+    buf
 }
 
 #[cfg(test)]
