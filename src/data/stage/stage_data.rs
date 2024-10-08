@@ -11,6 +11,7 @@ use crate::{
     data::stage::stage_metadata::StageMeta,
     file_handler::get_decommented_file_reader,
 };
+use csv::StringRecord;
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
 use std::path::PathBuf;
 
@@ -173,16 +174,16 @@ impl StageData {
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
         let mut enemies = vec![];
-        for result in rdr.byte_records() {
-            let record: StageEnemyCSV = match result.unwrap().deserialize(None) {
-                Ok(r) => r,
-                Err(_) => continue,
+        for result in rdr.records() {
+            let enemy = match deserialise_single_enemy(result.unwrap()) {
+                Some(value) => value,
+                None => continue,
             };
 
-            if record.num == 0 {
+            if enemy.num == 0 {
                 break;
             }
-            enemies.push(record);
+            enemies.push(enemy);
         }
 
         RawCSVData {
@@ -239,6 +240,54 @@ impl StageData {
     }
 }
 
+fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
+    let record: StageEnemyCSV = match result.deserialize(None) {
+        Ok(r) => r,
+        Err(x) => match x.kind() {
+            csv::ErrorKind::Deserialize { pos: _, err } => match err.kind() {
+                csv::DeserializeErrorKind::ParseInt(parse_int_error) => {
+                    match parse_int_error.kind() {
+                        std::num::IntErrorKind::Empty => return None,
+                        std::num::IntErrorKind::InvalidDigit => {
+                            let index: usize = err.field().unwrap().try_into().unwrap();
+                            let field = result.get(index).unwrap();
+                            match field {
+                                "." => {
+                                    let mut r2 = result;
+                                    r2.truncate(index - 1);
+                                    // IDK if this is a good idea
+                                    return deserialise_single_enemy(r2);
+                                }
+                                _ => (),
+                            }
+                            println!("{field:?}");
+                            println!("{result:?}");
+                            panic!("{err:?}")
+                        }
+                        // std::num::IntErrorKind::PosOverflow => todo!(),
+                        // std::num::IntErrorKind::NegOverflow => todo!(),
+                        // std::num::IntErrorKind::Zero => todo!(),
+                        _ => todo!(),
+                    }
+                }
+                _ => todo!(), // csv::DeserializeErrorKind::Message(_) => todo!(),
+                              // csv::DeserializeErrorKind::Unsupported(_) => todo!(),
+                              // csv::DeserializeErrorKind::UnexpectedEndOfRow => todo!(),
+                              // csv::DeserializeErrorKind::InvalidUtf8(utf8_error) => todo!(),
+                              // csv::DeserializeErrorKind::ParseBool(parse_bool_error) => todo!(),
+                              // csv::DeserializeErrorKind::ParseFloat(parse_float_error) => todo!(),
+            },
+            // csv::ErrorKind::Io(error) => todo!(),
+            // csv::ErrorKind::Utf8 { pos, err } => todo!(),
+            // csv::ErrorKind::UnequalLengths { pos, expected_len, len } => todo!(),
+            // csv::ErrorKind::Seek => todo!(),
+            // csv::ErrorKind::Serialize(_) => todo!(),
+            _ => todo!(),
+        },
+    };
+    Some(record)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -255,7 +304,22 @@ mod tests {
             .from_reader(aven_jazz_cafe_sirrel);
         let line = rdr.records().next().unwrap().unwrap();
         let enemy = line.deserialize::<StageEnemyCSV>(None);
-        assert!(enemy.is_ok())
+        assert!(enemy.is_ok());
+        assert_eq!(enemy.ok(), deserialise_single_enemy(line));
+    }
+
+    #[test]
+    fn test_invalid_char() {
+        let tragedy_in_red_those_guys = Cursor::new("4,0,20,50,150,100,0,8,0,2400,.");
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .trim(csv::Trim::All)
+            .flexible(true)
+            .from_reader(tragedy_in_red_those_guys);
+        let line = rdr.records().next().unwrap().unwrap();
+        let enemy = line.deserialize::<StageEnemyCSV>(None);
+        assert!(enemy.is_ok());
+        assert_eq!(enemy.ok(), deserialise_single_enemy(line));
     }
 
     #[test]

@@ -30,5 +30,6 @@ pub struct Config<'a> {
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
     data_mines: expand_home("~/Downloads/Version 13.7.0 JP"),
     user_name: "TheWWRNerdGuy",
-    suppress_gauntlet_magnification: true,
+    // suppress_gauntlet_magnification: true,
+    suppress_gauntlet_magnification: false,
 });
