@@ -29,31 +29,31 @@ fn write_single_spawn_s(buf: &mut String, time_f: u32) {
 }
 
 fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
-    buf.write_str(", delay ").unwrap();
+    *buf += ", delay ";
 
     write_single_spawn_s(buf, enemy.respawn_time.0);
     if enemy.respawn_time.1 > enemy.respawn_time.0 {
-        buf.write_char('~').unwrap();
+        *buf += "~";
         write_single_spawn_s(buf, enemy.respawn_time.1);
     }
 
     if enemy.respawn_time == (30, 30) {
-        buf.write_str(" second").unwrap();
+        *buf += " second";
     } else {
-        buf.write_str(" seconds").unwrap();
+        *buf += " seconds";
     }
 
-    buf.write_str("<sup>").unwrap();
+    *buf += "<sup>";
     buf.write_formatted(&enemy.respawn_time.0, &Locale::en)
         .unwrap();
-    buf.write_char('f').unwrap();
+    *buf += "f";
     if enemy.respawn_time.1 > enemy.respawn_time.0 {
-        buf.write_char('~').unwrap();
+        *buf += "~";
         buf.write_formatted(&enemy.respawn_time.1, &Locale::en)
             .unwrap();
-        buf.write_char('f').unwrap();
+        *buf += "f";
     }
-    buf.write_str("</sup>").unwrap();
+    *buf += "</sup>";
 }
 
 /// Matcher string for all enemy bases that should begin with "is a*n*" instead
@@ -68,9 +68,9 @@ fn get_single_enemy_line(
     let mut buf = "".to_string();
 
     if is_base_hit {
-        buf.write_str("**").unwrap();
+        buf += "**";
     } else {
-        buf.write_str("*").unwrap();
+        buf += "*";
     }
 
     if enemy.is_base {
@@ -88,7 +88,7 @@ fn get_single_enemy_line(
     };
 
     match enemy.amount {
-        EnemyAmount::Infinite => buf.write_str("Infinite").unwrap(),
+        EnemyAmount::Infinite => buf += "Infinite",
         EnemyAmount::Limit(n) => {
             let _ = buf.write_formatted(&n, &Locale::en).unwrap();
         }
@@ -101,46 +101,47 @@ fn get_single_enemy_line(
         write!(buf, " {}", ENEMY_DATA.get_names(enemy.id).plural).unwrap();
     }
     if show_magnification {
-        buf.write_str(" (").unwrap();
         match enemy.magnification {
             Left(mag) => {
+                buf += " (";
                 buf.write_formatted(&mag, &Locale::en).unwrap();
-                buf.write_str("%)").unwrap()
+                buf += "%)"
             }
             Right((hp, ap)) => {
+                buf += " (";
                 buf.write_formatted(&hp, &Locale::en).unwrap();
-                buf.write_str("% HP, ").unwrap();
+                buf += "% HP, ";
                 buf.write_formatted(&ap, &Locale::en).unwrap();
-                buf.write_str("% AP)").unwrap();
+                buf += "% AP)";
             }
         }
     }
 
     if is_single_enemy {
-        buf.write_str(" spawns").unwrap();
+        buf += " spawns";
     } else {
-        buf.write_str(" spawn").unwrap();
+        buf += " spawn";
     }
 
     if enemy.boss_type != BossType::None {
         match is_single_enemy {
-            true => buf.write_str(" as the boss").unwrap(),
-            false => buf.write_str(" as bosses").unwrap(),
+            true => buf += " as the boss",
+            false => buf += " as bosses",
         }
     }
 
     let is_instant_spawn = enemy.start_frame == 0 || (is_base_hit && !enemy.enforce_start_frame);
     if !is_instant_spawn {
-        buf.write_str(" after ").unwrap();
+        buf += " after ";
         write_single_spawn_s(&mut buf, enemy.start_frame);
         if enemy.start_frame == 30 {
-            buf.write_str(" second<sup>").unwrap();
+            buf += " second<sup>";
         } else {
-            buf.write_str(" seconds<sup>").unwrap();
+            buf += " seconds<sup>";
         }
         buf.write_formatted(&enemy.start_frame, &Locale::en)
             .unwrap();
-        buf.write_str("f</sup>").unwrap();
+        buf += "f</sup>";
     }
 
     if let Some(kills) = enemy.kill_count {
