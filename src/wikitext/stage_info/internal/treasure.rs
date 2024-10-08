@@ -164,11 +164,10 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> String {
     let t = &rewards.treasure_drop;
 
     if t.len() == 1 {
-        todo!()
-        // buf.write_str("- ").unwrap();
-        // write_name_and_amount(&mut buf, &t[0].item_id, &t[0].item_amt);
-        // buf.write_str(" (100%, 1 time)").unwrap();
-        // return buf;
+        buf.write_str("- ").unwrap();
+        write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
+        buf.write_str(" (100%, unlimited)").unwrap();
+        return buf;
     };
 
     let (is_equal_chance, total) = get_total_chance(t);
@@ -388,6 +387,18 @@ mod tests {
         assert_eq!(score_rewards(&it29), None);
     }
     // other it one with 33, 34, 33 (it20?)
+
+    #[test]
+    fn test_guaranteed_unlimited_one() {
+        let afternoon_bug_hunt = Stage::new("h 30 0").unwrap();
+        assert_eq!(
+            treasure(&afternoon_bug_hunt),
+            Some(TemplateParameter::new(
+                "treasure",
+                "- [[Summer Break Cats (Event Gacha)|Legend Net]] +1 (100%, unlimited)".to_string()
+            ))
+        )
+    }
 
     #[test]
     fn guaranteed_unlimited_many() {
