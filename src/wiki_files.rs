@@ -4,7 +4,6 @@ use crate::{
     config::CONFIG,
     file_handler::{get_file_location, FileLocation},
 };
-use http::header::USER_AGENT;
 use similar::{ChangeTag, TextDiff};
 use std::{
     fs::File,
@@ -28,6 +27,8 @@ const FILES: [(&str, &str); 7] = [
         "User:TheWWRNerdGuy/data/ContinueStages.csv",
     ),
 ];
+
+const USER_AGENT: &str = "user-agent";
 
 /// Get a coloured unified diff between the old and new content.
 fn get_file_diff(old_content: &str, new_content: &str) -> String {
@@ -77,7 +78,7 @@ pub fn update_wiki_files() {
     for (file_name, page_name) in FILES {
         let uri = format!("{WIKI_URL}/{page_name}?action=raw");
         let response = ureq::get(&uri)
-            .set(USER_AGENT.as_str(), &user_agent)
+            .set(USER_AGENT, &user_agent)
             .call()
             .expect("Couldn't get the data from the wiki.");
         let mut res_str = response.into_string().unwrap();

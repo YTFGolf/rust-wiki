@@ -17,7 +17,7 @@ pub enum FileLocation {
     /// Root directory of downloaded wiki data.
     WikiData,
 }
-use FileLocation::{GameData, WikiData};
+use FileLocation as F;
 
 /// Get the root directory of a location.
 /// ```
@@ -29,8 +29,8 @@ use FileLocation::{GameData, WikiData};
 #[inline]
 pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
     match location {
-        GameData => &CONFIG.current_version.location,
-        WikiData => &WIKI_DATA_LOCATION,
+        F::GameData => &CONFIG.current_version.location,
+        F::WikiData => &WIKI_DATA_LOCATION,
     }
 }
 
@@ -44,7 +44,7 @@ pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
 /// let mut rdr = csv::Reader::from_reader(reader);
 /// ```
 pub fn get_decommented_file_reader<P: AsRef<Path>>(path: P) -> Result<Cursor<String>, io::Error> {
-    let gd = get_file_location(GameData);
+    let gd = &CONFIG.current_version.location;
     // TODO just accept path and let user version take care of getting full
     // path.
     let f = BufReader::new(File::open(gd.join(path))?)

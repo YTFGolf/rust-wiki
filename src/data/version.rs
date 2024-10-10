@@ -33,6 +33,7 @@ pub struct Version {
     pub location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
+    // TODO static data store
 }
 impl Version {
     pub fn new<P>(location: P, language: &str) -> Result<Self, InvalidLanguage>

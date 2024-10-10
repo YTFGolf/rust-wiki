@@ -321,7 +321,6 @@ impl Stage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::file_handler::{get_file_location, FileLocation::GameData};
     use regex::Regex;
 
     // test none values, esp. with crown data
@@ -330,7 +329,7 @@ mod tests {
     #[ignore]
     fn get_all() {
         let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
-        for f in std::fs::read_dir(get_file_location(GameData).join("DataLocal")).unwrap() {
+        for f in std::fs::read_dir(&CONFIG.current_version.location.join("DataLocal")).unwrap() {
             let file_name = f.unwrap().file_name().into_string().unwrap();
             if !stage_file_re.is_match(&file_name) {
                 continue;
