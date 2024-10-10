@@ -2,6 +2,8 @@
 use home::home_dir;
 use std::{path::PathBuf, sync::LazyLock};
 
+use crate::data::version::{InvalidLanguage, Version};
+
 /// Expand home directory if `dir` begins with `~/`.
 fn expand_home(dir: &str) -> PathBuf {
     if &dir[0..2] == "~/" {
@@ -11,12 +13,17 @@ fn expand_home(dir: &str) -> PathBuf {
     }
 }
 
+fn get_version(dir: &str) -> Version {
+    match Version::new(expand_home(dir), Version::get_lang(dir)) {
+        Ok(v) => v,
+        Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
+    }
+}
+
 /// Configuration values for the program.
 #[derive(Debug)]
 pub struct Config<'a> {
-    /// Root location of game files (i.e. `{data_mines}/DataLocal/stage.csv`
-    /// contains the energy cost of each EoC stage).
-    pub data_mines: PathBuf,
+    pub version: Version,
     /// Your name.
     pub user_name: &'a str,
     /// Make `Magnification` put `|name|0` on gauntlet pages rather than the
@@ -28,7 +35,7 @@ pub struct Config<'a> {
 // TODO read a config file instead of writing it here.
 // TODO remove dependency on static variable.
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
-    data_mines: expand_home("~/Downloads/Version 13.7.0 JP"),
+    version: get_version("~/Downloads/Version 13.7.0 JP"),
     user_name: "TheWWRNerdGuy",
     // suppress_gauntlet_magnification: true,
     suppress_gauntlet_magnification: false,

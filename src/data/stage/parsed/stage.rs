@@ -307,6 +307,13 @@ impl Stage {
     pub fn new(selector: &str) -> Option<Self> {
         Some(StageData::new(selector)?.into())
     }
+    // pub fn new(selector: &str) -> Option<Self> {
+    //     Self::new_versioned(selector, CURRENT_VERSION)
+    // }
+
+    // pub fn new_versioned(selector: &str, version: todo!())->Option<Self>{
+    //     Some(StageData::new(selector)?.into())
+    // }
 }
 
 #[cfg(test)]

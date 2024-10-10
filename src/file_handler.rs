@@ -29,7 +29,7 @@ use FileLocation::{GameData, WikiData};
 #[inline]
 pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
     match location {
-        GameData => &CONFIG.data_mines,
+        GameData => &CONFIG.version.location,
         WikiData => &WIKI_DATA_LOCATION,
     }
 }

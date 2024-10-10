@@ -2,3 +2,4 @@
 
 pub mod map;
 pub mod stage;
+pub mod version;
