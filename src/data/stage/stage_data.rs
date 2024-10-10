@@ -226,7 +226,7 @@ impl StageData {
         if self.meta.type_enum == StageTypeEnum::Labyrinth {
             return None;
         }
-        GameMap::get_stage_data(&self.meta, &CONFIG.current_version)
+        GameMap::get_stage_data(&self.meta, todo!())
     }
 
     /// Get Map_option data if it exists.

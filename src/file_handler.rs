@@ -13,7 +13,7 @@ static WIKI_DATA_LOCATION: LazyLock<PathBuf> =
 /// Describes a location for files.
 pub enum FileLocation {
     /// Root directory of game data.
-    GameData,
+    // GameData,
     /// Root directory of downloaded wiki data.
     WikiData,
 }
@@ -29,7 +29,6 @@ use FileLocation as F;
 #[inline]
 pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
     match location {
-        F::GameData => &CONFIG.current_version.location,
         F::WikiData => &WIKI_DATA_LOCATION,
     }
 }

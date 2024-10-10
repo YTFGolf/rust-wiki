@@ -9,7 +9,11 @@ use std::{collections::HashMap, sync::LazyLock};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
-    use crate::file_handler::{get_file_location, FileLocation};
+    use crate::{
+        config::CONFIG,
+        data::version::Version,
+        file_handler::{get_file_location, FileLocation},
+    };
     use std::sync::LazyLock;
 
     #[derive(Debug, serde::Deserialize)]
@@ -58,7 +62,7 @@ pub mod charagroups {
     impl CharaGroups {
         const fn new() -> Self {
             CharaGroups {
-                parsed_file: LazyLock::new(read_charagroup_file),
+                parsed_file: LazyLock::new(|| read_charagroup_file(&CONFIG.current_version)),
             }
         }
 
@@ -73,8 +77,8 @@ pub mod charagroups {
 
     /// Reads the charagroup file and passes it into a vec of
     /// [CharaGroups][CharaGroup].
-    fn read_charagroup_file() -> Vec<CharaGroup> {
-        let path = get_file_location(FileLocation::GameData).join("DataLocal/Charagroup.csv");
+    fn read_charagroup_file(v: &Version) -> Vec<CharaGroup> {
+        let path = v.location.join("DataLocal/Charagroup.csv");
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)

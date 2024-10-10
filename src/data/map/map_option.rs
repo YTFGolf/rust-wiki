@@ -1,7 +1,7 @@
 //! Module that deals with the `Map_option` file.
 
 use crate::{
-    config::CONFIG, data::version::Version, file_handler::{get_file_location, FileLocation}
+    config::CONFIG, data::version::Version
 };
 use csv::ByteRecord;
 use std::{collections::HashMap, num::NonZero, sync::LazyLock};
@@ -128,11 +128,12 @@ mod tests {
 
     #[test]
     fn assert_parses_and_no_duplicates_and_correct_fields() {
+        let version = &CONFIG.current_version;
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             // technically does have headers but that's an issue for another day
             .flexible(true)
-            .from_path(get_file_location(FileLocation::GameData).join("DataLocal/Map_option.csv"))
+            .from_path(version.location.join("DataLocal/Map_option.csv"))
             .unwrap();
 
         let mut rdr = rdr;
