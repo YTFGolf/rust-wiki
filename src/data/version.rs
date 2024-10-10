@@ -1,6 +1,12 @@
 //! Deals with getting information about a certain version of the game.
 
-use std::path::PathBuf;
+use std::{
+    any::{Any, TypeId},
+    cell::RefCell,
+    path::PathBuf,
+};
+pub mod version_data;
+use version_data::VersionData;
 
 pub struct InvalidLanguage(pub String);
 
@@ -33,7 +39,6 @@ pub struct Version {
     pub location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
-    // TODO static data store
 }
 impl Version {
     pub fn new<P>(location: P, language: &str) -> Result<Self, InvalidLanguage>
@@ -51,6 +56,27 @@ impl Version {
     /// Literally just checks the last word of the directory and returns that.
     pub fn get_lang(path: &str) -> &str {
         path.rsplit(" ").next().unwrap()
+    }
+
+    // pub fn get_file()
+    pub fn get_cached_file<T: VersionData + 'static>(&self) -> &T {
+        let type_id = TypeId::of::<T>();
+
+        let mut version_data = self.version_data.borrow_mut();
+
+        if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
+            let boxed = &self.version_data[position].1;
+            boxed
+                .downcast_ref::<T>()
+                .expect("Failed to downcast to the requested type");
+        }
+
+        // If not found, initialize the type and store it
+        let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
+        version_data.push((type_id, new_value));
+
+        // Return the newly inserted value
+        self.get_cached_file()
     }
 }
 
