@@ -244,6 +244,7 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
     let record: StageEnemyCSV = match result.deserialize(None) {
         Ok(r) => r,
         Err(x) => match x.kind() {
+            // TODO maybe return errors instead of an option
             csv::ErrorKind::Deserialize { pos: _, err } => match err.kind() {
                 csv::DeserializeErrorKind::ParseInt(parse_int_error) => {
                     match parse_int_error.kind() {

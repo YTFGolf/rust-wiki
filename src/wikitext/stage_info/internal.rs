@@ -1,6 +1,5 @@
 //! Internal functions for stage info.
 
-// TODO document these
 mod battlegrounds;
 mod beginning;
 mod enemies_list;
