@@ -1,8 +1,7 @@
 //! Contains global config values.
+use crate::data::version::{InvalidLanguage, Version};
 use home::home_dir;
 use std::{path::PathBuf, sync::LazyLock};
-
-use crate::data::version::{InvalidLanguage, Version};
 
 /// Expand home directory if `dir` begins with `~/`.
 fn expand_home(dir: &str) -> PathBuf {
@@ -23,7 +22,7 @@ fn get_version(dir: &str) -> Version {
 /// Configuration values for the program.
 #[derive(Debug)]
 pub struct Config<'a> {
-    pub version: Version,
+    pub current_version: Version,
     /// Your name.
     pub user_name: &'a str,
     /// Make `Magnification` put `|name|0` on gauntlet pages rather than the
@@ -35,7 +34,7 @@ pub struct Config<'a> {
 // TODO read a config file instead of writing it here.
 // TODO remove dependency on static variable.
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
-    version: get_version("~/Downloads/Version 13.7.0 JP"),
+    current_version: get_version("~/Downloads/Version 13.7.0 JP"),
     user_name: "TheWWRNerdGuy",
     // suppress_gauntlet_magnification: true,
     suppress_gauntlet_magnification: false,

@@ -2,14 +2,18 @@
 
 use super::stage_enemy::StageEnemy;
 use crate::{
-    data::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-    data::stage::{
-        stage_data::StageData,
-        stage_metadata::StageMeta,
-        stage_option::{
-            charagroups::{CharaGroup, CHARAGROUP},
-            StageOptionCSV,
+    config::CONFIG,
+    data::{
+        map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+        stage::{
+            stage_data::StageData,
+            stage_metadata::StageMeta,
+            stage_option::{
+                charagroups::{CharaGroup, CHARAGROUP},
+                StageOptionCSV,
+            },
         },
+        version::Version,
     },
 };
 use std::num::NonZeroU32;
@@ -303,17 +307,15 @@ fn u8_to_bool(n: u8) -> bool {
 }
 
 impl Stage {
-    /// Create a new stage object from `selector`.
+    /// Create a new stage object from `selector` in current version.
     pub fn new(selector: &str) -> Option<Self> {
-        Some(StageData::new(selector)?.into())
+        Self::new_versioned(selector, &CONFIG.current_version)
     }
-    // pub fn new(selector: &str) -> Option<Self> {
-    //     Self::new_versioned(selector, CURRENT_VERSION)
-    // }
 
-    // pub fn new_versioned(selector: &str, version: todo!())->Option<Self>{
-    //     Some(StageData::new(selector)?.into())
-    // }
+    /// Create a new stage object from `selector`.
+    pub fn new_versioned(selector: &str, version: &Version) -> Option<Self> {
+        Some(StageData::new(selector, version)?.into())
+    }
 }
 
 #[cfg(test)]
