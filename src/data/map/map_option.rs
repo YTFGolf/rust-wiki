@@ -1,6 +1,8 @@
 //! Module that deals with the `Map_option` file.
 
-use crate::file_handler::{get_file_location, FileLocation};
+use crate::{
+    config::CONFIG, data::version::Version, file_handler::{get_file_location, FileLocation}
+};
 use csv::ByteRecord;
 use std::{collections::HashMap, num::NonZero, sync::LazyLock};
 
@@ -56,7 +58,7 @@ pub struct MapOption {
 impl MapOption {
     const fn new() -> Self {
         Self {
-            map: LazyLock::new(get_map_option),
+            map: LazyLock::new(|| get_map_option(&CONFIG.current_version)),
         }
     }
 
@@ -75,12 +77,12 @@ impl MapOption {
 /// Map of valid `map_id`s to the `"DataLocal/Map_option.csv"` file.
 pub static MAP_OPTION: MapOption = MapOption::new();
 
-fn get_map_option() -> HashMap<u32, ByteRecord> {
+fn get_map_option(v: &Version) -> HashMap<u32, ByteRecord> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         // technically does have headers but that's an issue for another day
         .flexible(true)
-        .from_path(get_file_location(FileLocation::GameData).join("DataLocal/Map_option.csv"))
+        .from_path(v.location.join("DataLocal/Map_option.csv"))
         .unwrap();
 
     let mut records = rdr.byte_records();

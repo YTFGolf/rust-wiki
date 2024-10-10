@@ -1,6 +1,10 @@
 //! Module that deals with the `Stage_option` file.
 
-use crate::file_handler::{get_file_location, FileLocation};
+use crate::{
+    config::CONFIG,
+    data::version::Version,
+    file_handler::{get_file_location, FileLocation},
+};
 use std::{collections::HashMap, sync::LazyLock};
 
 /// Module that contains charagroup information.
@@ -149,7 +153,8 @@ pub struct StageOption {
 impl StageOption {
     const fn new() -> Self {
         Self {
-            map: LazyLock::new(get_stage_option),
+            // need to get this out of this function
+            map: LazyLock::new(|| get_stage_option(&CONFIG.current_version)),
         }
     }
 
@@ -174,12 +179,12 @@ impl StageOption {
 /// Map of valid `map_id`s to the `"DataLocal/Stage_option.csv"` file.
 pub static STAGE_OPTION: StageOption = StageOption::new();
 
-fn get_stage_option() -> HashMap<u32, Vec<StageOptionCSV>> {
+fn get_stage_option(v: &Version) -> HashMap<u32, Vec<StageOptionCSV>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         // technically does have headers but that's an issue for another day
         .flexible(true)
-        .from_path(get_file_location(FileLocation::GameData).join("DataLocal/Stage_option.csv"))
+        .from_path(v.location.join("DataLocal/Stage_option.csv"))
         .unwrap();
 
     let mut records = rdr.byte_records();

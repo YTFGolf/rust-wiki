@@ -1,7 +1,6 @@
 //! Module that deals with getting information about stage maps.
 
-use crate::data::stage::stage_metadata::StageMeta;
-use crate::file_handler::{get_file_location, FileLocation::GameData};
+use crate::data::{stage::stage_metadata::StageMeta, version::Version};
 use csv::ByteRecord;
 use csv_types::{ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV};
 use std::{
@@ -142,8 +141,8 @@ impl GameMap {
     ///
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
     /// Labyrinth stages above 100.
-    pub fn get_stage_data(md: &StageMeta) -> Option<StageDataCSV> {
-        let map_file = get_file_location(GameData)
+    pub fn get_stage_data(md: &StageMeta, v:&Version) -> Option<StageDataCSV> {
+        let map_file = v.location
             .join("DataLocal")
             .join(&md.map_file_name);
         let line = BufReader::new(File::open(map_file).unwrap())
