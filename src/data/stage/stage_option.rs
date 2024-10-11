@@ -1,7 +1,7 @@
 //! Module that deals with the `Stage_option` file.
 
-use crate::{config::CONFIG, data::version::Version};
-use std::{collections::HashMap, sync::LazyLock};
+use crate::data::version::version_data::CacheableVersionData;
+use std::{collections::HashMap, path::Path};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
@@ -53,12 +53,6 @@ pub mod charagroups {
         parsed_file: Vec<CharaGroup>,
     }
     impl CharaGroups {
-        // const fn new() -> Self {
-        //     CharaGroups {
-        //         parsed_file: LazyLock::new(|| read_charagroup_file(&CONFIG.current_version.location)),
-        //     }
-        // }
-
         /// Get charagroup with id `id`.
         pub fn get_charagroup(&self, id: u32) -> Option<&CharaGroup> {
             self.parsed_file.get(usize::try_from(id - 1).unwrap())
@@ -147,18 +141,12 @@ pub struct StageOptionCSV {
     pub charagroup: u32,
 }
 
+#[derive(Debug)]
 /// Container for the [STAGE_OPTION] static.
 pub struct StageOption {
-    map: LazyLock<HashMap<u32, Vec<StageOptionCSV>>>,
+    map: HashMap<u32, Vec<StageOptionCSV>>,
 }
 impl StageOption {
-    const fn new() -> Self {
-        Self {
-            // need to get this out of this function
-            map: LazyLock::new(|| get_stage_option(&CONFIG.current_version)),
-        }
-    }
-
     /// Get the data for the map that `map_id` corresponds to.
     pub fn get_map(&self, map_id: u32) -> Option<&Vec<StageOptionCSV>> {
         self.map.get(&map_id)
@@ -176,16 +164,20 @@ impl StageOption {
         )
     }
 }
+impl CacheableVersionData for StageOption {
+    fn init_data(path: &Path) -> Self {
+        Self {
+            map: get_stage_option(path),
+        }
+    }
+}
 
-/// Map of valid `map_id`s to the `"DataLocal/Stage_option.csv"` file.
-pub static STAGE_OPTION: StageOption = StageOption::new();
-
-fn get_stage_option(v: &Version) -> HashMap<u32, Vec<StageOptionCSV>> {
+fn get_stage_option(path: &Path) -> HashMap<u32, Vec<StageOptionCSV>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         // technically does have headers but that's an issue for another day
         .flexible(true)
-        .from_path(v.location.join("DataLocal/Stage_option.csv"))
+        .from_path(path.join("DataLocal/Stage_option.csv"))
         .unwrap();
 
     let mut records = rdr.byte_records();

@@ -1,7 +1,7 @@
 //! Module that deals with getting information about stages.
 use super::{
     stage_metadata::consts::StageTypeEnum,
-    stage_option::{StageOptionCSV, STAGE_OPTION},
+    stage_option::{StageOption, StageOptionCSV},
 };
 use crate::{
     config::CONFIG,
@@ -241,7 +241,8 @@ impl StageData {
     /// Get Stage_option data if it exists.
     pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
         let map_id = self.get_map_id();
-        STAGE_OPTION.get_stage(map_id, self.meta.stage_num)
+        let stage_option = CONFIG.current_version.get_cached_file::<StageOption>();
+        stage_option.get_stage(map_id, self.meta.stage_num)
     }
 }
 
