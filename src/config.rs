@@ -22,6 +22,7 @@ fn get_version(dir: &str) -> Version {
 /// Configuration values for the program.
 #[derive(Debug)]
 pub struct Config<'a> {
+    /// Current game version.
     pub current_version: Version,
     /// Your name.
     pub user_name: &'a str,

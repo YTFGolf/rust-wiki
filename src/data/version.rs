@@ -2,12 +2,13 @@
 
 use std::{
     any::{Any, TypeId},
-    cell::{Ref, RefCell},
+    cell::RefCell,
     path::PathBuf,
 };
 pub mod version_data;
 use version_data::CacheableVersionData;
 
+/// Represents an invalid language code.
 pub struct InvalidLanguage(pub String);
 
 #[derive(Debug)]
@@ -40,13 +41,14 @@ pub struct Version {
     pub location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
-
+    // TODO version name param
     version_data: RefCell<Vec<(TypeId, VersionDataContents)>>,
     // TODO see if this can be stuck inside a Mutex/RwLock so I can get rid of
     // the sync impl below
 }
 unsafe impl Sync for Version {}
 impl Version {
+    /// Create new Version object.
     pub fn new<P>(location: P, language: &str) -> Result<Self, InvalidLanguage>
     where
         PathBuf: From<P>,
@@ -66,6 +68,8 @@ impl Version {
     }
 
     // pub fn get_file()
+
+    /// Get a cached data object.
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 

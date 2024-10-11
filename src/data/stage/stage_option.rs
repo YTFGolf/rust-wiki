@@ -6,7 +6,7 @@ use std::{collections::HashMap, sync::LazyLock};
 /// Module that contains charagroup information.
 pub mod charagroups {
     use crate::data::version::version_data::CacheableVersionData;
-    use std::path::PathBuf;
+    use std::path::Path;
 
     #[derive(Debug, serde::Deserialize)]
     /// Fixed csv data in Charagroup.csv.
@@ -65,7 +65,7 @@ pub mod charagroups {
         }
     }
     impl CacheableVersionData for CharaGroups {
-        fn init_data(path: &PathBuf) -> Self {
+        fn init_data(path: &Path) -> Self {
             Self {
                 parsed_file: read_charagroup_file(path),
             }
@@ -74,7 +74,7 @@ pub mod charagroups {
 
     /// Reads the charagroup file and passes it into a vec of
     /// [CharaGroups][CharaGroup].
-    fn read_charagroup_file(path: &PathBuf) -> Vec<CharaGroup> {
+    fn read_charagroup_file(path: &Path) -> Vec<CharaGroup> {
         let path = path.join("DataLocal/Charagroup.csv");
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
