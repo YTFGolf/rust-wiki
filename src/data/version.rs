@@ -6,7 +6,7 @@ use std::{
     path::PathBuf,
 };
 pub mod version_data;
-use version_data::VersionData;
+use version_data::CacheableVersionData;
 
 pub struct InvalidLanguage(pub String);
 
@@ -42,8 +42,10 @@ pub struct Version {
     pub language: VersionLanguage,
 
     version_data: RefCell<Vec<(TypeId, VersionDataContents)>>,
+    // TODO see if this can be stuck inside a Mutex/RwLock so I can get rid of
+    // the sync impl below
 }
-unsafe impl Sync for Version{}
+unsafe impl Sync for Version {}
 impl Version {
     pub fn new<P>(location: P, language: &str) -> Result<Self, InvalidLanguage>
     where
@@ -64,7 +66,7 @@ impl Version {
     }
 
     // pub fn get_file()
-    pub fn get_cached_file<T: VersionData + 'static>(&self) -> &T {
+    pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 
         // let mut version_data = self.version_data.borrow_mut();
@@ -75,8 +77,9 @@ impl Version {
             .iter()
             .position(|(id, _)| *id == type_id)
         {
-            let boxed = unsafe { &(*self.version_data.as_ptr() )};
-            return boxed[position].1
+            let boxed = unsafe { &(*self.version_data.as_ptr()) };
+            return boxed[position]
+                .1
                 .downcast_ref::<T>()
                 .expect("Failed to downcast to the requested type");
         }
@@ -96,8 +99,9 @@ impl Version {
             .iter()
             .position(|(id, _)| *id == type_id)
         {
-            let boxed = unsafe { &(*self.version_data.as_ptr() )};
-            return boxed[position].1
+            let boxed = unsafe { &(*self.version_data.as_ptr()) };
+            return boxed[position]
+                .1
                 .downcast_ref::<T>()
                 .expect("Failed to downcast to the requested type");
         }

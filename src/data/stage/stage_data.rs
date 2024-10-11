@@ -4,14 +4,16 @@ use super::{
     stage_option::{StageOptionCSV, STAGE_OPTION},
 };
 use crate::{
-    config::CONFIG, data::{
+    config::CONFIG,
+    data::{
         map::{
             map_data::{csv_types::StageDataCSV, GameMap},
             map_option::{MapOptionCSV, MAP_OPTION},
         },
         stage::stage_metadata::StageMeta,
         version::Version,
-    }, file_handler::get_decommented_file_reader
+    },
+    file_handler::get_decommented_file_reader,
 };
 use csv::StringRecord;
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
@@ -226,7 +228,8 @@ impl StageData {
         if self.meta.type_enum == StageTypeEnum::Labyrinth {
             return None;
         }
-        GameMap::get_stage_data(&self.meta, todo!())
+        // GameMap::get_stage_data(&self.meta, todo!())
+        GameMap::get_stage_data(&self.meta, &CONFIG.current_version)
     }
 
     /// Get Map_option data if it exists.

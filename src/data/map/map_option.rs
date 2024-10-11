@@ -1,8 +1,6 @@
 //! Module that deals with the `Map_option` file.
 
-use crate::{
-    config::CONFIG, data::version::Version
-};
+use crate::{config::CONFIG, data::version::Version};
 use csv::ByteRecord;
 use std::{collections::HashMap, num::NonZero, sync::LazyLock};
 

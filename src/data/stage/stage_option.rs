@@ -5,7 +5,7 @@ use std::{collections::HashMap, sync::LazyLock};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
-    use crate::data::version::version_data::VersionData;
+    use crate::data::version::version_data::CacheableVersionData;
     use std::path::PathBuf;
 
     #[derive(Debug, serde::Deserialize)]
@@ -64,7 +64,7 @@ pub mod charagroups {
             self.parsed_file.get(usize::try_from(id - 1).unwrap())
         }
     }
-    impl VersionData for CharaGroups {
+    impl CacheableVersionData for CharaGroups {
         fn init_data(path: &PathBuf) -> Self {
             Self {
                 parsed_file: read_charagroup_file(path),

@@ -1,6 +1,9 @@
-use std::{fmt::Debug, path::PathBuf};
+use std::fmt::Debug;
+use std::path::PathBuf;
 
-pub trait VersionData: Debug + Send + Sync {
+/// Represents a cacheable version data object.
+pub trait CacheableVersionData: Debug + Send + Sync {
+    /// Initialises the version data.
     fn init_data(path: &PathBuf) -> Self
     where
         Self: Sized;
