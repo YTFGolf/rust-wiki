@@ -9,7 +9,7 @@ use crate::{
             stage_data::StageData,
             stage_metadata::StageMeta,
             stage_option::{
-                charagroups::{CharaGroup, CHARAGROUP},
+                charagroups::{CharaGroup, CharaGroups},
                 StageOptionCSV,
             },
         },
@@ -100,8 +100,9 @@ pub struct Restriction {
 }
 impl From<&StageOptionCSV> for Restriction {
     fn from(value: &StageOptionCSV) -> Self {
+        let charagroup_map = &CONFIG.current_version.get_cached_file::<CharaGroups>();
         let charagroup = NonZeroU32::new(value.charagroup)
-            .map(|value| CHARAGROUP.get_charagroup(value.into()).unwrap());
+            .map(|value| charagroup_map.get_charagroup(value.into()).unwrap());
 
         Self {
             crowns_applied: value.stars.into(),

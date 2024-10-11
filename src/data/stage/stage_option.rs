@@ -1,20 +1,12 @@
 //! Module that deals with the `Stage_option` file.
 
-use crate::{
-    config::CONFIG,
-    data::version::Version,
-    file_handler::{get_file_location, FileLocation},
-};
+use crate::{config::CONFIG, data::version::Version};
 use std::{collections::HashMap, sync::LazyLock};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
-    use crate::{
-        config::CONFIG,
-        data::version::Version,
-        file_handler::{get_file_location, FileLocation},
-    };
-    use std::sync::LazyLock;
+    use crate::data::version::version_data::VersionData;
+    use std::path::PathBuf;
 
     #[derive(Debug, serde::Deserialize)]
     /// Fixed csv data in Charagroup.csv.
@@ -55,30 +47,35 @@ pub mod charagroups {
         pub units: Vec<u32>,
     }
 
+    #[derive(Debug)]
     /// Container for static data.
     pub struct CharaGroups {
-        parsed_file: LazyLock<Vec<CharaGroup>>,
+        parsed_file: Vec<CharaGroup>,
     }
     impl CharaGroups {
-        const fn new() -> Self {
-            CharaGroups {
-                parsed_file: LazyLock::new(|| read_charagroup_file(&CONFIG.current_version)),
-            }
-        }
+        // const fn new() -> Self {
+        //     CharaGroups {
+        //         parsed_file: LazyLock::new(|| read_charagroup_file(&CONFIG.current_version.location)),
+        //     }
+        // }
 
         /// Get charagroup with id `id`.
         pub fn get_charagroup(&self, id: u32) -> Option<&CharaGroup> {
             self.parsed_file.get(usize::try_from(id - 1).unwrap())
         }
     }
-
-    /// If you want group 1 then do `CHARAGROUP.get_charagroup(1)`.
-    pub static CHARAGROUP: CharaGroups = CharaGroups::new();
+    impl VersionData for CharaGroups {
+        fn init_data(path: &PathBuf) -> Self {
+            Self {
+                parsed_file: read_charagroup_file(path),
+            }
+        }
+    }
 
     /// Reads the charagroup file and passes it into a vec of
     /// [CharaGroups][CharaGroup].
-    fn read_charagroup_file(v: &Version) -> Vec<CharaGroup> {
-        let path = v.location.join("DataLocal/Charagroup.csv");
+    fn read_charagroup_file(path: &PathBuf) -> Vec<CharaGroup> {
+        let path = path.join("DataLocal/Charagroup.csv");
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)

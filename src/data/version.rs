@@ -2,7 +2,7 @@
 
 use std::{
     any::{Any, TypeId},
-    cell::RefCell,
+    cell::{Ref, RefCell},
     path::PathBuf,
 };
 pub mod version_data;
@@ -31,6 +31,7 @@ impl TryFrom<&str> for VersionLanguage {
     }
 }
 
+type VersionDataContents = Box<dyn Any + Send + Sync>;
 #[derive(Debug)]
 /// Represents a version of the game.
 pub struct Version {
@@ -39,7 +40,10 @@ pub struct Version {
     pub location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
+
+    version_data: RefCell<Vec<(TypeId, VersionDataContents)>>,
 }
+unsafe impl Sync for Version{}
 impl Version {
     pub fn new<P>(location: P, language: &str) -> Result<Self, InvalidLanguage>
     where
@@ -48,6 +52,7 @@ impl Version {
         Ok(Self {
             location: PathBuf::from(location),
             language: language.try_into()?,
+            version_data: RefCell::new(Vec::new()),
         })
     }
 
@@ -62,21 +67,42 @@ impl Version {
     pub fn get_cached_file<T: VersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 
-        let mut version_data = self.version_data.borrow_mut();
+        // let mut version_data = self.version_data.borrow_mut();
 
-        if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
-            let boxed = &self.version_data[position].1;
-            boxed
+        if let Some(position) = self
+            .version_data
+            .borrow()
+            .iter()
+            .position(|(id, _)| *id == type_id)
+        {
+            let boxed = unsafe { &(*self.version_data.as_ptr() )};
+            return boxed[position].1
                 .downcast_ref::<T>()
                 .expect("Failed to downcast to the requested type");
         }
 
         // If not found, initialize the type and store it
         let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
-        version_data.push((type_id, new_value));
+        self.version_data.borrow_mut().push((type_id, new_value));
+        // unsafe {
+        //     let s = self as *const Version as *mut Version;
+        //     let version_data = &mut (*s).version_data;
+        //     version_data.push();
+        // }
 
-        // Return the newly inserted value
-        self.get_cached_file()
+        if let Some(position) = self
+            .version_data
+            .borrow()
+            .iter()
+            .position(|(id, _)| *id == type_id)
+        {
+            let boxed = unsafe { &(*self.version_data.as_ptr() )};
+            return boxed[position].1
+                .downcast_ref::<T>()
+                .expect("Failed to downcast to the requested type");
+        }
+
+        unreachable!()
     }
 }
 
