@@ -4,10 +4,12 @@ use std::{
     any::{Any, TypeId},
     cell::RefCell,
     path::PathBuf,
+    sync::Mutex,
 };
 pub mod version_data;
 use version_data::CacheableVersionData;
 
+#[derive(Debug)]
 /// Represents an invalid language code.
 pub struct InvalidLanguage(pub String);
 
@@ -41,12 +43,11 @@ pub struct Version {
     pub location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
-    // TODO version name param
-    version_data: RefCell<Vec<(TypeId, VersionDataContents)>>,
-    // TODO see if this can be stuck inside a Mutex so I can get rid of the sync
-    // impl below (and make this actually thread-safe instead of lying about it)
+    /// Represents the version's number.
+    pub number: String,
+
+    version_data: Mutex<RefCell<Vec<(TypeId, VersionDataContents)>>>,
 }
-unsafe impl Sync for Version {}
 impl Version {
     /// Create new Version object.
     pub fn new<P>(location: P, language: &str, number: String) -> Result<Self, InvalidLanguage>
@@ -58,7 +59,7 @@ impl Version {
             language: language.try_into()?,
             number,
 
-            version_data: RefCell::new(Vec::new()),
+            version_data: Mutex::from(RefCell::new(Vec::new())),
         })
     }
 
@@ -82,49 +83,48 @@ impl Version {
     // pub fn get_file()
 
     /// Get a cached data object.
+    ///
+    /// ## Usage
+    /// ```rust,no_run
+    /// use rust_wiki::data::stage::stage_option::StageOption;
+    /// # use rust_wiki::data::version::Version;
+    ///
+    /// let version = Version::new("~", "en", "1.0".to_string()).unwrap();
+    /// let stage_option = version.get_cached_file::<StageOption>();
+    /// ```
+    /// This can be run with any type that implements [CacheableVersionData].
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 
-        // let mut version_data = self.version_data.borrow_mut();
+        let version_data = self.version_data.lock().unwrap();
 
-        if let Some(position) = self
-            .version_data
+        if let Some(position) = version_data
             .borrow()
             .iter()
             .position(|(id, _)| *id == type_id)
         {
-            let boxed = unsafe { &(*self.version_data.as_ptr()) };
-            return boxed[position]
+            let data_vec = unsafe { &(*version_data.as_ptr()) };
+            return data_vec[position]
                 .1
                 .downcast_ref::<T>()
-                .expect("Failed to downcast to the requested type");
+                .expect("Something went horribly wrong.");
         }
 
-        // If not found, initialize the type and store it
         let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
-        self.version_data.borrow_mut().push((type_id, new_value));
-        // unsafe {
-        //     let s = self as *const Version as *mut Version;
-        //     let version_data = &mut (*s).version_data;
-        //     version_data.push();
-        // }
+        version_data.borrow_mut().push((type_id, new_value));
 
-        if let Some(position) = self
-            .version_data
+        if let Some(position) = version_data
             .borrow()
             .iter()
             .position(|(id, _)| *id == type_id)
         {
-            let boxed = unsafe { &(*self.version_data.as_ptr()) };
-            return boxed[position]
+            let data_vec = unsafe { &(*version_data.as_ptr()) };
+            return data_vec[position]
                 .1
                 .downcast_ref::<T>()
-                .expect("Failed to downcast to the requested type");
+                .expect("Something went horribly wrong.");
         }
 
         unreachable!()
     }
 }
-
-// get language code to use in language files.
-// also have an auto language option that looks at file name from trailing space
