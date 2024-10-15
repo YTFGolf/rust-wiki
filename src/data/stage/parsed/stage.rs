@@ -99,12 +99,18 @@ pub struct Restriction {
     pub charagroup: Option<CharaGroup>,
 }
 impl Restriction {
+    /// Get restriction data from stage option csv.
     pub fn from_option_csv(value: &StageOptionCSV, version: &Version) -> Restriction {
-        let charagroup_map = version.get_cached_file::<CharaGroups>();
-        let charagroup: Option<CharaGroup> = NonZeroU32::new(value.charagroup)
-            .map(|value| charagroup_map.get_charagroup(value.into()).unwrap().clone());
+        let charagroup: Option<CharaGroup> = NonZeroU32::new(value.charagroup).map(|value| {
+            let charagroup_map = version.get_cached_file::<CharaGroups>();
+            charagroup_map.get_charagroup(value.into()).unwrap().clone()
+        });
         // I really can't be bothered to deal with the insane amount of lifetime
-        // stuff that comes with not cloning
+        // stuff that comes with not cloning, + it's rare you need to do this
+        // and even when you do it's like 5 numbers at most.
+        //
+        // Might not actually be too difficult to do this with lifetimes but for
+        // now this is enough.
 
         Self {
             crowns_applied: value.stars.into(),
@@ -188,10 +194,11 @@ impl From<StageData<'_>> for Stage {
         let map_option_data = data.get_map_option_data();
 
         let restrictions: Option<Vec<Restriction>>;
-        if let Some(aa) = data.get_stage_option_data() {
+        if let Some(option_data) = data.get_stage_option_data() {
             restrictions = Some(
-                aa.into_iter()
-                    .map(|r| Restriction::from_option_csv(r, &data.version()))
+                option_data
+                    .into_iter()
+                    .map(|r| Restriction::from_option_csv(r, data.version()))
                     .collect(),
             );
         } else {

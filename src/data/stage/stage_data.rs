@@ -252,6 +252,7 @@ impl<'a> StageData<'_> {
         stage_option.get_stage(map_id, self.meta.stage_num)
     }
 
+    /// Get the data object's version.
     pub fn version(&self) -> &Version {
         self.version
     }
