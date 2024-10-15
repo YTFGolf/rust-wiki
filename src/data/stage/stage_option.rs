@@ -142,7 +142,7 @@ pub struct StageOptionCSV {
 }
 
 #[derive(Debug)]
-/// Container for the [STAGE_OPTION] static.
+/// Container for stage option data.
 pub struct StageOption {
     map: HashMap<u32, Vec<StageOptionCSV>>,
 }

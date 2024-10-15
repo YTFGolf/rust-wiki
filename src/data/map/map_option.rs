@@ -50,7 +50,7 @@ pub struct MapOptionCSV {
 }
 
 #[derive(Debug)]
-/// Container for the [MAP_OPTION] static.
+/// Container for map option data.
 pub struct MapOption {
     map: HashMap<u32, ByteRecord>,
 }

@@ -76,7 +76,7 @@ impl Version {
     /// contains numbers and full stops.
     pub fn get_version_number(path: &str) -> Option<String> {
         path.split_whitespace()
-            .find(|&part| part.chars().all(|c| c.is_digit(10) || c == '.'))
+            .find(|&part| part.chars().all(|c| c.is_ascii_digit() || c == '.'))
             .map(|s| s.to_string())
     }
 
@@ -86,11 +86,12 @@ impl Version {
     ///
     /// ## Usage
     /// ```rust,no_run
-    /// use rust_wiki::data::stage::stage_option::StageOption;
+    /// use rust_wiki::data::map::map_option::MapOption;
     /// # use rust_wiki::data::version::Version;
     ///
     /// let version = Version::new("~", "en", "1.0".to_string()).unwrap();
-    /// let stage_option = version.get_cached_file::<StageOption>();
+    /// let map_option = version.get_cached_file::<MapOption>();
+    /// let earthshaker_option = map_option.get_map(0);
     /// ```
     /// This can be run with any type that implements [CacheableVersionData].
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
