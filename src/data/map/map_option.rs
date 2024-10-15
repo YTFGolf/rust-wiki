@@ -135,7 +135,7 @@ mod tests {
             .has_headers(false)
             // technically does have headers but that's an issue for another day
             .flexible(true)
-            .from_path(version.location.join("DataLocal/Map_option.csv"))
+            .from_path(version.location().join("DataLocal/Map_option.csv"))
             .unwrap();
 
         let mut rdr = rdr;

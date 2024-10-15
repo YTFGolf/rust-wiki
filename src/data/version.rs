@@ -38,9 +38,7 @@ type VersionDataContents = Box<dyn Any + Send + Sync>;
 #[derive(Debug)]
 /// Represents a version of the game.
 pub struct Version {
-    /// Root location of game files (i.e. `{data_mines}/DataLocal/stage.csv`
-    /// contains the energy cost of each EoC stage).
-    pub location: PathBuf,
+    location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
     /// Represents the version's number.
@@ -61,6 +59,12 @@ impl Version {
 
             version_data: Mutex::from(RefCell::new(Vec::new())),
         })
+    }
+
+    /// Get root location of game files (i.e. `{location()}/DataLocal/stage.csv`
+    /// contains the energy cost of each EoC stage).
+    pub fn location(&self) -> &PathBuf {
+        &self.location
     }
 
     /// Automatically extract the language code from the directory name.

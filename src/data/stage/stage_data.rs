@@ -137,7 +137,7 @@ impl<'a> StageData<'_> {
 
         let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
         let reader = BufReader::new(
-            File::open(version.location.join(&stage_file))
+            File::open(version.location().join(&stage_file))
                 .unwrap_or_else(|e| panic!("Error opening {stage_file:?}: {e:?}")),
         );
 
