@@ -3,7 +3,7 @@
 use std::{
     any::{Any, TypeId},
     cell::RefCell,
-    path::PathBuf,
+    path::{Path, PathBuf},
     sync::Mutex,
 };
 pub mod version_data;
@@ -38,6 +38,8 @@ type VersionDataContents = Box<dyn Any + Send + Sync>;
 #[derive(Debug)]
 /// Represents a version of the game.
 pub struct Version {
+    /// Root location of game files (i.e. `{location()}/DataLocal/stage.csv`
+    /// contains the energy cost of each EoC stage).
     location: PathBuf,
     /// Version's language.
     pub language: VersionLanguage,
@@ -61,10 +63,9 @@ impl Version {
         })
     }
 
-    /// Get root location of game files (i.e. `{location()}/DataLocal/stage.csv`
-    /// contains the energy cost of each EoC stage).
-    pub fn location(&self) -> &PathBuf {
-        &self.location
+    /// Get full absolute file path of the version's game directory.
+    pub fn get_file_path<P: AsRef<Path>>(&self, path: P) -> PathBuf {
+        self.location.join(path)
     }
 
     /// Automatically extract the language code from the directory name.
