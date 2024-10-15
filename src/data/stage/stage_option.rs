@@ -19,7 +19,7 @@ pub mod charagroups {
         group_type: u32,
     }
 
-    #[derive(Debug, PartialEq)]
+    #[derive(Debug, PartialEq, Clone)]
     /// Type of the Charagroup.
     pub enum CharaGroupType {
         /// Can only use select cats.
@@ -38,7 +38,7 @@ pub mod charagroups {
         }
     }
 
-    #[derive(Debug, PartialEq)]
+    #[derive(Debug, PartialEq, Clone)]
     /// Data about a CharaGroup.
     pub struct CharaGroup {
         /// Type of charagroup.

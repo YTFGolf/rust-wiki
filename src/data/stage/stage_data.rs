@@ -251,6 +251,10 @@ impl<'a> StageData<'_> {
         let stage_option = self.version.get_cached_file::<StageOption>();
         stage_option.get_stage(map_id, self.meta.stage_num)
     }
+
+    pub fn version(&self) -> &Version {
+        self.version
+    }
 }
 
 fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {

@@ -96,13 +96,15 @@ pub struct Restriction {
     pub max_cost: Option<NonZeroU32>,
     /// Restricts you to either being unable to deploy specific units or only
     /// being able to deploy specific units.
-    pub charagroup: Option<&'static CharaGroup>,
+    pub charagroup: Option<CharaGroup>,
 }
-impl From<&StageOptionCSV> for Restriction {
-    fn from(value: &StageOptionCSV) -> Self {
-        let charagroup_map = &CONFIG.current_version.get_cached_file::<CharaGroups>();
-        let charagroup = NonZeroU32::new(value.charagroup)
-            .map(|value| charagroup_map.get_charagroup(value.into()).unwrap());
+impl Restriction {
+    pub fn from_option_csv(value: &StageOptionCSV, version: &Version) -> Restriction {
+        let charagroup_map = version.get_cached_file::<CharaGroups>();
+        let charagroup: Option<CharaGroup> = NonZeroU32::new(value.charagroup)
+            .map(|value| charagroup_map.get_charagroup(value.into()).unwrap().clone());
+        // I really can't be bothered to deal with the insane amount of lifetime
+        // stuff that comes with not cloning
 
         Self {
             crowns_applied: value.stars.into(),
@@ -114,8 +116,7 @@ impl From<&StageOptionCSV> for Restriction {
             charagroup,
         }
     }
-}
-impl Restriction {
+
     /// Compare restriction to other restriction, ignoring the crown difficulty.
     pub fn compare_without_crowns(&self, other: &Self) -> bool {
         self.rarity == other.rarity
@@ -187,8 +188,12 @@ impl From<StageData<'_>> for Stage {
         let map_option_data = data.get_map_option_data();
 
         let restrictions: Option<Vec<Restriction>>;
-        if let Some(data) = data.get_stage_option_data() {
-            restrictions = Some(data.into_iter().map(|r| r.into()).collect());
+        if let Some(aa) = data.get_stage_option_data() {
+            restrictions = Some(
+                aa.into_iter()
+                    .map(|r| Restriction::from_option_csv(r, &data.version()))
+                    .collect(),
+            );
         } else {
             restrictions = None;
         }

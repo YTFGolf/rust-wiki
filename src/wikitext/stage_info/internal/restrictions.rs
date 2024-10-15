@@ -128,7 +128,7 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
         buf.write_str("¢ or less").unwrap();
         restrictions.push(buf);
     }
-    if let Some(group) = restriction.charagroup {
+    if let Some(group) = &restriction.charagroup {
         let buf = get_charagroup_restriction(group);
         restrictions.push(buf)
     }
