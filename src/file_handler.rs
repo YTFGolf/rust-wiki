@@ -1,9 +1,7 @@
 //! Contains functions to read data files.
-use crate::config::CONFIG;
 use std::{
-    fs::File,
-    io::{self, BufRead, BufReader, Cursor},
-    path::{Path, PathBuf},
+    io::{BufRead, Cursor},
+    path::PathBuf,
     sync::LazyLock,
 };
 
@@ -31,24 +29,22 @@ pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
     }
 }
 
-/// Get game data file, stripped of comments.
+/// Strip comments from file reader.
 /// ```
-/// # use rust_wiki::file_handler::get_decommented_file_reader;
-/// # use std::path::PathBuf;
-/// let reader = get_decommented_file_reader("DataLocal/stage.csv").unwrap();
-/// let mut rdr = csv::Reader::from_reader(reader);
-/// let reader = get_decommented_file_reader(PathBuf::from("DataLocal").join("stage.csv")).unwrap();
+/// # use std::{fs::File, io::BufReader, path::PathBuf};
+/// # use rust_wiki::config::CONFIG;
+/// # use rust_wiki::file_handler::decomment_file_reader;
+/// # let version = &CONFIG.current_version;
+/// let reader = File::open(version.location.join("DataLocal/stage.csv")).unwrap();
+/// let reader = decomment_file_reader(BufReader::new(reader));
 /// let mut rdr = csv::Reader::from_reader(reader);
 /// ```
-pub fn get_decommented_file_reader<P: AsRef<Path>>(path: P) -> Result<Cursor<String>, io::Error> {
-    let gd = &CONFIG.current_version.location;
-    // TODO just accept path and let user version take care of getting full
-    // path.
-    let f = BufReader::new(File::open(gd.join(path))?)
+pub fn decomment_file_reader<R: BufRead>(reader: R) -> Cursor<String> {
+    let f = reader
         .lines()
         .map(|line| line.unwrap().split("//").next().unwrap().trim().to_owned())
         .collect::<Vec<_>>()
         .join("\n");
 
-    Ok(Cursor::new(f))
+    Cursor::new(f)
 }

@@ -12,11 +12,11 @@ use crate::{
         stage::stage_metadata::StageMeta,
         version::Version,
     },
-    file_handler::get_decommented_file_reader,
+    file_handler::decomment_file_reader,
 };
 use csv::StringRecord;
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
-use std::path::PathBuf;
+use std::{fs::File, io::BufReader, path::PathBuf};
 
 /// Types to deserialise csv files.
 pub mod csv_types {
@@ -136,8 +136,12 @@ impl<'a> StageData<'_> {
         };
 
         let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
-        let stage_file_reader = get_decommented_file_reader(&stage_file)
-            .unwrap_or_else(|e| panic!("Error opening {stage_file:?}: {e:?}"));
+        let reader = BufReader::new(
+            File::open(version.location.join(&stage_file))
+                .unwrap_or_else(|e| panic!("Error opening {stage_file:?}: {e:?}")),
+        );
+
+        let stage_file_reader = decomment_file_reader(reader);
         let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
         Some(StageData {
