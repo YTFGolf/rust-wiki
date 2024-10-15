@@ -85,8 +85,6 @@ impl Version {
             .map(|s| s.to_string())
     }
 
-    // pub fn get_file()
-
     /// Get a cached data object.
     ///
     /// ## Usage

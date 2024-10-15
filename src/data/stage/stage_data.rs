@@ -126,8 +126,6 @@ pub struct StageData<'a> {
 }
 
 impl<'a> StageData<'_> {
-    // Refactoring job: use a version object. Contains directory and static
-    // data.
     /// Create new StageData object.
     pub fn new(selector: &str, version: &'a Version) -> Option<StageData<'a>> {
         let meta = match StageMeta::new(selector) {
@@ -201,21 +199,6 @@ impl<'a> StageData<'_> {
             line2: csv_line_2,
             enemies,
         }
-
-        // /// temp
-        // pub fn read_csv_file(file_name: &str) {
-        //     Stage::read_stage_csv(get_decommented_file_reader(file_name).unwrap());
-        //     // check all stage files ig
-        //     // Encounters: check the head, if needs to be nexted then next it
-        //     // do split(',').next()
-        //     // if matches string version of target then do serde
-        //     // if is "0" then break
-        //     // Could make a tester that checks Ms. Sign with the idiomatic and the
-        //     // efficient way of doing it.
-        //     // Would need to benchmark it though.
-        //     // ByteRecord::from(thing.split().collect())
-        //     // Could even do just checking id, mag, amag
-        // }
     }
 
     /// Get `map_id` to use in map_option and stage_option.

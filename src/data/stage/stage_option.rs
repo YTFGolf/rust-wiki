@@ -48,7 +48,7 @@ pub mod charagroups {
     }
 
     #[derive(Debug)]
-    /// Container for static data.
+    /// Container for charagroups data.
     pub struct CharaGroups {
         parsed_file: Vec<CharaGroup>,
     }

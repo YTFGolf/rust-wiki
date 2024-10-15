@@ -248,7 +248,7 @@ impl StageMeta {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Option<StageMeta> {
         // TODO optimise by checking selectors before running functions
-        // TODO check the type: if rejected go to next function, if rejected
+        // TODO check the type: if rejected go to next function, if invalid
         // then return None.
         if let Ok(st) = Self::from_file(selector) {
             return Some(st);
