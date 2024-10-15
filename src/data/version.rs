@@ -43,19 +43,21 @@ pub struct Version {
     pub language: VersionLanguage,
     // TODO version name param
     version_data: RefCell<Vec<(TypeId, VersionDataContents)>>,
-    // TODO see if this can be stuck inside a Mutex/RwLock so I can get rid of
-    // the sync impl below
+    // TODO see if this can be stuck inside a Mutex so I can get rid of the sync
+    // impl below (and make this actually thread-safe instead of lying about it)
 }
 unsafe impl Sync for Version {}
 impl Version {
     /// Create new Version object.
-    pub fn new<P>(location: P, language: &str) -> Result<Self, InvalidLanguage>
+    pub fn new<P>(location: P, language: &str, number: String) -> Result<Self, InvalidLanguage>
     where
         PathBuf: From<P>,
     {
         Ok(Self {
             location: PathBuf::from(location),
             language: language.try_into()?,
+            number,
+
             version_data: RefCell::new(Vec::new()),
         })
     }
@@ -63,8 +65,18 @@ impl Version {
     /// Automatically extract the language code from the directory name.
     ///
     /// Literally just checks the last word of the directory and returns that.
-    pub fn get_lang(path: &str) -> &str {
-        path.rsplit(" ").next().unwrap()
+    pub fn get_lang(path: &str) -> Option<&str> {
+        path.rsplit(" ").next()
+    }
+
+    /// Automatically extract version number from directory name.
+    ///
+    /// Literally just checks the first instance of a full word that only
+    /// contains numbers and full stops.
+    pub fn get_version_number(path: &str) -> Option<String> {
+        path.split_whitespace()
+            .find(|&part| part.chars().all(|c| c.is_digit(10) || c == '.'))
+            .map(|s| s.to_string())
     }
 
     // pub fn get_file()

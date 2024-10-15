@@ -13,7 +13,11 @@ fn expand_home(dir: &str) -> PathBuf {
 }
 
 fn get_version(dir: &str) -> Version {
-    match Version::new(expand_home(dir), Version::get_lang(dir)) {
+    match Version::new(
+        expand_home(dir),
+        Version::get_lang(dir).expect("No language name found in directory name!"),
+        Version::get_version_number(dir).expect("No version number found in directory name!"),
+    ) {
         Ok(v) => v,
         Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
     }
