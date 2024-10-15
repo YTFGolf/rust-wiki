@@ -181,7 +181,7 @@ pub struct Stage {
     /// Stage's restrictions.
     pub restrictions: Option<Vec<Restriction>>,
 }
-impl From<StageData> for Stage {
+impl From<StageData<'_>> for Stage {
     fn from(data: StageData) -> Self {
         let map_stage_data = data.get_map_stage_data();
         let map_option_data = data.get_map_option_data();

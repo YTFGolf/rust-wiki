@@ -4,7 +4,6 @@ use super::{
     stage_option::{StageOption, StageOptionCSV},
 };
 use crate::{
-    config::CONFIG,
     data::{
         map::{
             map_data::{csv_types::StageDataCSV, GameMap},
@@ -117,18 +116,20 @@ pub mod csv_types {
 
 /// Stores information about a stage.
 #[derive(Debug)]
-pub struct StageData {
+pub struct StageData<'a> {
     /// Stage's metadata.
     pub meta: StageMeta,
     /// Data stored in the stage's CSV file.
     pub stage_csv_data: RawCSVData,
+
+    version: &'a Version,
 }
 
-impl StageData {
+impl<'a> StageData<'_> {
     // Refactoring job: use a version object. Contains directory and static
     // data.
     /// Create new StageData object.
-    pub fn new(selector: &str, _: &Version) -> Option<Self> {
+    pub fn new(selector: &str, version: &'a Version) -> Option<StageData<'a>> {
         let meta = match StageMeta::new(selector) {
             Some(meta) => meta,
             None => panic!("Invalid selector: {selector:?}"),
@@ -142,6 +143,7 @@ impl StageData {
         Some(StageData {
             meta,
             stage_csv_data,
+            version,
         })
     }
 
@@ -229,7 +231,7 @@ impl StageData {
             return None;
         }
         // GameMap::get_stage_data(&self.meta, todo!())
-        GameMap::get_stage_data(&self.meta, &CONFIG.current_version)
+        GameMap::get_stage_data(&self.meta, self.version)
     }
 
     /// Get Map_option data if it exists.
@@ -241,7 +243,7 @@ impl StageData {
     /// Get Stage_option data if it exists.
     pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
         let map_id = self.get_map_id();
-        let stage_option = CONFIG.current_version.get_cached_file::<StageOption>();
+        let stage_option = self.version.get_cached_file::<StageOption>();
         stage_option.get_stage(map_id, self.meta.stage_num)
     }
 }

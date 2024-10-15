@@ -186,18 +186,8 @@ impl GameMap {
         }
         let is_time = is_time;
 
-        let parse_i32 = |slice| {
-            std::str::from_utf8(slice)
-                .expect("Invalid UTF-8")
-                .parse::<i32>()
-                .expect("Unable to parse to i32")
-        };
-        let parse_u32 = |slice| {
-            std::str::from_utf8(slice)
-                .expect("Invalid UTF-8")
-                .parse::<u32>()
-                .expect("Unable to parse to u32")
-        };
+        let parse_i32 = |slice| std::str::from_utf8(slice).unwrap().parse::<i32>().unwrap();
+        let parse_u32 = |slice| std::str::from_utf8(slice).unwrap().parse::<u32>().unwrap();
 
         let score_rewards: Vec<ScoreRewardsCSV> = if is_time {
             let time_len = (record.len() - 17) / 3;
