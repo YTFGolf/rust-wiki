@@ -51,18 +51,18 @@ fn get_file_diff(old_content: &str, new_content: &str) -> String {
             };
             write!(buf, "{}{}", change.tag(), change.to_string_lossy()).unwrap();
             write!(buf, "\x1b[38;2;255;255;255m").unwrap();
-            // FIXME doesn't show newline at end of file, just shows that the
-            // line is changed but without any explanation.
         }
     }
-    let a: String = String::from_utf8(buf).unwrap();
-    a
+    let diff: String = String::from_utf8(buf).unwrap();
+    diff
 }
 
 /// Get rid of the `<pre>` and `</pre>` parts of the page's content.
 fn strip_pre(content: &str) -> &str {
-    if content.starts_with("<pre>\n") {
-        &content["<pre>\n".len()..content.len() - "</pre>\n".len()]
+    const PRE_START: &str = "<pre>\n";
+    const PRE_END: &str = "</pre>\n";
+    if content.starts_with(PRE_START) {
+        &content[PRE_START.len()..content.len() - PRE_END.len()]
     } else {
         content
     }
