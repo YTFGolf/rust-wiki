@@ -137,7 +137,7 @@ impl<'a> StageData<'_> {
 
         let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
         let stage_file_reader = get_decommented_file_reader(&stage_file)
-            .unwrap_or_else(|_| panic!("File not found: {stage_file:?}"));
+            .unwrap_or_else(|e| panic!("Error opening {stage_file:?}: {e:?}"));
         let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
         Some(StageData {
