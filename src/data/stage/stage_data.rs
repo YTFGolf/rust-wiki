@@ -7,7 +7,7 @@ use crate::{
     data::{
         map::{
             map_data::{csv_types::StageDataCSV, GameMap},
-            map_option::{MapOptionCSV, MAP_OPTION},
+            map_option::{MapOption, MapOptionCSV},
         },
         stage::stage_metadata::StageMeta,
         version::Version,
@@ -237,7 +237,8 @@ impl<'a> StageData<'_> {
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
         let map_id = self.get_map_id();
-        MAP_OPTION.get_map(map_id)
+        let map_option = self.version.get_cached_file::<MapOption>();
+        map_option.get_map(map_id)
     }
 
     /// Get Stage_option data if it exists.

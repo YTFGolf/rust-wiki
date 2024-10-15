@@ -1,8 +1,8 @@
 //! Module that deals with the `Map_option` file.
 
-use crate::{config::CONFIG, data::version::Version};
+use crate::data::version::version_data::CacheableVersionData;
 use csv::ByteRecord;
-use std::{collections::HashMap, num::NonZero, sync::LazyLock};
+use std::{collections::HashMap, num::NonZero, path::Path};
 
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the map option CSV.
@@ -49,17 +49,19 @@ pub struct MapOptionCSV {
     _jpname: &'static str,
 }
 
+#[derive(Debug)]
 /// Container for the [MAP_OPTION] static.
 pub struct MapOption {
-    map: LazyLock<HashMap<u32, ByteRecord>>,
+    map: HashMap<u32, ByteRecord>,
 }
-impl MapOption {
-    const fn new() -> Self {
+impl CacheableVersionData for MapOption {
+    fn init_data(path: &std::path::Path) -> Self {
         Self {
-            map: LazyLock::new(|| get_map_option(&CONFIG.current_version)),
+            map: get_map_option(path),
         }
     }
-
+}
+impl MapOption {
     /// Get the map data that `map_id` corresponds to.
     pub fn get_map(&self, map_id: u32) -> Option<MapOptionCSV> {
         Some(
@@ -72,15 +74,12 @@ impl MapOption {
     }
 }
 
-/// Map of valid `map_id`s to the `"DataLocal/Map_option.csv"` file.
-pub static MAP_OPTION: MapOption = MapOption::new();
-
-fn get_map_option(v: &Version) -> HashMap<u32, ByteRecord> {
+fn get_map_option(path: &Path) -> HashMap<u32, ByteRecord> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         // technically does have headers but that's an issue for another day
         .flexible(true)
-        .from_path(v.location.join("DataLocal/Map_option.csv"))
+        .from_path(path.join("DataLocal/Map_option.csv"))
         .unwrap();
 
     let mut records = rdr.byte_records();
@@ -103,11 +102,16 @@ fn get_map_option(v: &Version) -> HashMap<u32, ByteRecord> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::config::CONFIG;
     use std::{collections::HashSet, io::Cursor};
 
     #[test]
     fn test_mo() {
-        let s = MAP_OPTION.get_map(0).unwrap();
+        let s = CONFIG
+            .current_version
+            .get_cached_file::<MapOption>()
+            .get_map(0)
+            .unwrap();
 
         assert_eq!(s.crown_4, 300);
     }
