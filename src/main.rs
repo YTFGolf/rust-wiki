@@ -14,7 +14,7 @@ struct Cli {
 
 #[derive(Debug, Args)]
 struct StageInfo {
-    selector: Option<String>,
+    selector: Vec<String>,
 }
 
 #[derive(Debug, Subcommand)]
@@ -31,18 +31,29 @@ enum Command {
 /*
 TODO
 
-- Allow selector to either be entered via input or via cmd args
 - Add user-config.toml and move config to there
 - Allow cmd options to override user config options
 */
 
-fn stage_info(a: StageInfo) {
-    println!("{a:?}");
-    print!("Input file selector: ");
-    io::stdout().flush().unwrap();
-    let selector = io::stdin().lines().next().unwrap().unwrap();
-    println!("{selector:?}");
+fn stage_info(info: StageInfo) {
+    println!("{info:?}");
+    let selector = match info.selector.len() {
+        1 => {
+            let mut s = info.selector;
+            // So this becomes an explicit mutable move (i.e. makes it so
+            // swap_remove actually returns an owned string)
+            s.swap_remove(0)
+        }
+        0 => {
+            print!("Input file selector: ");
+            io::stdout().flush().unwrap();
 
+            io::stdin().lines().next().unwrap().unwrap()
+            // essentially Python's `input("Input file selector: ")`
+        }
+        _ => info.selector.join(" "),
+    };
+    println!("{selector:?}");
     println!("{}", get_stage_info(&Stage::new(&selector).unwrap()))
 }
 
@@ -54,3 +65,11 @@ fn main() {
         Command::StageInfo(si) => stage_info(si),
     }
 }
+
+/*
+Testing clap:
+- `"l 0 0"`
+- `l 0 0`
+- `filibuster`
+- `invalid-selector`
+*/
