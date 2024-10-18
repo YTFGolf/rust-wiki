@@ -5,19 +5,19 @@ use rust_wiki::{
 };
 use std::io::{self, Write};
 
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, PartialEq)]
 #[command(version, about, long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Command,
 }
 
-#[derive(Debug, Args)]
+#[derive(Debug, Args, PartialEq)]
 struct StageInfo {
     selector: Vec<String>,
 }
 
-#[derive(Debug, Subcommand)]
+#[derive(Debug, Subcommand, PartialEq)]
 enum Command {
     #[command(visible_aliases(["stage"]))]
     /// Get information about a stage.
@@ -47,7 +47,6 @@ fn stage_info(info: StageInfo) {
         0 => {
             print!("Input file selector: ");
             io::stdout().flush().unwrap();
-
             io::stdin().lines().next().unwrap().unwrap()
             // essentially Python's `input("Input file selector: ")`
         }
@@ -66,10 +65,74 @@ fn main() {
     }
 }
 
-/*
-Testing clap:
-- `"l 0 0"`
-- `l 0 0`
-- `filibuster`
-- `invalid-selector`
-*/
+#[cfg(test)]
+mod cli_tests {
+    use super::*;
+
+    #[test]
+    fn info_single_full_selector() {
+        const ARGS: [&str; 3] = ["run_program", "stage", "l 0 0"];
+        let cli = Cli::parse_from(ARGS.iter());
+        assert_eq!(
+            cli,
+            Cli {
+                command: Command::StageInfo(StageInfo {
+                    selector: ["l 0 0".to_string()].to_vec()
+                })
+            }
+        );
+
+        let si = match cli.command {
+            Command::StageInfo(si) => si,
+            Command::ReadWiki => unreachable!(),
+        };
+        stage_info(si);
+    }
+
+    #[test]
+    fn info_multipart_selector() {
+        const ARGS: [&str; 5] = ["run_program", "stage", "l", "0", "0"];
+        let cli = Cli::parse_from(ARGS.iter());
+        assert_eq!(
+            cli,
+            Cli {
+                command: Command::StageInfo(StageInfo {
+                    selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec()
+                })
+            }
+        );
+
+        let si = match cli.command {
+            Command::StageInfo(si) => si,
+            Command::ReadWiki => unreachable!(),
+        };
+        stage_info(si);
+    }
+
+    #[test]
+    fn info_single_selector() {
+        const ARGS: [&str; 3] = ["run_program", "stage", "filibuster"];
+        let cli = Cli::parse_from(ARGS.iter());
+        assert_eq!(
+            cli,
+            Cli {
+                command: Command::StageInfo(StageInfo {
+                    selector: ["filibuster".to_string()].to_vec()
+                })
+            }
+        );
+
+        let si = match cli.command {
+            Command::StageInfo(si) => si,
+            Command::ReadWiki => unreachable!(),
+        };
+        stage_info(si);
+    }
+
+    #[test]
+    fn invalid_command() {
+        const ARGS: [&str; 2] = ["run_program", "invalid-command"];
+        let cli = Cli::try_parse_from(ARGS.iter());
+        assert!(cli.is_err());
+    }
+}
