@@ -265,7 +265,7 @@ impl StageMeta {
 
     /// Parse space-delimited selector into [StageMeta] object.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
+    /// # use rust_wiki::data::stage::raw::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
     /// let selector = "N 0 0";
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
@@ -291,7 +291,7 @@ impl StageMeta {
 
     /// Parse file name into [StageMeta] object.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::StageMeta;
+    /// # use rust_wiki::data::stage::raw::stage_metadata::StageMeta;
     /// let file_name = "stageRN000_00.csv";
     /// assert_eq!(file_name, StageMeta::from_file(file_name).unwrap().stage_file_name);
     /// ```
@@ -335,7 +335,7 @@ impl StageMeta {
     /// `selector` can either be the full reference (with or without a leading
     /// `*`) or just the stage part.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
+    /// # use rust_wiki::data::stage::raw::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
     /// let reference = "*https://battlecats-db.com/stage/s00000-01.html";
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta::from_ref("s00000-01").unwrap());
@@ -367,7 +367,7 @@ impl StageMeta {
 
     /// Get [StageMeta] from a selector split into variables.
     /// ```
-    /// # use rust_wiki::data::stage::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
+    /// # use rust_wiki::data::stage::raw::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
     /// let st = StageMeta::from_split("SoL", 0, 0);
     /// assert_eq!(st.unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
