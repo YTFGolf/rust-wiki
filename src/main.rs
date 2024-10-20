@@ -26,6 +26,13 @@ enum Command {
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.
     ReadWiki,
+
+    /// Update config.
+    Config,
+    // don't update anything to do with this without updating config.rs
+    // ideally this should just take in something from config.rs
+    // since config.rs is already terrible practice doesn't matter if it gets
+    // mixed with this does it?
 }
 
 /*
@@ -62,6 +69,7 @@ fn main() {
     match cli.command {
         Command::ReadWiki => update_wiki_files(),
         Command::StageInfo(si) => stage_info(si),
+        Command::Config => todo!(),
     }
 }
 
@@ -84,7 +92,7 @@ mod cli_tests {
 
         let si = match cli.command {
             Command::StageInfo(si) => si,
-            Command::ReadWiki => unreachable!(),
+            _ => unreachable!(),
         };
         stage_info(si);
     }
@@ -104,7 +112,7 @@ mod cli_tests {
 
         let si = match cli.command {
             Command::StageInfo(si) => si,
-            Command::ReadWiki => unreachable!(),
+            _ => unreachable!(),
         };
         stage_info(si);
     }
@@ -124,7 +132,7 @@ mod cli_tests {
 
         let si = match cli.command {
             Command::StageInfo(si) => si,
-            Command::ReadWiki => unreachable!(),
+            _ => unreachable!(),
         };
         stage_info(si);
     }
