@@ -6,7 +6,7 @@ use crate::{
             stage::Stage,
             stage_enemy::{BossType, EnemyAmount, StageEnemy},
         },
-        stage_metadata::consts::StageTypeEnum as T,
+        raw::stage_metadata::consts::StageTypeEnum as T,
     },
     wikitext::{data_files::enemy_data::ENEMY_DATA, wiki_utils::extract_name},
 };

@@ -5,7 +5,7 @@ use crate::{
     config::CONFIG,
     data::{
         map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-        stage::{
+        stage::raw::{
             stage_data::StageData,
             stage_metadata::StageMeta,
             stage_option::{

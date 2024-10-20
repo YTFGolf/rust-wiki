@@ -3,7 +3,7 @@
 use crate::{
     data::stage::{
         parsed::stage::{ContinueStages, Stage},
-        stage_metadata::consts::StageTypeEnum as T,
+        raw::stage_metadata::consts::StageTypeEnum as T,
     },
     wikitext::{
         data_files::stage_page_data::{MapData, StageData, STAGE_NAMES},

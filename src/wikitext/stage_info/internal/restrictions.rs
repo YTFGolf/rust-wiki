@@ -3,7 +3,7 @@
 use crate::{
     data::stage::{
         parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
-        stage_option::charagroups::{CharaGroup, CharaGroupType},
+        raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
     },
     wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameter},
 };

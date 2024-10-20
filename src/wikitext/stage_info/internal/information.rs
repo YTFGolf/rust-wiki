@@ -1,7 +1,7 @@
 //! Deals with basic stage information in the infobox.
 
 use crate::{
-    data::stage::{parsed::stage::Stage, stage_metadata::consts::StageTypeEnum},
+    data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::StageTypeEnum},
     wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
 };
 use either::Either::{Left, Right};

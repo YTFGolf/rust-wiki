@@ -1,7 +1,7 @@
 //! Module that gets information about stage names and continue stages.
 
 use crate::{
-    data::stage::stage_metadata::consts::STAGE_TYPES,
+    data::stage::raw::stage_metadata::consts::STAGE_TYPES,
     file_handler::{get_file_location, FileLocation},
 };
 use serde::Deserialize;

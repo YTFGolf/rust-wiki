@@ -1,6 +1,6 @@
 //! Module that deals with getting information about stage maps.
 
-use crate::data::{stage::stage_metadata::StageMeta, version::Version};
+use crate::data::{stage::raw::stage_metadata::StageMeta, version::Version};
 use csv::ByteRecord;
 use csv_types::{ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV};
 use std::{

@@ -1,6 +1,6 @@
 //! Module that deals with getting information about stages.
 use super::{
-    stage_metadata::consts::StageTypeEnum,
+    stage_metadata::{consts::StageTypeEnum, StageMeta},
     stage_option::{StageOption, StageOptionCSV},
 };
 use crate::{
@@ -9,7 +9,6 @@ use crate::{
             map_data::{csv_types::StageDataCSV, GameMap},
             map_option::{MapOption, MapOptionCSV},
         },
-        stage::stage_metadata::StageMeta,
         version::Version,
     },
     file_handler::decomment_file_reader,
