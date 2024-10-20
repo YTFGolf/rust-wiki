@@ -1,15 +1,24 @@
 //! Contains wikitext utilities.
 
+use regex::Regex;
 use std::sync::LazyLock;
 
-use regex::Regex;
-
-/// Regexes for utility functions.
+/// Regular expressions for wikitext functions.
 pub struct UtilRegexes {
     /// Detects if stage is old or removed.
     pub old_or_removed_detect: Regex,
-    /// Captures `[some_char]`. `some_char` is only captured since Rust's
-    /// default regex engine doesn't support lookarounds.
+    /// Used for getting rid of the ` (Old)` or ` (Removed)` at the end of stage
+    /// or map names.
+    ///
+    /// Captures `[some_char]` (i.e. you'll need to replace with `"$1"` instead
+    /// of standard replacing with `""`). `some_char` is only captured since
+    /// Regex crate doesn't support lookarounds.
+    ///
+    /// ```
+    /// # use rust_wiki::wikitext::wiki_utils::REGEXES;
+    /// let map_name = "[[Deleted Event]] (Removed)";
+    /// assert_eq!(REGEXES.old_or_removed_sub.replace_all(&map_name, "$1"), "[[Deleted Event]]");
+    /// ```
     pub old_or_removed_sub: Regex,
 }
 /// Utility regexes.
@@ -21,9 +30,12 @@ pub static REGEXES: LazyLock<UtilRegexes> = LazyLock::new(|| UtilRegexes {
 /**
 Extracts the name from a link:
 
-- `[[link|name]]` -> `name`
-- `[[link]]` -> `link`
-- `name` -> `name`
+```
+# use rust_wiki::wikitext::wiki_utils::extract_name;
+assert_eq!(extract_name("[[link|name]]"), "name");
+assert_eq!(extract_name("[[link]]"), "link");
+assert_eq!(extract_name("name"), "name");
+```
 */
 pub fn extract_name(name: &str) -> &str {
     if name.starts_with("[[") {
@@ -37,4 +49,4 @@ pub fn extract_name(name: &str) -> &str {
     }
 }
 
-// TODO put all wiki files into here
+// TODO put container for wiki file data into here instead of `data_files`
