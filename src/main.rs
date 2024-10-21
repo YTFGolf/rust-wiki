@@ -39,6 +39,9 @@ enum Command {
 TODO
 
 - Add user-config.toml and move config to there
+- Remove static CONFIG variable and replace with borrow passed everywhere
+- Remove stage new function
+- Move this stuff to `cli.rs`
 - Allow cmd options to override user config options
 */
 

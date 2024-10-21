@@ -24,6 +24,9 @@ fn get_version(dir: &str) -> Version {
 }
 
 /// Configuration values for the program.
+// Don't update this without updating main
+// version should be a full object with path, language and version number. Leave
+// the latter 2 blank if you want path to infer them
 #[derive(Debug)]
 pub struct Config<'a> {
     /// Current game version.
