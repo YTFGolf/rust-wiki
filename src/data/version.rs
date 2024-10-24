@@ -79,10 +79,9 @@ impl Version {
     ///
     /// Literally just checks the first instance of a full word that only
     /// contains numbers and full stops.
-    pub fn get_version_number(path: &str) -> Option<String> {
+    pub fn get_version_number(path: &str) -> Option<&str> {
         path.split_whitespace()
             .find(|&part| part.chars().all(|c| c.is_ascii_digit() || c == '.'))
-            .map(|s| s.to_string())
     }
 
     /// Get a cached data object.
