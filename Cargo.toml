@@ -16,6 +16,7 @@ num-format = "0.4.4"
 regex = "1.10.6"
 serde = { version = "1.0.210", features = ["derive"] }
 similar = "2.6.0"
+toml = "0.8.19"
 ureq = "2.10.1"
 
 [dev-dependencies]

@@ -28,11 +28,11 @@ fn get_version(dir: &str) -> Version {
 // version should be a full object with path, language and version number. Leave
 // the latter 2 blank if you want path to infer them
 #[derive(Debug)]
-pub struct Config<'a> {
+pub struct Config {
     /// Current game version.
     pub current_version: Version,
     /// Your name.
-    pub user_name: &'a str,
+    pub user_name: String,
     /// Make `Magnification` put `|name|0` on gauntlet pages rather than the
     /// enemy's actual magnification.
     pub suppress_gauntlet_magnification: bool,
@@ -41,9 +41,10 @@ pub struct Config<'a> {
 /// Static variable representing the config.
 // TODO read a config file instead of writing it here.
 // TODO remove dependency on static variable.
+// #[cfg(test)]
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
-    current_version: get_version("~/Downloads/Version 13.7.0 JP"),
-    user_name: "TheWWRNerdGuy",
+    current_version: get_version("~/Downloads/Version 13.7.0 EN"),
+    user_name: "TheWWRNerdGuy".to_string(),
     // suppress_gauntlet_magnification: true,
     suppress_gauntlet_magnification: false,
 });
