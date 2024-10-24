@@ -1,13 +1,9 @@
 use clap::{Args, Parser, Subcommand};
 use rust_wiki::{
-    data::stage::parsed::stage::Stage, wiki_files::update_wiki_files,
+    data::stage::parsed::stage::Stage, config::do_toml_stuff, wiki_files::update_wiki_files,
     wikitext::stage_info::get_stage_info,
 };
-use serde::{Deserialize, Serialize};
-use std::{
-    io::{self, Write},
-    process::exit,
-};
+use std::io::{self, Write};
 
 #[derive(Parser, Debug, PartialEq)]
 #[command(version, about, long_about = None)]
@@ -71,36 +67,8 @@ fn stage_info(info: StageInfo) {
     println!("{}", get_stage_info(&Stage::new(&selector).unwrap()))
 }
 
-// TODO replace toml with toml_edit since I don't want this to just be terrible
-// and non-documented.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UserVersion {
-    path: String,
-    lang: Option<String>,
-    number: Option<String>,
-}
-#[derive(Debug, Serialize, Deserialize)]
-struct UserConfig {
-    version: UserVersion,
-    /// Test
-    username: String,
-    suppress_gauntlet_magnification: bool,
-}
-
 fn main() {
-    let c = UserConfig {
-        version: UserVersion {
-            path: "~".to_string(),
-            lang: None,
-            number: None,
-        },
-        username: "aa".to_string(),
-        suppress_gauntlet_magnification: false,
-    };
-    println!("{c:?}");
-    println!("{}", toml::to_string_pretty(&c).unwrap());
-    exit(0);
-
+    do_toml_stuff();
     let cli = Cli::parse();
 
     match cli.command {

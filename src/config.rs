@@ -48,3 +48,38 @@ pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
     // suppress_gauntlet_magnification: true,
     suppress_gauntlet_magnification: false,
 });
+
+use serde::{Deserialize, Serialize};
+use std::process::exit;
+
+// TODO replace toml with toml_edit since I don't want this to just be terrible
+// and non-documented.
+// See https://github.com/toml-rs/toml/issues/376
+#[derive(Debug, Serialize, Deserialize)]
+struct UserVersion {
+    path: String,
+    lang: Option<String>,
+    number: Option<String>,
+}
+#[derive(Debug, Serialize, Deserialize)]
+struct UserConfig {
+    version: UserVersion,
+    username: String,
+    suppress_gauntlet_magnification: bool,
+}
+
+/// Do toml stuff.
+pub fn do_toml_stuff() {
+    let c = UserConfig {
+        version: UserVersion {
+            path: "~".to_string(),
+            lang: None,
+            number: None,
+        },
+        username: "aa".to_string(),
+        suppress_gauntlet_magnification: false,
+    };
+    println!("{c:?}");
+    println!("{}", toml::to_string(&c).unwrap());
+    exit(0);
+}
