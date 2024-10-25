@@ -120,7 +120,7 @@ pub fn get_user_config() -> Option<UserConfig> {
 }
 
 /// Read user config file and parse it into a [Config] object.
-fn get_config() -> Option<Config> {
+pub fn get_config() -> Option<Config> {
     Some(get_user_config()?.into())
 }
 
