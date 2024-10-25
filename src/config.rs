@@ -1,12 +1,10 @@
 //! Contains global config values.
-use crate::data::stage::raw::stage_option::StageOption;
 use crate::data::version::{InvalidLanguage, Version};
 use home::home_dir;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{ErrorKind, Read};
 use std::path::PathBuf;
-use std::process::exit;
 
 /// Expand home directory.
 fn expand_home(dir: &str) -> PathBuf {
@@ -19,22 +17,10 @@ fn expand_home(dir: &str) -> PathBuf {
     }
 }
 
-// fn get_version(dir: &str) -> Version {
-//     match Version::new(
-//         expand_home(dir),
-//         Version::get_lang(dir).expect("No language name found in directory name!"),
-//         Version::get_version_number(dir)
-//             .expect("No version number found in directory name!")
-//             .to_string(),
-//     ) {
-//         Ok(v) => v,
-//         Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
-//     }
-// }
-
 // TODO replace toml with toml_edit since I don't want this to just be terrible
 // and non-documented.
 // See https://github.com/toml-rs/toml/issues/376
+/// TOML-based representation of game version.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserVersion {
     path: String,
@@ -44,12 +30,14 @@ pub struct UserVersion {
 impl From<UserVersion> for Version {
     fn from(value: UserVersion) -> Self {
         let path = expand_home(&value.path);
+
         let lang = match &value.lang {
             None => {
                 Version::get_lang(&value.path).expect("No language name found in directory name!")
             }
             Some(lang) => lang,
         };
+
         let number = match &value.number {
             None => Version::get_version_number(&value.path)
                 .expect("No version number found in directory name!"),
@@ -64,6 +52,12 @@ impl From<UserVersion> for Version {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+/// TOML-based representation of user's config file.
+///
+/// If this gets updated then [UserConfigCli][crate::cli::UserConfigCli] also
+/// needs to be updated.
+// TODO something different so that this gets stored in the same place as
+// UserConfigCli
 pub struct UserConfig {
     version: UserVersion,
     username: String,
@@ -94,12 +88,6 @@ impl From<UserConfig> for Config {
     }
 }
 
-/// Static variable representing the config.
-// TODO read a config file instead of writing it here.
-// TODO remove dependency on static variable.
-#[cfg(test)]
-pub static CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config().unwrap());
-
 const CONFIG_FILE: &str = "user-config.toml";
 fn read_config_file() -> Option<String> {
     let f = File::open(CONFIG_FILE);
@@ -122,40 +110,44 @@ fn get_user_config() -> Option<UserConfig> {
     Some(config)
 }
 
-// TODO I don't even remember and I put this todo here like 20 seconds ago
+/// Read user config file and parse it into a [Config] object.
 pub fn get_config() -> Option<Config> {
     Some(get_user_config()?.into())
 }
 
-/// Do toml stuff.
-pub fn do_toml_stuff() {
-    println!("{:?}", get_config());
-    if true {
-        return;
-    }
-    let c = UserConfig {
-        version: UserVersion {
-            path: "~/Downloads/Version 13.7.0 EN".to_string(),
-            lang: None,
-            number: None,
-        },
-        username: "TheWWRNerdGuy".to_string(),
-        suppress_gauntlet_magnification: false,
-    };
-    println!("{c:?}");
+/// Static variable representing the config, for use in tests.
+#[cfg(test)]
+pub static CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config().unwrap());
 
-    let c2 = toml::to_string(&c).unwrap();
-    println!("{c2}");
+// /// Do toml stuff.
+// fn do_toml_stuff() {
+//     println!("{:?}", get_config());
+//     if true {
+//         return;
+//     }
+//     let c = UserConfig {
+//         version: UserVersion {
+//             path: "~/Downloads/Version 13.7.0 EN".to_string(),
+//             lang: None,
+//             number: None,
+//         },
+//         username: "TheWWRNerdGuy".to_string(),
+//         suppress_gauntlet_magnification: false,
+//     };
+//     println!("{c:?}");
 
-    let c3: UserConfig = toml::from_str(&c2).unwrap();
-    println!("{c3:?}");
+//     let c2 = toml::to_string(&c).unwrap();
+//     println!("{c2}");
 
-    let c4 = Version::from(c3.version);
-    let _d = c4.get_cached_file::<StageOption>();
-    println!("{:?}", c4);
-    // println!("{:?}", _d);
+//     let c3: UserConfig = toml::from_str(&c2).unwrap();
+//     println!("{c3:?}");
 
-    exit(0);
-}
+//     let c4 = Version::from(c3.version);
+//     let _d = c4.get_cached_file::<StageOption>();
+//     println!("{:?}", c4);
+//     // println!("{:?}", _d);
 
-// TODO test with just home directory as version
+//     exit(0);
+// }
+
+// // TODO test with just home directory as version

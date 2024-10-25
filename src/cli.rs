@@ -1,62 +1,12 @@
+//! Parses cli arguments for use in main.
 use crate::{
     config::Config, data::stage::parsed::stage::Stage, wikitext::stage_info::get_stage_info,
 };
 use clap::{Args, Parser, Subcommand};
 use std::io::{self, Write};
 
-#[derive(Parser, Debug, PartialEq)]
-#[command(version, about, long_about = None)]
-pub struct Cli {
-    #[command(subcommand)]
-    pub command: Command,
-}
-
-#[derive(Debug, Args, PartialEq)]
-pub struct StageInfo {
-    selector: Vec<String>,
-}
-
-#[derive(Debug, Args, PartialEq)]
-pub struct UserConfigCli {
-    #[arg(short, long)]
-    path: Option<String>,
-
-    #[arg(short = 'n', long)]
-    username: Option<String>,
-
-    #[arg(long)]
-    suppress: Option<bool>,
-}
-
-#[derive(Debug, Subcommand, PartialEq)]
-pub enum Command {
-    #[command(visible_aliases(["stage"]))]
-    /// Get information about a stage.
-    StageInfo(StageInfo),
-
-    #[command(visible_aliases(["wiki", "get"]))]
-    /// Get data from the wiki.
-    ReadWiki,
-
-    /// Update config.
-    Config(UserConfigCli),
-    // don't update anything to do with this without updating config.rs
-    // ideally this should just take in something from config.rs
-    // since config.rs is already terrible practice doesn't matter if it gets
-    // mixed with this does it?
-}
-
-/*
-TODO
-
-- Remove static CONFIG variable and replace with borrow passed everywhere
-  - Maybe for testing have a test_config static
-- Remove stage new function
-- Move this stuff to `cli.rs`
-- Allow cmd options to override user config options
-*/
-
 // TODO StageInfo is a bad name
+/// Get stage info.
 pub fn stage_info(info: StageInfo, config: &Config) {
     println!("{info:?}");
     let selector = match info.selector.len() {
@@ -84,7 +34,67 @@ pub fn stage_info(info: StageInfo, config: &Config) {
     )
 }
 
-pub fn update_config(config: Option<Config>, args: UserConfigCli) {}
+/// Update user config.
+pub fn update_config(config: Option<Config>, args: UserConfigCli) {
+    let (_, _) = (config, args);
+    todo!()
+}
+
+#[derive(Debug, Args, PartialEq)]
+/// Stage info options.
+pub struct StageInfo {
+    selector: Vec<String>,
+}
+
+#[derive(Debug, Args, PartialEq)]
+/// User config options.
+pub struct UserConfigCli {
+    #[arg(short, long)]
+    path: Option<String>,
+
+    #[arg(short = 'n', long)]
+    username: Option<String>,
+
+    #[arg(long)]
+    suppress: Option<bool>,
+}
+
+#[derive(Debug, Subcommand, PartialEq)]
+/// Which program to run.
+pub enum Command {
+    #[command(visible_aliases(["stage"]))]
+    /// Get information about a stage.
+    StageInfo(StageInfo),
+
+    #[command(visible_aliases(["wiki", "get"]))]
+    /// Get data from the wiki.
+    ReadWiki,
+
+    /// Update config.
+    Config(UserConfigCli),
+    // don't update anything to do with this without updating config.rs
+    // ideally this should just take in something from config.rs
+    // since config.rs is already terrible practice doesn't matter if it gets
+    // mixed with this does it?
+}
+
+#[derive(Parser, Debug, PartialEq)]
+#[command(version, about, long_about = None)]
+/// Top-level cli arguments.
+pub struct Cli {
+    #[command(subcommand)]
+    /// Command to use.
+    pub command: Command,
+}
+
+/*
+TODO
+
+- ~~Remove static CONFIG variable and replace with borrow passed everywhere~~
+  - Maybe for testing have a test_config static
+  - Rename old CONFIG and Stage::new
+- Allow cmd options to override user config options
+*/
 
 #[cfg(test)]
 mod cli_tests {
