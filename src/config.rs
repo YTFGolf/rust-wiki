@@ -111,7 +111,7 @@ fn read_config_file() -> Option<String> {
 }
 
 /// Read user config file and return parsed config object, if the file exists.
-fn get_user_config() -> Option<UserConfig> {
+pub fn get_user_config() -> Option<UserConfig> {
     // FIXME currently assumes that if config is None then the file doesn't
     // exist, but could also be an error with toml parsing if toml doesn't
     // contain every field.
@@ -120,7 +120,7 @@ fn get_user_config() -> Option<UserConfig> {
 }
 
 /// Read user config file and parse it into a [Config] object.
-pub fn get_config() -> Option<Config> {
+fn get_config() -> Option<Config> {
     Some(get_user_config()?.into())
 }
 

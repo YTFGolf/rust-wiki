@@ -101,12 +101,25 @@ fn create_config(args: UserConfigCli) {
 }
 
 /// Update user config.
-pub fn update_config(config: Option<Config>, args: UserConfigCli) {
-    let config = match config {
+pub fn update_config(config: Option<UserConfig>, args: UserConfigCli) {
+    let mut config = match config {
         None => return create_config(args),
         Some(c) => c,
     };
-    todo!()
+
+    // merge configs
+    if let Some(path) = args.path {
+        config.version.path = path;
+    }
+    if let Some(name) = args.username {
+        config.username = name;
+    }
+    if let Some(s) = args.suppress {
+        config.suppress_gauntlet_magnification = s;
+    }
+
+    let toml_repr = toml::to_string(&config).unwrap();
+    set_config_file(&toml_repr);
 }
 
 #[derive(Debug, Args, PartialEq)]
@@ -169,10 +182,7 @@ TODO
 #[cfg(test)]
 mod cli_tests {
     use super::*;
-    use crate::config::get_config;
-    use std::sync::LazyLock;
-
-    static CONFIG: LazyLock<Config> = LazyLock::new(|| get_config().unwrap());
+    use crate::config::CONFIG;
 
     #[test]
     fn info_single_full_selector() {
