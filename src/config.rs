@@ -3,6 +3,8 @@ use crate::data::stage::raw::stage_option::StageOption;
 use crate::data::version::{InvalidLanguage, Version};
 use home::home_dir;
 use serde::{Deserialize, Serialize};
+use std::fs::File;
+use std::io::{ErrorKind, Read};
 use std::process::exit;
 use std::{path::PathBuf, sync::LazyLock};
 
@@ -94,15 +96,39 @@ pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
     suppress_gauntlet_magnification: false,
 });
 
+const CONFIG_FILE: &str = "user-config.toml";
+fn read_config_file() -> Option<String> {
+    let f = File::open(CONFIG_FILE);
+    match f {
+        Ok(mut f) => {
+            let mut buf = String::from("");
+            f.read_to_string(&mut buf).unwrap();
+            Some(buf)
+        }
+        Err(e) => match e.kind() {
+            ErrorKind::NotFound => None,
+            _ => panic!("Error when trying to open {CONFIG_FILE}: {e}"),
+        },
+    }
+}
+
 /// Do toml stuff.
 pub fn do_toml_stuff() {
+    let config: UserConfig = match read_config_file() {
+        Some(c) => toml::from_str(&c).unwrap(),
+        None => todo!("Config does not exist!"),
+    };
+    println!("{config:?}");
+    if true {
+        return;
+    }
     let c = UserConfig {
         version: UserVersion {
             path: "~/Downloads/Version 13.7.0 EN".to_string(),
             lang: None,
             number: None,
         },
-        username: "aa".to_string(),
+        username: "TheWWRNerdGuy".to_string(),
         suppress_gauntlet_magnification: false,
     };
     println!("{c:?}");
