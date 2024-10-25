@@ -23,6 +23,12 @@ struct StageInfo {
 struct UserConfigCli {
     #[arg(short, long)]
     path: Option<String>,
+
+    #[arg(short='n', long)]
+    username: Option<String>,
+
+    #[arg(long)]
+    suppress: Option<bool>,
 }
 
 #[derive(Debug, Subcommand, PartialEq)]

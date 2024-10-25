@@ -5,8 +5,8 @@ use home::home_dir;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{ErrorKind, Read};
+use std::path::PathBuf;
 use std::process::exit;
-use std::{path::PathBuf, sync::LazyLock};
 
 /// Expand home directory.
 fn expand_home(dir: &str) -> PathBuf {
@@ -19,18 +19,18 @@ fn expand_home(dir: &str) -> PathBuf {
     }
 }
 
-fn get_version(dir: &str) -> Version {
-    match Version::new(
-        expand_home(dir),
-        Version::get_lang(dir).expect("No language name found in directory name!"),
-        Version::get_version_number(dir)
-            .expect("No version number found in directory name!")
-            .to_string(),
-    ) {
-        Ok(v) => v,
-        Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
-    }
-}
+// fn get_version(dir: &str) -> Version {
+//     match Version::new(
+//         expand_home(dir),
+//         Version::get_lang(dir).expect("No language name found in directory name!"),
+//         Version::get_version_number(dir)
+//             .expect("No version number found in directory name!")
+//             .to_string(),
+//     ) {
+//         Ok(v) => v,
+//         Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
+//     }
+// }
 
 // TODO replace toml with toml_edit since I don't want this to just be terrible
 // and non-documented.
@@ -98,7 +98,7 @@ impl From<UserConfig> for Config {
 // TODO read a config file instead of writing it here.
 // TODO remove dependency on static variable.
 #[cfg(test)]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| get_config().unwrap());
+pub static CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config().unwrap());
 
 const CONFIG_FILE: &str = "user-config.toml";
 fn read_config_file() -> Option<String> {
