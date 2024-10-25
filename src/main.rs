@@ -54,7 +54,7 @@ TODO
 */
 
 // TODO StageInfo is a bad name
-fn stage_info(info: StageInfo) {
+fn stage_info(info: StageInfo, config: &Config) {
     println!("{info:?}");
     let selector = match info.selector.len() {
         1 => {
@@ -72,7 +72,13 @@ fn stage_info(info: StageInfo) {
         _ => info.selector.join(" "),
     };
     println!("{selector:?}");
-    println!("{}", get_stage_info(&Stage::new(&selector).unwrap()))
+    println!(
+        "{}",
+        get_stage_info(
+            &Stage::new_versioned(&selector, &config.current_version).unwrap(),
+            config
+        )
+    )
 }
 
 fn update_config(config: Option<Config>, args: UserConfigCli) {}
@@ -86,7 +92,7 @@ fn main() {
 
     match cli.command {
         Command::ReadWiki => update_wiki_files(&config.unwrap()),
-        Command::StageInfo(si) => stage_info(si),
+        Command::StageInfo(si) => stage_info(si, &config.unwrap()),
         Command::Config(args) => update_config(config, args),
     }
 }
@@ -94,6 +100,9 @@ fn main() {
 #[cfg(test)]
 mod cli_tests {
     use super::*;
+    use std::sync::LazyLock;
+
+    static CONFIG: LazyLock<Config> = LazyLock::new(|| get_config().unwrap());
 
     #[test]
     fn info_single_full_selector() {
@@ -112,7 +121,7 @@ mod cli_tests {
             Command::StageInfo(si) => si,
             _ => unreachable!(),
         };
-        stage_info(si);
+        stage_info(si, &CONFIG);
     }
 
     #[test]
@@ -132,7 +141,7 @@ mod cli_tests {
             Command::StageInfo(si) => si,
             _ => unreachable!(),
         };
-        stage_info(si);
+        stage_info(si, &CONFIG);
     }
 
     #[test]
@@ -152,7 +161,7 @@ mod cli_tests {
             Command::StageInfo(si) => si,
             _ => unreachable!(),
         };
-        stage_info(si);
+        stage_info(si, &CONFIG);
     }
 
     #[test]

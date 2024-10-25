@@ -97,7 +97,7 @@ impl From<UserConfig> for Config {
 /// Static variable representing the config.
 // TODO read a config file instead of writing it here.
 // TODO remove dependency on static variable.
-// #[cfg(test)]
+#[cfg(test)]
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| get_config().unwrap());
 
 const CONFIG_FILE: &str = "user-config.toml";

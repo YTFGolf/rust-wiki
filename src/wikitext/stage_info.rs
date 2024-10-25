@@ -3,7 +3,7 @@
 mod internal;
 use super::data_files::stage_page_data::{MapData, StageData, STAGE_NAMES};
 use super::format_parser::{parse_si_format, ParseType};
-use crate::config::CONFIG;
+use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
 use std::fmt::Write;
@@ -51,12 +51,12 @@ struct StageWikiData {
 }
 
 /// Get full stage info.
-pub fn get_stage_info(stage: &Stage) -> String {
-    get_stage_info_formatted(stage, DEFAULT_FORMAT)
+pub fn get_stage_info(stage: &Stage, config: &Config) -> String {
+    get_stage_info_formatted(stage, DEFAULT_FORMAT, config)
 }
 
 /// Get stage info based on specified format.
-pub fn get_stage_info_formatted(stage: &Stage, format: &str) -> String {
+pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
     // TODO pre and post probably
     let parsed = parse_si_format(format);
 
@@ -78,7 +78,7 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str) -> String {
             continue;
         }
 
-        let new_buf = get_stage_variable(node.content, stage, &stage_wiki_data);
+        let new_buf = get_stage_variable(node.content, stage, &stage_wiki_data, config);
         buf.write_str(&new_buf).unwrap();
     }
 
@@ -94,6 +94,7 @@ fn get_stage_variable(
     variable_name: &str,
     stage: &Stage,
     stage_wiki_data: &StageWikiData,
+    config: &Config,
 ) -> String {
     match variable_name {
         "enemies_appearing" => internal::enemies_appearing(stage),
@@ -108,7 +109,7 @@ fn get_stage_variable(
             .map(|p| p.to_string())
             .collect::<Vec<String>>()
             .join("\n"),
-        "enemies_list" => internal::enemies_list(stage, CONFIG.suppress_gauntlet_magnification)
+        "enemies_list" => internal::enemies_list(stage, config.suppress_gauntlet_magnification)
             .into_iter()
             .map(|p| p.to_string())
             .collect::<Vec<String>>()

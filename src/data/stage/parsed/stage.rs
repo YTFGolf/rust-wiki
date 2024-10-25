@@ -1,20 +1,17 @@
 //! Represents a full stage.
 
 use super::stage_enemy::StageEnemy;
-use crate::{
-    config::CONFIG,
-    data::{
-        map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-        stage::raw::{
-            stage_data::StageData,
-            stage_metadata::StageMeta,
-            stage_option::{
-                charagroups::{CharaGroup, CharaGroups},
-                StageOptionCSV,
-            },
+use crate::data::{
+    map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+    stage::raw::{
+        stage_data::StageData,
+        stage_metadata::StageMeta,
+        stage_option::{
+            charagroups::{CharaGroup, CharaGroups},
+            StageOptionCSV,
         },
-        version::Version,
     },
+    version::Version,
 };
 use std::num::NonZeroU32;
 
@@ -321,7 +318,9 @@ fn u8_to_bool(n: u8) -> bool {
 
 impl Stage {
     /// Create a new stage object from `selector` in current version.
+    #[cfg(test)]
     pub fn new(selector: &str) -> Option<Self> {
+        use crate::config::CONFIG;
         Self::new_versioned(selector, &CONFIG.current_version)
     }
 
@@ -334,6 +333,7 @@ impl Stage {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::config::CONFIG;
     use regex::Regex;
 
     // test none values, esp. with crown data
