@@ -36,7 +36,7 @@ fn get_version(dir: &str) -> Version {
 // and non-documented.
 // See https://github.com/toml-rs/toml/issues/376
 #[derive(Debug, Serialize, Deserialize)]
-struct UserVersion {
+pub struct UserVersion {
     path: String,
     lang: Option<String>,
     number: Option<String>,
@@ -64,7 +64,7 @@ impl From<UserVersion> for Version {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct UserConfig {
+pub struct UserConfig {
     version: UserVersion,
     username: String,
     suppress_gauntlet_magnification: bool,
@@ -98,12 +98,7 @@ impl From<UserConfig> for Config {
 // TODO read a config file instead of writing it here.
 // TODO remove dependency on static variable.
 // #[cfg(test)]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config {
-    current_version: get_version("~/Downloads/Version 13.7.0 EN"),
-    user_name: "TheWWRNerdGuy".to_string(),
-    // suppress_gauntlet_magnification: true,
-    suppress_gauntlet_magnification: false,
-});
+pub static CONFIG: LazyLock<Config> = LazyLock::new(|| get_config().unwrap());
 
 const CONFIG_FILE: &str = "user-config.toml";
 fn read_config_file() -> Option<String> {

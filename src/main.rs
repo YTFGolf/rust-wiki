@@ -1,6 +1,9 @@
 use clap::{Args, Parser, Subcommand};
 use rust_wiki::{
-    config::get_config, data::stage::parsed::stage::Stage, wiki_files::update_wiki_files, wikitext::stage_info::get_stage_info
+    config::{get_config, Config},
+    data::stage::parsed::stage::Stage,
+    wiki_files::update_wiki_files,
+    wikitext::stage_info::get_stage_info,
 };
 use std::io::{self, Write};
 
@@ -16,6 +19,12 @@ struct StageInfo {
     selector: Vec<String>,
 }
 
+#[derive(Debug, Args, PartialEq)]
+struct UserConfigCli {
+    #[arg(short, long)]
+    path: Option<String>,
+}
+
 #[derive(Debug, Subcommand, PartialEq)]
 enum Command {
     #[command(visible_aliases(["stage"]))]
@@ -27,7 +36,7 @@ enum Command {
     ReadWiki,
 
     /// Update config.
-    Config,
+    Config(UserConfigCli),
     // don't update anything to do with this without updating config.rs
     // ideally this should just take in something from config.rs
     // since config.rs is already terrible practice doesn't matter if it gets
@@ -37,7 +46,6 @@ enum Command {
 /*
 TODO
 
-- Add user-config.toml and move config to there
 - Remove static CONFIG variable and replace with borrow passed everywhere
   - Maybe for testing have a test_config static
 - Remove stage new function
@@ -67,14 +75,19 @@ fn stage_info(info: StageInfo) {
     println!("{}", get_stage_info(&Stage::new(&selector).unwrap()))
 }
 
+fn update_config(config: Option<Config>, args: UserConfigCli) {}
+
 fn main() {
     let cli = Cli::parse();
+    // FIXME currently assumes that if config is None then the file doesn't
+    // exist, but could also be an error with toml parsing if toml doesn't
+    // contain every field.
     let config = get_config();
 
     match cli.command {
         Command::ReadWiki => update_wiki_files(&config.unwrap()),
         Command::StageInfo(si) => stage_info(si),
-        Command::Config => todo!(),
+        Command::Config(args) => update_config(config, args),
     }
 }
 
