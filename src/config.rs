@@ -84,6 +84,15 @@ pub struct Config {
     /// enemy's actual magnification.
     pub suppress_gauntlet_magnification: bool,
 }
+impl From<UserConfig> for Config {
+    fn from(value: UserConfig) -> Self {
+        Self {
+            current_version: value.version.into(),
+            user_name: value.username,
+            suppress_gauntlet_magnification: value.suppress_gauntlet_magnification,
+        }
+    }
+}
 
 /// Static variable representing the config.
 // TODO read a config file instead of writing it here.
@@ -112,13 +121,27 @@ fn read_config_file() -> Option<String> {
     }
 }
 
-/// Do toml stuff.
-pub fn do_toml_stuff() {
-    let config: UserConfig = match read_config_file() {
-        Some(c) => toml::from_str(&c).unwrap(),
+/// Read user config file and return parsed config object, if the file exists.
+fn get_user_config() -> Option<UserConfig> {
+    let config: UserConfig = toml::from_str(&read_config_file()?).unwrap();
+    Some(config)
+}
+
+// TODO I don't even remember and I put this todo here like 20 seconds ago
+pub fn get_config() -> Config {
+    let config: UserConfig = match get_user_config() {
+        Some(c) => c,
         None => todo!("Config does not exist!"),
     };
+
     println!("{config:?}");
+
+    config.into()
+}
+
+/// Do toml stuff.
+pub fn do_toml_stuff() {
+    println!("{:?}", get_config());
     if true {
         return;
     }
