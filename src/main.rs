@@ -1,7 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 use rust_wiki::{
-    data::stage::parsed::stage::Stage, config::do_toml_stuff, wiki_files::update_wiki_files,
-    wikitext::stage_info::get_stage_info,
+    config::get_config, data::stage::parsed::stage::Stage, wiki_files::update_wiki_files, wikitext::stage_info::get_stage_info
 };
 use std::io::{self, Write};
 
@@ -46,6 +45,7 @@ TODO
 - Allow cmd options to override user config options
 */
 
+// TODO StageInfo is a bad name
 fn stage_info(info: StageInfo) {
     println!("{info:?}");
     let selector = match info.selector.len() {
@@ -68,11 +68,11 @@ fn stage_info(info: StageInfo) {
 }
 
 fn main() {
-    do_toml_stuff();
     let cli = Cli::parse();
+    let config = get_config();
 
     match cli.command {
-        Command::ReadWiki => update_wiki_files(),
+        Command::ReadWiki => update_wiki_files(&config.unwrap()),
         Command::StageInfo(si) => stage_info(si),
         Command::Config => todo!(),
     }

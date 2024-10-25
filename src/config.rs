@@ -128,15 +128,8 @@ fn get_user_config() -> Option<UserConfig> {
 }
 
 // TODO I don't even remember and I put this todo here like 20 seconds ago
-pub fn get_config() -> Config {
-    let config: UserConfig = match get_user_config() {
-        Some(c) => c,
-        None => todo!("Config does not exist!"),
-    };
-
-    println!("{config:?}");
-
-    config.into()
+pub fn get_config() -> Option<Config> {
+    Some(get_user_config()?.into())
 }
 
 /// Do toml stuff.
