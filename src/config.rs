@@ -6,9 +6,11 @@ use serde::{Deserialize, Serialize};
 use std::process::exit;
 use std::{path::PathBuf, sync::LazyLock};
 
-/// Expand home directory if `dir` begins with `~/`.
+/// Expand home directory.
 fn expand_home(dir: &str) -> PathBuf {
-    if dir.len() >= 2 && &dir[0..2] == "~/" {
+    if dir == "~" || dir.is_empty() {
+        home_dir().unwrap()
+    } else if dir.len() >= 2 && &dir[0..2] == "~/" {
         home_dir().unwrap().join(&dir[2..])
     } else {
         PathBuf::from(dir)
