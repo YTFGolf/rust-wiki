@@ -3,7 +3,7 @@ use crate::data::version::{InvalidLanguage, Version};
 use home::home_dir;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
-use std::io::{ErrorKind, Read};
+use std::io::{ErrorKind, Read, Write};
 use std::path::PathBuf;
 
 /// Expand home directory.
@@ -23,9 +23,9 @@ fn expand_home(dir: &str) -> PathBuf {
 /// TOML-based representation of game version.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserVersion {
-    path: String,
-    lang: Option<String>,
-    number: Option<String>,
+    pub path: String,
+    pub lang: Option<String>,
+    pub number: Option<String>,
 }
 impl From<UserVersion> for Version {
     fn from(value: UserVersion) -> Self {
@@ -59,9 +59,9 @@ impl From<UserVersion> for Version {
 // TODO something different so that this gets stored in the same place as
 // UserConfigCli
 pub struct UserConfig {
-    version: UserVersion,
-    username: String,
-    suppress_gauntlet_magnification: bool,
+    pub version: UserVersion,
+    pub username: String,
+    pub suppress_gauntlet_magnification: bool,
 }
 
 /// Configuration values for the program.
@@ -89,6 +89,12 @@ impl From<UserConfig> for Config {
 }
 
 const CONFIG_FILE: &str = "user-config.toml";
+pub fn set_config_file(new_value: &str) {
+    let f = File::create(CONFIG_FILE);
+    f.unwrap().write_all(new_value.as_bytes()).unwrap();
+    println!("Successfully set config at {CONFIG_FILE}.");
+}
+
 fn read_config_file() -> Option<String> {
     let f = File::open(CONFIG_FILE);
     match f {
@@ -106,6 +112,9 @@ fn read_config_file() -> Option<String> {
 
 /// Read user config file and return parsed config object, if the file exists.
 fn get_user_config() -> Option<UserConfig> {
+    // FIXME currently assumes that if config is None then the file doesn't
+    // exist, but could also be an error with toml parsing if toml doesn't
+    // contain every field.
     let config: UserConfig = toml::from_str(&read_config_file()?).unwrap();
     Some(config)
 }
