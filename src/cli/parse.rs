@@ -40,14 +40,10 @@ pub fn stage_info(info: StageInfo, config: &Config) {
     )
 }
 
-/// Update user config.
-pub fn update_config(config: Option<UserConfig>, args: UserConfigCli) {
-    let mut config = match config {
-        None => return create_config(args),
-        Some(c) => c,
-    };
-
-    // merge configs
+/// Replace all fields of `config` with appropriate fields from `args` if they
+/// exist.
+pub fn merge_config_and_args(config: UserConfig, args: UserConfigCli) -> UserConfig {
+    let mut config = config;
     if let Some(path) = args.path {
         config.version.path = path;
     }
@@ -58,6 +54,17 @@ pub fn update_config(config: Option<UserConfig>, args: UserConfigCli) {
         config.suppress_gauntlet_magnification = s;
     }
 
+    config
+}
+
+/// Update user config.
+pub fn update_config(config: Option<UserConfig>, args: UserConfigCli) {
+    let config = match config {
+        None => return create_config(args),
+        Some(c) => c,
+    };
+
+    let config = merge_config_and_args(config, args);
     let toml_repr = toml::to_string(&config).unwrap();
     set_config_file(&toml_repr);
 }
