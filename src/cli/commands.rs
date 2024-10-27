@@ -1,22 +1,10 @@
+use super::user_config::UserConfigCli;
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Args, PartialEq)]
 /// Stage info options.
 pub struct StageInfo {
     pub selector: Vec<String>,
-}
-
-#[derive(Debug, Args, PartialEq)]
-/// User config options.
-pub struct UserConfigCli {
-    #[arg(short, long)]
-    pub path: Option<String>,
-
-    #[arg(short = 'n', long)]
-    pub username: Option<String>,
-
-    #[arg(long)]
-    pub suppress: Option<bool>,
 }
 
 #[derive(Debug, Subcommand, PartialEq)]

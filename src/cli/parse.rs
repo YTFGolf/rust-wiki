@@ -1,12 +1,14 @@
 //! Parses cli arguments for use in main.
+use super::{
+    commands::StageInfo,
+    user_config::{UserConfig, UserConfigCli, UserVersion},
+};
 use crate::{
-    config::{set_config_file, Config, UserConfig, UserVersion},
+    config::{set_config_file, Config},
     data::{stage::parsed::stage::Stage, version::Version},
     wikitext::stage_info::get_stage_info,
 };
 use std::io::{self, Write};
-
-use super::commands::{StageInfo, UserConfigCli};
 
 fn input(prompt: &str) -> String {
     print!("{prompt}");

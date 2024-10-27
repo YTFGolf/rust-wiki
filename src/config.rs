@@ -1,7 +1,7 @@
 //! Contains global config values.
+use crate::cli::user_config::{UserConfig, UserVersion};
 use crate::data::version::{InvalidLanguage, Version};
 use home::home_dir;
-use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{ErrorKind, Read, Write};
 use std::path::PathBuf;
@@ -17,16 +17,6 @@ fn expand_home(dir: &str) -> PathBuf {
     }
 }
 
-// TODO replace toml with toml_edit since I don't want this to just be terrible
-// and non-documented.
-// See https://github.com/toml-rs/toml/issues/376
-/// TOML-based representation of game version.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UserVersion {
-    pub path: String,
-    pub lang: Option<String>,
-    pub number: Option<String>,
-}
 impl From<UserVersion> for Version {
     fn from(value: UserVersion) -> Self {
         let path = expand_home(&value.path);
@@ -49,19 +39,6 @@ impl From<UserVersion> for Version {
             Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
         }
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-/// TOML-based representation of user's config file.
-///
-/// If this gets updated then [UserConfigCli][crate::cli::UserConfigCli] also
-/// needs to be updated.
-// TODO something different so that this gets stored in the same place as
-// UserConfigCli
-pub struct UserConfig {
-    pub version: UserVersion,
-    pub username: String,
-    pub suppress_gauntlet_magnification: bool,
 }
 
 /// Configuration values for the program.
