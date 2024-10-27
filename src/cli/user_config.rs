@@ -11,8 +11,11 @@ use serde::{Deserialize, Serialize};
 /// TOML-based representation of game version.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserVersion {
+    /// Root directory of decrypted files.
     pub path: String,
+    /// Version's language.
     pub lang: Option<String>,
+    /// Version number.
     pub number: Option<String>,
 }
 
@@ -21,10 +24,13 @@ pub struct UserVersion {
 ///
 /// If this gets updated then [UserConfigCli][crate::cli::UserConfigCli] also
 /// needs to be updated.
-// TODO something different so that this gets stored in the same place as
 pub struct UserConfig {
+    /// Current version.
     pub version: UserVersion,
+    /// Your wiki username.
     pub username: String,
+    /// Do you put `|0` in the Magnification template instead of the actual
+    /// magnification for gauntlets?
     pub suppress_gauntlet_magnification: bool,
 }
 
@@ -32,12 +38,16 @@ pub struct UserConfig {
 /// User config options.
 pub struct UserConfigCli {
     #[arg(short, long)]
+    /// Root directory of encrypted files.
     pub path: Option<String>,
 
     #[arg(short = 'n', long)]
+    /// Your wiki username.
     pub username: Option<String>,
 
     #[arg(long)]
+    /// Do you put `|0` in the Magnification template instead of the actual
+    /// magnification for gauntlets?
     pub suppress: Option<bool>,
 }
 
@@ -90,10 +100,7 @@ pub fn create_config(args: UserConfigCli) {
         None => input("Enter wiki username: "),
     };
 
-    let suppress = match args.suppress {
-        Some(suppress) => suppress,
-        None => false,
-    };
+    let suppress = args.suppress.unwrap_or(false);
 
     let user_config = UserConfig {
         version,
