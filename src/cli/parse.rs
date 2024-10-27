@@ -1,6 +1,6 @@
 //! Parses cli arguments for use in main.
 use super::{
-    commands::StageInfo,
+    commands::StageInfoOptions,
     user_config::{create_config, UserConfig, UserConfigCli},
 };
 use crate::{
@@ -17,9 +17,8 @@ pub fn input(prompt: &str) -> String {
     io::stdin().lines().next().unwrap().unwrap()
 }
 
-// TODO StageInfo is a bad name
 /// Get stage info.
-pub fn stage_info(info: StageInfo, config: &Config) {
+pub fn stage_info(info: StageInfoOptions, config: &Config) {
     println!("{info:?}");
     let selector = match info.selector.len() {
         1 => {

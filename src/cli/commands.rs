@@ -5,7 +5,7 @@ use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Args, PartialEq)]
 /// Stage info options.
-pub struct StageInfo {
+pub struct StageInfoOptions {
     /// Stage selector.
     // TODO put a proper place for docs here.
     pub selector: Vec<String>,
@@ -16,7 +16,7 @@ pub struct StageInfo {
 pub enum Command {
     #[command(visible_aliases(["stage"]))]
     /// Get information about a stage.
-    StageInfo(StageInfo),
+    StageInfo(StageInfoOptions),
 
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.
@@ -59,7 +59,7 @@ mod cli_tests {
         assert_eq!(
             cli,
             Cli {
-                command: Command::StageInfo(StageInfo {
+                command: Command::StageInfo(StageInfoOptions {
                     selector: ["l 0 0".to_string()].to_vec()
                 }),
                 config: UserConfigCli {
@@ -84,7 +84,7 @@ mod cli_tests {
         assert_eq!(
             cli,
             Cli {
-                command: Command::StageInfo(StageInfo {
+                command: Command::StageInfo(StageInfoOptions {
                     selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec()
                 }),
                 config: UserConfigCli {
@@ -109,7 +109,7 @@ mod cli_tests {
         assert_eq!(
             cli,
             Cli {
-                command: Command::StageInfo(StageInfo {
+                command: Command::StageInfo(StageInfoOptions {
                     selector: ["filibuster".to_string()].to_vec()
                 }),
                 config: UserConfigCli {
