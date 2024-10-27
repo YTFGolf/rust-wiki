@@ -75,6 +75,5 @@ TODO
 - ~~Remove static CONFIG variable and replace with borrow passed everywhere~~
   - Maybe for testing have a test_config static
   - Rename old CONFIG and Stage::new
-- Implement create and update config
 - Allow cmd options to override user config options
 */

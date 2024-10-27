@@ -19,7 +19,7 @@ pub enum Command {
     ReadWiki,
 
     /// Update config.
-    Config(UserConfigCli),
+    Config,
     // don't update anything to do with this without updating config.rs
     // ideally this should just take in something from config.rs
     // since config.rs is already terrible practice doesn't matter if it gets
@@ -33,6 +33,11 @@ pub struct Cli {
     #[command(subcommand)]
     /// Command to use.
     pub command: Command,
+
+    #[command(flatten)]
+    pub config: UserConfigCli,
+    // UNIMPLEMENTED split this up, i.e. Config has everything, StageInfo has
+    // data mines and suppress, ReadWiki has username
 }
 
 #[cfg(test)]
@@ -49,7 +54,12 @@ mod cli_tests {
             Cli {
                 command: Command::StageInfo(StageInfo {
                     selector: ["l 0 0".to_string()].to_vec()
-                })
+                }),
+                config: UserConfigCli {
+                    path: None,
+                    username: None,
+                    suppress: None
+                }
             }
         );
 
@@ -69,7 +79,12 @@ mod cli_tests {
             Cli {
                 command: Command::StageInfo(StageInfo {
                     selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec()
-                })
+                }),
+                config: UserConfigCli {
+                    path: None,
+                    username: None,
+                    suppress: None
+                }
             }
         );
 
@@ -89,7 +104,12 @@ mod cli_tests {
             Cli {
                 command: Command::StageInfo(StageInfo {
                     selector: ["filibuster".to_string()].to_vec()
-                })
+                }),
+                config: UserConfigCli {
+                    path: None,
+                    username: None,
+                    suppress: None
+                }
             }
         );
 
