@@ -35,7 +35,7 @@ pub fn stage_info(info: StageInfo, config: &Config) {
     println!(
         "{}",
         get_stage_info(
-            &Stage::new_versioned(&selector, &config.current_version).unwrap(),
+            &Stage::new(&selector, &config.current_version).unwrap(),
             config
         )
     )
@@ -69,11 +69,3 @@ pub fn update_config(config: Option<UserConfig>, args: UserConfigCli) {
     let toml_repr = toml::to_string(&config).unwrap();
     set_config_file(&toml_repr);
 }
-
-/*
-TODO
-
-- ~~Remove static CONFIG variable and replace with borrow passed everywhere~~
-  - Maybe for testing have a test_config static
-  - Rename old CONFIG and Stage::new
-*/

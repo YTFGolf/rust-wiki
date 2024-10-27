@@ -201,7 +201,7 @@ mod tests {
 
     #[test]
     fn simple_case() {
-        let aac = Stage::new("ul 0 0").unwrap();
+        let aac = Stage::new_current("ul 0 0").unwrap();
         assert_eq!(
             enemies_list(&aac, true),
             vec![
@@ -217,7 +217,7 @@ mod tests {
 
     #[test]
     fn blank_enemy_list() {
-        let tada = Stage::new("ex 63 0").unwrap();
+        let tada = Stage::new_current("ex 63 0").unwrap();
         assert_eq!(enemies_list(&tada, true), vec![]);
     }
 
@@ -226,7 +226,7 @@ mod tests {
         // i.e. Gabriel appears at different magnifications *and* it houses the
         // infamous 700% magnification with a 1.4x multiplier on 3-star, which
         // on Python always used to evaluate as 979%.
-        let celestial_seas = Stage::new("n 32 3").unwrap();
+        let celestial_seas = Stage::new_current("n 32 3").unwrap();
         assert_eq!(
             enemies_list(&celestial_seas, true),
             vec![
@@ -278,7 +278,7 @@ mod tests {
 
     #[test]
     fn with_separate_mags() {
-        let it_25 = Stage::new("v 6 24").unwrap();
+        let it_25 = Stage::new_current("v 6 24").unwrap();
         assert_eq!(
             enemies_list(&it_25, true),
             vec![TemplateParameter::new(
@@ -294,7 +294,7 @@ mod tests {
             )]
         );
 
-        let sacrifice_apprenticeship = Stage::new("nd 3 3").unwrap();
+        let sacrifice_apprenticeship = Stage::new_current("nd 3 3").unwrap();
         assert_eq!(
             enemies_list(&sacrifice_apprenticeship, true),
             vec![
@@ -317,7 +317,7 @@ mod tests {
 
     #[test]
     fn simple_4_crown() {
-        let sleeping_lion = Stage::new("sol 0 7").unwrap();
+        let sleeping_lion = Stage::new_current("sol 0 7").unwrap();
         assert_eq!(
             enemies_list(&sleeping_lion, true),
             vec![
@@ -371,7 +371,7 @@ mod tests {
 
     #[test]
     fn with_repeated_enemy() {
-        let star_ocean = Stage::new("sol 15 7").unwrap();
+        let star_ocean = Stage::new_current("sol 15 7").unwrap();
         assert_eq!(
             enemies_list(&star_ocean, true),
             [
@@ -437,7 +437,7 @@ mod tests {
 
     #[test]
     fn with_multiple_bosses() {
-        let kugel_schreiber = Stage::new("sol 24 2").unwrap();
+        let kugel_schreiber = Stage::new_current("sol 24 2").unwrap();
         assert_eq!(
             enemies_list(&kugel_schreiber, true),
             vec![
@@ -491,7 +491,7 @@ mod tests {
 
     #[test]
     fn insane_magnifications() {
-        let noble_tribe = Stage::new("sol 43 2").unwrap();
+        let noble_tribe = Stage::new_current("sol 43 2").unwrap();
         assert_eq!(
             enemies_list(&noble_tribe, true),
             vec![
@@ -526,7 +526,7 @@ mod tests {
     #[test]
     fn floating_point_error_2() {
         // Make sure B.B.Bunny in 3-star doesn't give me 3,919%
-        let revenant_road = Stage::new("sol 33 3").unwrap();
+        let revenant_road = Stage::new_current("sol 33 3").unwrap();
         assert_eq!(
             enemies_list(&revenant_road, true),
             vec![
@@ -575,7 +575,7 @@ mod tests {
 
     #[test]
     fn with_base() {
-        let finale = Stage::new("c 209 0").unwrap();
+        let finale = Stage::new_current("c 209 0").unwrap();
         assert_eq!(
             enemies_list(&finale, true),
             vec![TemplateParameter::new(
@@ -587,7 +587,7 @@ mod tests {
 
     #[test]
     fn with_insane_base() {
-        let relay_1600m = Stage::new("ex 61 2").unwrap();
+        let relay_1600m = Stage::new_current("ex 61 2").unwrap();
         assert_eq!(
             enemies_list(&relay_1600m, true),
             vec![
@@ -614,7 +614,7 @@ mod tests {
     #[test]
     fn with_weird_base() {
         // basically just here for same reasons it was in information's tests
-        let pile_of_guts = Stage::new("ul 31 5").unwrap();
+        let pile_of_guts = Stage::new_current("ul 31 5").unwrap();
         assert_eq!(
             enemies_list(&pile_of_guts, true),
             vec![
@@ -660,7 +660,7 @@ mod tests {
 
     #[test]
     fn gauntlet_suppress() {
-        let baron_seal = Stage::new("a 20 0").unwrap();
+        let baron_seal = Stage::new_current("a 20 0").unwrap();
         assert_eq!(
             enemies_list(&baron_seal, true),
             vec![
@@ -681,7 +681,7 @@ mod tests {
 
     #[test]
     fn gauntlet_no_suppress() {
-        let baron_seal = Stage::new("a 20 0").unwrap();
+        let baron_seal = Stage::new_current("a 20 0").unwrap();
         assert_eq!(
             enemies_list(&baron_seal, false),
             vec![
@@ -702,7 +702,7 @@ mod tests {
 
     #[test]
     fn dojo() {
-        let wanderer_trial = Stage::new("t 0 0").unwrap();
+        let wanderer_trial = Stage::new_current("t 0 0").unwrap();
         assert_eq!(
             enemies_list(&wanderer_trial, true),
             vec![

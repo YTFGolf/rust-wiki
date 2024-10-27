@@ -281,7 +281,7 @@ mod tests {
 
     #[test]
     fn no_restrictions() {
-        let boxing_clever = Stage::new("s 50 1").unwrap();
+        let boxing_clever = Stage::new_current("s 50 1").unwrap();
         assert_eq!(boxing_clever.restrictions, None);
         assert_eq!(restrictions_info(&boxing_clever), None);
         assert_eq!(&restrictions_section(&boxing_clever), "");
@@ -289,7 +289,7 @@ mod tests {
 
     #[test]
     fn no_continues() {
-        let realm_of_carnage = Stage::new("s 117 0").unwrap();
+        let realm_of_carnage = Stage::new_current("s 117 0").unwrap();
         assert_eq!(realm_of_carnage.restrictions, None);
         assert_eq!(
             restrictions_info(&realm_of_carnage),
@@ -303,7 +303,7 @@ mod tests {
 
     #[test]
     fn only_4_crown_restrictions() {
-        let earthshaker = Stage::new("sol 0 0").unwrap();
+        let earthshaker = Stage::new_current("sol 0 0").unwrap();
         assert_eq!(
             earthshaker.restrictions.as_ref().unwrap(),
             &[FOUR_CROWN_DEFAULT_RESTRICTION]
@@ -314,21 +314,21 @@ mod tests {
 
     #[test]
     fn restriction_rarity_1() {
-        let sighter_star = Stage::new("cotc 3 24").unwrap();
+        let sighter_star = Stage::new_current("cotc 3 24").unwrap();
         assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_string() )) );
         assert_eq!( &restrictions_section(&sighter_star), "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
     }
 
     #[test]
     fn restriction_rarity_2() {
-        let babies_first = Stage::new("s 375 0").unwrap();
+        let babies_first = Stage::new_current("s 375 0").unwrap();
         assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_string() )) );
         assert_eq!( &restrictions_section(&babies_first), "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
     }
 
     #[test]
     fn restriction_rarity_3() {
-        let somolon = Stage::new("cotc 3 37").unwrap();
+        let somolon = Stage::new_current("cotc 3 37").unwrap();
         assert_eq!(
             restrictions_info(&somolon),
             Some(TemplateParameter::new(
@@ -344,14 +344,14 @@ mod tests {
 
     #[test]
     fn restriction_rarity_4() {
-        let wahwah = Stage::new("s 158 0").unwrap();
+        let wahwah = Stage::new_current("s 158 0").unwrap();
         assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_string() )) );
         assert_eq!( &restrictions_section(&wahwah), "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
     }
 
     #[test]
     fn restriction_deploy_limit() {
-        let wrath_w_cyclone = Stage::new("s 176 0").unwrap();
+        let wrath_w_cyclone = Stage::new_current("s 176 0").unwrap();
         assert_eq!(
             restrictions_info(&wrath_w_cyclone),
             Some(TemplateParameter::new(
@@ -367,7 +367,7 @@ mod tests {
 
     #[test]
     fn restriction_rows() {
-        let uranus = Stage::new("cotc 2 7").unwrap();
+        let uranus = Stage::new_current("cotc 2 7").unwrap();
         assert_eq!(
             restrictions_info(&uranus),
             Some(TemplateParameter::new(
@@ -380,7 +380,7 @@ mod tests {
 
     #[test]
     fn restriction_min_cost_1() {
-        let saturn = Stage::new("cotc 2 3").unwrap();
+        let saturn = Stage::new_current("cotc 2 3").unwrap();
         assert_eq!(
             restrictions_info(&saturn),
             Some(TemplateParameter::new(
@@ -396,7 +396,7 @@ mod tests {
 
     #[test]
     fn restriction_min_cost_2() {
-        let skelling = Stage::new("cotc 2 40").unwrap();
+        let skelling = Stage::new_current("cotc 2 40").unwrap();
         assert_eq!(
             restrictions_info(&skelling),
             Some(TemplateParameter::new(
@@ -412,7 +412,7 @@ mod tests {
 
     #[test]
     fn restriction_max_cost_1() {
-        let buutara = Stage::new("cotc 1 27").unwrap();
+        let buutara = Stage::new_current("cotc 1 27").unwrap();
         assert_eq!(
             restrictions_info(&buutara),
             Some(TemplateParameter::new(
@@ -428,7 +428,7 @@ mod tests {
 
     #[test]
     fn restriction_max_cost_2() {
-        let catseye_nebula = Stage::new("cotc 1 13").unwrap();
+        let catseye_nebula = Stage::new_current("cotc 1 13").unwrap();
         assert_eq!(
             restrictions_info(&catseye_nebula),
             Some(TemplateParameter::new(
@@ -444,7 +444,7 @@ mod tests {
 
     #[test]
     fn restriction_only_cat() {
-        let finale = Stage::new("c 209 0").unwrap();
+        let finale = Stage::new_current("c 209 0").unwrap();
         assert_eq!(
             restrictions_info(&finale),
             Some(TemplateParameter::new(
@@ -460,7 +460,7 @@ mod tests {
 
     #[test]
     fn restriction_only_jra() {
-        let final_race = Stage::new("c 179 0").unwrap();
+        let final_race = Stage::new_current("c 179 0").unwrap();
         assert_eq!(
             restrictions_info(&final_race),
             Some(TemplateParameter::new(
@@ -476,7 +476,7 @@ mod tests {
 
     #[test]
     fn restriction_exclude_madoka() {
-        let sorry = Stage::new("c 178 4").unwrap();
+        let sorry = Stage::new_current("c 178 4").unwrap();
         assert_eq!(
             restrictions_info(&sorry),
             Some(TemplateParameter::new(
@@ -492,7 +492,7 @@ mod tests {
 
     #[test]
     fn restriction_multiple_cotc() {
-        let black_hole = Stage::new("cotc 2 46").unwrap();
+        let black_hole = Stage::new_current("cotc 2 46").unwrap();
         assert_eq!(
             restrictions_info(&black_hole),
             Some(TemplateParameter::new(
@@ -513,7 +513,7 @@ mod tests {
 
     #[test]
     fn individual_crown_restrictions() {
-        let feathered = Stage::new("c 86 0").unwrap();
+        let feathered = Stage::new_current("c 86 0").unwrap();
 
         assert_eq!(
             restrictions_info(&feathered),
@@ -533,7 +533,7 @@ mod tests {
 
     #[test]
     fn blank_some_restrictions() {
-        let revenge_r_cyclone = Stage::new("s 169 1").unwrap();
+        let revenge_r_cyclone = Stage::new_current("s 169 1").unwrap();
         assert_eq!(revenge_r_cyclone.restrictions, Some(vec![]));
         assert_eq!(restrictions_info(&revenge_r_cyclone), None);
         assert_eq!(restrictions_section(&revenge_r_cyclone), "");
@@ -541,7 +541,7 @@ mod tests {
 
     #[test]
     fn multiple_same_restriction() {
-        let vanguard_veteran = Stage::new("s 213 0").unwrap();
+        let vanguard_veteran = Stage::new_current("s 213 0").unwrap();
         let restrictions = vanguard_veteran.restrictions.as_ref().unwrap();
         assert_eq!(restrictions[0], restrictions[1]);
         assert_eq!(

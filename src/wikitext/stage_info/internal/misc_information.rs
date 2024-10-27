@@ -182,7 +182,7 @@ mod tests {
 
     #[test]
     fn test_single_stage() {
-        let earthshaker = Stage::new("n 0 0").unwrap();
+        let earthshaker = Stage::new_current("n 0 0").unwrap();
         let data = get_stage_wiki_data(&earthshaker);
         assert_eq!(
             star(&earthshaker),
@@ -211,7 +211,7 @@ mod tests {
 
     #[test]
     fn test_old_map() {
-        let athletic_meet = Stage::new("s 8 0").unwrap();
+        let athletic_meet = Stage::new_current("s 8 0").unwrap();
         let data = get_stage_wiki_data(&athletic_meet);
         assert_eq!(
             data.stage_map.name,
@@ -229,7 +229,7 @@ mod tests {
 
     #[test]
     fn test_max_clears() {
-        let steel_visage = Stage::new("s 78 0").unwrap();
+        let steel_visage = Stage::new_current("s 78 0").unwrap();
         assert_eq!(
             max_clears(&steel_visage),
             Some(TemplateParameter::new("max clears", "1".to_string()))
@@ -238,7 +238,7 @@ mod tests {
 
     #[test]
     fn test_conditional_continue_single() {
-        let spectrum_of_truth = Stage::new("s 222 0").unwrap();
+        let spectrum_of_truth = Stage::new_current("s 222 0").unwrap();
         let data = get_stage_wiki_data(&spectrum_of_truth);
         assert_eq!(
             stage_nav(&spectrum_of_truth, &data),
@@ -254,7 +254,7 @@ mod tests {
 
     #[test]
     fn test_conditional_continue_multiple() {
-        let green_envy_3 = Stage::new("s 97 2").unwrap();
+        let green_envy_3 = Stage::new_current("s 97 2").unwrap();
         let data = get_stage_wiki_data(&green_envy_3);
         assert_eq!(
             stage_nav(&green_envy_3, &data),
@@ -273,7 +273,7 @@ mod tests {
 
     #[test]
     fn test_continue_stage_nav() {
-        let proving_grounds = Stage::new("s 250 2").unwrap();
+        let proving_grounds = Stage::new_current("s 250 2").unwrap();
         let data = get_stage_wiki_data(&proving_grounds);
         assert_eq!(
             max_clears(&proving_grounds),

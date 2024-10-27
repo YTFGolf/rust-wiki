@@ -317,23 +317,23 @@ fn u8_to_bool(n: u8) -> bool {
 }
 
 impl Stage {
-    /// Create a new stage object from `selector` in current version.
-    #[cfg(test)]
-    pub fn new(selector: &str) -> Option<Self> {
-        use crate::config::CONFIG;
-        Self::new_versioned(selector, &CONFIG.current_version)
+    /// Create a new stage object from `selector`.
+    pub fn new(selector: &str, version: &Version) -> Option<Self> {
+        Some(StageData::new(selector, version)?.into())
     }
 
-    /// Create a new stage object from `selector`.
-    pub fn new_versioned(selector: &str, version: &Version) -> Option<Self> {
-        Some(StageData::new(selector, version)?.into())
+    /// Create a new stage object from `selector` in current version.
+    #[cfg(test)]
+    pub fn new_current(selector: &str) -> Option<Self> {
+        use crate::config::DEFAULT_CONFIG;
+        Self::new(selector, &DEFAULT_CONFIG.current_version)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::CONFIG;
+    use crate::config::DEFAULT_CONFIG;
     use regex::Regex;
 
     // test none values, esp. with crown data
@@ -342,18 +342,20 @@ mod tests {
     #[ignore]
     fn get_all() {
         let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
-        for f in std::fs::read_dir(&CONFIG.current_version.get_file_path("DataLocal")).unwrap() {
+        for f in
+            std::fs::read_dir(&DEFAULT_CONFIG.current_version.get_file_path("DataLocal")).unwrap()
+        {
             let file_name = f.unwrap().file_name().into_string().unwrap();
             if !stage_file_re.is_match(&file_name) {
                 continue;
             };
-            let _stage = Stage::new(&file_name).unwrap();
+            let _stage = Stage::new_current(&file_name).unwrap();
         }
     }
 
     #[test]
     fn test_labyrinth() {
-        let labyrinth_stage_1 = Stage::new("l 0 0").unwrap();
+        let labyrinth_stage_1 = Stage::new_current("l 0 0").unwrap();
         assert_eq!(labyrinth_stage_1.energy, None);
         assert_eq!(labyrinth_stage_1.star_mask, None);
         assert_eq!(labyrinth_stage_1.restrictions, None);

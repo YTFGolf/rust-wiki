@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn test_stage_name_and_loc() {
-        let great_escaper = Stage::new("n 17 5").unwrap();
+        let great_escaper = Stage::new_current("n 17 5").unwrap();
         let mut buf = "".to_string();
         buf.write_str(&stage_name(&great_escaper).to_string())
             .unwrap();
@@ -200,7 +200,7 @@ mod tests {
             "
         );
 
-        let red_summit = Stage::new("h 10 0").unwrap();
+        let red_summit = Stage::new_current("h 10 0").unwrap();
         let mut buf = "".to_string();
         buf.write_str(&stage_name(&red_summit).to_string()).unwrap();
         buf.write_str("\n").unwrap();
@@ -215,7 +215,7 @@ mod tests {
             "
         );
 
-        let finale = Stage::new("c 209 0").unwrap();
+        let finale = Stage::new_current("c 209 0").unwrap();
         let mut buf = "".to_string();
         buf.write_str(&stage_name(&finale).to_string()).unwrap();
         buf.write_str("\n").unwrap();
@@ -229,7 +229,7 @@ mod tests {
             "
         );
 
-        let relay_1600m = Stage::new("ex 61 2").unwrap();
+        let relay_1600m = Stage::new_current("ex 61 2").unwrap();
         let mut buf = "".to_string();
         buf.write_str(&stage_name(&relay_1600m).to_string())
             .unwrap();
@@ -244,7 +244,7 @@ mod tests {
 
     #[test]
     fn test_energy_normal() {
-        let aac = Stage::new("ul 0 0").unwrap();
+        let aac = Stage::new_current("ul 0 0").unwrap();
         assert_eq!(
             energy(&aac),
             Some(TemplateParameter::new("energy", "200".to_string()))
@@ -253,7 +253,7 @@ mod tests {
 
     #[test]
     fn test_energy_0() {
-        let challenge = Stage::new("challenge 0 0").unwrap();
+        let challenge = Stage::new_current("challenge 0 0").unwrap();
         assert_eq!(
             energy(&challenge),
             Some(TemplateParameter::new("energy", "0".to_string()))
@@ -262,7 +262,7 @@ mod tests {
 
     #[test]
     fn test_energy_ex() {
-        let door_opens = Stage::new("ex 47 0").unwrap();
+        let door_opens = Stage::new_current("ex 47 0").unwrap();
         assert_eq!(
             energy(&door_opens),
             Some(TemplateParameter::new("energy", "N/A".to_string()))
@@ -271,7 +271,7 @@ mod tests {
 
     #[test]
     fn test_energy_catamin() {
-        let facing_danger = Stage::new("b 5 0").unwrap();
+        let facing_danger = Stage::new_current("b 5 0").unwrap();
         assert_eq!(
             energy(&facing_danger),
             Some(TemplateParameter::new("energy", "N/A".to_string()))
@@ -280,7 +280,7 @@ mod tests {
 
     #[test]
     fn test_energy_1_000() {
-        let mining_epic = Stage::new("s 326 0").unwrap();
+        let mining_epic = Stage::new_current("s 326 0").unwrap();
         assert_eq!(
             energy(&mining_epic),
             Some(TemplateParameter::new("energy", "1,000".to_string()))
@@ -289,13 +289,13 @@ mod tests {
 
     #[test]
     fn test_energy_labyrinth() {
-        let labyrinth_67 = Stage::new("l 0 66").unwrap();
+        let labyrinth_67 = Stage::new_current("l 0 66").unwrap();
         assert_eq!(energy(&labyrinth_67), None);
     }
 
     #[test]
     fn test_base_hp_normal() {
-        let ht30 = Stage::new("v 0 29").unwrap();
+        let ht30 = Stage::new_current("v 0 29").unwrap();
         assert_eq!(
             base_hp(&ht30),
             vec![TemplateParameter::new(
@@ -307,7 +307,7 @@ mod tests {
 
     #[test]
     fn test_base_hp_dojo() {
-        let dojo = Stage::new("t 0 0").unwrap();
+        let dojo = Stage::new_current("t 0 0").unwrap();
         assert_eq!(
             base_hp(&dojo),
             vec![TemplateParameter::new(
@@ -320,7 +320,7 @@ mod tests {
     #[test]
     fn test_base_hp_mismatch() {
         // where stage.base_hp != actual base hp
-        let just_friends = Stage::new("s 302 2").unwrap();
+        let just_friends = Stage::new_current("s 302 2").unwrap();
         assert_eq!(just_friends.base_hp, 10);
         assert_eq!(
             base_hp(&just_friends),
@@ -330,7 +330,7 @@ mod tests {
             )]
         );
 
-        let finale = Stage::new("c 209 0").unwrap();
+        let finale = Stage::new_current("c 209 0").unwrap();
         assert_eq!(finale.base_hp, 1_000);
         assert_eq!(
             base_hp(&finale),
@@ -343,7 +343,7 @@ mod tests {
 
     #[test]
     fn test_base_hp_starred() {
-        let rongorongo = Stage::new("s 129 5").unwrap();
+        let rongorongo = Stage::new_current("s 129 5").unwrap();
         assert_eq!(rongorongo.base_hp, 300_000);
         assert_eq!(
             base_hp(&rongorongo),
@@ -358,7 +358,7 @@ mod tests {
 
     #[test]
     fn test_base_hp_mismatch_starred() {
-        let pile_of_guts = Stage::new("ul 31 5").unwrap();
+        let pile_of_guts = Stage::new_current("ul 31 5").unwrap();
         assert_eq!(pile_of_guts.base_hp, 1_000_000);
         assert_eq!(
             base_hp(&pile_of_guts),
@@ -374,7 +374,7 @@ mod tests {
 
     #[test]
     fn test_misc_info() {
-        let earthshaker = Stage::new("n 0 0").unwrap();
+        let earthshaker = Stage::new_current("n 0 0").unwrap();
         assert_eq!(earthshaker.xp, Some(950));
         assert_eq!(
             xp(&earthshaker),
@@ -391,7 +391,7 @@ mod tests {
             TemplateParameter::new("max enemies", "7".to_string())
         );
 
-        let labyrinth_67 = Stage::new("l 0 66").unwrap();
+        let labyrinth_67 = Stage::new_current("l 0 66").unwrap();
         assert_eq!(labyrinth_67.xp, None);
         assert_eq!(xp(&labyrinth_67), None);
         assert_eq!(labyrinth_67.width, 3_900);

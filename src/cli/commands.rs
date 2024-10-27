@@ -50,7 +50,7 @@ pub struct Cli {
 #[cfg(test)]
 mod cli_tests {
     use super::*;
-    use crate::{cli::parse::stage_info, config::CONFIG};
+    use crate::{cli::parse::stage_info, config::DEFAULT_CONFIG};
 
     #[test]
     fn info_single_full_selector() {
@@ -74,7 +74,7 @@ mod cli_tests {
             Command::StageInfo(si) => si,
             _ => unreachable!(),
         };
-        stage_info(si, &CONFIG);
+        stage_info(si, &DEFAULT_CONFIG);
     }
 
     #[test]
@@ -99,7 +99,7 @@ mod cli_tests {
             Command::StageInfo(si) => si,
             _ => unreachable!(),
         };
-        stage_info(si, &CONFIG);
+        stage_info(si, &DEFAULT_CONFIG);
     }
 
     #[test]
@@ -124,7 +124,7 @@ mod cli_tests {
             Command::StageInfo(si) => si,
             _ => unreachable!(),
         };
-        stage_info(si, &CONFIG);
+        stage_info(si, &DEFAULT_CONFIG);
     }
 
     #[test]

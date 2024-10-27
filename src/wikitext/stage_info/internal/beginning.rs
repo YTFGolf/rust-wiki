@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_enemies_appearing() {
-        let crazed_cat = Stage::new("s 17 0").unwrap();
+        let crazed_cat = Stage::new_current("s 17 0").unwrap();
         let buf = enemies_appearing(&crazed_cat);
         assert_eq!(
             &buf,
@@ -130,17 +130,17 @@ mod tests {
         );
         // normal
 
-        let tada = Stage::new("ex 63 0").unwrap();
+        let tada = Stage::new_current("ex 63 0").unwrap();
         let buf = enemies_appearing(&tada);
         assert_eq!(&buf, "{{EnemiesAppearing}}");
         // blank
 
-        let not_alone = Stage::new("c 176 4").unwrap();
+        let not_alone = Stage::new_current("c 176 4").unwrap();
         let buf = enemies_appearing(&not_alone);
         assert_eq!(&buf, "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
         // charlotte
 
-        let star_ocean = Stage::new("sol 15 7").unwrap();
+        let star_ocean = Stage::new_current("sol 15 7").unwrap();
         let buf = enemies_appearing(&star_ocean);
         assert_eq!(
             &buf,
@@ -151,19 +151,19 @@ mod tests {
 
     #[test]
     fn test_intro() {
-        let ht30 = Stage::new("v 0 29").unwrap();
+        let ht30 = Stage::new_current("v 0 29").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&ht30);
         let buf = intro(&ht30, &stage_wiki_data);
         assert_eq!(&buf, "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
         // tower; no continues
 
-        let whole_new = Stage::new("zl 0 0").unwrap();
+        let whole_new = Stage::new_current("zl 0 0").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&whole_new);
         let buf = intro(&whole_new, &stage_wiki_data);
         assert_eq!(&buf, "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
         // only
 
-        let earthshaker = Stage::new("sol 0 0").unwrap();
+        let earthshaker = Stage::new_current("sol 0 0").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&earthshaker);
         let buf = intro(&earthshaker, &stage_wiki_data);
         assert_eq!(
@@ -172,13 +172,13 @@ mod tests {
         );
         // normal stage
 
-        let refusal_type = Stage::new("c 206 1").unwrap();
+        let refusal_type = Stage::new_current("c 206 1").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&refusal_type);
         let buf = intro(&refusal_type, &stage_wiki_data);
         assert_eq!(&buf, "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
         // ! in map name; final
 
-        let crimson_trial = Stage::new("r 20 0").unwrap();
+        let crimson_trial = Stage::new_current("r 20 0").unwrap();
         let stage_wiki_data = get_stage_wiki_data(&crimson_trial);
         let buf = intro(&crimson_trial, &stage_wiki_data);
         assert_eq!(
