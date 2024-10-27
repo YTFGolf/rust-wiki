@@ -66,6 +66,7 @@ impl From<UserConfig> for Config {
 }
 
 const CONFIG_FILE: &str = "user-config.toml";
+/// Set config file to `new_value`.
 pub fn set_config_file(new_value: &str) {
     let f = File::create(CONFIG_FILE);
     f.unwrap().write_all(new_value.as_bytes()).unwrap();

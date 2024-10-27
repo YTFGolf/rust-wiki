@@ -22,8 +22,7 @@ pub struct UserVersion {
 #[derive(Debug, Serialize, Deserialize)]
 /// TOML-based representation of user's config file.
 ///
-/// If this gets updated then [UserConfigCli][crate::cli::UserConfigCli] also
-/// needs to be updated.
+/// If this gets updated then [UserConfigCli] also needs to be updated.
 pub struct UserConfig {
     /// Current version.
     pub version: UserVersion,

@@ -10,6 +10,7 @@ use crate::{
 };
 use std::io::{self, Write};
 
+/// Syntax sugar for a function that works like Python's `input`.
 pub fn input(prompt: &str) -> String {
     print!("{prompt}");
     io::stdout().flush().unwrap();
@@ -75,5 +76,4 @@ TODO
 - ~~Remove static CONFIG variable and replace with borrow passed everywhere~~
   - Maybe for testing have a test_config static
   - Rename old CONFIG and Stage::new
-- Allow cmd options to override user config options
 */

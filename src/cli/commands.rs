@@ -1,9 +1,13 @@
+//! Commands for the cli.
+
 use super::user_config::UserConfigCli;
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Args, PartialEq)]
 /// Stage info options.
 pub struct StageInfo {
+    /// Stage selector.
+    // TODO put a proper place for docs here.
     pub selector: Vec<String>,
 }
 
@@ -35,9 +39,12 @@ pub struct Cli {
     pub command: Command,
 
     #[command(flatten)]
+    /// User config.
     pub config: UserConfigCli,
     // UNIMPLEMENTED split this up, i.e. Config has everything, StageInfo has
     // data mines and suppress, ReadWiki has username
+    // FIXME have to run `cargo r -- --suppress=true stage a 0 0` for example to
+    // get it to work, where it shouldn't matter where you put suppress
 }
 
 #[cfg(test)]
