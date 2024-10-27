@@ -1,16 +1,16 @@
 //! Parses cli arguments for use in main.
 use super::{
     commands::StageInfo,
-    user_config::{UserConfig, UserConfigCli, UserVersion},
+    user_config::{create_config, UserConfig, UserConfigCli},
 };
 use crate::{
     config::{set_config_file, Config},
-    data::{stage::parsed::stage::Stage, version::Version},
+    data::stage::parsed::stage::Stage,
     wikitext::stage_info::get_stage_info,
 };
 use std::io::{self, Write};
 
-fn input(prompt: &str) -> String {
+pub fn input(prompt: &str) -> String {
     print!("{prompt}");
     io::stdout().flush().unwrap();
     io::stdin().lines().next().unwrap().unwrap()
@@ -38,66 +38,6 @@ pub fn stage_info(info: StageInfo, config: &Config) {
             config
         )
     )
-}
-
-/// Create user config file. If a config arg is not provided then it is provided
-/// by input.
-fn create_config(args: UserConfigCli) {
-    let path = match args.path {
-        Some(p) => p,
-        None => input("Enter root directory of decrypted files: "),
-    };
-
-    let lang = match Version::get_lang(&path) {
-        None => Some(input("Enter language: ")),
-        Some(language) => {
-            let prompt = format!("Enter language (default: {language}): ");
-            let l = input(&prompt);
-            if l.is_empty() {
-                None
-            } else {
-                Some(l)
-            }
-        }
-    };
-
-    let version_number = match Version::get_version_number(&path) {
-        None => Some(input("Enter version number: ")),
-        Some(number) => {
-            let prompt = format!("Enter version number (default: {number}): ");
-            let n = input(&prompt);
-            if n.is_empty() {
-                None
-            } else {
-                Some(n)
-            }
-        }
-    };
-
-    let version = UserVersion {
-        path,
-        lang,
-        number: version_number,
-    };
-
-    let name = match args.username {
-        Some(name) => name,
-        None => input("Enter wiki username: "),
-    };
-
-    let suppress = match args.suppress {
-        Some(suppress) => suppress,
-        None => false,
-    };
-
-    let user_config = UserConfig {
-        version,
-        username: name,
-        suppress_gauntlet_magnification: suppress,
-    };
-
-    let toml_repr = toml::to_string(&user_config).unwrap();
-    set_config_file(&toml_repr);
 }
 
 /// Update user config.
