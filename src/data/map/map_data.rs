@@ -16,8 +16,11 @@ pub mod csv_types {
     // // mapnum?,treasuredrop,scorerewards,?,?
     // pub struct HeaderCSV {
     //     map_file_num: i32,
+    // // "itemsetting" according to clamchowder
     //     _unknown_1: i32,
+    // // Something to do with score rewards
     //     _unknown_2: i32,
+    // // next 2 are something to do with unlock conditions
     //     _unknown_3: i32,
     //     _unknown_4: i32,
     // }

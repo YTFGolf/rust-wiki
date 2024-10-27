@@ -44,8 +44,8 @@ pub mod csv_types {
         pub width: u32,
         /// Base HP (ignore this if `animbase_id` is not 0).
         pub base_hp: u32,
-        _unknown_1: u32,
-        _unknown_2: u32,
+        _生産最低f: u32,
+        _生産最高f: u32,
         /// ID of stage background.
         pub background_id: u32,
         /// Max enemies in stage.

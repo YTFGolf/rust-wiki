@@ -33,8 +33,9 @@ pub struct MapOptionCSV {
     _reset_type: u32,
     /// Maximum map clears before resets or something (unclear).
     pub max_clears: u32,
-    /// "Display order", no clue.
-    _表示順: u32,
+    /// Probably something to do with where it appears on the legend stages
+    /// screen.
+    _display_order: u32,
     /// Gauntlet cooldown.
     pub cooldown: u32,
     /// "Challenge flag".
