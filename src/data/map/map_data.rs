@@ -45,7 +45,6 @@ pub mod csv_types {
         _base_drop: u32,
         /// Music track played when base hp goes below
         /// [_base_drop][StageInfoCSVFixed::_base_drop].
-        // TODO determine what happens with this on Dojo stages.
         _second_track: u32,
     }
 

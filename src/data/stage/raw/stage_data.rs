@@ -216,7 +216,6 @@ impl<'a> StageData<'_> {
         if self.meta.type_enum == StageTypeEnum::Labyrinth {
             return None;
         }
-        // GameMap::get_stage_data(&self.meta, todo!())
         GameMap::get_stage_data(&self.meta, self.version)
     }
 

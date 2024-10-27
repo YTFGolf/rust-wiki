@@ -33,8 +33,8 @@ Extracts the name from a link:
 ```
 # use rust_wiki::wikitext::wiki_utils::extract_name;
 assert_eq!(extract_name("[[link|name]]"), "name");
-assert_eq!(extract_name("[[link]]"), "link");
-assert_eq!(extract_name("name"), "name");
+assert_eq!(extract_name("[[link]]"),      "link");
+assert_eq!(extract_name("name"),          "name");
 ```
 */
 pub fn extract_name(name: &str) -> &str {
