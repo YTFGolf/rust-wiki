@@ -128,35 +128,5 @@ pub fn get_config() -> Option<Config> {
 #[cfg(test)]
 pub static CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config().unwrap());
 
-// /// Do toml stuff.
-// fn do_toml_stuff() {
-//     println!("{:?}", get_config());
-//     if true {
-//         return;
-//     }
-//     let c = UserConfig {
-//         version: UserVersion {
-//             path: "~/Downloads/Version 13.7.0 EN".to_string(),
-//             lang: None,
-//             number: None,
-//         },
-//         username: "TheWWRNerdGuy".to_string(),
-//         suppress_gauntlet_magnification: false,
-//     };
-//     println!("{c:?}");
-
-//     let c2 = toml::to_string(&c).unwrap();
-//     println!("{c2}");
-
-//     let c3: UserConfig = toml::from_str(&c2).unwrap();
-//     println!("{c3:?}");
-
-//     let c4 = Version::from(c3.version);
-//     let _d = c4.get_cached_file::<StageOption>();
-//     println!("{:?}", c4);
-//     // println!("{:?}", _d);
-
-//     exit(0);
-// }
-
-// // TODO test with just home directory as version
+// TODO test with just home directory as version, make sure doesn't panic when
+// initialising.

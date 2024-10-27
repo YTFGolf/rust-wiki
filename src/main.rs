@@ -1,6 +1,9 @@
 use clap::Parser;
 use rust_wiki::{
-    cli::{stage_info, update_config, Cli, Command},
+    cli::{
+        commands::{Cli, Command},
+        parse::{stage_info, update_config},
+    },
     config::get_user_config,
     wiki_files::update_wiki_files,
 };
