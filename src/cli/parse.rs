@@ -19,7 +19,7 @@ pub fn input(prompt: &str) -> String {
 
 /// Get stage info.
 pub fn stage_info(info: StageInfoOptions, config: &Config) {
-    println!("{info:?}");
+    // println!("{info:?}");
     let selector = match info.selector.len() {
         1 => {
             let mut s = info.selector;
@@ -30,7 +30,7 @@ pub fn stage_info(info: StageInfoOptions, config: &Config) {
         0 => input("Input file selector: "),
         _ => info.selector.join(" "),
     };
-    println!("{selector:?}");
+    // println!("{selector:?}");
     println!(
         "{}",
         get_stage_info(
