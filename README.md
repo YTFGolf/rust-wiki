@@ -1,1 +1,1 @@
-Read the [user manual](doc/user-manual).
+Read the [user manual](doc/user-manual.md).
