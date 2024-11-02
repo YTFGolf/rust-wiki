@@ -43,8 +43,6 @@ pub struct Cli {
     // potential feature: split this up, i.e. Config has everything, StageInfo
     // has data mines and suppress, ReadWiki has username. Would require more
     // complexity on the actual Config.
-    // FIXME have to run `cargo r -- --suppress=true stage a 0 0` for example to
-    // get it to work, where it shouldn't matter where you put suppress
 }
 
 #[cfg(test)]

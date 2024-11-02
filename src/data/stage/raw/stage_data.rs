@@ -127,6 +127,8 @@ pub struct StageData<'a> {
 impl<'a> StageData<'_> {
     /// Create new StageData object.
     pub fn new(selector: &str, version: &'a Version) -> Option<StageData<'a>> {
+        // FIXME there is no reason for this to be an option, other than
+        // removing that would require some more editing
         let meta = match StageMeta::new(selector) {
             Some(meta) => meta,
             None => panic!("Invalid selector: {selector:?}"),
