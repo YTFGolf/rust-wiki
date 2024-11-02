@@ -3,14 +3,6 @@
 use super::user_config::UserConfigCli;
 use clap::{Args, Parser, Subcommand};
 
-fn blank_config() -> UserConfigCli {
-    UserConfigCli {
-        path: None,
-        username: None,
-        suppress: None,
-    }
-}
-
 #[derive(Debug, Args, PartialEq)]
 /// Stage info options.
 pub struct StageInfoOptions {
@@ -59,6 +51,14 @@ pub struct Cli {
 mod cli_tests {
     use super::*;
     use crate::{cli::parse::stage_info, config::DEFAULT_CONFIG};
+
+    fn blank_config() -> UserConfigCli {
+        UserConfigCli {
+            path: None,
+            username: None,
+            suppress: None,
+        }
+    }
 
     #[test]
     fn info_single_full_selector() {
