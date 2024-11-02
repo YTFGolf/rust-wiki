@@ -3,12 +3,24 @@
 use super::user_config::UserConfigCli;
 use clap::{Args, Parser, Subcommand};
 
+fn blank_config() -> UserConfigCli {
+    UserConfigCli {
+        path: None,
+        username: None,
+        suppress: None,
+    }
+}
+
 #[derive(Debug, Args, PartialEq)]
 /// Stage info options.
 pub struct StageInfoOptions {
     /// Stage selector.
     // TODO put a proper place for docs here.
     pub selector: Vec<String>,
+
+    #[command(flatten)]
+    /// User config.
+    pub config: UserConfigCli,
 }
 
 #[derive(Debug, Subcommand, PartialEq)]
@@ -20,14 +32,10 @@ pub enum Command {
 
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.
-    ReadWiki,
+    ReadWiki(UserConfigCli),
 
     /// Update config.
-    Config,
-    // don't update anything to do with this without updating config.rs
-    // ideally this should just take in something from config.rs
-    // since config.rs is already terrible practice doesn't matter if it gets
-    // mixed with this does it?
+    Config(UserConfigCli),
 }
 
 #[derive(Parser, Debug, PartialEq)]
@@ -37,12 +45,12 @@ pub struct Cli {
     #[command(subcommand)]
     /// Command to use.
     pub command: Command,
-
-    #[command(flatten)]
-    /// User config.
-    pub config: UserConfigCli,
-    // UNIMPLEMENTED split this up, i.e. Config has everything, StageInfo has
-    // data mines and suppress, ReadWiki has username
+    // #[command(flatten)]
+    // /// User config.
+    // pub config: UserConfigCli,
+    // potential feature: split this up, i.e. Config has everything, StageInfo
+    // has data mines and suppress, ReadWiki has username. Would require more
+    // complexity on the actual Config.
     // FIXME have to run `cargo r -- --suppress=true stage a 0 0` for example to
     // get it to work, where it shouldn't matter where you put suppress
 }
@@ -60,13 +68,9 @@ mod cli_tests {
             cli,
             Cli {
                 command: Command::StageInfo(StageInfoOptions {
-                    selector: ["l 0 0".to_string()].to_vec()
+                    selector: ["l 0 0".to_string()].to_vec(),
+                    config: blank_config()
                 }),
-                config: UserConfigCli {
-                    path: None,
-                    username: None,
-                    suppress: None
-                }
             }
         );
 
@@ -85,13 +89,9 @@ mod cli_tests {
             cli,
             Cli {
                 command: Command::StageInfo(StageInfoOptions {
-                    selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec()
+                    selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec(),
+                    config: blank_config()
                 }),
-                config: UserConfigCli {
-                    path: None,
-                    username: None,
-                    suppress: None
-                }
             }
         );
 
@@ -110,13 +110,9 @@ mod cli_tests {
             cli,
             Cli {
                 command: Command::StageInfo(StageInfoOptions {
-                    selector: ["filibuster".to_string()].to_vec()
+                    selector: ["filibuster".to_string()].to_vec(),
+                    config: blank_config()
                 }),
-                config: UserConfigCli {
-                    path: None,
-                    username: None,
-                    suppress: None
-                }
             }
         );
 

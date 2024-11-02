@@ -33,7 +33,10 @@ pub struct UserConfig {
     pub suppress_gauntlet_magnification: bool,
 }
 
-#[derive(Debug, Args, PartialEq)]
+// Clone avoids headaches with StageInfo option since I would need to have both
+// the config and actual info; using clone is easier and since it's just a
+// really small object it should hopefully be fine (?).
+#[derive(Debug, Args, PartialEq, Clone)]
 /// User config options.
 pub struct UserConfigCli {
     #[arg(short, long)]

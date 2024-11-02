@@ -19,8 +19,11 @@ fn main() {
     let config = get_user_config();
 
     match cli.command {
-        Command::ReadWiki => update_wiki_files(&get_config(config, cli.config)),
-        Command::StageInfo(si) => stage_info(si, &get_config(config, cli.config)),
-        Command::Config => update_config(config, cli.config),
+        Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
+        Command::StageInfo(si) => {
+            let config = &get_config(config, si.config.clone());
+            stage_info(si, config)
+        }
+        Command::Config(c) => update_config(config, c),
     }
 }
