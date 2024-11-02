@@ -3,7 +3,7 @@
 /*
 # Flow
 ## Here
-- Get enemy number
+- Get enemy number.
 - Find all stages with enemy. Get list of magnifications.
 
 ## Wikitext
@@ -11,7 +11,7 @@
   - Order is done by a Rust sort
   - Extra stages will be done with... something idk. Setting to 999 should work
     since if a stage is an earlier continuation then it would just appear before
-    the later ones
+    the later ones. Would also fix like proving ground continuations.
 - Loop through sections:
   - Get stage names for each stage
   - Display stage names. Filter out if doesn't begin with '['.
@@ -25,7 +25,7 @@ Classes:
 - DisplayType enum: `Stage x` or map name
 
 Other things:
-- StageData::new
+- StageData::new; StageEnemy::get_magnification
 - Some logging crate needed to log out which pages are skipped
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically

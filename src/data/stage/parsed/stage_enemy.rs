@@ -40,6 +40,8 @@ impl From<u32> for EnemyAmount {
     }
 }
 
+/// Enemy magnification.
+pub type Magnification = Either<u32, (u32, u32)>;
 #[derive(Debug)]
 /// Representation of an enemy in a stage.
 pub struct StageEnemy {
@@ -63,7 +65,7 @@ pub struct StageEnemy {
     /// Is this enemy an animated base.
     pub is_base: bool,
     /// Either magnification or (hp, ap).
-    pub magnification: Either<u32, (u32, u32)>,
+    pub magnification: Magnification,
     /// How many cats die before enemy appears.
     pub kill_count: Option<std::num::NonZeroU32>,
 }
@@ -90,15 +92,7 @@ impl StageEnemy {
         let boss_type = old.boss_type.into();
         let is_base = old.num == anim_base_id;
 
-        let hpmag = old.magnification.unwrap_or(100);
-        let magnification = match old.attack_magnification {
-            None => Left(hpmag),
-            Some(a) => match a {
-                0 => Left(hpmag),
-                _ => Right((hpmag, a)),
-            },
-        };
-
+        let magnification = Self::get_magnification(&old);
         let kill_count = std::num::NonZeroU32::new(old.kill_count.unwrap_or(0));
 
         Self {
@@ -113,6 +107,19 @@ impl StageEnemy {
             is_base,
             magnification,
             kill_count,
+        }
+    }
+
+    /// Get enemy magnification.
+    fn get_magnification(old: &StageEnemyCSV) -> Magnification {
+        let hpmag = old.magnification.unwrap_or(100);
+        // 100 is for EoC
+        match old.attack_magnification {
+            None => Left(hpmag),
+            Some(a) => match a {
+                0 => Left(hpmag),
+                _ => Right((hpmag, a)),
+            },
         }
     }
 }
