@@ -64,8 +64,18 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
 
     let stage_map = STAGE_NAMES
         .stage_map(stage.meta.type_num, stage.meta.map_num)
-        .unwrap();
-    let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
+        .unwrap_or_else(|| {
+            panic!(
+                "Couldn't find map name: {:03}-{:03}",
+                stage.meta.type_num, stage.meta.map_num
+            )
+        });
+    let stage_name = stage_map.get(stage.meta.stage_num).unwrap_or_else(|| {
+        panic!(
+            "Couldn't find stage name: {:03}-{:03}-{:03}",
+            stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
+        )
+    });
 
     let stage_wiki_data = StageWikiData {
         stage_map,
