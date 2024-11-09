@@ -15,6 +15,12 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
 }
 
 fn main() {
+    rust_wiki::data::enemy::encounters::do_thing(get_user_config().unwrap().into());
+
+    if true {
+        std::process::exit(0)
+    }
+
     let cli = Cli::parse();
     let config = get_user_config();
 

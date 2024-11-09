@@ -30,3 +30,24 @@ Other things:
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically
 */
+
+use regex::Regex;
+
+use crate::{config::Config, data::stage::raw::stage_data::StageData};
+
+/// Do thing (temp)
+pub fn do_thing(config: Config) {
+    let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
+
+    let dir = &config.current_version.get_file_path("DataLocal");
+    for f in std::fs::read_dir(dir).unwrap() {
+        let file_name = f.unwrap().file_name().into_string().unwrap();
+        if !stage_file_re.is_match(&file_name) {
+            continue;
+        };
+        let stage = StageData::new(&file_name, &config.current_version).unwrap();
+        println!("{:?}", stage.stage_csv_data.enemies)
+        // TODO make this an iterator or something
+    }
+    todo!()
+}
