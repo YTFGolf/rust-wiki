@@ -124,13 +124,14 @@ pub mod consts {
         Labyrinth,
         ZL,
         Colosseum,
+        NewType,
     }
     use StageTypeEnum as T;
 
     #[rustfmt::skip]
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
-    pub const STAGE_TYPES: [StageType; 18] = [
+    pub const STAGE_TYPES: [StageType; 19] = [
         initialise_stage_type("Stories of Legend",    000, "N",     true,  T::SoL),
         initialise_stage_type("Event Stages",         001, "S",     true,  T::Event),
         initialise_stage_type("Collaboration Stages", 002, "C",     true,  T::Collab),
@@ -149,6 +150,7 @@ pub mod consts {
         initialise_stage_type("Labyrinth",            033, "L",     false, T::Labyrinth),
         initialise_stage_type("Zero Legends",         034, "ND",    true,  T::ZL),
         initialise_stage_type("Colosseum",            036, "SR",    true,  T::Colosseum),
+        initialise_stage_type("NewType",              037, "G",     false, T::NewType),
     ];
 
     #[rustfmt::skip]
@@ -161,7 +163,7 @@ pub mod consts {
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
     // TODO probably replace this with enums
-    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 18]> = LazyLock::new(|| {[
+    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 19]> = LazyLock::new(|| {[
         initialise_type_map("SoL|0|N|RN",                               "N"),
         initialise_type_map("Event|Special|1|S|RS",                     "S"),
         initialise_type_map("Collab|2|C|RC",                            "C"),
@@ -180,6 +182,7 @@ pub mod consts {
         initialise_type_map("Labyrinth|33|L",                           "L"),
         initialise_type_map("ZL|34|ND|RND",                             "ND"),
         initialise_type_map("Colosseum|36|SR|RSR",                      "SR"),
+        initialise_type_map("37|G",                                     "G"),
         initialise_type_map("EoC|ItF|W|CotC|Space|Aku|DM|Z|Filibuster", "main")
     ]});
 }

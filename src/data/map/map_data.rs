@@ -23,6 +23,13 @@ pub mod csv_types {
     // // next 2 are something to do with unlock conditions
     //     _unknown_3: i32,
     //     _unknown_4: i32,
+
+    // 9,-1,-1,137000,137000
+    // Means map 9, and must complete map 37000 to unlock
+    // mapcondition and stagecondition are the 137000s according to clamchowder
+
+    // アイテム報酬型ステージ設定(-1:OFF),　スコア報酬型ステージ設定(-1:OFF)
+
     // }
 
     // not important probably

@@ -80,6 +80,7 @@ impl StagePageData {
 }
 
 /// Contains parsed StageNames.csv file.
+// TODO rename
 pub static STAGE_NAMES: StagePageData = StagePageData {
     stage_name_map: LazyLock::new(get_stage_name_map),
     _continue_stages: (),
