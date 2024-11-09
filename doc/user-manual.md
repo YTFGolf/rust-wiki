@@ -1,11 +1,7 @@
 ## Quick start
-You'll need to use the command line to run this program. If you really can't be
-bothered to learn how to use the command line, follow the [Running through
-Python](#running-through-python) guide and adapt it to whatever you're doing.
+You'll need to use the command line to run this program. If you really can't be bothered to learn how to use the command line, follow the [Running through Python](#running-through-python) guide and adapt it to whatever you're doing.
 
-`rust-wiki` will be used as a generic name for running the program. If you are
-on Windows, substitute `rust-wiki.exe`. If you are using `cargo run`, substitute
-`cargo run -- {args}` any time command-line arguments are specified.
+`rust-wiki` will be used as a generic name for running the program. If you are on Windows, substitute `rust-wiki.exe`. If you are using `cargo run`, substitute `cargo run -- {args}` any time command-line arguments are specified.
 
 1. Run `rust-wiki config` and follow the prompts given to set up your config.
 2. Run `rust-wiki get` to download appropriate wiki files.
@@ -55,8 +51,6 @@ copy(out)
 print(out)
 ```
 
-You can add in appropriate templates above the content, templates and categories
-below the content, replace all English stage/map name images with Japanese ones,
-and copy the output to your clipboard. With more modifications you could do
-things like automatically generating the stage selector or integrating the
-entire thing with Pywikibot!
+You can add in appropriate templates above the content, templates and categories below the content, replace all English stage/map name images with Japanese ones, and copy the output to your clipboard. With more modifications you could do things like automatically generating the stage selector or integrating the entire thing with Pywikibot!
+
+Example scripts are given in [scripts/example](). You can write your own scripts in [scripts/user]().
