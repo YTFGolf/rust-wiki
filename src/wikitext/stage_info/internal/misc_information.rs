@@ -38,7 +38,6 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
             "sub-chapter",
             get_map_name(data.stage_map).to_string(),
         )],
-        // TODO use a cow string instead of clone
         T::Collab | T::CollabGauntlet => {
             let collab_name = Regex::new(r"\[\[(.*? Event)").unwrap();
             let collab_name = match collab_name.captures_iter(&data.stage_map.name).next() {
@@ -52,6 +51,10 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
                 TemplateParameter::new("event-chapter", get_map_name(data.stage_map).to_string()),
             ]
         }
+        T::Dojo | T::RankingDojo | T::NewType => vec![TemplateParameter::new(
+            "dojo-chapter",
+            get_map_name(data.stage_map).to_string(),
+        )],
         _ => vec![TemplateParameter::new(
             "event-chapter",
             get_map_name(data.stage_map).to_string(),
@@ -206,6 +209,30 @@ mod tests {
                 TemplateParameter::new("prev stage", "N/A".to_string()),
                 TemplateParameter::new("next stage", "[[Return of Terror]]".to_string())
             ]
+        );
+    }
+
+    #[test]
+    fn test_dojo() {
+        let wanderer = Stage::new_current("dojo 0 0").unwrap();
+        let data = get_stage_wiki_data(&wanderer);
+        assert_eq!(
+            chapter(&wanderer, &data),
+            vec![TemplateParameter::new("dojo-chapter", "[[Catclaw Dojo|Hall of Initiates]]".to_string())]
+        );
+
+        let crimson_trial_arena = Stage::new_current("rank 0 0").unwrap();
+        let data = get_stage_wiki_data(&crimson_trial_arena);
+        assert_eq!(
+            chapter(&crimson_trial_arena, &data),
+            vec![TemplateParameter::new("dojo-chapter", "[[Arena of Honor]]".to_string())]
+        );
+
+        let 昇段試験1 = Stage::new_current("g 0 0").unwrap();
+        let data = get_stage_wiki_data(&昇段試験1);
+        assert_eq!(
+            chapter(&昇段試験1, &data),
+            vec![TemplateParameter::new("dojo-chapter", "[[にゃんこ道検定#にゃんこ道検定 初段|にゃんこ道検定 初段]]".to_string())]
         );
     }
 
