@@ -567,10 +567,10 @@ mod tests {
         assert_eq!(
             battlegrounds(&great_burglar_battle),
             "*When the base reaches 99% HP:\n\
-            **1 [[Rat Doge (Event Enemy)|Rat Doge]] (1%) spawns as the boss.\n\
-            **5 [[Rat Doge (Event Enemy)|Rat Doges]] (50%) spawn, delay 8~12 seconds<sup>240f~360f</sup>.\n\
-            **10 [[Rat Doge (Event Enemy)|Rat Doges]] (50%) spawn, delay 4~6 seconds<sup>120f~180f</sup>.\n\
-            **15 [[Rat Doge (Event Enemy)|Rat Doges]] (50%) spawn, delay 2~3 seconds<sup>60f~90f</sup>."
+            **1 [[Rat Doge]] (1%) spawns as the boss.\n\
+            **5 [[Rat Doge]]s (50%) spawn, delay 8~12 seconds<sup>240f~360f</sup>.\n\
+            **10 [[Rat Doge]]s (50%) spawn, delay 4~6 seconds<sup>120f~180f</sup>.\n\
+            **15 [[Rat Doge]]s (50%) spawn, delay 2~3 seconds<sup>60f~90f</sup>."
         )
     }
 

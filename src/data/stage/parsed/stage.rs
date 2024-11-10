@@ -357,7 +357,7 @@ mod tests {
     fn test_labyrinth() {
         let labyrinth_stage_1 = Stage::new_current("l 0 0").unwrap();
         assert_eq!(labyrinth_stage_1.energy, None);
-        assert_eq!(labyrinth_stage_1.star_mask, None);
+        assert_eq!(labyrinth_stage_1.star_mask, Some(448));
         assert_eq!(labyrinth_stage_1.restrictions, None);
     }
 }
