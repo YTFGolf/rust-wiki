@@ -37,6 +37,13 @@ pub mod csv_types {
     // #[allow(dead_code, missing_docs)]
     // pub struct Line2CSV {}
 
+    /*
+     * Other things:
+     * - stage_conditions.csv for Labyrinth
+     * - DataLocal/SpecialRulesMap.json for Colosseum
+     * - stage_hint_popup.csv for tutorial
+     */
+
     #[derive(Debug, serde::Deserialize)]
     /// All fixed data stored in the map file. Can reliably be deserialised
     /// using serde.

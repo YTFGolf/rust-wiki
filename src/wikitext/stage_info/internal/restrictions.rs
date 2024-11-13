@@ -254,6 +254,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     Some(TemplateParameter::new(PARAM_NAME, buf))
 }
 
+// TODO fixed_formation.csv
 /// Get content of restrictions section.
 pub fn restrictions_section(stage: &Stage) -> String {
     let restrictions = match get_restriction_list(stage) {
