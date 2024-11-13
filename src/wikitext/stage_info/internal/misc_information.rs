@@ -152,18 +152,30 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
         next = data.stage_map.get(stage.meta.stage_num + 1);
     }
 
-    let continue_data = match stage.continue_data.as_ref() {
-        None => return (get_single_nav(prev), get_single_nav(next)),
-        Some(data) => data,
+    let (prev, mut next) = (get_single_nav(prev), get_single_nav(next));
+
+    /// Add in additional items to navigation
+    fn merge_nav(current: String, additional: String) -> String {
+        match current.as_str() {
+            "" | "N/A" => additional,
+            _ => current + "<br>\n" + &additional,
+        }
+    }
+
+    if let Some(ex_map_id) = stage.ex_invasion {
+        let stage = &STAGE_NAMES
+            .stage(4, ex_map_id % 1000, stage.meta.stage_num)
+            .unwrap()
+            .name;
+        let invaded = format!("{stage} (''Invasion Stage'')");
+        next = merge_nav(next, invaded);
+    }
+
+    if let Some(continue_data) = stage.continue_data.as_ref() {
+        next = merge_nav(next, get_continuation_stages(continue_data));
     };
 
-    let prev_str = get_single_nav(prev);
-    let next_str = match next {
-        None => get_continuation_stages(continue_data),
-        Some(_) => get_single_nav(next) + "<br>\n" + &get_continuation_stages(continue_data),
-    };
-
-    (prev_str, next_str)
+    (prev, next)
 }
 
 /// Get the `prev stage` and `next stage` infobox parameters.
@@ -219,21 +231,30 @@ mod tests {
         let data = get_stage_wiki_data(&wanderer);
         assert_eq!(
             chapter(&wanderer, &data),
-            vec![TemplateParameter::new("dojo-chapter", "[[Catclaw Dojo|Hall of Initiates]]".to_string())]
+            vec![TemplateParameter::new(
+                "dojo-chapter",
+                "[[Catclaw Dojo|Hall of Initiates]]".to_string()
+            )]
         );
 
         let crimson_trial_arena = Stage::new_current("rank 0 0").unwrap();
         let data = get_stage_wiki_data(&crimson_trial_arena);
         assert_eq!(
             chapter(&crimson_trial_arena, &data),
-            vec![TemplateParameter::new("dojo-chapter", "[[Arena of Honor]]".to_string())]
+            vec![TemplateParameter::new(
+                "dojo-chapter",
+                "[[Arena of Honor]]".to_string()
+            )]
         );
 
         let 昇段試験1 = Stage::new_current("g 0 0").unwrap();
         let data = get_stage_wiki_data(&昇段試験1);
         assert_eq!(
             chapter(&昇段試験1, &data),
-            vec![TemplateParameter::new("dojo-chapter", "[[にゃんこ道検定#にゃんこ道検定 初段|にゃんこ道検定 初段]]".to_string())]
+            vec![TemplateParameter::new(
+                "dojo-chapter",
+                "[[にゃんこ道検定#にゃんこ道検定 初段|にゃんこ道検定 初段]]".to_string()
+            )]
         );
     }
 
@@ -319,5 +340,11 @@ mod tests {
                 )
             ]
         )
+    }
+
+    #[test]
+    fn test_ex_invasion() {
+        let proving_grounds = Stage::new_current("s 385 0").unwrap();
+        todo!()
     }
 }
