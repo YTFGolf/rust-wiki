@@ -182,6 +182,8 @@ pub struct Stage {
     /// Crown difficulties of stage.
     pub crown_data: Option<CrownData>,
 
+    /// EX map that invades the stage.
+    pub ex_invasion: Option<u32>,
     /// Stage's restrictions.
     pub restrictions: Option<Vec<Restriction>>,
 }
@@ -189,6 +191,7 @@ impl From<StageData<'_>> for Stage {
     fn from(data: StageData) -> Self {
         let map_stage_data = data.get_map_stage_data();
         let map_option_data = data.get_map_option_data();
+        let ex_invasion = data.get_ex_option_data();
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = data.get_stage_option_data() {
@@ -216,9 +219,9 @@ impl From<StageData<'_>> for Stage {
             )),
         };
 
-        let max_enemies: u32 = data.stage_csv_data.line2.max_enemies;
         let width: u32 = data.stage_csv_data.line2.width;
         let base_hp: u32 = data.stage_csv_data.line2.base_hp;
+        let max_enemies: u32 = data.stage_csv_data.line2.max_enemies;
         let anim_base_id: Option<NonZeroU32> =
             NonZeroU32::new(data.stage_csv_data.line2.anim_base_id);
         let time_limit: Option<NonZeroU32> = NonZeroU32::new(data.stage_csv_data.line2.time_limit);
@@ -289,6 +292,7 @@ impl From<StageData<'_>> for Stage {
             base_id,
             is_no_continues,
             continue_data,
+
             width,
             base_hp,
             max_enemies,
@@ -297,13 +301,17 @@ impl From<StageData<'_>> for Stage {
             is_base_indestructible,
             background_id,
             enemies,
+
             energy,
             xp,
             rewards,
+
             max_clears,
             cooldown,
             star_mask,
             crown_data,
+
+            ex_invasion,
             restrictions,
         }
     }

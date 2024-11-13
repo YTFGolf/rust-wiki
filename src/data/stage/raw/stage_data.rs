@@ -6,6 +6,7 @@ use super::{
 use crate::{
     data::{
         map::{
+            ex_option::ExOption,
             map_data::{csv_types::StageDataCSV, GameMap},
             map_option::{MapOption, MapOptionCSV},
         },
@@ -233,6 +234,13 @@ impl<'a> StageData<'_> {
         let map_id = self.get_map_id();
         let stage_option = self.version.get_cached_file::<StageOption>();
         stage_option.get_stage(map_id, self.meta.stage_num)
+    }
+
+    /// Get Map_option data if it exists.
+    pub fn get_ex_option_data(&self) -> Option<u32> {
+        let map_id = self.get_map_id();
+        let ex_option = self.version.get_cached_file::<ExOption>();
+        ex_option.get_ex_map(map_id)
     }
 
     /// Get the data object's version.
