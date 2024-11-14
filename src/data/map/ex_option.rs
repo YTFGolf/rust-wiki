@@ -18,7 +18,7 @@ pub struct ExOption {
 impl CacheableVersionData for ExOption {
     fn init_data(path: &std::path::Path) -> Self {
         Self {
-            map: get_ex_option(path),
+            map: get_ex_option(path).unwrap_or_default(),
         }
     }
 }
@@ -29,12 +29,12 @@ impl ExOption {
     }
 }
 
-fn get_ex_option(path: &Path) -> Vec<ExOptionCSV> {
+fn get_ex_option(path: &Path) -> Option<Vec<ExOptionCSV>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .comment(Some(b'/'))
         .from_path(path.join("DataLocal/EX_option.csv"))
-        .unwrap();
+        .ok()?;
 
     let mut options = vec![];
     for record in rdr.byte_records() {
@@ -47,5 +47,5 @@ fn get_ex_option(path: &Path) -> Vec<ExOptionCSV> {
         options.push(opt);
     }
 
-    options
+    Some(options)
 }

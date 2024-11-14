@@ -108,7 +108,6 @@ fn get_single_nav(location: Option<&StageData>) -> String {
 
 /// Get all continuation stages possible from current stage.
 fn get_continuation_stages(data: &ContinueStages) -> String {
-    // EX_option.csv
     let map = STAGE_NAMES
         .stage_map(4, data.map_id)
         .unwrap_or_else(|| panic!("Extra stages map with id {} was not found!", data.map_id));
