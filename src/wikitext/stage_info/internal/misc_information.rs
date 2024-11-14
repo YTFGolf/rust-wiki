@@ -343,7 +343,19 @@ mod tests {
 
     #[test]
     fn test_ex_invasion() {
-        let proving_grounds = Stage::new_current("s 385 0").unwrap();
-        todo!()
+        let 薩摩芋国 = Stage::new_current("s 385 0").unwrap();
+        let data = get_stage_wiki_data(&薩摩芋国);
+        assert_eq!(
+            stage_nav(&薩摩芋国, &data),
+            vec![
+                TemplateParameter::new("prev stage", "N/A".to_string()),
+                TemplateParameter::new(
+                    "next stage",
+                    "[[阿火山国]]<br>\n\
+                    [[わんこの乱 (薩摩芋国)|わんこの乱]] (''Invasion Stage'')"
+                        .to_string()
+                )
+            ]
+        );
     }
 }
