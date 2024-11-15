@@ -19,8 +19,11 @@ fn main() {
     let wiki_enemy_id = 703;
     let abs_enemy_id = wiki_enemy_id + 2;
 
-    let config = get_user_config().unwrap().into();
-    println!("{:?}", get_encounters(abs_enemy_id, &config));
+    let config: Config = get_user_config().unwrap().into();
+    println!(
+        "{:?}",
+        get_encounters(abs_enemy_id, &config.current_version)
+    );
 
     if true {
         std::process::exit(0)

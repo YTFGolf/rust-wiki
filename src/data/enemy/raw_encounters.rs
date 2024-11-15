@@ -1,33 +1,22 @@
 //! Deals with enemy encounters.
 
-use crate::{config::Config, data::stage::raw::stage_data::StageData};
+use crate::data::{stage::raw::stage_data::StageData, version::Version};
 use regex::Regex;
 
-fn filter_map_stage(
-    abs_enemy_id: u32,
-    file_name: String,
-    config: &Config,
-) -> Option<StageData<'_>> {
-    let stage = StageData::new(&file_name, &config.current_version).unwrap();
-
-    if !stage
+fn does_stage_contain_enemy(abs_enemy_id: u32, stage: &StageData, version: &Version) -> bool {
+    !stage
         .stage_csv_data
         .enemies
         .iter()
         .any(|e| e.num == abs_enemy_id)
-    {
-        return None;
-    }
-
-    Some(stage)
 }
 
 /// Get the enemy's encounters.
 ///
 /// `abs_enemy_id` means num in game files, i.e. Doge = 2.
-pub fn get_encounters(abs_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> {
+pub fn get_encounters(abs_enemy_id: u32, version: &Version) -> Vec<StageData<'_>> {
     let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
-    let dir = &config.current_version.get_file_path("DataLocal");
+    let dir = &version.get_file_path("DataLocal");
 
     let files = std::fs::read_dir(dir).unwrap();
     let encounters = files.filter_map(|f| {
@@ -36,7 +25,11 @@ pub fn get_encounters(abs_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> 
             return None;
         };
 
-        filter_map_stage(abs_enemy_id, file_name, config)
+        let stage = StageData::new(&file_name, &version).unwrap();
+        match does_stage_contain_enemy(abs_enemy_id, &stage, version) {
+            false => None,
+            true => Some(stage),
+        }
     });
 
     encounters.collect()
