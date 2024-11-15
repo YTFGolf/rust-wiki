@@ -1,15 +1,6 @@
 //! Deals with enemy encounters.
 
-use crate::{
-    config::Config,
-    data::stage::{
-        parsed::stage_enemy::Magnification,
-        raw::{
-            stage_data::{csv_types::StageEnemyCSV, StageData},
-            stage_metadata::StageMeta,
-        },
-    },
-};
+use crate::{config::Config, data::stage::raw::stage_data::StageData};
 use regex::Regex;
 
 fn filter_map_stage(
@@ -31,6 +22,9 @@ fn filter_map_stage(
     Some(stage)
 }
 
+/// Get the enemy's encounters.
+///
+/// `abs_enemy_id` means num in game files, i.e. Doge = 2.
 pub fn get_encounters(abs_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> {
     let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
     let dir = &config.current_version.get_file_path("DataLocal");
@@ -42,7 +36,7 @@ pub fn get_encounters(abs_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> 
             return None;
         };
 
-        filter_map_stage(abs_enemy_id, file_name, &config)
+        filter_map_stage(abs_enemy_id, file_name, config)
     });
 
     encounters.collect()
