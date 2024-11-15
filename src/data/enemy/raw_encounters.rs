@@ -3,8 +3,8 @@
 use crate::data::{stage::raw::stage_data::StageData, version::Version};
 use regex::Regex;
 
-fn does_stage_contain_enemy(abs_enemy_id: u32, stage: &StageData, version: &Version) -> bool {
-    !stage
+fn stage_contains_enemy(abs_enemy_id: u32, stage: &StageData) -> bool {
+    stage
         .stage_csv_data
         .enemies
         .iter()
@@ -25,11 +25,8 @@ pub fn get_encounters(abs_enemy_id: u32, version: &Version) -> Vec<StageData<'_>
             return None;
         };
 
-        let stage = StageData::new(&file_name, &version).unwrap();
-        match does_stage_contain_enemy(abs_enemy_id, &stage, version) {
-            false => None,
-            true => Some(stage),
-        }
+        let stage = StageData::new(&file_name, version).unwrap();
+        stage_contains_enemy(abs_enemy_id, &stage).then_some(stage)
     });
 
     encounters.collect()
