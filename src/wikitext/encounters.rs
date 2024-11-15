@@ -1,5 +1,16 @@
 //! Write out the encounters of an enemy.
 
+use crate::{config::Config, data::enemy::raw_encounters::get_encounters};
+
+/// temp
+pub fn do_thing(wiki_id: u32, config: &Config) {
+    let abs_enemy_id = wiki_id + 2;
+    println!(
+        "{:?}",
+        get_encounters(abs_enemy_id, &config.current_version)
+    );
+}
+
 /*
 # Flow
 ## Wikitext

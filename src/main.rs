@@ -6,8 +6,7 @@ use rust_wiki::{
         user_config::{UserConfig, UserConfigCli},
     },
     config::{get_user_config, Config},
-    data::enemy::raw_encounters::get_encounters,
-    wiki_files::update_wiki_files,
+    wiki_files::update_wiki_files, wikitext::encounters::do_thing,
 };
 
 fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
@@ -17,13 +16,9 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
 
 fn main() {
     let wiki_enemy_id = 703;
-    let abs_enemy_id = wiki_enemy_id + 2;
-
     let config: Config = get_user_config().unwrap().into();
-    println!(
-        "{:?}",
-        get_encounters(abs_enemy_id, &config.current_version)
-    );
+
+    do_thing(wiki_enemy_id, &config);
 
     if true {
         std::process::exit(0)
