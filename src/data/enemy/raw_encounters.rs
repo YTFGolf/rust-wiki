@@ -3,7 +3,8 @@
 use crate::data::{stage::raw::stage_data::StageData, version::Version};
 use regex::Regex;
 
-fn stage_contains_enemy(abs_enemy_id: u32, stage: &StageData) -> bool {
+/// Does the stage contain the given enemy.
+pub fn stage_contains_enemy(abs_enemy_id: u32, stage: &StageData) -> bool {
     stage
         .stage_csv_data
         .enemies
