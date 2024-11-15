@@ -1,6 +1,5 @@
 //! Write out the encounters of an enemy.
 
-
 /*
 # Flow
 ## Wikitext
