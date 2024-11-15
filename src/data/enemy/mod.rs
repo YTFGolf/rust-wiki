@@ -1,2 +1,2 @@
 //! Information about an enemy.
-pub mod encounters;
+pub mod raw_encounters;

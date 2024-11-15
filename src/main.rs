@@ -4,9 +4,7 @@ use rust_wiki::{
         commands::{Cli, Command},
         parse::{merge_config_and_args, stage_info, update_config},
         user_config::{UserConfig, UserConfigCli},
-    },
-    config::{get_user_config, Config},
-    wiki_files::update_wiki_files,
+    }, config::{get_user_config, Config}, data::enemy::raw_encounters::get_encounters, wiki_files::update_wiki_files
 };
 
 fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
@@ -15,7 +13,11 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
 }
 
 fn main() {
-    rust_wiki::data::enemy::encounters::do_thing(get_user_config().unwrap().into());
+    let wiki_enemy_id = 703;
+    let abs_enemy_id = wiki_enemy_id + 2;
+
+    let config = get_user_config().unwrap().into();
+    println!("{:?}", get_encounters(abs_enemy_id, &config));
 
     if true {
         std::process::exit(0)

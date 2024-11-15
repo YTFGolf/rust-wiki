@@ -31,10 +31,9 @@ fn filter_map_stage(
     Some(stage)
 }
 
-fn get_encounters(wiki_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> {
+pub fn get_encounters(abs_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> {
     let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
     let dir = &config.current_version.get_file_path("DataLocal");
-    let abs_enemy_id = wiki_enemy_id + 2;
 
     let files = std::fs::read_dir(dir).unwrap();
     let encounters = files.filter_map(|f| {
@@ -47,14 +46,6 @@ fn get_encounters(wiki_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> {
     });
 
     encounters.collect()
-}
-
-/// Do thing (temp)
-pub fn do_thing(config: Config) {
-    let wiki_enemy_id = 703;
-
-    println!("{:?}", get_encounters(wiki_enemy_id, &config));
-    todo!()
 }
 
 /*
