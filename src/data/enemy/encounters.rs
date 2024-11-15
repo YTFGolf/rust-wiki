@@ -12,7 +12,11 @@ use crate::{
 };
 use regex::Regex;
 
-fn get_encounters(abs_enemy_id: u32, file_name: String, config: &Config) -> Option<StageData<'_>> {
+fn filter_map_stage(
+    abs_enemy_id: u32,
+    file_name: String,
+    config: &Config,
+) -> Option<StageData<'_>> {
     let stage = StageData::new(&file_name, &config.current_version).unwrap();
 
     if !stage
@@ -27,16 +31,10 @@ fn get_encounters(abs_enemy_id: u32, file_name: String, config: &Config) -> Opti
     Some(stage)
 }
 
-/// Do thing (temp)
-pub fn do_thing(config: Config) {
+fn get_encounters(wiki_enemy_id: u32, config: &Config) -> Vec<StageData<'_>> {
     let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
-
     let dir = &config.current_version.get_file_path("DataLocal");
-
-    let wiki_enemy_id = 703;
-    // let wiki_enemy_id = 0;
     let abs_enemy_id = wiki_enemy_id + 2;
-    // Doge
 
     let files = std::fs::read_dir(dir).unwrap();
     let encounters = files.filter_map(|f| {
@@ -45,19 +43,27 @@ pub fn do_thing(config: Config) {
             return None;
         };
 
-        get_encounters(abs_enemy_id, file_name, &config)
+        filter_map_stage(abs_enemy_id, file_name, &config)
     });
 
-    println!("{:?}", encounters.collect::<Vec<_>>());
+    encounters.collect()
+}
+
+/// Do thing (temp)
+pub fn do_thing(config: Config) {
+    let wiki_enemy_id = 703;
+
+    println!("{:?}", get_encounters(wiki_enemy_id, &config));
     todo!()
 }
 
 /*
-# Flow
-## Here
-- Get enemy number.
-- Find all stages with enemy. Get list of magnifications.
+Due to how the encounters section is constantly evolving, `get_encounters`
+cannot be tested any other way than empirically.
+*/
 
+/*
+# Flow
 ## Wikitext
 - Order stages + sort out extra stages
   - Order is done by a Rust sort
