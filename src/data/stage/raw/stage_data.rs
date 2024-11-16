@@ -56,7 +56,7 @@ pub mod csv_types {
         pub time_limit: u32,
         /// Do you have the green barrier thing (boolean value).
         pub indestructible: u8,
-        // _unknown_3: Option<u32>,
+        _unknown_3: Option<u32>,
     }
 
     #[derive(Debug, serde::Deserialize, PartialEq)]
@@ -165,6 +165,8 @@ impl<'a> StageData<'_> {
         let csv_head: HeaderCSV = if has_header {
             let tmp = line_1;
             line_1 = records.next().unwrap().unwrap();
+            line_1 = remove_comment_ind(line_1, 9);
+
             tmp.deserialize(None).unwrap()
             // if (cas == -1)
             //     cas = CH_CASTLES[id.id];
@@ -257,6 +259,7 @@ impl<'a> StageData<'_> {
     }
 }
 
+/// If `record[index]` is a comment, then truncate record.
 fn remove_comment_ind(record: ByteRecord, index: usize) -> ByteRecord {
     let mut record = record;
     if record[index].contains(&b'/') {
