@@ -25,11 +25,59 @@ fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
     encounters
 }
 
+enum DisplayType {
+    /// E.g. EoC: `*Stage x: name (mags)`.
+    Flat,
+    /// Standard `*map: stage` or `*map:\n**stage 1`.
+    Normal,
+    /// Format like Normal but give a warning to the user.
+    Warn,
+    /// Don't parse this at all.
+    Skip,
+}
+type D = DisplayType;
+struct EncountersSection {
+    heading: &'static str,
+    display_type: DisplayType,
+}
+const fn get_new_section(heading: &'static str, display_type: DisplayType) -> EncountersSection {
+    EncountersSection {
+        heading,
+        display_type,
+    }
+}
+
+#[rustfmt::skip]
+static SECTIONS: [EncountersSection; 18] = [
+    get_new_section("[[Empire of Cats]]",                                    D::Flat),
+    get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Flat),
+    get_new_section("[[Into the Future]]",                                   D::Flat),
+    get_new_section("[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]",    D::Flat,),
+    get_new_section("[[Cats of the Cosmos]]",                                D::Flat),
+    get_new_section("[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]", D::Flat,),
+    get_new_section("[[The Aku Realms]]",                                    D::Flat),
+
+    get_new_section("[[Legend Stages#Stories of Legend|Stories of Legend]]", D::Flat,),
+    get_new_section("[[Legend Stages#Uncanny Legends|Uncanny Legends]]",     D::Flat),
+    get_new_section("[[Legend Stages#Zero Legends|Zero Legends]]",           D::Flat),
+
+    get_new_section("[[Special Events|Event Stages]]",                       D::Normal),
+    get_new_section("[[Underground Labyrinth]]",                             D::Flat),
+    get_new_section("[[Collaboration Event Stages|Collaboration Stages]]",   D::Normal,),
+    get_new_section("[[Enigma Stages]]",                                     D::Normal),
+    get_new_section("[[Catclaw Dojo]]",                                      D::Normal),
+    get_new_section("[[:Category:Removed Content|Removed Stages]]",          D::Normal),
+
+    get_new_section("Extra Stages",                                          D::Warn),
+    get_new_section("[[Catamin Stages]]",                                    D::Skip),
+];
+
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
-    println!("{:?}", sort_encounters(encounters));
+    let encounters = sort_encounters(encounters);
+    println!("{:?}", encounters);
 }
 
 /*
@@ -47,10 +95,6 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         - Vec for stage display type
 - If Catamin or extra stages then should print dire warning
 - Else copy to clipboard, message saying "copied to clipboard" in green
-
-Classes:
-- EncountersSection enum: contains ordering and initialisation as well.
-- DisplayType enum: `Stage x` or map name
 
 Other things:
 - StageData::new; StageEnemy::get_magnification
