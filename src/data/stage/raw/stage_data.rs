@@ -57,7 +57,7 @@ pub mod csv_types {
         pub time_limit: u32,
         /// Do you have the green barrier thing (boolean value).
         pub indestructible: u8,
-        _unknown_3: Option<u32>,
+        // _unknown_3: Option<u32>,
     }
 
     #[derive(Debug, serde::Deserialize, PartialEq)]
@@ -141,7 +141,7 @@ impl<'a> StageData<'_> {
                 .unwrap_or_else(|e| panic!("Error opening {stage_file:?}: {e:?}")),
         );
 
-        let stage_file_reader = decomment_file_reader(reader);
+        let stage_file_reader = reader;
         let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
         Some(StageData {
@@ -160,15 +160,21 @@ impl<'a> StageData<'_> {
             .from_reader(reader);
 
         let mut records = rdr.byte_records();
+        let mut line_1 = records.next().unwrap().unwrap();
 
-        let mut head = records.next().unwrap().unwrap();
-        let csv_head: HeaderCSV = if head.len() <= 7 || head[6].is_empty() {
-            let tmp = head;
-            head = records.next().unwrap().unwrap();
+        let has_header = line_1.len() <= 7 || line_1[6].is_empty() || line_1[6].contains(&b'/');
+        let csv_head: HeaderCSV = if has_header {
+            let tmp = line_1;
+            line_1 = records.next().unwrap().unwrap();
             tmp.deserialize(None).unwrap()
             // if (cas == -1)
             //     cas = CH_CASTLES[id.id];
         } else {
+            if line_1[6].contains(&b'/') {
+                line_1.truncate(6);
+                line_1.push_field(b"");
+            }
+
             // In EoC
             HeaderCSV {
                 base_id: 0,
@@ -180,12 +186,17 @@ impl<'a> StageData<'_> {
             }
             // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
         };
-        let line_2 = head;
+
+        let line_2 = line_1;
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
         let mut enemies = vec![];
         for result in rdr.records() {
-            let enemy = match deserialise_single_enemy(result.unwrap()) {
+            let record = result.unwrap();
+            if record[0].contains('/') {
+                continue;
+            }
+            let enemy = match deserialise_single_enemy(record) {
                 Some(value) => value,
                 None => continue,
             };
@@ -205,6 +216,7 @@ impl<'a> StageData<'_> {
 
     /// Get `map_id` to use in map_option and stage_option.
     fn get_map_id(&self) -> u32 {
+        // TODO this doesn't work any more, see Nova's message/the python script
         if self.meta.type_num == 3 && [15, 16].contains(&self.meta.map_num) {
             // CotC outbreaks have 22_000 as their map id
             22_000 + self.meta.map_num
@@ -264,6 +276,11 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
 
                             if matches!(field, ".") {
                                 assert_eq!(index + 1, result.len());
+                                let mut r2 = result;
+                                r2.truncate(index);
+                                return deserialise_single_enemy(r2);
+                            }
+                            if field.starts_with("//") {
                                 let mut r2 = result;
                                 r2.truncate(index);
                                 return deserialise_single_enemy(r2);
