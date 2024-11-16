@@ -169,10 +169,7 @@ impl<'a> StageData<'_> {
             // if (cas == -1)
             //     cas = CH_CASTLES[id.id];
         } else {
-            if line_1[6].contains(&b'/') {
-                line_1.truncate(6);
-                line_1.push_field(b"");
-            }
+            line_1 = remove_comment_ind(line_1, 6);
 
             // In EoC
             HeaderCSV {
@@ -258,6 +255,16 @@ impl<'a> StageData<'_> {
     pub fn version(&self) -> &Version {
         self.version
     }
+}
+
+fn remove_comment_ind(record: ByteRecord, index: usize) -> ByteRecord {
+    let mut record = record;
+    if record[index].contains(&b'/') {
+        record.truncate(index);
+        record.push_field(b"");
+    }
+
+    record
 }
 
 fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
