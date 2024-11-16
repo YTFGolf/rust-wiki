@@ -1,9 +1,5 @@
 //! Contains functions to read data files.
-use std::{
-    io::{BufRead, Cursor},
-    path::PathBuf,
-    sync::LazyLock,
-};
+use std::{path::PathBuf, sync::LazyLock};
 
 static WIKI_DATA_LOCATION: LazyLock<PathBuf> =
     LazyLock::new(|| std::env::current_dir().unwrap().join("data"));

@@ -3,17 +3,15 @@ use super::{
     stage_metadata::{consts::StageTypeEnum, StageMeta},
     stage_option::{StageOption, StageOptionCSV},
 };
-use crate::
-    data::{
-        map::{
-            ex_option::ExOption,
-            map_data::{csv_types::StageDataCSV, GameMap},
-            map_option::{MapOption, MapOptionCSV},
-        },
-        version::Version,
-    }
-;
-use csv::StringRecord;
+use crate::data::{
+    map::{
+        ex_option::ExOption,
+        map_data::{csv_types::StageDataCSV, GameMap},
+        map_option::{MapOption, MapOptionCSV},
+    },
+    version::Version,
+};
+use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
 use std::{fs::File, io::BufReader, path::PathBuf};
 
