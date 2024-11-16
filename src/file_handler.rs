@@ -28,23 +28,3 @@ pub fn get_file_location(location: FileLocation) -> &'static PathBuf {
         F::WikiData => &WIKI_DATA_LOCATION,
     }
 }
-
-/// Strip comments from file reader.
-/// ```
-/// # use std::{fs::File, io::BufReader, path::PathBuf};
-/// # use rust_wiki::config::get_config;
-/// # use rust_wiki::file_handler::decomment_file_reader;
-/// # let version = &get_config().unwrap().current_version;
-/// let reader = File::open(version.get_file_path("DataLocal/stage.csv")).unwrap();
-/// let reader = decomment_file_reader(BufReader::new(reader));
-/// let mut rdr = csv::Reader::from_reader(reader);
-/// ```
-pub fn decomment_file_reader<R: BufRead>(reader: R) -> Cursor<String> {
-    let f = reader
-        .lines()
-        .map(|line| line.unwrap().split("//").next().unwrap().trim().to_owned())
-        .collect::<Vec<_>>()
-        .join("\n");
-
-    Cursor::new(f)
-}
