@@ -136,6 +136,7 @@ pub mod consts {
         initialise_stage_type("Event Stages",         001, "S",     true,  T::Event),
         initialise_stage_type("Collaboration Stages", 002, "C",     true,  T::Collab),
         initialise_stage_type("Main Chapters",        003, "main",  false, T::MainChapters),
+        // TODO split up main properly
         initialise_stage_type("Extra Stages",         004, "RE|EX", false, T::Extra),
         initialise_stage_type("Catclaw Dojo",         006, "T",     true,  T::Dojo),
         initialise_stage_type("Towers",               007, "V",     true,  T::Tower),
@@ -264,6 +265,12 @@ impl StageMeta {
         };
 
         None
+    }
+
+    /// Get `type_num` and `map_num`, normalised for inaccurate main chapter
+    /// type numbers (temp function).
+    pub fn type_map_num(&self) -> (u32, u32) {
+        todo!()
     }
 
     /// Parse space-delimited selector into [StageMeta] object.
@@ -555,6 +562,8 @@ mod tests {
         assert_eq!(st, answer);
         let st = StageMeta::from_split("rn", 0, 0).unwrap();
         assert_eq!(st, answer);
+
+        assert_eq!(answer.type_map_num(), (0, 0));
     }
 
     #[test]
@@ -580,6 +589,8 @@ mod tests {
         assert_eq!(st, answer);
         let st = StageMeta::from_split("EX", 0, 0).unwrap();
         assert_eq!(st, answer);
+
+        assert_eq!(answer.type_map_num(), (4, 0));
     }
 
     #[test]
@@ -598,6 +609,7 @@ mod tests {
                 stage_file_name: "stage00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (3, 0));
 
         let st = StageMeta::from_selector_main(&["itf", "1", "0"]).unwrap();
         assert_eq!(
@@ -613,6 +625,7 @@ mod tests {
                 stage_file_name: "stageW04_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (3, 3));
 
         let st = StageMeta::from_selector_main(&["cotc", "1", "0"]).unwrap();
         assert_eq!(
@@ -628,6 +641,7 @@ mod tests {
                 stage_file_name: "stageSpace07_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (3, 6));
 
         let st = StageMeta::from_selector_main(&["aku", "0"]).unwrap();
         assert_eq!(
@@ -643,6 +657,7 @@ mod tests {
                 stage_file_name: "stageDM000_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (30, 0));
 
         let st = StageMeta::from_selector_main(&["filibuster"]).unwrap();
         assert_eq!(
@@ -658,6 +673,7 @@ mod tests {
                 stage_file_name: "stageSpace09_Invasion_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (23, 0));
 
         let st = StageMeta::from_selector_main(&["z", "7", "0"]).unwrap();
         assert_eq!(
@@ -673,6 +689,7 @@ mod tests {
                 stage_file_name: "stageZ07_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (22, 0));
     }
 
     #[test]
@@ -697,6 +714,7 @@ mod tests {
                 stage_file_name: "stageRN000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (0, 0));
 
         let st = StageMeta::from_selector("sol 0 0").unwrap();
         assert_eq!(
@@ -712,6 +730,7 @@ mod tests {
                 stage_file_name: "stageRN000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (0, 0));
 
         let st = StageMeta::from_selector("T 0 0").unwrap();
         assert_eq!(
@@ -727,6 +746,7 @@ mod tests {
                 stage_file_name: "stageRT000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (0, 0));
 
         let st = StageMeta::from_selector("EX 0 0").unwrap();
         assert_eq!(
@@ -742,6 +762,7 @@ mod tests {
                 stage_file_name: "stageEX000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (4, 0));
 
         let st = StageMeta::from_selector("COTC 1 0").unwrap();
         assert_eq!(
@@ -757,6 +778,7 @@ mod tests {
                 stage_file_name: "stageSpace07_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (3, 6));
     }
 
     #[test]
@@ -775,6 +797,7 @@ mod tests {
                 stage_file_name: "stageRN000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (0, 0));
 
         let st = StageMeta::from_file("stageRT000_00.csv").unwrap();
         assert_eq!(
@@ -790,6 +813,7 @@ mod tests {
                 stage_file_name: "stageRT000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (6, 0));
 
         let st = StageMeta::from_file("stageL000_00.csv").unwrap();
         assert_eq!(
@@ -805,6 +829,7 @@ mod tests {
                 stage_file_name: "stageL000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (33, 0));
 
         let st = StageMeta::from_file("stageEX000_00.csv").unwrap();
         assert_eq!(
@@ -820,6 +845,7 @@ mod tests {
                 stage_file_name: "stageEX000_00.csv".to_string(),
             }
         );
+        assert_eq!(st.type_map_num(), (4, 0));
     }
 
     #[test]
@@ -838,6 +864,7 @@ mod tests {
                 stage_file_name: "stageSpace07_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (3, 6));
 
         let st = StageMeta::from_file("stageZ00_00.csv").unwrap();
         assert_eq!(
@@ -853,6 +880,7 @@ mod tests {
                 stage_file_name: "stageZ00_00.csv".to_string()
             }
         );
+        assert_eq!(st.type_map_num(), (20, 0));
     }
 
     #[test]
@@ -867,6 +895,7 @@ mod tests {
             map_file_name: "MapStageDataN_000.csv".to_string(),
             stage_file_name: "stageRN000_00.csv".to_string(),
         };
+        assert_eq!(answer.type_map_num(), (0, 0));
 
         let st = StageMeta::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
@@ -896,6 +925,7 @@ mod tests {
                 stage_file_name: "stageRS382_02.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (1, 382));
 
         let selector = "ItF 1 48";
         assert_eq!(
@@ -915,6 +945,7 @@ mod tests {
                 stage_file_name: "stageW04_48.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (3, 3));
 
         let selector = "DM 0";
         assert_eq!(
@@ -934,6 +965,7 @@ mod tests {
                 stage_file_name: "stageDM000_00.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (30, 0));
 
         let selector = "Filibuster";
         assert_eq!(
@@ -953,6 +985,7 @@ mod tests {
                 stage_file_name: "stageSpace09_Invasion_00.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (23, 0));
 
         let selector = "z 5 0";
         assert_eq!(
@@ -972,6 +1005,7 @@ mod tests {
                 stage_file_name: "stageZ05_00.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (21, 1));
 
         let selector = "stageRN013_05.csv";
         assert_eq!(
@@ -991,6 +1025,7 @@ mod tests {
                 stage_file_name: "stageRN013_05.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (0, 13));
 
         let selector = "stageRN000_00.csv";
         assert_eq!(
@@ -1010,6 +1045,7 @@ mod tests {
                 stage_file_name: "stageRN000_00.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (0, 0));
 
         let selector = "stageW04_05.csv";
         assert_eq!(
@@ -1029,6 +1065,7 @@ mod tests {
                 stage_file_name: "stageW04_05.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (3, 3));
 
         let selector = "stageW04_05.csv";
         assert_eq!(
@@ -1048,6 +1085,7 @@ mod tests {
                 stage_file_name: "stageW04_05.csv".to_string()
             }
         );
+        assert_eq!(StageMeta::new(selector).unwrap().type_map_num(), (3, 3));
     }
 
     #[test]
@@ -1146,6 +1184,7 @@ mod tests {
                         // these 2 are more difficult to test properly
                     }
                 );
+                assert_eq!(st.type_map_num(), (st.type_num, st.map_num));
                 assert_eq!(
                     st,
                     StageMeta::new(&format!("{} {map} {stage}", code.number)).unwrap()
@@ -1187,6 +1226,7 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
+            assert_eq!(st.type_map_num(), (3, 0));
             assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
@@ -1217,6 +1257,7 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
+            assert_eq!(st.type_map_num(), (3, map + 2));
             assert_eq!(
                 st,
                 StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
@@ -1250,6 +1291,7 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
+            assert_eq!(st.type_map_num(), (3, map + 5));
             assert_eq!(
                 st,
                 StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
@@ -1279,6 +1321,7 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
+            assert_eq!(st.type_map_num(), (30, 0));
             assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
@@ -1308,6 +1351,8 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
+            let map32 = map as u32;
+            assert_eq!(st.type_map_num(), (20 + map32 / 3, map32 % 3 + 1));
             assert_eq!(
                 st,
                 StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
