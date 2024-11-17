@@ -189,7 +189,7 @@ pub mod consts {
 }
 use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
 use regex::Regex;
-use std::sync::LazyLock;
+use std::{process::Output, sync::LazyLock};
 
 /// Struct to contain [FILE_PATTERNS].
 struct FilePatterns {
@@ -270,7 +270,34 @@ impl StageMeta {
     /// Get `type_num` and `map_num`, normalised for inaccurate main chapter
     /// type numbers (temp function).
     pub fn type_map_num(&self) -> (u32, u32) {
-        todo!()
+        match self.type_enum {
+            StageTypeEnum::MainChapters => (),
+            _ => return (self.type_num, self.map_num),
+        };
+
+        const OUTBREAK_MAPS: [u32; 8] = [0, 1, 2, 10, 12, 13, 15, 16];
+        match self.map_num {
+            9 => (3, 0),
+            // EoC. Not bothering with chaps 2 and 3
+            3_u32..=5_u32 => (3, self.map_num),
+            // ItF
+            6_u32..=8_u32 => (3, self.map_num),
+            // CotC
+            0 | 1 | 2 | 10 | 12 | 13 | 15 | 16 => {
+                let i = OUTBREAK_MAPS
+                    .iter()
+                    .position(|x| *x == self.map_num)
+                    .unwrap();
+                let i = i as u32;
+                (20 + i / 3, i % 3)
+            }
+            // Outbreaks
+            11 => (23, 0),
+            // Filibuster
+            14 => (30, 0),
+            // Aku realms
+            _ => unreachable!("{self:?}"),
+        }
     }
 
     /// Parse space-delimited selector into [StageMeta] object.
@@ -504,7 +531,8 @@ impl StageMeta {
                 "z" => {
                     let mut chap_num: usize = selector[1].parse().unwrap();
 
-                    let map_num = [0, 1, 2, 10, 12, 13, 15, 16][chap_num - 1];
+                    const OUTBREAK_MAPS: [u32; 8] = [0, 1, 2, 10, 12, 13, 15, 16];
+                    let map_num = OUTBREAK_MAPS[chap_num - 1];
                     let stage_num = selector[2].parse::<u32>().unwrap();
                     let map_file = format!(
                         "stageNormal{}_{}_Z.csv",
