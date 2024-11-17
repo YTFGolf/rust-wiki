@@ -212,14 +212,9 @@ impl<'a> StageData<'_> {
 
     /// Get `map_id` to use in map_option and stage_option.
     fn get_map_id(&self) -> u32 {
-        // TODO this doesn't work any more, see Nova's message/the python script
-        if self.meta.type_num == 3 && [15, 16].contains(&self.meta.map_num) {
-            // CotC outbreaks have 22_000 as their map id
-            22_000 + self.meta.map_num
-        } else {
-            self.meta.type_num * 1000 + self.meta.map_num
-        }
-        // this is definitely very fragile
+        let (t, m) = self.meta.type_map_num();
+
+        t * 1000 + m
     }
 
     /// Get MapStageData data if it exists.
