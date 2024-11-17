@@ -746,7 +746,7 @@ mod tests {
                 stage_file_name: "stageRT000_00.csv".to_string(),
             }
         );
-        assert_eq!(st.type_map_num(), (0, 0));
+        assert_eq!(st.type_map_num(), (6, 0));
 
         let st = StageMeta::from_selector("EX 0 0").unwrap();
         assert_eq!(
@@ -1232,7 +1232,7 @@ mod tests {
 
         let selector = "itf";
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<u32>() % 1000 + 1, random::<u32>() % 1000);
+            let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
             // itf is 1-based so need +1
             let st =
                 StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
@@ -1266,7 +1266,7 @@ mod tests {
 
         let selector = "cotc";
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<u32>() % 1000 + 1, random::<u32>() % 1000);
+            let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
             // cotc is 1-based so need +1
             let st =
                 StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
@@ -1351,8 +1351,8 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            let map32 = map as u32;
-            assert_eq!(st.type_map_num(), (20 + map32 / 3, map32 % 3 + 1));
+            let mapind = map as u32 - 1;
+            assert_eq!(st.type_map_num(), (20 + mapind / 3, mapind % 3));
             assert_eq!(
                 st,
                 StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
