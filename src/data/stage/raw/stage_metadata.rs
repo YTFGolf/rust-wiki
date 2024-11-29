@@ -189,7 +189,7 @@ pub mod consts {
 }
 use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
 use regex::Regex;
-use std::{process::Output, sync::LazyLock};
+use std::sync::LazyLock;
 
 /// Struct to contain [FILE_PATTERNS].
 struct FilePatterns {

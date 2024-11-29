@@ -25,6 +25,7 @@ fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
     encounters
 }
 
+#[derive(Debug)]
 enum DisplayType {
     /// E.g. EoC: `*Stage x: name (mags)`.
     Flat,
@@ -36,6 +37,9 @@ enum DisplayType {
     Skip,
 }
 type D = DisplayType;
+
+#[derive(Debug)]
+#[allow(dead_code)]
 struct EncountersSection {
     heading: &'static str,
     display_type: DisplayType,
@@ -52,18 +56,18 @@ static SECTIONS: [EncountersSection; 18] = [
     get_new_section("[[Empire of Cats]]",                                    D::Flat),
     get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Flat),
     get_new_section("[[Into the Future]]",                                   D::Flat),
-    get_new_section("[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]",    D::Flat,),
+    get_new_section("[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]",    D::Flat),
     get_new_section("[[Cats of the Cosmos]]",                                D::Flat),
-    get_new_section("[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]", D::Flat,),
+    get_new_section("[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]", D::Flat),
     get_new_section("[[The Aku Realms]]",                                    D::Flat),
 
-    get_new_section("[[Legend Stages#Stories of Legend|Stories of Legend]]", D::Flat,),
+    get_new_section("[[Legend Stages#Stories of Legend|Stories of Legend]]", D::Flat),
     get_new_section("[[Legend Stages#Uncanny Legends|Uncanny Legends]]",     D::Flat),
     get_new_section("[[Legend Stages#Zero Legends|Zero Legends]]",           D::Flat),
 
     get_new_section("[[Special Events|Event Stages]]",                       D::Normal),
     get_new_section("[[Underground Labyrinth]]",                             D::Flat),
-    get_new_section("[[Collaboration Event Stages|Collaboration Stages]]",   D::Normal,),
+    get_new_section("[[Collaboration Event Stages|Collaboration Stages]]",   D::Normal),
     get_new_section("[[Enigma Stages]]",                                     D::Normal),
     get_new_section("[[Catclaw Dojo]]",                                      D::Normal),
     get_new_section("[[:Category:Removed Content|Removed Stages]]",          D::Normal),
@@ -78,6 +82,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
     println!("{:?}", encounters);
+    println!("{SECTIONS:?}");
 }
 
 /*
