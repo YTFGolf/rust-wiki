@@ -597,6 +597,7 @@ impl StageMeta {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use consts::STAGE_TYPES;
     use rand::random;
     use StageTypeEnum as T;
 
@@ -662,7 +663,7 @@ mod tests {
                 type_code: "main",
                 type_num: 3,
                 type_enum: T::MainChapters,
-                map_num: 9,
+                map_num: 0,
                 stage_num: 0,
                 map_file_name: "stageNormal0.csv".to_string(),
                 stage_file_name: "stage00.csv".to_string()
@@ -706,11 +707,11 @@ mod tests {
         assert_eq!(
             st,
             StageMeta {
-                type_name: "Main Chapters",
-                type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
-                map_num: 14,
+                type_name: "Aku Realms",
+                type_code: "DM",
+                type_num: 30,
+                type_enum: T::AkuRealms,
+                map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataDM_000.csv".to_string(),
                 stage_file_name: "stageDM000_00.csv".to_string()
@@ -722,11 +723,11 @@ mod tests {
         assert_eq!(
             st,
             StageMeta {
-                type_name: "Main Chapters",
-                type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
-                map_num: 11,
+                type_name: "Filibuster Invasion",
+                type_code: "",
+                type_num: 23,
+                type_enum: T::Filibuster,
+                map_num: 0,
                 stage_num: 0,
                 map_file_name: "stageNormal2_2_Invasion.csv".to_string(),
                 stage_file_name: "stageSpace09_Invasion_00.csv".to_string()
@@ -738,11 +739,11 @@ mod tests {
         assert_eq!(
             st,
             StageMeta {
-                type_name: "Main Chapters",
+                type_name: "Outbreaks",
                 type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
-                map_num: 15,
+                type_num: 22,
+                type_enum: T::Outbreaks,
+                map_num: 0,
                 stage_num: 0,
                 map_file_name: "stageNormal2_0_Z.csv".to_string(),
                 stage_file_name: "stageZ07_00.csv".to_string()
@@ -929,10 +930,10 @@ mod tests {
         assert_eq!(
             st,
             StageMeta {
-                type_name: "Main Chapters",
+                type_name: "Outbreaks",
                 type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
+                type_num: 20,
+                type_enum: T::Outbreaks,
                 map_num: 0,
                 stage_num: 0,
                 map_file_name: "stageNormal0_0_Z.csv".to_string(),
@@ -1014,11 +1015,11 @@ mod tests {
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
-                type_name: "Main Chapters",
-                type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
-                map_num: 14,
+                type_name: "Aku Realms",
+                type_code: "DM",
+                type_num: 30,
+                type_enum: T::AkuRealms,
+                map_num: 0,
                 stage_num: 0,
                 map_file_name: "MapStageDataDM_000.csv".to_string(),
                 stage_file_name: "stageDM000_00.csv".to_string()
@@ -1034,11 +1035,11 @@ mod tests {
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
-                type_name: "Main Chapters",
-                type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
-                map_num: 11,
+                type_name: "Filibuster Invasion",
+                type_code: "",
+                type_num: 23,
+                type_enum: T::Filibuster,
+                map_num: 0,
                 stage_num: 0,
                 map_file_name: "stageNormal2_2_Invasion.csv".to_string(),
                 stage_file_name: "stageSpace09_Invasion_00.csv".to_string()
@@ -1054,11 +1055,11 @@ mod tests {
         assert_eq!(
             StageMeta::from_selector(selector).unwrap(),
             StageMeta {
-                type_name: "Main Chapters",
+                type_name: "Outbreaks",
                 type_code: "main",
-                type_num: 3,
-                type_enum: T::MainChapters,
-                map_num: 12,
+                type_num: 21,
+                type_enum: T::Outbreaks,
+                map_num: 1,
                 stage_num: 0,
                 map_file_name: "stageNormal1_1_Z.csv".to_string(),
                 stage_file_name: "stageZ05_00.csv".to_string()
@@ -1197,7 +1198,7 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_invalid_number_high() {
-        let _ = StageMeta::from_selector_main(&["z", "9", "0"]);
+        let _ = StageMeta::from_selector_main(&["z", "10", "0"]);
     }
 
     #[test]
@@ -1210,9 +1211,13 @@ mod tests {
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for code in STAGE_TYPES {
-            if code.code == "main" {
+            if matches!(
+                code.type_enum,
+                T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms
+            ) {
                 continue;
             }
+
             for _ in 0..NUM_ITERATIONS {
                 let (map, stage) = (random::<u32>() % 1000, random::<u32>() % 1000);
                 let st = StageMeta::from_split_parsed(&code, map, stage).unwrap();
@@ -1400,22 +1405,26 @@ mod tests {
                 file_name,
                 &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
+
+            let mapind = map as u32 - 1;
+            let type_num = 20 + mapind / 3;
+            let map_num = mapind % 3;
+            assert_eq!(st.type_map_num(), (type_num, map_num));
+
             assert_eq!(
                 st,
                 StageMeta {
-                    type_name: CODE.name,
-                    type_code: CODE.code,
-                    type_num: CODE.number,
-                    type_enum: CODE.type_enum,
-                    map_num: [0, 1, 2, 10, 12, 13, 15, 16][map - 1],
+                    type_name: code.name,
+                    type_code: code.code,
+                    type_num,
+                    type_enum: code.type_enum,
+                    map_num,
                     stage_num: stage,
 
                     map_file_name: st.map_file_name.to_string(),
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            let mapind = map as u32 - 1;
-            assert_eq!(st.type_map_num(), (20 + mapind / 3, mapind % 3));
             assert_eq!(
                 st,
                 StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
