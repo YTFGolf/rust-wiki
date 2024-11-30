@@ -291,6 +291,10 @@ impl StageMeta {
     /// Get `type_num` and `map_num`, normalised for inaccurate main chapter
     /// type numbers (temp function).
     pub fn type_map_num(&self) -> (u32, u32) {
+        if true {
+            return (self.type_num, self.map_num);
+        }
+
         match self.type_enum {
             StageTypeEnum::MainChapters => (),
             _ => return (self.type_num, self.map_num),
@@ -336,8 +340,11 @@ impl StageMeta {
             return Err(StageMetaParseError::Invalid);
         };
 
+        use StageTypeEnum as T;
         match stage_type.type_enum {
-            StageTypeEnum::MainChapters => Self::from_selector_main(&selector),
+            T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms => {
+                Self::from_selector_main(&selector)
+            }
             _ => {
                 // let chapter: u32 = stage_type.parse().unwrap();
                 let submap: u32 = selector[1].parse().unwrap();
@@ -355,21 +362,23 @@ impl StageMeta {
     /// ```
     pub fn from_file(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
-            return Self::from_selector_main(&["Filibuster"]);
+            Self::from_selector_main(&["Filibuster"])
         } else if FILE_PATTERNS.eoc.is_match(file_name) {
-            return Self::from_selector_main(&["eoc", &FILE_PATTERNS.eoc.replace(file_name, "$1")]);
+            Self::from_selector_main(&["eoc", &FILE_PATTERNS.eoc.replace(file_name, "$1")])
         } else if FILE_PATTERNS.other_main.is_match(file_name) {
-            // will deal with this later
+            Self::from_file_other_main(file_name)
         } else if file_name.contains("_") {
             let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
             let map_num: u32 = caps[2].parse::<u32>().unwrap();
             let stage_num: u32 = caps[3].parse::<u32>().unwrap();
-            return Self::from_split(&caps[1], map_num, stage_num);
+            Self::from_split(&caps[1], map_num, stage_num)
         } else {
-            return Err(StageMetaParseError::Rejected);
+            Err(StageMetaParseError::Rejected)
         }
+    }
 
-        // Rest is for main chapters minus EoC
+    /// Parse file name if is main chapters but not eoc
+    pub fn from_file_other_main(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
         let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
         let mut chap_num = caps[2].parse::<u32>().unwrap();
         if &caps[1] == "Z" && chap_num <= 3 {
@@ -385,6 +394,7 @@ impl StageMeta {
             "Z" => (chap_num, stage_num),
             _ => unreachable!(),
         };
+
         Self::from_selector_main(&[&caps[1], &selector.0.to_string(), &selector.1.to_string()])
     }
 
