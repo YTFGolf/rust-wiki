@@ -492,7 +492,7 @@ impl StageMeta {
                 }
                 "itf" | "w" => {
                     let map_num: u32 = selector[1].parse::<u32>().unwrap() + 2;
-                    assert!(3 <= map_num && map_num <= 5);
+                    assert!((3..=5).contains(&map_num));
                     let stage_num: u32 = selector[2].parse::<u32>().unwrap();
 
                     let map_file = format!("stageNormal1_{}.csv", map_num - 3);
@@ -502,7 +502,7 @@ impl StageMeta {
                 }
                 "cotc" | "space" => {
                     let map_num: u32 = selector[1].parse::<u32>().unwrap() + 5;
-                    assert!(6 <= map_num && map_num <= 8);
+                    assert!((6..=8).contains(&map_num));
                     let stage_num: u32 = selector[2].parse::<u32>().unwrap();
 
                     let map_file = format!("stageNormal2_{}.csv", map_num - 6);
@@ -527,7 +527,7 @@ impl StageMeta {
                 ),
                 "z" => {
                     let mut chap_num: u32 = selector[1].parse().unwrap();
-                    assert!(1 <= chap_num && chap_num <= 9);
+                    assert!((1..=9).contains(&chap_num));
 
                     type_num = 20 + ((chap_num - 1) / 3);
                     let map_num = (chap_num - 1) % 3;
@@ -1327,7 +1327,7 @@ mod tests {
         let code: &StageType = &STAGE_TYPES[11];
         let selector = "Z";
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<usize>() % 8 + 1, random::<u32>() % 1000);
+            let (map, stage) = (random::<u32>() % 8 + 1, random::<u32>() % 1000);
             // Currently 8 chapters exist
             let st =
                 StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
@@ -1338,7 +1338,7 @@ mod tests {
                 &StageMeta::from_file(file_name).unwrap().stage_file_name
             );
 
-            let mapind = map as u32 - 1;
+            let mapind = map - 1;
             let type_num = 20 + mapind / 3;
             let map_num = mapind % 3;
 
