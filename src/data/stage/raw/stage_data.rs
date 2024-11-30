@@ -212,9 +212,8 @@ impl<'a> StageData<'_> {
 
     /// Get `map_id` to use in map_option and stage_option.
     fn get_map_id(&self) -> u32 {
-        let (t, m) = self.meta.type_map_num();
-
-        t * 1000 + m
+        let m = &self.meta;
+        m.type_num * 1000 + m.map_num
     }
 
     /// Get MapStageData data if it exists.
