@@ -20,6 +20,15 @@ Possible selector values come in the form `CommonName|number|code_without_r|code
 
 ## Other formats
 
+There are two other methods for stage info than selectors: file and reference.
+
+File simply uses the stage's information file name. For example, Earthshaker's stage information file name is `stageRN000_00.csv`. These are specifically tested to ensure that every single information file returns the exact stage that uses that file. This is mainly useful internally.
+
+Reference uses the battlecats-db reference. This can be of the form:
+- `*https://battlecats-db.com/stage/s00000-01.html`
+- `https://battlecats-db.com/stage/s00000-01.html`
+- `s00000-01`
+
 ## Numbers
 Stage info requires the internal map and stage numbers to work. Unlike the selector, you can put as many leading 0s before the map and stage numbers. The two main ways you can find these are:
 
@@ -36,4 +45,13 @@ Stage info requires the internal map and stage numbers to work. Unlike the selec
 If both of these methods fail, or give weird results, the last resort is to Ctrl+f on [StageNames.csv](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/data/StageNames.csv) (or your local copy) and look up the stage name.
 
 ## Main chapters
-> Note: There is a planned reform of stage info that would change how selectors work under the hood, although this shouldn't affect usage of this program.
+> Note: There is a planned reform of stage info that would change how selectors work under the hood. This shouldn't affect basic usage of this program, although it could improve some selectors.
+
+Main chapter selectors are significantly different from normal stages.
+
+- EoC: `eoc {num}` - gives EoC stage `num + 1`. Moon works differently: `47` gives chapter 1, `49` gives chapter 2, and `50` gives chapter 3.
+- ItF: `itf {chap} {num}` - chap is 1-based, i.e. `itf 1` means chapter 1. num is still 0-based, so `47` means Moon. `W` also works as an alias for `itf`.
+- CotC - same thing as ItF basically. `Space` is an alias for `cotc`.
+- Outbreaks: `Z {chap} {num}`. chap is 1-based (1 is eoc 1, 4 is itf 1 etc.), num is 1-based.
+- Filibuster - `filibuster` is the invasion. There is no need for any numbers.
+- Aku Realms: `aku {stage}` - e.g. `aku 0` is Korea. `dm` is an alias for `aku`.
