@@ -157,7 +157,7 @@ pub mod consts {
         // initialise_stage_type("Cats of the Cosmos Outbreaks", 022, "",      false, T::CotcOutbreak),
         initialise_stage_type("Outbreaks",                    003, "main",  false, T::Outbreaks),
 
-        initialise_stage_type("Filibuster Invasion",          022, "",      false, T::Filibuster),
+        initialise_stage_type("Filibuster Invasion",          023, "",      false, T::Filibuster),
         initialise_stage_type("Gauntlets",                    024, "A",     true,  T::Gauntlet),
         initialise_stage_type("Enigma Stages",                025, "H",     true,  T::Enigma),
         initialise_stage_type("Collab Gauntlets",             027, "CA",    true,  T::CollabGauntlet),
@@ -208,7 +208,7 @@ pub mod consts {
     ]});
     // There should probably be something that prints off these strings for users.
 }
-use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
+use consts::{get_selector_type, StageType, StageTypeEnum};
 use regex::Regex;
 use std::sync::LazyLock;
 
