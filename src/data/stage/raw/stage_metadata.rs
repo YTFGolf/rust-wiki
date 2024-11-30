@@ -1260,8 +1260,8 @@ mod tests {
     #[test]
     fn test_random_properties_main() {
         const NUM_ITERATIONS: usize = 20;
-        const CODE: &StageType = &STAGE_TYPES[3];
 
+        let code: &StageType = &STAGE_TYPES[3];
         let selector = "eoc";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<u32>() % 100;
@@ -1275,11 +1275,11 @@ mod tests {
             assert_eq!(
                 st,
                 StageMeta {
-                    type_name: CODE.name,
-                    type_code: CODE.code,
-                    type_num: CODE.number,
-                    type_enum: CODE.type_enum,
-                    map_num: 9,
+                    type_name: code.name,
+                    type_code: code.code,
+                    type_num: code.number,
+                    type_enum: code.type_enum,
+                    map_num: 0,
                     stage_num: stage,
                     map_file_name: st.map_file_name.to_string(),
                     stage_file_name: st.stage_file_name.to_string(),
@@ -1289,6 +1289,7 @@ mod tests {
             assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
+        let code: &StageType = &STAGE_TYPES[3];
         let selector = "itf";
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
@@ -1304,10 +1305,10 @@ mod tests {
             assert_eq!(
                 st,
                 StageMeta {
-                    type_name: CODE.name,
-                    type_code: CODE.code,
-                    type_num: CODE.number,
-                    type_enum: CODE.type_enum,
+                    type_name: code.name,
+                    type_code: code.code,
+                    type_num: code.number,
+                    type_enum: code.type_enum,
                     map_num: map + 2,
                     // 3, 4, 5
                     stage_num: stage,
@@ -1323,6 +1324,7 @@ mod tests {
             );
         }
 
+        let code: &StageType = &STAGE_TYPES[3];
         let selector = "cotc";
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
@@ -1338,10 +1340,10 @@ mod tests {
             assert_eq!(
                 st,
                 StageMeta {
-                    type_name: CODE.name,
-                    type_code: CODE.code,
-                    type_num: CODE.number,
-                    type_enum: CODE.type_enum,
+                    type_name: code.name,
+                    type_code: code.code,
+                    type_num: code.number,
+                    type_enum: code.type_enum,
                     map_num: map + 5,
                     // 6, 7, 8
                     stage_num: stage,
@@ -1357,6 +1359,7 @@ mod tests {
             );
         }
 
+        let code: &StageType = &STAGE_TYPES[16];
         let selector = "aku";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<u32>() % 1000;
@@ -1369,11 +1372,11 @@ mod tests {
             assert_eq!(
                 st,
                 StageMeta {
-                    type_name: CODE.name,
-                    type_code: CODE.code,
-                    type_num: CODE.number,
-                    type_enum: CODE.type_enum,
-                    map_num: 14,
+                    type_name: code.name,
+                    type_code: code.code,
+                    type_num: code.number,
+                    type_enum: code.type_enum,
+                    map_num: 0,
                     stage_num: stage,
 
                     map_file_name: st.map_file_name.to_string(),
@@ -1384,6 +1387,7 @@ mod tests {
             assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
+        let code: &StageType = &STAGE_TYPES[11];
         let selector = "Z";
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<usize>() % 8 + 1, random::<u32>() % 1000);
