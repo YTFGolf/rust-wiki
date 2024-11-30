@@ -35,10 +35,13 @@ Extracts the name from a link:
 assert_eq!(extract_name("[[link|name]]"), "name");
 assert_eq!(extract_name("[[link]]"),      "link");
 assert_eq!(extract_name("name"),          "name");
+
+const COTC: &str = "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]] 2";
+assert_eq!(extract_name(COTC),            COTC);
 ```
 */
 pub fn extract_name(name: &str) -> &str {
-    if name.starts_with("[[") {
+    if name.starts_with("[[") && name.chars().filter(|c| *c == '[').count() <= 2 {
         let end = name.find("]]").unwrap();
         match name.find('|') {
             Some(i) => &name[i + 1..end],
