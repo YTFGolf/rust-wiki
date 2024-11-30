@@ -118,9 +118,10 @@ pub mod consts {
 
         UL,
         Catamin,
-        EocOutbreak,
-        ItfOutbreak,
-        CotcOutbreak,
+        // EocOutbreak,
+        // ItfOutbreak,
+        // CotcOutbreak,
+        Outbreaks,
         Filibuster,
         Gauntlet,
         Enigma,
@@ -138,7 +139,7 @@ pub mod consts {
     #[rustfmt::skip]
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
-    pub const STAGE_TYPES: [StageType; 24] = [
+    pub const STAGE_TYPES: [StageType; 22] = [
         initialise_stage_type("Stories of Legend",            000, "N",     true,  T::SoL),
         initialise_stage_type("Event Stages",                 001, "S",     true,  T::Event),
         initialise_stage_type("Collaboration Stages",         002, "C",     true,  T::Collab),
@@ -151,9 +152,11 @@ pub mod consts {
 
         initialise_stage_type("Uncanny Legends",              013, "NA",    true,  T::UL),
         initialise_stage_type("Catamin Stages",               014, "B",     true,  T::Catamin),
-        initialise_stage_type("Empire of Cats Outbreaks",     020, "",      false, T::EocOutbreak),
-        initialise_stage_type("Into the Future Outbreaks",    021, "",      false, T::ItfOutbreak),
-        initialise_stage_type("Cats of the Cosmos Outbreaks", 022, "",      false, T::CotcOutbreak),
+        // initialise_stage_type("Empire of Cats Outbreaks",     020, "",      false, T::EocOutbreak),
+        // initialise_stage_type("Into the Future Outbreaks",    021, "",      false, T::ItfOutbreak),
+        // initialise_stage_type("Cats of the Cosmos Outbreaks", 022, "",      false, T::CotcOutbreak),
+        initialise_stage_type("Outbreaks",                    003, "main",  false, T::Outbreaks),
+
         initialise_stage_type("Filibuster Invasion",          022, "",      false, T::Filibuster),
         initialise_stage_type("Gauntlets",                    024, "A",     true,  T::Gauntlet),
         initialise_stage_type("Enigma Stages",                025, "H",     true,  T::Enigma),
@@ -176,27 +179,32 @@ pub mod consts {
     /// ‎
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
-    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 19]> = LazyLock::new(|| {[
-        initialise_type_map("SoL|0|N|RN",                               T::SoL),
-        initialise_type_map("Event|Special|1|S|RS",                     T::Event),
-        initialise_type_map("Collab|2|C|RC",                            T::Collab),
-        initialise_type_map("Extra|4|RE|EX",                            T::Extra),
-        initialise_type_map("Dojo|6|T|RT",                              T::Dojo),
-        initialise_type_map("Tower|7|V|RV",                             T::Tower),
-        initialise_type_map("Rank|11|R|RR",                             T::RankingDojo),
-        initialise_type_map("Challenge|12|M|RM",                        T::Challenge),
-        initialise_type_map("UL|13|NA|RNA",                             T::UL),
-        initialise_type_map("Catamin|14|B|RB",                          T::Catamin),
-        // initialise_type_map("LQ|16|D",                                  "Why would you want to do Legend Quest"),
-        initialise_type_map("Gauntlet|Baron|24|A|RA",                   T::Gauntlet),
-        initialise_type_map("Enigma|25|H|RH",                           T::Enigma),
-        initialise_type_map("27|CA|RCA",                                T::CollabGauntlet),
-        initialise_type_map("Behemoth|31|Q|RQ",                         T::Behemoth),
-        initialise_type_map("Labyrinth|33|L",                           T::Labyrinth),
-        initialise_type_map("ZL|34|ND|RND",                             T::ZL),
-        initialise_type_map("Colosseum|36|SR|RSR",                      T::Colosseum),
-        initialise_type_map("37|G",                                     T::NewType),
-        initialise_type_map("EoC|ItF|W|CotC|Space|Aku|DM|Z|Filibuster", T::MainChapters)
+    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 22]> = LazyLock::new(|| {[
+        initialise_type_map("SoL|0|N|RN",               T::SoL),
+        initialise_type_map("Event|Special|1|S|RS",     T::Event),
+        initialise_type_map("Collab|2|C|RC",            T::Collab),
+        initialise_type_map("EoC|ItF|W|CotC|Space",     T::MainChapters),
+        initialise_type_map("Extra|4|RE|EX",            T::Extra),
+        initialise_type_map("Dojo|6|T|RT",              T::Dojo),
+        initialise_type_map("Tower|7|V|RV",             T::Tower),
+        initialise_type_map("Rank|11|R|RR",             T::RankingDojo),
+        initialise_type_map("Challenge|12|M|RM",        T::Challenge),
+
+        initialise_type_map("UL|13|NA|RNA",             T::UL),
+        initialise_type_map("Catamin|14|B|RB",          T::Catamin),
+        initialise_type_map("Z",                        T::Outbreaks),
+        initialise_type_map("Filibuster|30",            T::Filibuster),
+        // initialise_type_map("LQ|16|D",                  "Why would you want to do Legend Quest"),
+        initialise_type_map("Gauntlet|Baron|24|A|RA",   T::Gauntlet),
+        initialise_type_map("Enigma|25|H|RH",           T::Enigma),
+        initialise_type_map("27|CA|RCA",                T::CollabGauntlet),
+        initialise_type_map("Aku|30|DM",                T::AkuRealms),
+
+        initialise_type_map("Behemoth|31|Q|RQ",         T::Behemoth),
+        initialise_type_map("Labyrinth|33|L",           T::Labyrinth),
+        initialise_type_map("ZL|34|ND|RND",             T::ZL),
+        initialise_type_map("Colosseum|36|SR|RSR",      T::Colosseum),
+        initialise_type_map("37|G",                     T::NewType),
     ]});
     // There should probably be something that prints off these strings for users.
 }
