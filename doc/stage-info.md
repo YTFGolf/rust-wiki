@@ -32,7 +32,7 @@ Reference uses the battlecats-db reference. This can be of the form:
 ## Numbers
 Stage info requires the internal map and stage numbers to work. Unlike the selector, you can put as many leading 0s before the map and stage numbers. The two main ways you can find these are:
 
-- Looking at the stage name image below the enemy base image. For example, on Earthshaker this image is `[[File:Mapsn000 00 n en.png]]`. Therefore, you can use `n 00 000` to get Earthshaker's stage info. This method is not foolproof, since there are many stages which reuse images for different stages, but it's generally a good place to start.
+- Looking at the stage name image below the enemy base image. For example, on Earthshaker this image is `[[File:Mapsn000 00 n en.png]]`. Therefore, you can use `n 00 000` to get Earthshaker's stage info. This method is not foolproof, since there are many pages which reuse images from different stages, but it's generally a good place to start.
 - Looking at the battlecats-db reference at the bottom of the page. Earthshaker's reference is `https://battlecats-db.com/stage/s00000-01.html`:
   - The first two digits are the stage type. You'll need to remove leading 0s, so this would give you `0`.
   - The third to fifth digits inclusive are the map number.
@@ -52,6 +52,6 @@ Main chapter selectors are significantly different from normal stages.
 - EoC: `eoc {num}` - gives EoC stage `num + 1`. Moon works differently: `47` gives chapter 1, `49` gives chapter 2, and `50` gives chapter 3.
 - ItF: `itf {chap} {num}` - chap is 1-based, i.e. `itf 1` means chapter 1. num is still 0-based, so `47` means Moon. `W` also works as an alias for `itf`.
 - CotC - same thing as ItF basically. `Space` is an alias for `cotc`.
-- Outbreaks: `Z {chap} {num}`. chap is 1-based (1 is eoc 1, 4 is itf 1 etc.), num is 1-based.
+- Outbreaks: `Z {chap} {num}`. chap is 1-based (`1` is eoc 1, `4` is itf 1 etc.), num is 0-based.
 - Filibuster - `filibuster` is the invasion. There is no need for any numbers.
 - Aku Realms: `aku {stage}` - e.g. `aku 0` is Korea. `dm` is an alias for `aku`.
