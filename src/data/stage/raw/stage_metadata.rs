@@ -507,10 +507,13 @@ impl StageMeta {
     // convert to string only to have numbers be parsed again. Or make new
     // internal function for that (does this one even need to be public?).
     pub fn from_selector_main(selector: &[&str]) -> Result<StageMeta, StageMetaParseError> {
-        let code = &STAGE_TYPES[3];
+        let Some(code) = get_selector_type(selector[0]) else {
+            return Err(StageMetaParseError::Invalid);
+        };
+
         let type_name = code.name;
         let type_code = code.code;
-        let type_num = code.number;
+        let mut type_num = code.number;
         let type_enum = code.type_enum;
 
         let (map_num, stage_num, map_file_name, stage_file_name) =
@@ -518,53 +521,55 @@ impl StageMeta {
                 "eoc" => {
                     let stage_num: u32 = selector[1].parse::<u32>().unwrap();
                     (
-                        9_u32,
+                        0_u32,
                         stage_num,
                         "stageNormal0.csv".to_string(),
                         format!("stage{stage_num:02}.csv"),
                     )
                 }
                 "itf" | "w" => {
-                    assert!(selector[1] != "0");
-                    // necessary for release build
-
                     let map_num: u32 = selector[1].parse::<u32>().unwrap() + 2;
+                    assert!(3 <= map_num && map_num <= 5);
                     let stage_num: u32 = selector[2].parse::<u32>().unwrap();
+
                     let map_file = format!("stageNormal1_{}.csv", map_num - 3);
                     let stage_file = format!("stageW{:02}_{stage_num:02}.csv", map_num + 1);
+
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "cotc" | "space" => {
-                    assert!(selector[1] != "0");
-                    // necessary for release build
-
                     let map_num: u32 = selector[1].parse::<u32>().unwrap() + 5;
+                    assert!(6 <= map_num && map_num <= 8);
                     let stage_num: u32 = selector[2].parse::<u32>().unwrap();
+
                     let map_file = format!("stageNormal2_{}.csv", map_num - 6);
                     let stage_file = format!("stageSpace{:02}_{stage_num:02}.csv", map_num + 1);
+
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "aku" | "dm" => {
                     let stage_num: u32 = selector[1].parse::<u32>().unwrap();
                     (
-                        14_u32,
+                        0_u32,
                         stage_num,
                         "MapStageDataDM_000.csv".to_string(),
                         format!("stageDM000_{stage_num:02}.csv"),
                     )
                 }
                 "filibuster" => (
-                    11_u32,
+                    0_u32,
                     0_u32,
                     "stageNormal2_2_Invasion.csv".to_string(),
                     "stageSpace09_Invasion_00.csv".to_string(),
                 ),
                 "z" => {
-                    let mut chap_num: usize = selector[1].parse().unwrap();
+                    let mut chap_num: u32 = selector[1].parse().unwrap();
+                    assert!(1 <= chap_num && chap_num <= 9);
 
-                    const OUTBREAK_MAPS: [u32; 8] = [0, 1, 2, 10, 12, 13, 15, 16];
-                    let map_num = OUTBREAK_MAPS[chap_num - 1];
+                    type_num = 20 + ((chap_num - 1) / 3);
+                    let map_num = (chap_num - 1) % 3;
                     let stage_num = selector[2].parse::<u32>().unwrap();
+
                     let map_file = format!(
                         "stageNormal{}_{}_Z.csv",
                         (chap_num - 1) / 3,
