@@ -50,7 +50,7 @@ pub mod consts {
         pub stage_type: StageType,
     }
 
-    fn initialise_type_map(pattern: &'static str, stage_type: &'static str) -> StageTypeMap {
+    fn initialise_type_map(pattern: &'static str, stage_type: StageTypeEnum) -> StageTypeMap {
         let re = format!("^({})$", pattern);
         let matcher = RegexBuilder::new(&re)
             .case_insensitive(true)
@@ -64,14 +64,14 @@ pub mod consts {
 
     /// Get the [StageType] that `stage_type` corresponds to from
     /// [STAGE_TYPES].
-    fn get_stage_type_code(stage_type: &str) -> StageType {
+    fn get_stage_type_code(stage_type: StageTypeEnum) -> StageType {
         for code in STAGE_TYPES {
-            if stage_type == code.code {
+            if stage_type == code.type_enum {
                 return code;
             }
         }
 
-        unreachable!("{stage_type} is an invalid stage type code!");
+        unreachable!("{stage_type:?} is an invalid stage type enum!");
     }
 
     /// Get [StageType] that `selector_type` refers to.
@@ -98,7 +98,7 @@ pub mod consts {
 
         #[test]
         fn test_get_stage_type_code() {
-            assert_eq!(get_stage_type_code("main"), STAGE_TYPES[3]);
+            assert_eq!(get_stage_type_code(T::MainChapters), STAGE_TYPES[3]);
         }
     }
 
@@ -163,28 +163,27 @@ pub mod consts {
     /// ‎
     // Lines above are necessary otherwise rust-analyzer displays stuff as
     // headings
-    // TODO probably replace this with enums
     static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 19]> = LazyLock::new(|| {[
-        initialise_type_map("SoL|0|N|RN",                               "N"),
-        initialise_type_map("Event|Special|1|S|RS",                     "S"),
-        initialise_type_map("Collab|2|C|RC",                            "C"),
-        initialise_type_map("Extra|4|RE|EX",                            "RE|EX"),
-        initialise_type_map("Dojo|6|T|RT",                              "T"),
-        initialise_type_map("Tower|7|V|RV",                             "V"),
-        initialise_type_map("Rank|11|R|RR",                             "R"),
-        initialise_type_map("Challenge|12|M|RM",                        "M"),
-        initialise_type_map("UL|13|NA|RNA",                             "NA"),
-        initialise_type_map("Catamin|14|B|RB",                          "B"),
+        initialise_type_map("SoL|0|N|RN",                               T::SoL),
+        initialise_type_map("Event|Special|1|S|RS",                     T::Event),
+        initialise_type_map("Collab|2|C|RC",                            T::Collab),
+        initialise_type_map("Extra|4|RE|EX",                            T::Extra),
+        initialise_type_map("Dojo|6|T|RT",                              T::Dojo),
+        initialise_type_map("Tower|7|V|RV",                             T::Tower),
+        initialise_type_map("Rank|11|R|RR",                             T::RankingDojo),
+        initialise_type_map("Challenge|12|M|RM",                        T::Challenge),
+        initialise_type_map("UL|13|NA|RNA",                             T::UL),
+        initialise_type_map("Catamin|14|B|RB",                          T::Catamin),
         // initialise_type_map("LQ|16|D",                                  "Why would you want to do Legend Quest"),
-        initialise_type_map("Gauntlet|Baron|24|A|RA",                   "A"),
-        initialise_type_map("Enigma|25|H|RH",                           "H"),
-        initialise_type_map("27|CA|RCA",                                "CA"),
-        initialise_type_map("Behemoth|31|Q|RQ",                         "Q"),
-        initialise_type_map("Labyrinth|33|L",                           "L"),
-        initialise_type_map("ZL|34|ND|RND",                             "ND"),
-        initialise_type_map("Colosseum|36|SR|RSR",                      "SR"),
-        initialise_type_map("37|G",                                     "G"),
-        initialise_type_map("EoC|ItF|W|CotC|Space|Aku|DM|Z|Filibuster", "main")
+        initialise_type_map("Gauntlet|Baron|24|A|RA",                   T::Gauntlet),
+        initialise_type_map("Enigma|25|H|RH",                           T::Enigma),
+        initialise_type_map("27|CA|RCA",                                T::CollabGauntlet),
+        initialise_type_map("Behemoth|31|Q|RQ",                         T::Behemoth),
+        initialise_type_map("Labyrinth|33|L",                           T::Labyrinth),
+        initialise_type_map("ZL|34|ND|RND",                             T::ZL),
+        initialise_type_map("Colosseum|36|SR|RSR",                      T::Colosseum),
+        initialise_type_map("37|G",                                     T::NewType),
+        initialise_type_map("EoC|ItF|W|CotC|Space|Aku|DM|Z|Filibuster", T::MainChapters)
     ]});
 }
 use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
