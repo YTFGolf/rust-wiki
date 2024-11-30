@@ -7,6 +7,12 @@ You'll need to use the command line to run this program. If you really can't be 
 2. Run `rust-wiki get` to download appropriate wiki files.
 3. Run `rust-wiki help` to see what commands are available.
 
+## Available programs
+
+The easiest way to see the available programs is to just run `rust-wiki help`. This will always be up to date with the code and for most programs should be sufficient to explain how to use it. However, some programs will take up a lot of space to explain exactly how to use them and every edge case you need to be aware of.
+
+- `stage-info`: see [stage-info](./stage-info.md)
+
 ## Running through Python
 Here's a simple Python program you can run. Assuming your files are structured like this:
 

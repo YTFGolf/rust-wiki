@@ -185,6 +185,7 @@ pub mod consts {
         initialise_type_map("37|G",                                     T::NewType),
         initialise_type_map("EoC|ItF|W|CotC|Space|Aku|DM|Z|Filibuster", T::MainChapters)
     ]});
+    // There should probably be something that prints off these strings for users.
 }
 use consts::{get_selector_type, StageType, StageTypeEnum, STAGE_TYPES};
 use regex::Regex;
