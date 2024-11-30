@@ -115,11 +115,18 @@ pub mod consts {
         RankingDojo,
         Tower,
         Challenge,
+
         UL,
         Catamin,
+        EocOutbreak,
+        ItfOutbreak,
+        CotcOutbreak,
+        Filibuster,
         Gauntlet,
         Enigma,
         CollabGauntlet,
+
+        AkuRealms,
         Behemoth,
         Labyrinth,
         ZL,
@@ -131,27 +138,33 @@ pub mod consts {
     #[rustfmt::skip]
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
-    pub const STAGE_TYPES: [StageType; 19] = [
-        initialise_stage_type("Stories of Legend",    000, "N",     true,  T::SoL),
-        initialise_stage_type("Event Stages",         001, "S",     true,  T::Event),
-        initialise_stage_type("Collaboration Stages", 002, "C",     true,  T::Collab),
-        initialise_stage_type("Main Chapters",        003, "main",  false, T::MainChapters),
-        // TODO split up main properly
-        initialise_stage_type("Extra Stages",         004, "RE|EX", false, T::Extra),
-        initialise_stage_type("Catclaw Dojo",         006, "T",     true,  T::Dojo),
-        initialise_stage_type("Towers",               007, "V",     true,  T::Tower),
-        initialise_stage_type("Ranking Dojo",         011, "R",     true,  T::RankingDojo),
-        initialise_stage_type("Challenge Battle",     012, "M",     true,  T::Challenge),
-        initialise_stage_type("Uncanny Legends",      013, "NA",    true,  T::UL),
-        initialise_stage_type("Catamin Stages",       014, "B",     true,  T::Catamin),
-        initialise_stage_type("Gauntlets",            024, "A",     true,  T::Gauntlet),
-        initialise_stage_type("Enigma Stages",        025, "H",     true,  T::Enigma),
-        initialise_stage_type("Collab Gauntlets",     027, "CA",    true,  T::CollabGauntlet),
-        initialise_stage_type("Behemoth Culling",     031, "Q",     true,  T::Behemoth),
-        initialise_stage_type("Labyrinth",            033, "L",     false, T::Labyrinth),
-        initialise_stage_type("Zero Legends",         034, "ND",    true,  T::ZL),
-        initialise_stage_type("Colosseum",            036, "SR",    true,  T::Colosseum),
-        initialise_stage_type("NewType",              037, "G",     false, T::NewType),
+    pub const STAGE_TYPES: [StageType; 24] = [
+        initialise_stage_type("Stories of Legend",            000, "N",     true,  T::SoL),
+        initialise_stage_type("Event Stages",                 001, "S",     true,  T::Event),
+        initialise_stage_type("Collaboration Stages",         002, "C",     true,  T::Collab),
+        initialise_stage_type("Main Chapters",                003, "main",  false, T::MainChapters),
+        initialise_stage_type("Extra Stages",                 004, "RE|EX", false, T::Extra),
+        initialise_stage_type("Catclaw Dojo",                 006, "T",     true,  T::Dojo),
+        initialise_stage_type("Towers",                       007, "V",     true,  T::Tower),
+        initialise_stage_type("Ranking Dojo",                 011, "R",     true,  T::RankingDojo),
+        initialise_stage_type("Challenge Battle",             012, "M",     true,  T::Challenge),
+
+        initialise_stage_type("Uncanny Legends",              013, "NA",    true,  T::UL),
+        initialise_stage_type("Catamin Stages",               014, "B",     true,  T::Catamin),
+        initialise_stage_type("Empire of Cats Outbreaks",     020, "",      false, T::EocOutbreak),
+        initialise_stage_type("Into the Future Outbreaks",    021, "",      false, T::ItfOutbreak),
+        initialise_stage_type("Cats of the Cosmos Outbreaks", 022, "",      false, T::CotcOutbreak),
+        initialise_stage_type("Filibuster Invasion",          022, "",      false, T::Filibuster),
+        initialise_stage_type("Gauntlets",                    024, "A",     true,  T::Gauntlet),
+        initialise_stage_type("Enigma Stages",                025, "H",     true,  T::Enigma),
+        initialise_stage_type("Collab Gauntlets",             027, "CA",    true,  T::CollabGauntlet),
+
+        initialise_stage_type("Aku Realms",                   030, "DM",    false, T::AkuRealms),
+        initialise_stage_type("Behemoth Culling",             031, "Q",     true,  T::Behemoth),
+        initialise_stage_type("Labyrinth",                    033, "L",     false, T::Labyrinth),
+        initialise_stage_type("Zero Legends",                 034, "ND",    true,  T::ZL),
+        initialise_stage_type("Colosseum",                    036, "SR",    true,  T::Colosseum),
+        initialise_stage_type("NewType",                      037, "G",     false, T::NewType),
     ];
 
     #[rustfmt::skip]
