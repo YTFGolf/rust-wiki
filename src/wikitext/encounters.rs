@@ -31,6 +31,8 @@ enum DisplayType {
     Flat,
     /// Standard `*map: stage` or `*map:\n**stage 1`.
     Normal,
+    /// Main chapters; require extra logic.
+    Custom,
     /// Format like Normal but give a warning to the user.
     Warn,
     /// Don't parse this at all.
@@ -53,13 +55,13 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
 
 #[rustfmt::skip]
 static SECTIONS: [EncountersSection; 18] = [
-    get_new_section("[[Empire of Cats]]",                                    D::Flat),
-    get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Flat),
-    get_new_section("[[Into the Future]]",                                   D::Flat),
-    get_new_section("[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]",    D::Flat),
-    get_new_section("[[Cats of the Cosmos]]",                                D::Flat),
-    get_new_section("[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]", D::Flat),
-    get_new_section("[[The Aku Realms]]",                                    D::Flat),
+    get_new_section("[[Empire of Cats]]",                                    D::Custom),
+    get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Custom),
+    get_new_section("[[Into the Future]]",                                   D::Custom),
+    get_new_section("[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]",    D::Custom),
+    get_new_section("[[Cats of the Cosmos]]",                                D::Custom),
+    get_new_section("[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]", D::Custom),
+    get_new_section("[[The Aku Realms]]",                                    D::Custom),
 
     get_new_section("[[Legend Stages#Stories of Legend|Stories of Legend]]", D::Flat),
     get_new_section("[[Legend Stages#Uncanny Legends|Uncanny Legends]]",     D::Flat),

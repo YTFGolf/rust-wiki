@@ -13,7 +13,7 @@ const WIKI_URL: &str = "https://battlecats.miraheze.org/wiki";
 
 /// (`file_name`, `page_name`)
 const FILES: [(&str, &str); 7] = [
-    ("StageNames.csv", "User:TheWWRNerdGuy/data/StageNames.csv"),
+    ("StageNames.csv", "User:TheWWRNerdGuy/data/StageNames2.csv"),
     (
         "EnemyLinkData.csv",
         "User:TheWWRNerdGuy/data/EnemyLinkData.csv",

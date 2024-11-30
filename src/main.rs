@@ -14,7 +14,11 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
     merge_config_and_args(config, args).into()
 }
 
-fn main() {
+fn test() {
+    if true {
+        return;
+    }
+
     let wiki_enemy_id = 703;
     let config: Config = get_user_config().unwrap().into();
 
@@ -23,6 +27,10 @@ fn main() {
     if true {
         std::process::exit(0)
     }
+}
+
+fn main() {
+    test();
 
     let cli = Cli::parse();
     let config = get_user_config();
