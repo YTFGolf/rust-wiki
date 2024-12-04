@@ -139,4 +139,21 @@ Other things:
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically
 */
-// test that every available STAGE_TYPE is supported
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::data::stage::raw::stage_metadata::consts::STAGE_TYPES;
+
+    #[test]
+    fn test_type_order() {
+        assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
+        for stype in STAGE_TYPES {
+            assert!(
+                TYPE_ORDER.contains(&stype.type_enum),
+                "Type order array does not contain variant {:?}",
+                stype.type_enum
+            );
+        }
+    }
+}
