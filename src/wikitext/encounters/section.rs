@@ -49,10 +49,9 @@ impl EncountersSection {
     /// Write the non-asterisked part of an encounter.
     pub fn fmt_encounter(&self, buf: &mut String, meta: &StageMeta, stage_name: &str, mags: &str) {
         match self.display_type {
-            D::Skip => return,
+            D::Skip => (),
             D::Warn | D::Normal | D::Flat => {
                 write!(buf, "{stage_name} {mags}").unwrap();
-                return;
             }
             D::Story => {
                 write!(
@@ -62,9 +61,8 @@ impl EncountersSection {
                     stage = meta.stage_num + 1
                 )
                 .unwrap();
-                return;
             }
-            D::Custom => return self.fmt_encounter_custom(buf, meta, stage_name, mags),
+            D::Custom => self.fmt_encounter_custom(buf, meta, stage_name, mags),
         }
     }
 }
