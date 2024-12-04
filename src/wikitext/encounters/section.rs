@@ -1,3 +1,5 @@
+//! Deals with sections of encounters.
+
 use crate::data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta};
 use std::fmt::Write;
 
@@ -128,12 +130,12 @@ mod tests {
     #[test]
     fn test_eoc_format() {
         let korea = StageMeta::new("eoc 0").unwrap();
-        const name: &str = "[[Korea (Empire of Cats)|Korea]]";
-        const mags: &str = "(100%)";
+        const NAME: &str = "[[Korea (Empire of Cats)|Korea]]";
+        const MAGS: &str = "(100%)";
 
         let section = get_section_heading("[[Empire of Cats]]");
         assert_eq!(
-            stringify(section, &korea, name, mags),
+            stringify(section, &korea, NAME, MAGS),
             "Stage 1: [[Korea (Empire of Cats)|Korea]]"
         );
     }

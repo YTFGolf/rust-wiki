@@ -15,9 +15,9 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
 }
 
 fn test() {
-    if true {
-        return;
-    }
+    // if true {
+    //     return;
+    // }
 
     let wiki_enemy_id = 703;
     let config: Config = get_user_config().unwrap().into();

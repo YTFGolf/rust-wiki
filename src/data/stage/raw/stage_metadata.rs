@@ -155,7 +155,7 @@ pub mod consts {
         // initialise_stage_type("Empire of Cats Outbreaks",     020, "",      false, T::EocOutbreak),
         // initialise_stage_type("Into the Future Outbreaks",    021, "",      false, T::ItfOutbreak),
         // initialise_stage_type("Cats of the Cosmos Outbreaks", 022, "",      false, T::CotcOutbreak),
-        initialise_stage_type("Outbreaks",                    003, "main",  false, T::Outbreaks),
+        initialise_stage_type("Outbreaks",                    999, "main",  false, T::Outbreaks),
 
         initialise_stage_type("Filibuster Invasion",          023, "",      false, T::Filibuster),
         initialise_stage_type("Gauntlets",                    024, "A",     true,  T::Gauntlet),
