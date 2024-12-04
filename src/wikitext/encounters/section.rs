@@ -68,4 +68,28 @@ mod tests {
     fn get_section_heading(heading: &'static str) -> &EncountersSection {
         SECTIONS.iter().find(|s| s.heading == heading).unwrap()
     }
+
+    fn stringify(
+        section: &EncountersSection,
+        meta: &StageMeta,
+        stage_name: &str,
+        mags: &str,
+    ) -> String {
+        let mut buf = String::from("");
+        section.fmt_encounter(&mut buf, meta, stage_name, mags);
+        buf
+    }
+
+    #[test]
+    fn test_eoc_format() {
+        let korea = StageMeta::new("eoc 0").unwrap();
+        const name: &str = "[[Korea (Empire of Cats)|Korea]]";
+        const mags: &str = "(100%)";
+
+        let section = get_section_heading("[[Empire of Cats]]");
+        assert_eq!(
+            stringify(section, &korea, name, mags),
+            "Stage 1: [[Korea (Empire of Cats)|Korea]]"
+        );
+    }
 }
