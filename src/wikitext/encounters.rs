@@ -56,6 +56,7 @@ fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
 }
 
 #[derive(Debug)]
+/// How you display the section.
 enum DisplayType {
     /// E.g. EoC: `*Stage x: name (mags)`.
     Flat,
@@ -72,10 +73,12 @@ type D = DisplayType;
 
 #[derive(Debug)]
 #[allow(dead_code)]
-struct EncountersSection {
+/// Section of unit encounters.
+pub struct EncountersSection {
     heading: &'static str,
     display_type: DisplayType,
 }
+
 const fn get_new_section(heading: &'static str, display_type: DisplayType) -> EncountersSection {
     EncountersSection {
         heading,
@@ -83,8 +86,13 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
     }
 }
 
+/// Removed stages. No point in being in [SECTIONS] because you need the stage
+/// name for it.
+pub const REMOVED_STAGES: EncountersSection =
+    get_new_section("[[:Category:Removed Content|Removed Stages]]", D::Normal);
 #[rustfmt::skip]
-static SECTIONS: [EncountersSection; 18] = [
+/// Available sections.
+pub static SECTIONS: [EncountersSection; 17] = [
     get_new_section("[[Empire of Cats]]",                                    D::Custom),
     get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Custom),
     get_new_section("[[Into the Future]]",                                   D::Custom),
@@ -102,7 +110,6 @@ static SECTIONS: [EncountersSection; 18] = [
     get_new_section("[[Collaboration Event Stages|Collaboration Stages]]",   D::Normal),
     get_new_section("[[Enigma Stages]]",                                     D::Normal),
     get_new_section("[[Catclaw Dojo]]",                                      D::Normal),
-    get_new_section("[[:Category:Removed Content|Removed Stages]]",          D::Normal),
 
     get_new_section("Extra Stages",                                          D::Warn),
     get_new_section("[[Catamin Stages]]",                                    D::Skip),
