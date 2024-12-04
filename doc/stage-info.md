@@ -9,7 +9,7 @@ Stage info uses "selectors" to work. For most stages, these will follow the form
 code mapnum stagenum
 ```
 
-For example, Earthshaker would be `sol 0 0`. Available selectors can be found in [stage_metadata](../src/data/stage/raw/stage_metadata.rs#L179) just below where it says `static STAGE_TYPE_MAP`, and are used in the `initialise_type_map` function. Each line uses pipe characters to separate them. For example,
+For example, Earthshaker would be `sol 0 0`. Available selectors can be found in [stage_metadata](../src/data/stage/raw/stage_metadata.rs#L182) just below where it says `static STAGE_TYPE_MAP`, and are used in the `initialise_type_map` function. Each line uses pipe characters to separate them. For example,
 ```rust
         initialise_type_map("SoL|0|N|RN",                               T::SoL),
 ```
@@ -45,8 +45,6 @@ Stage info requires the internal map and stage numbers to work. Unlike the selec
 If both of these methods fail, or give weird results, the last resort is to Ctrl+f on [StageNames.csv](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/data/StageNames.csv) (or your local copy) and look up the stage name.
 
 ## Main chapters
-> Note: There is a planned reform of stage info that would change how selectors work under the hood. This shouldn't affect basic usage of this program, although it could improve some selectors.
-
 Main chapter selectors are significantly different from normal stages.
 
 - EoC: `eoc {num}` - gives EoC stage `num + 1`. Moon works differently: `47` gives chapter 1, `49` gives chapter 2, and `50` gives chapter 3.
