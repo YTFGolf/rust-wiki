@@ -132,7 +132,7 @@ pub mod consts {
         Labyrinth,
         ZL,
         Colosseum,
-        NewType,
+        Championships,
     }
     use StageTypeEnum as T;
 
@@ -167,7 +167,7 @@ pub mod consts {
         initialise_stage_type("Labyrinth",                    033, "L",     false, T::Labyrinth),
         initialise_stage_type("Zero Legends",                 034, "ND",    true,  T::ZL),
         initialise_stage_type("Colosseum",                    036, "SR",    true,  T::Colosseum),
-        initialise_stage_type("NewType",                      037, "G",     false, T::NewType),
+        initialise_stage_type("Catclaw Championships",        037, "G",     false, T::Championships),
     ];
 
     #[rustfmt::skip]
@@ -204,7 +204,7 @@ pub mod consts {
         initialise_type_map("Labyrinth|33|L",           T::Labyrinth),
         initialise_type_map("ZL|34|ND|RND",             T::ZL),
         initialise_type_map("Colosseum|36|SR|RSR",      T::Colosseum),
-        initialise_type_map("37|G",                     T::NewType),
+        initialise_type_map("Championships|37|G",       T::Championships),
     ]});
     // There should probably be something that prints off these strings for users.
 }

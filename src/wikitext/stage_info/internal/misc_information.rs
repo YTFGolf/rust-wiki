@@ -51,7 +51,7 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
                 TemplateParameter::new("event-chapter", get_map_name(data.stage_map).to_string()),
             ]
         }
-        T::Dojo | T::RankingDojo | T::NewType => vec![TemplateParameter::new(
+        T::Dojo | T::RankingDojo | T::Championships => vec![TemplateParameter::new(
             "dojo-chapter",
             get_map_name(data.stage_map).to_string(),
         )],
@@ -252,7 +252,7 @@ mod tests {
             chapter(&昇段試験1, &data),
             vec![TemplateParameter::new(
                 "dojo-chapter",
-                "[[にゃんこ道検定#にゃんこ道検定 初段|にゃんこ道検定 初段]]".to_string()
+                "[[Catclaw Championships#Catclaw Championships Rank 1|Catclaw Championships Rank 1]]".to_string()
             )]
         );
     }
