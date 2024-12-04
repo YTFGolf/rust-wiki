@@ -11,12 +11,42 @@ use crate::{
     },
 };
 
+const TYPE_ORDER: [T; 22] = [
+    T::MainChapters,
+    T::Outbreaks,
+    T::Filibuster,
+    T::AkuRealms,
+    //
+    T::SoL,
+    T::UL,
+    T::ZL,
+    //
+    T::Challenge,
+    T::Event,
+    T::Tower,
+    T::Gauntlet,
+    T::Behemoth,
+    T::Colosseum,
+    //
+    T::Labyrinth,
+    T::Collab,
+    T::CollabGauntlet,
+    T::Enigma,
+    //
+    T::Dojo,
+    T::RankingDojo,
+    T::Championships,
+    //
+    T::Catamin,
+    T::Extra,
+];
+
 #[allow(clippy::zero_prefixed_literal)]
-fn enumerate_meta(meta: &StageMeta) -> u32 {
-    match meta.type_enum {
-        T::Extra => 001,
-        _ => 000,
-    }
+fn enumerate_meta(meta: &StageMeta) -> usize {
+    TYPE_ORDER
+        .iter()
+        .position(|e| *e == meta.type_enum)
+        .unwrap()
 }
 
 fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
@@ -109,3 +139,4 @@ Other things:
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically
 */
+// test that every available STAGE_TYPE is supported
