@@ -186,6 +186,19 @@ mod tests {
     }
 
     #[test]
+    fn test_cotc_format() {
+        let great_abyss = StageMeta::new("cotc 2 24").unwrap();
+        const NAME: &str = "[[Sighter's Star (Cats of the Cosmos)|Sighter's Star]]";
+        const MAGS: &str = "(150%)";
+
+        let section = get_section_heading("[[Cats of the Cosmos]]");
+        assert_eq!(
+            stringify(section, &great_abyss, NAME, MAGS),
+            "Stage 2-25: [[Sighter's Star (Cats of the Cosmos)|Sighter's Star]] (150%)"
+        );
+    }
+
+    #[test]
     fn test_aku_realms() {
         let korea = StageMeta::new("aku 0").unwrap();
         const NAME: &str = "[[Korea (Aku Realm)|Korea]]";
