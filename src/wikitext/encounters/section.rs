@@ -183,7 +183,7 @@ mod tests {
         const NAME: &str = "[[Torture Room]]";
         const MAGS: &str = "(400%)";
 
-        let section = get_section_heading("[[Stories of Legend]]");
+        let section = get_section_heading("[[Legend Stages#Stories of Legend|Stories of Legend]]");
         assert_eq!(
             stringify(section, &torture_room, NAME, MAGS),
             "Stage 22-4: [[Torture Room]] (400%)"
