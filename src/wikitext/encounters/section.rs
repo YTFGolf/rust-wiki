@@ -262,10 +262,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
 
         let section = get_section_heading("[[Special Events|Event Stages]]");
-        assert_eq!(
-            stringify(section, &xp_hard, name),
-            "[[Sweet XP (Hard)]]"
-        );
+        assert_eq!(stringify(section, &xp_hard, name), "[[Sweet XP (Hard)]]");
     }
 
     #[test]
@@ -302,15 +299,6 @@ mod tests {
             stringify(section, &idi_invasion_repr, name),
             "Stage 36-IN: [[The Face of God/Invasion|The Face of God Invasion]]"
         );
-    }
-
-    #[test]
-    fn always_appeared_at() {
-        let xp_hard = StageMeta::new("event 28 2").unwrap();
-        let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
-
-        let section = get_section_heading("[[Special Events|Event Stages]]");
-        assert_eq!(stringify(section, &xp_hard, name), "[[Sweet XP (Hard)]]");
     }
 
     // Encounter name filter or something
