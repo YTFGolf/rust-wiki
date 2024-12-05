@@ -283,6 +283,47 @@ mod tests {
     }
 
     #[test]
+    fn test_z_outbreak() {
+        let zoutbreak = StageMeta::new("z 3 43").unwrap();
+        let name = &STAGE_NAMES.from_meta(&zoutbreak).unwrap().name;
+        const MAGS: &str = "(600%)";
+
+        let section = get_section_heading("[[The Aku Realms]]");
+        assert_eq!(
+            stringify(section, &zoutbreak, name, MAGS),
+            "Stage 3-44: [[Las Vegas (Empire of Cats)|Las Vegas]] (600%)"
+        );
+    }
+
+    #[test]
+    fn test_aku_invasion() {
+        let name = &STAGE_NAMES.stage(4, 42, 0).unwrap().name;
+        let mount_aku_repr = StageMeta::new("aku 999").unwrap();
+
+        const MAGS: &str = "(400%)";
+
+        let section = get_section_heading("[[The Aku Realms]]");
+        assert_eq!(
+            stringify(section, &mount_aku_repr, name, MAGS),
+            "Stage 30-IN: [[Mount Aku (Aku Realm)/Invasion|Mount Aku Invasion]] (400%)"
+        );
+    }
+
+    #[test]
+    fn test_doron_invasion() {
+        let name = &STAGE_NAMES.stage(4, 68, 0).unwrap().name;
+        let idi_invasion_repr = StageMeta::new("sol 35 999").unwrap();
+
+        const MAGS: &str = "(400%)";
+
+        let section = get_section_heading("[[Legend Stages#Stories of Legend|Stories of Legend]]");
+        assert_eq!(
+            stringify(section, &idi_invasion_repr, name, MAGS),
+            "Stage 36-IN: [[The Face of God/Invasion|The Face of God Invasion]] (400%)"
+        );
+    }
+
+    #[test]
     fn always_appeared_at() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
@@ -294,8 +335,6 @@ mod tests {
             "[[Sweet XP (Hard)]]"
         );
     }
-
-    // Test invasions for Face of God and Mount Aku
 
     // Encounter name filter or something
     // Remove all catamin stages
