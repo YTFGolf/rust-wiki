@@ -89,7 +89,8 @@ impl EncountersSection {
             buf,
             "Stage {chap}-{stage}: {name} {mags}",
             chap = meta.map_num + 1,
-            stage = meta.stage_num + 1
+            stage = meta.stage_num + 1,
+            name = &name[..name.len() - " (Z3)".len()]
         )
         .unwrap();
     }
