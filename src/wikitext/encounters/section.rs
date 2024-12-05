@@ -102,13 +102,15 @@ impl EncountersSection {
                 write!(buf, "{stage_name}").unwrap();
             }
             D::Story => {
-                write!(
-                    buf,
-                    "Stage {chap}-{stage}: {stage_name}",
-                    chap = meta.map_num + 1,
-                    stage = meta.stage_num + 1
-                )
-                .unwrap();
+                write!(buf, "Stage {chap}-", chap = meta.map_num + 1).unwrap();
+
+                if meta.stage_num == 999 {
+                    *buf += "IN"
+                } else {
+                    write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
+                }
+
+                write!(buf, ": {stage_name}").unwrap();
             }
             D::Custom => Self::fmt_encounter_custom(buf, meta, stage_name),
         }
