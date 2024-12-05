@@ -35,7 +35,12 @@ impl EncountersSection {
             if meta.stage_num <= 46 {
                 write!(buf, "Stage {stage}: {name}", stage = meta.stage_num + 1).unwrap();
             } else {
-                todo!()
+                // can just use the chapter given in StageNames.csv
+                let pos = name.len() - 2;
+                let chap = &name[pos..];
+                let name = &name[..pos];
+
+                write!(buf, "Stage{chap}-48: {name}").unwrap();
             }
 
             return;
@@ -149,6 +154,8 @@ pub static SECTIONS: [EncountersSection; 17] = [
 mod tests {
     use super::*;
 
+    // TODO use StageNames to get these.
+
     /// Get an EncountersSection from its heading.
     fn get_section_heading(heading: &'static str) -> &EncountersSection {
         SECTIONS.iter().find(|s| s.heading == heading).unwrap()
@@ -181,7 +188,7 @@ mod tests {
     #[test]
     fn test_eoc_moon() {
         let moon_ch2 = StageMeta::new("eoc 49").unwrap();
-        const NAME: &str = "[[Moon (Empire of Cats)|Moon]]";
+        const NAME: &str = "[[Moon (Empire of Cats)|Moon]] 2";
         const MAGS: &str = "(150%)";
 
         let section = get_section_heading("[[Empire of Cats]]");
