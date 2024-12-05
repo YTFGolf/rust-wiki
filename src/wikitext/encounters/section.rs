@@ -126,7 +126,22 @@ impl EncountersSection {
     pub fn fmt_chapter(&self, buf: &mut String, chapter: Chapter) {
         match self.display_type {
             D::Skip => unreachable!(),
-            D::Normal | D::Warn => todo!(),
+            D::Normal | D::Warn => {
+                if chapter.stages.len() == 1 {
+                    write!(buf, "*{chap}: ", chap = chapter.chapter_name).unwrap();
+                    let stage = &chapter.stages[0];
+                    self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
+
+                    return;
+                }
+
+                write!(buf, "*{chap}:\n", chap = chapter.chapter_name).unwrap();
+                for stage in chapter.stages {
+                    *buf += "**";
+                    self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
+                    *buf += "\n"
+                }
+            }
             D::Story | D::Flat | D::Custom => {
                 // Custom is being done like this since it's only main chaps at
                 // the moment
