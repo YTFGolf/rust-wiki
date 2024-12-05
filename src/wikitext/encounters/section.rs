@@ -68,9 +68,22 @@ impl EncountersSection {
             return;
         }
 
-        // TODO check if mags is empty before formatting
+        if meta.type_enum != T::Outbreaks {
+            panic!("Type should be Outbreaks, not {:?}", meta.type_enum);
+        }
 
-        todo!()
+        // TODO check if mags is empty before formatting
+        // TODO something to do with the stage numbers and formatting if has
+        // loads of stages in eoc outbreaks. probably works if map num is set to
+        // 999.
+
+        write!(
+            buf,
+            "Stage {chap}-{stage}: {name} {mags}",
+            chap = meta.map_num + 1,
+            stage = meta.stage_num + 1
+        )
+        .unwrap();
     }
 
     /// Write the non-asterisked part of an encounter.
