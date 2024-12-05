@@ -185,7 +185,7 @@ mod tests {
     fn test_eoc_format() {
         let korea = StageMeta::new("eoc 0").unwrap();
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
-        const MAGS: &str = "(100%)";
+        const MAGS: &str = "";
 
         let section = get_section_heading("[[Empire of Cats]]");
         assert_eq!(
@@ -198,7 +198,7 @@ mod tests {
     fn test_eoc_moon() {
         let moon_ch2 = StageMeta::new("eoc 49").unwrap();
         let name = &STAGE_NAMES.from_meta(&moon_ch2).unwrap().name;
-        const MAGS: &str = "(150%)";
+        const MAGS: &str = "";
 
         let section = get_section_heading("[[Empire of Cats]]");
         assert_eq!(
