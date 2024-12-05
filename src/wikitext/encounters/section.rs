@@ -160,7 +160,7 @@ mod tests {
         let section = get_section_heading("[[Into the Future]]");
         assert_eq!(
             stringify(section, &great_abyss, NAME, MAGS),
-            "Stage 1-24: [[The Great Abyss (Into the Future)|The Great Abyss]]"
+            "Stage 1-24: [[The Great Abyss (Into the Future)|The Great Abyss]] (150%)"
         );
     }
 
@@ -203,7 +203,20 @@ mod tests {
         );
     }
 
-    // Test invasions for Face of God and Mount Aku
+    #[test]
+    fn always_appeared_at() {
+        let xp_hard = StageMeta::new("event 28 2").unwrap();
+        const NAME: &str = "[[Sweet XP (Hard)]]";
+        const MAGS: &str = "";
+
+        let section = get_section_heading("[[Special Events|Event Stages]]");
+        assert_eq!(
+            stringify(section, &xp_hard, NAME, MAGS),
+            "[[Sweet XP (Hard)]]"
+        );
+    }
+
+    // Test invasions for Face of God and Mount Aku and Filibuster
 
     // Encounter name filter or something
     // Remove all catamin stages
