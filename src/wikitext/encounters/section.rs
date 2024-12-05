@@ -55,7 +55,18 @@ impl EncountersSection {
             return;
         }
 
-        if meta.type_enum == T::AkuRealms {}
+        if meta.type_enum == T::AkuRealms {
+            *buf += "Stage ";
+            if meta.stage_num == 999 {
+                *buf += "30-IN"
+            } else {
+                write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
+            }
+
+            write!(buf, ": {name} {mags}").unwrap();
+
+            return;
+        }
 
         // TODO check if mags is empty before formatting
 
