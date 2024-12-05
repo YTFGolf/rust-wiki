@@ -1,7 +1,7 @@
 //! Module that gets information about stage names and continue stages.
 
 use crate::{
-    data::stage::raw::stage_metadata::consts::STAGE_TYPES,
+    data::stage::raw::stage_metadata::{consts::STAGE_TYPES, StageMeta},
     file_handler::{get_file_location, FileLocation},
 };
 use serde::Deserialize;
@@ -67,6 +67,10 @@ impl StagePageData {
     /// Get stage from type, map and stage id.
     pub fn stage(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&StageData> {
         self.stage_map(type_id, map_id)?.get(stage_id)
+    }
+    /// Get stage from meta object.
+    pub fn from_meta(&self, meta: &StageMeta) -> Option<&StageData> {
+        self.stage(meta.type_num, meta.map_num, meta.stage_num)
     }
 
     /// Get stage difficulty.
