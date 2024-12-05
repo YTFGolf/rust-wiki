@@ -41,13 +41,8 @@ impl EncountersSection {
             return;
         }
 
-        if meta.type_enum == T::MainChapters {
-            write!(
-                buf,
-                "Stage {chap}-",
-                chap = meta.map_num % 3 + 1,
-            )
-            .unwrap();
+        if matches!(meta.type_enum, T::MainChapters | T::Filibuster) {
+            write!(buf, "Stage {chap}-", chap = meta.map_num % 3 + 1,).unwrap();
 
             if meta.stage_num == 999 {
                 *buf += "IN"
@@ -187,14 +182,31 @@ mod tests {
 
     #[test]
     fn test_cotc_format() {
-        let great_abyss = StageMeta::new("cotc 2 24").unwrap();
+        let sighter_star = StageMeta::new("cotc 2 24").unwrap();
         const NAME: &str = "[[Sighter's Star (Cats of the Cosmos)|Sighter's Star]]";
         const MAGS: &str = "(150%)";
 
         let section = get_section_heading("[[Cats of the Cosmos]]");
         assert_eq!(
-            stringify(section, &great_abyss, NAME, MAGS),
+            stringify(section, &sighter_star, NAME, MAGS),
             "Stage 2-25: [[Sighter's Star (Cats of the Cosmos)|Sighter's Star]] (150%)"
+        );
+    }
+
+    #[test]
+    fn test_filibuster_format() {
+        let mut filibuster = StageMeta::new("filibuster").unwrap();
+        filibuster.map_num = 8;
+        filibuster.stage_num = 999;
+        // expected from ContinueStages
+
+        const NAME: &str = "[[Filibuster Invasion (Cats of the Cosmos)|Filibuster Invasion]]";
+        const MAGS: &str = "(1,500%)";
+
+        let section = get_section_heading("[[Cats of the Cosmos]]");
+        assert_eq!(
+            stringify(section, &filibuster, NAME, MAGS),
+            "Stage 3-IN: [[Filibuster Invasion (Cats of the Cosmos)|Filibuster Invasion]] (1,500%)"
         );
     }
 
