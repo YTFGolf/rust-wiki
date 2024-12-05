@@ -29,7 +29,7 @@ pub struct EncountersSection {
     display_type: DisplayType,
 }
 impl EncountersSection {
-    fn fmt_encounter_custom(buf: &mut String, meta: &StageMeta, name: &str, mags: &str) {
+    fn fmt_encounter_custom(buf: &mut String, meta: &StageMeta, name: &str) {
         // EoC
         if meta.type_enum == T::MainChapters && meta.map_num == 0 {
             if meta.stage_num <= 46 {
@@ -49,7 +49,7 @@ impl EncountersSection {
         if meta.type_enum == T::MainChapters {
             write!(
                 buf,
-                "Stage {chap}-{stage}: {name} {mags}",
+                "Stage {chap}-{stage}: {name}",
                 chap = meta.map_num % 3 + 1,
                 stage = meta.stage_num + 1,
                 name = &name[..name.len() - " (N1)".len()]
@@ -59,7 +59,7 @@ impl EncountersSection {
         }
 
         if meta.type_enum == T::Filibuster {
-            write!(buf, "Stage 3-IN: {name} {mags}",).unwrap();
+            write!(buf, "Stage 3-IN: {name}",).unwrap();
             return;
         }
 
@@ -71,7 +71,7 @@ impl EncountersSection {
                 write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
             }
 
-            write!(buf, ": {name} {mags}").unwrap();
+            write!(buf, ": {name}").unwrap();
 
             return;
         }
@@ -80,14 +80,13 @@ impl EncountersSection {
             panic!("Type should be Outbreaks, not {:?}", meta.type_enum);
         }
 
-        // TODO check if mags is empty before formatting
         // TODO something to do with the stage numbers and formatting if has
         // loads of stages in eoc outbreaks. probably works if map num is set to
         // 999.
 
         write!(
             buf,
-            "Stage {chap}-{stage}: {name} {mags}",
+            "Stage {chap}-{stage}: {name}",
             chap = meta.map_num + 1,
             stage = meta.stage_num + 1,
             name = &name[..name.len() - " (Z3)".len()]
@@ -96,22 +95,22 @@ impl EncountersSection {
     }
 
     /// Write the non-asterisked part of an encounter.
-    pub fn fmt_encounter(&self, buf: &mut String, meta: &StageMeta, stage_name: &str, mags: &str) {
+    pub fn fmt_encounter(&self, buf: &mut String, meta: &StageMeta, stage_name: &str) {
         match self.display_type {
             D::Skip => (),
             D::Warn | D::Normal | D::Flat => {
-                write!(buf, "{stage_name} {mags}").unwrap();
+                write!(buf, "{stage_name}").unwrap();
             }
             D::Story => {
                 write!(
                     buf,
-                    "Stage {chap}-{stage}: {stage_name} {mags}",
+                    "Stage {chap}-{stage}: {stage_name}",
                     chap = meta.map_num + 1,
                     stage = meta.stage_num + 1
                 )
                 .unwrap();
             }
-            D::Custom => Self::fmt_encounter_custom(buf, meta, stage_name, mags),
+            D::Custom => Self::fmt_encounter_custom(buf, meta, stage_name),
         }
     }
 }
@@ -164,14 +163,9 @@ mod tests {
         SECTIONS.iter().find(|s| s.heading == heading).unwrap()
     }
 
-    fn stringify(
-        section: &EncountersSection,
-        meta: &StageMeta,
-        stage_name: &str,
-        mags: &str,
-    ) -> String {
+    fn stringify(section: &EncountersSection, meta: &StageMeta, stage_name: &str) -> String {
         let mut buf = String::from("");
-        section.fmt_encounter(&mut buf, meta, stage_name, mags);
+        section.fmt_encounter(&mut buf, meta, stage_name);
         buf
     }
 
@@ -179,11 +173,10 @@ mod tests {
     fn test_eoc_format() {
         let korea = StageMeta::new("eoc 0").unwrap();
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
-        const MAGS: &str = "(100%)";
 
         let section = get_section_heading("[[Empire of Cats]]");
         assert_eq!(
-            stringify(section, &korea, name, MAGS),
+            stringify(section, &korea, name),
             "Stage 1: [[Korea (Empire of Cats)|Korea]]"
         );
     }
@@ -192,11 +185,10 @@ mod tests {
     fn test_eoc_moon() {
         let moon_ch2 = StageMeta::new("eoc 49").unwrap();
         let name = &STAGE_NAMES.from_meta(&moon_ch2).unwrap().name;
-        const MAGS: &str = "(150%)";
 
         let section = get_section_heading("[[Empire of Cats]]");
         assert_eq!(
-            stringify(section, &moon_ch2, name, MAGS),
+            stringify(section, &moon_ch2, name),
             "Stage 2-48: [[Moon (Empire of Cats)|Moon]]"
         );
     }
@@ -205,12 +197,11 @@ mod tests {
     fn test_itf_format() {
         let great_abyss = StageMeta::new("itf 1 23").unwrap();
         let name = &STAGE_NAMES.from_meta(&great_abyss).unwrap().name;
-        const MAGS: &str = "(150%)";
 
         let section = get_section_heading("[[Into the Future]]");
         assert_eq!(
-            stringify(section, &great_abyss, name, MAGS),
-            "Stage 1-24: [[The Great Abyss (Into the Future)|The Great Abyss]] (150%)"
+            stringify(section, &great_abyss, name),
+            "Stage 1-24: [[The Great Abyss (Into the Future)|The Great Abyss]]"
         );
     }
 
@@ -218,12 +209,11 @@ mod tests {
     fn test_cotc_format() {
         let sighter_star = StageMeta::new("cotc 2 24").unwrap();
         let name = &STAGE_NAMES.from_meta(&sighter_star).unwrap().name;
-        const MAGS: &str = "(150%)";
 
         let section = get_section_heading("[[Cats of the Cosmos]]");
         assert_eq!(
-            stringify(section, &sighter_star, name, MAGS),
-            "Stage 2-25: [[Sighter's Star (Cats of the Cosmos)|Sighter's Star]] (150%)"
+            stringify(section, &sighter_star, name),
+            "Stage 2-25: [[Sighter's Star (Cats of the Cosmos)|Sighter's Star]]"
         );
     }
 
@@ -235,12 +225,10 @@ mod tests {
         filibuster.stage_num = 999;
         // expected from ContinueStages
 
-        const MAGS: &str = "(1,500%)";
-
         let section = get_section_heading("[[Cats of the Cosmos]]");
         assert_eq!(
-            stringify(section, &filibuster, name, MAGS),
-            "Stage 3-IN: [[Filibuster Invasion (Cats of the Cosmos)|Filibuster Invasion]] (1,500%)"
+            stringify(section, &filibuster, name),
+            "Stage 3-IN: [[Filibuster Invasion (Cats of the Cosmos)|Filibuster Invasion]]"
         );
     }
 
@@ -248,12 +236,11 @@ mod tests {
     fn test_aku_realms() {
         let korea = StageMeta::new("aku 0").unwrap();
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
-        const MAGS: &str = "(100%)";
 
         let section = get_section_heading("[[The Aku Realms]]");
         assert_eq!(
-            stringify(section, &korea, name, MAGS),
-            "Stage 1: [[Korea (Aku Realm)|Korea]] (100%)"
+            stringify(section, &korea, name),
+            "Stage 1: [[Korea (Aku Realm)|Korea]]"
         );
     }
 
@@ -261,12 +248,11 @@ mod tests {
     fn test_story_format() {
         let torture_room = StageMeta::new("sol 21 3").unwrap();
         let name = &STAGE_NAMES.from_meta(&torture_room).unwrap().name;
-        const MAGS: &str = "(400%)";
 
         let section = get_section_heading("[[Legend Stages#Stories of Legend|Stories of Legend]]");
         assert_eq!(
-            stringify(section, &torture_room, name, MAGS),
-            "Stage 22-4: [[Torture Room]] (400%)"
+            stringify(section, &torture_room, name),
+            "Stage 22-4: [[Torture Room]]"
         );
     }
 
@@ -274,12 +260,11 @@ mod tests {
     fn test_normal_format() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
-        const MAGS: &str = "(400%)";
 
         let section = get_section_heading("[[Special Events|Event Stages]]");
         assert_eq!(
-            stringify(section, &xp_hard, name, MAGS),
-            "[[Sweet XP (Hard)]] (400%)"
+            stringify(section, &xp_hard, name),
+            "[[Sweet XP (Hard)]]"
         );
     }
 
@@ -287,12 +272,11 @@ mod tests {
     fn test_z_outbreak() {
         let zoutbreak = StageMeta::new("z 3 43").unwrap();
         let name = &STAGE_NAMES.from_meta(&zoutbreak).unwrap().name;
-        const MAGS: &str = "(600%)";
 
         let section = get_section_heading("[[The Aku Realms]]");
         assert_eq!(
-            stringify(section, &zoutbreak, name, MAGS),
-            "Stage 3-44: [[Las Vegas (Empire of Cats)|Las Vegas]] (600%)"
+            stringify(section, &zoutbreak, name),
+            "Stage 3-44: [[Las Vegas (Empire of Cats)|Las Vegas]]"
         );
     }
 
@@ -301,12 +285,10 @@ mod tests {
         let name = &STAGE_NAMES.stage(4, 42, 0).unwrap().name;
         let mount_aku_repr = StageMeta::new("aku 999").unwrap();
 
-        const MAGS: &str = "(400%)";
-
         let section = get_section_heading("[[The Aku Realms]]");
         assert_eq!(
-            stringify(section, &mount_aku_repr, name, MAGS),
-            "Stage 30-IN: [[Mount Aku (Aku Realm)/Invasion|Mount Aku Invasion]] (400%)"
+            stringify(section, &mount_aku_repr, name),
+            "Stage 30-IN: [[Mount Aku (Aku Realm)/Invasion|Mount Aku Invasion]]"
         );
     }
 
@@ -315,12 +297,10 @@ mod tests {
         let name = &STAGE_NAMES.stage(4, 68, 0).unwrap().name;
         let idi_invasion_repr = StageMeta::new("sol 35 999").unwrap();
 
-        const MAGS: &str = "(400%)";
-
         let section = get_section_heading("[[Legend Stages#Stories of Legend|Stories of Legend]]");
         assert_eq!(
-            stringify(section, &idi_invasion_repr, name, MAGS),
-            "Stage 36-IN: [[The Face of God/Invasion|The Face of God Invasion]] (400%)"
+            stringify(section, &idi_invasion_repr, name),
+            "Stage 36-IN: [[The Face of God/Invasion|The Face of God Invasion]]"
         );
     }
 
@@ -328,13 +308,9 @@ mod tests {
     fn always_appeared_at() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
-        const MAGS: &str = "";
 
         let section = get_section_heading("[[Special Events|Event Stages]]");
-        assert_eq!(
-            stringify(section, &xp_hard, name, MAGS),
-            "[[Sweet XP (Hard)]]"
-        );
+        assert_eq!(stringify(section, &xp_hard, name), "[[Sweet XP (Hard)]]");
     }
 
     // Encounter name filter or something
