@@ -137,4 +137,78 @@ mod tests {
             "Stage 1: [[Korea (Empire of Cats)|Korea]]"
         );
     }
+
+    #[test]
+    fn test_eoc_moon() {
+        let moon_ch2 = StageMeta::new("eoc 49").unwrap();
+        const NAME: &str = "[[Moon (Empire of Cats)|Moon]]";
+        const MAGS: &str = "(150%)";
+
+        let section = get_section_heading("[[Empire of Cats]]");
+        assert_eq!(
+            stringify(section, &moon_ch2, NAME, MAGS),
+            "Stage 2-48: [[Moon (Empire of Cats)|Moon]]"
+        );
+    }
+
+    #[test]
+    fn test_itf_format() {
+        let great_abyss = StageMeta::new("itf 1 23").unwrap();
+        const NAME: &str = "[[The Great Abyss (Into the Future)|The Great Abyss]]";
+        const MAGS: &str = "(150%)";
+
+        let section = get_section_heading("[[Into the Future]]");
+        assert_eq!(
+            stringify(section, &great_abyss, NAME, MAGS),
+            "Stage 1-24: [[The Great Abyss (Into the Future)|The Great Abyss]]"
+        );
+    }
+
+    #[test]
+    fn test_aku_realms() {
+        let korea = StageMeta::new("aku 0").unwrap();
+        const NAME: &str = "[[Korea (Aku Realm)|Korea]]";
+        const MAGS: &str = "(100%)";
+
+        let section = get_section_heading("[[The Aku Realms]]");
+        assert_eq!(
+            stringify(section, &korea, NAME, MAGS),
+            "Stage 1: [[Korea (Aku Realm)|Korea]] (100%)"
+        );
+    }
+
+    #[test]
+    fn test_story_format() {
+        let torture_room = StageMeta::new("sol 21 3").unwrap();
+        const NAME: &str = "[[Torture Room]]";
+        const MAGS: &str = "(400%)";
+
+        let section = get_section_heading("[[Stories of Legend]]");
+        assert_eq!(
+            stringify(section, &torture_room, NAME, MAGS),
+            "Stage 22-4: [[Torture Room]] (400%)"
+        );
+    }
+
+    #[test]
+    fn test_normal_format() {
+        let xp_hard = StageMeta::new("event 28 2").unwrap();
+        const NAME: &str = "[[Sweet XP (Hard)]]";
+        const MAGS: &str = "(400%)";
+
+        let section = get_section_heading("[[Special Events|Event Stages]]");
+        assert_eq!(
+            stringify(section, &xp_hard, NAME, MAGS),
+            "[[Sweet XP (Hard)]] (400%)"
+        );
+    }
+
+    // Test invasions for Face of God and Mount Aku
+
+    // Encounter name filter or something
+    // Remove all catamin stages
+    // move removed to section
+    // eliminate unlinked stages and warn
+    // move extra stages into correct section
+    // remove princess punt eoc stages
 }
