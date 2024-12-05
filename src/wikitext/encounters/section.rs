@@ -29,7 +29,7 @@ pub struct EncountersSection {
     display_type: DisplayType,
 }
 impl EncountersSection {
-    fn fmt_encounter_custom(&self, buf: &mut String, meta: &StageMeta, name: &str, _mags: &str) {
+    fn fmt_encounter_custom(buf: &mut String, meta: &StageMeta, name: &str, mags: &str) {
         // EoC
         if meta.type_enum == T::MainChapters && meta.map_num == 0 {
             if meta.stage_num <= 46 {
@@ -41,7 +41,28 @@ impl EncountersSection {
             return;
         }
 
-        // Outbreaks need to check if mags is empty before formatting
+        if meta.type_enum == T::MainChapters {
+            write!(
+                buf,
+                "Stage {chap}-",
+                chap = meta.map_num % 3 + 1,
+            )
+            .unwrap();
+
+            if meta.stage_num == 999 {
+                *buf += "IN"
+            } else {
+                write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
+            }
+
+            write!(buf, ": {name} {mags}").unwrap();
+
+            return;
+        }
+
+        if meta.type_enum == T::AkuRealms {}
+
+        // TODO check if mags is empty before formatting
 
         todo!()
     }
@@ -62,7 +83,7 @@ impl EncountersSection {
                 )
                 .unwrap();
             }
-            D::Custom => self.fmt_encounter_custom(buf, meta, stage_name, mags),
+            D::Custom => Self::fmt_encounter_custom(buf, meta, stage_name, mags),
         }
     }
 }
