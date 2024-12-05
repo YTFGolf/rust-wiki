@@ -98,7 +98,7 @@ impl EncountersSection {
     /// Write the non-asterisked part of an encounter.
     pub fn fmt_encounter(&self, buf: &mut String, meta: &StageMeta, stage_name: &str, mags: &str) {
         match self.display_type {
-            D::Skip => (),
+            D::Skip => unreachable!(),
             D::Warn | D::Normal | D::Flat => {
                 write!(buf, "{stage_name}").unwrap();
             }
@@ -124,7 +124,21 @@ impl EncountersSection {
 
     /// Write a chapter of encounters.
     pub fn fmt_chapter(&self, buf: &mut String, chapter: Chapter) {
-        todo!("{buf:?} {:?}", chapter.chapter_name);
+        match self.display_type {
+            D::Skip => unreachable!(),
+            D::Normal | D::Warn => todo!(),
+            D::Story | D::Flat | D::Custom => {
+                // Custom is being done like this since it's only main chaps at
+                // the moment
+                for stage in chapter.stages {
+                    *buf += "*";
+                    self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
+                    *buf += "\n"
+                }
+            }
+        }
+
+        // todo!("{buf:?} {:?}", chapter.chapter_name);
     }
 }
 
