@@ -46,17 +46,20 @@ impl EncountersSection {
             return;
         }
 
-        if matches!(meta.type_enum, T::MainChapters | T::Filibuster) {
-            write!(buf, "Stage {chap}-", chap = meta.map_num % 3 + 1,).unwrap();
+        if meta.type_enum == T::MainChapters {
+            write!(
+                buf,
+                "Stage {chap}-{stage}: {name} {mags}",
+                chap = meta.map_num % 3 + 1,
+                stage = meta.stage_num + 1,
+                name = &name[..name.len() - " (N1)".len()]
+            )
+            .unwrap();
+            return;
+        }
 
-            if meta.stage_num == 999 {
-                *buf += "IN"
-            } else {
-                write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
-            }
-
-            write!(buf, ": {name} {mags}").unwrap();
-
+        if meta.type_enum == T::Filibuster {
+            write!(buf, "Stage 3-IN: {name} {mags}",).unwrap();
             return;
         }
 
