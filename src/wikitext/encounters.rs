@@ -1,5 +1,6 @@
 //! Write out the encounters of an enemy.
 
+pub mod chapter;
 pub mod section;
 use section::SECTIONS;
 

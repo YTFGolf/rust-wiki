@@ -1,5 +1,6 @@
 //! Deals with sections of encounters.
 
+use super::chapter::Chapter;
 use crate::data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta};
 use std::fmt::Write;
 
@@ -115,10 +116,15 @@ impl EncountersSection {
             D::Custom => Self::fmt_encounter_custom(buf, meta, stage_name),
         }
 
-        if !(mags.is_empty()){
+        if !(mags.is_empty()) {
             *buf += " ";
             *buf += mags;
         }
+    }
+
+    /// Write a chapter of encounters.
+    pub fn fmt_chapter(&self, buf: &mut String, chapter: Chapter) {
+        todo!("{buf:?} {:?}", chapter.chapter_name);
     }
 }
 
