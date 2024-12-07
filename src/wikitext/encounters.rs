@@ -12,8 +12,7 @@ use crate::{
         },
     },
 };
-use chapter::{Chapter, Stage};
-use section::{REMOVED_STAGES, SECTIONS};
+use section::SECTIONS;
 
 const TYPE_ORDER: [T; 22] = [
     T::MainChapters,
@@ -61,19 +60,6 @@ fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
 
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
-    let mut buf = String::from("");
-    REMOVED_STAGES.fmt_chapter(
-        &mut buf,
-        Chapter::new(
-            "Chapter",
-            &[
-                Stage::new("Stage 1", "(100%)", &StageMeta::new("event 0 0").unwrap()),
-                Stage::new("Stage 2", "", &StageMeta::new("event 0 1").unwrap()),
-            ],
-        ),
-    );
-    println!("{buf}");
-
     let abs_enemy_id = wiki_id + 2;
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);

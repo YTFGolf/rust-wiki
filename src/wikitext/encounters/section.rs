@@ -201,7 +201,7 @@ pub static SECTIONS: [EncountersSection; 17] = [
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::wikitext::data_files::stage_page_data::STAGE_NAMES;
+    use crate::wikitext::{data_files::stage_page_data::STAGE_NAMES, encounters::chapter::Stage};
 
     /// Get an EncountersSection from its heading.
     fn get_section_heading(heading: &'static str) -> &EncountersSection {
@@ -220,7 +220,7 @@ mod tests {
     }
 
     #[test]
-    fn test_eoc_format() {
+    fn single_eoc_format() {
         let korea = StageMeta::new("eoc 0").unwrap();
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
         const MAGS: &str = "";
@@ -233,7 +233,7 @@ mod tests {
     }
 
     #[test]
-    fn test_eoc_moon() {
+    fn single_eoc_moon() {
         let moon_ch2 = StageMeta::new("eoc 49").unwrap();
         let name = &STAGE_NAMES.from_meta(&moon_ch2).unwrap().name;
         const MAGS: &str = "";
@@ -246,7 +246,7 @@ mod tests {
     }
 
     #[test]
-    fn test_itf_format() {
+    fn single_itf_format() {
         let great_abyss = StageMeta::new("itf 1 23").unwrap();
         let name = &STAGE_NAMES.from_meta(&great_abyss).unwrap().name;
         const MAGS: &str = "(150%)";
@@ -259,7 +259,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cotc_format() {
+    fn single_cotc_format() {
         let sighter_star = StageMeta::new("cotc 2 24").unwrap();
         let name = &STAGE_NAMES.from_meta(&sighter_star).unwrap().name;
         const MAGS: &str = "(150%)";
@@ -272,7 +272,7 @@ mod tests {
     }
 
     #[test]
-    fn test_filibuster_format() {
+    fn single_filibuster_format() {
         let mut filibuster = StageMeta::new("filibuster").unwrap();
         let name = &STAGE_NAMES.from_meta(&filibuster).unwrap().name;
         filibuster.map_num = 8;
@@ -289,7 +289,7 @@ mod tests {
     }
 
     #[test]
-    fn test_aku_realms() {
+    fn single_aku_realms() {
         let korea = StageMeta::new("aku 0").unwrap();
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
         const MAGS: &str = "(100%)";
@@ -302,7 +302,7 @@ mod tests {
     }
 
     #[test]
-    fn test_story_format() {
+    fn single_story_format() {
         let torture_room = StageMeta::new("sol 21 3").unwrap();
         let name = &STAGE_NAMES.from_meta(&torture_room).unwrap().name;
         const MAGS: &str = "(400%)";
@@ -315,7 +315,7 @@ mod tests {
     }
 
     #[test]
-    fn test_normal_format() {
+    fn single_normal_format() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "(400%)";
@@ -328,7 +328,7 @@ mod tests {
     }
 
     #[test]
-    fn test_z_outbreak() {
+    fn single_z_outbreak() {
         let zoutbreak = StageMeta::new("z 3 43").unwrap();
         let name = &STAGE_NAMES.from_meta(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
@@ -341,7 +341,7 @@ mod tests {
     }
 
     #[test]
-    fn test_aku_invasion() {
+    fn single_aku_invasion() {
         let name = &STAGE_NAMES.stage(4, 42, 0).unwrap().name;
         let mount_aku_repr = StageMeta::new("aku 999").unwrap();
 
@@ -355,7 +355,7 @@ mod tests {
     }
 
     #[test]
-    fn test_doron_invasion() {
+    fn single_doron_invasion() {
         let name = &STAGE_NAMES.stage(4, 68, 0).unwrap().name;
         let idi_invasion_repr = StageMeta::new("sol 35 999").unwrap();
 
@@ -369,7 +369,7 @@ mod tests {
     }
 
     #[test]
-    fn always_appeared_at() {
+    fn single_always_appeared_at() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "";
@@ -378,6 +378,35 @@ mod tests {
         assert_eq!(
             stringify(section, &xp_hard, name, MAGS),
             "[[Sweet XP (Hard)]]"
+        );
+    }
+
+    #[test]
+    fn chapter_normal() {
+        let mut buf = String::from("");
+        let section = get_section_heading("[[Special Events|Event Stages]]");
+        section.fmt_chapter(
+            &mut buf,
+            Chapter::new(
+                "Chapter",
+                &[
+                    Stage::new("Stage 1", "(100%)", &StageMeta::new("event 0 0").unwrap()),
+                    Stage::new("Stage 2", "", &StageMeta::new("event 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 3",
+                        "(1,500% HP/2% AP)",
+                        &StageMeta::new("event 0 2").unwrap(),
+                    ),
+                ],
+            ),
+        );
+
+        assert_eq!(
+            buf,
+            "*Chapter:\n\
+            **Stage 1 (100%)\n\
+            **Stage 2\n\
+            **Stage 3 (1,500% HP/2% AP)"
         );
     }
 
