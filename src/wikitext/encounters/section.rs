@@ -25,6 +25,10 @@ type D = DisplayType;
 #[derive(Debug)]
 #[allow(dead_code)]
 /// Section of unit encounters.
+///
+/// Methods on this object are purely for formatting. Processes such as
+/// filtering, determining what `mags` should be, and finding the names of
+/// stages is assumed to already be done before any methods are called.
 pub struct EncountersSection {
     heading: &'static str,
     display_type: DisplayType,
@@ -124,6 +128,7 @@ impl EncountersSection {
 
     /// Write a chapter of encounters.
     pub fn fmt_chapter(&self, buf: &mut String, chapter: Chapter) {
+        assert!(chapter.stages.len() > 0);
         match self.display_type {
             D::Skip => unreachable!(),
             D::Normal | D::Warn => {
@@ -135,11 +140,10 @@ impl EncountersSection {
                     return;
                 }
 
-                write!(buf, "*{chap}:\n", chap = chapter.chapter_name).unwrap();
+                write!(buf, "*{chap}:", chap = chapter.chapter_name).unwrap();
                 for stage in chapter.stages {
-                    *buf += "**";
+                    *buf += "\n**";
                     self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
-                    *buf += "\n"
                 }
             }
             D::Story | D::Flat | D::Custom => {
@@ -150,10 +154,9 @@ impl EncountersSection {
                     self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
                     *buf += "\n"
                 }
+                buf.pop();
             }
         }
-
-        // todo!("{buf:?} {:?}", chapter.chapter_name);
     }
 }
 
