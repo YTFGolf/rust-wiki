@@ -2,6 +2,7 @@
 
 pub mod chapter;
 pub mod section;
+use section::SectionRef;
 use crate::{
     config::Config,
     data::{
@@ -12,7 +13,6 @@ use crate::{
         },
     },
 };
-use section::SECTIONS;
 
 const TYPE_ORDER: [T; 22] = [
     T::MainChapters,
@@ -64,9 +64,39 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
 
+    println!("{:?}", SectionRef::AkuRealms.get_section());
+
+// let sections_map : [(&'static str, )]
+    /*
+    - [x] get
+    - [x] sort
+    - [ ] iterate
+      - [ ] find section
+        - [ ] if extra use continuestages to find actual place
+        - [ ] if Skip then skip
+      - [ ] add to section list
+    - [ ] If any warn stages then warn
+    - [ ] Go through each section
+      - [ ] find stage name, filter/move to removed stages
+      - [ ] for each chapter:
+        - [ ] remove dupes
+        - [ ] get mags
+        - [ ] format section
+
+    ## extensions
+    - [ ] analyse all stages to see if has same mag in all
+    - [ ] analyse eoc outbreaks
+    */
+
     println!("{:?}", encounters);
-    println!("{SECTIONS:?}");
 }
+
+// Encounter name filter or something
+// Remove all catamin stages
+// move removed to section
+// eliminate unlinked stages and warn
+// move extra stages into correct section
+// remove princess punt eoc stages
 
 /*
 # Flow
@@ -75,7 +105,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     - Order is done by a Rust sort
     - Extra stages will be done with... something idk. Setting to 999 should work
       since if a stage is an earlier continuation then it would just appear before
-      the later ones. Would also fix like proving ground continuations.
+      the later ones.
 - Loop through sections:
     - Get stage names for each stage
     - Display stage names. Filter out if doesn't begin with '['.

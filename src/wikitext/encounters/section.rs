@@ -167,13 +167,10 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
     }
 }
 
-/// Removed stages. No point in being in [SECTIONS] because you need the stage
-/// name for it.
-pub const REMOVED_STAGES: EncountersSection =
-    get_new_section("[[:Category:Removed Content|Removed Stages]]", D::Normal);
 #[rustfmt::skip]
 /// Available sections.
-pub static SECTIONS: [EncountersSection; 17] = [
+// Don't update without updating SectionRef and the first test.
+ const SECTIONS: [EncountersSection; 18] = [
     get_new_section("[[Empire of Cats]]",                                    D::Custom),
     get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Custom),
     get_new_section("[[Into the Future]]",                                   D::Custom),
@@ -191,10 +188,43 @@ pub static SECTIONS: [EncountersSection; 17] = [
     get_new_section("[[Collaboration Event Stages|Collaboration Stages]]",   D::Normal),
     get_new_section("[[Enigma Stages]]",                                     D::Normal),
     get_new_section("[[Catclaw Dojo]]",                                      D::Normal),
+    get_new_section("[[:Category:Removed Content|Removed Stages]]",          D::Normal),
 
     get_new_section("Extra Stages",                                          D::Warn),
     get_new_section("[[Catamin Stages]]",                                    D::Skip),
 ];
+
+#[allow(missing_docs)]
+/// Enum reference to a section.
+pub enum SectionRef {
+    EoC,
+    EoCOutbreak,
+    ItF,
+    ItFOutbreak,
+    CotC,
+    CotCOutbreak,
+    AkuRealms,
+    //
+    SoL,
+    UL,
+    ZL,
+    //
+    Event,
+    Labyrinth,
+    Collab,
+    Enigma,
+    Dojo,
+    Removed,
+    //
+    Extra,
+    Catamin,
+}
+impl SectionRef {
+    /// Get the defined section.
+    pub const fn get_section(self) -> &'static EncountersSection {
+        &SECTIONS[self as usize]
+    }
+}
 
 // from stage meta get heading
 // removed is done just by string search
@@ -202,6 +232,67 @@ pub static SECTIONS: [EncountersSection; 17] = [
 mod tests {
     use super::*;
     use crate::wikitext::{data_files::stage_page_data::STAGE_NAMES, encounters::chapter::Stage};
+
+    #[test]
+    fn assert_section_ref() {
+        assert_eq!(SectionRef::EoC.get_section().heading, "[[Empire of Cats]]");
+        assert_eq!(
+            SectionRef::EoCOutbreak.get_section().heading,
+            "[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]"
+        );
+        assert_eq!(SectionRef::ItF.get_section().heading, "[[Into the Future]]");
+        assert_eq!(
+            SectionRef::ItFOutbreak.get_section().heading,
+            "[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]"
+        );
+        assert_eq!(
+            SectionRef::CotC.get_section().heading,
+            "[[Cats of the Cosmos]]"
+        );
+        assert_eq!(
+            SectionRef::CotCOutbreak.get_section().heading,
+            "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]"
+        );
+        assert_eq!(
+            SectionRef::AkuRealms.get_section().heading,
+            "[[The Aku Realms]]"
+        );
+        assert_eq!(
+            SectionRef::SoL.get_section().heading,
+            "[[Legend Stages#Stories of Legend|Stories of Legend]]"
+        );
+        assert_eq!(
+            SectionRef::UL.get_section().heading,
+            "[[Legend Stages#Uncanny Legends|Uncanny Legends]]"
+        );
+        assert_eq!(
+            SectionRef::ZL.get_section().heading,
+            "[[Legend Stages#Zero Legends|Zero Legends]]"
+        );
+        assert_eq!(
+            SectionRef::Event.get_section().heading,
+            "[[Special Events|Event Stages]]"
+        );
+        assert_eq!(
+            SectionRef::Labyrinth.get_section().heading,
+            "[[Underground Labyrinth]]"
+        );
+        assert_eq!(
+            SectionRef::Collab.get_section().heading,
+            "[[Collaboration Event Stages|Collaboration Stages]]"
+        );
+        assert_eq!(SectionRef::Enigma.get_section().heading, "[[Enigma Stages]]");
+        assert_eq!(SectionRef::Dojo.get_section().heading, "[[Catclaw Dojo]]");
+        assert_eq!(
+            SectionRef::Removed.get_section().heading,
+            "[[:Category:Removed Content|Removed Stages]]"
+        );
+        assert_eq!(SectionRef::Extra.get_section().heading, "Extra Stages");
+        assert_eq!(
+            SectionRef::Catamin.get_section().heading,
+            "[[Catamin Stages]]"
+        );
+    }
 
     /// Get an EncountersSection from its heading.
     fn get_section_heading(heading: &'static str) -> &EncountersSection {
@@ -465,11 +556,4 @@ mod tests {
             *Stage 1-3: Stage 3 (1,500% HP/2% AP)"
         );
     }
-
-    // Encounter name filter or something
-    // Remove all catamin stages
-    // move removed to section
-    // eliminate unlinked stages and warn
-    // move extra stages into correct section
-    // remove princess punt eoc stages
 }
