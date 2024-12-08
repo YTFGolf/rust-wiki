@@ -410,6 +410,62 @@ mod tests {
         );
     }
 
+    #[test]
+    fn chapter_flat() {
+        let mut buf = String::from("");
+        let section = get_section_heading("[[Underground Labyrinth]]");
+        section.fmt_chapter(
+            &mut buf,
+            Chapter::new(
+                "Chapter",
+                &[
+                    Stage::new("Stage 1", "(100%)", &StageMeta::new("l 0 0").unwrap()),
+                    Stage::new("Stage 2", "", &StageMeta::new("l 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 3",
+                        "(1,500% HP/2% AP)",
+                        &StageMeta::new("l 0 2").unwrap(),
+                    ),
+                ],
+            ),
+        );
+
+        assert_eq!(
+            buf,
+            "*Stage 1 (100%)\n\
+            *Stage 2\n\
+            *Stage 3 (1,500% HP/2% AP)"
+        );
+    }
+
+    #[test]
+    fn chapter_story() {
+        let mut buf = String::from("");
+        let section = get_section_heading("[[Legend Stages#Stories of Legend|Stories of Legend]]");
+        section.fmt_chapter(
+            &mut buf,
+            Chapter::new(
+                "Chapter",
+                &[
+                    Stage::new("Stage 1", "(100%)", &StageMeta::new("sol 0 0").unwrap()),
+                    Stage::new("Stage 2", "", &StageMeta::new("sol 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 3",
+                        "(1,500% HP/2% AP)",
+                        &StageMeta::new("sol 0 2").unwrap(),
+                    ),
+                ],
+            ),
+        );
+
+        assert_eq!(
+            buf,
+            "*Stage 1-1: Stage 1 (100%)\n\
+            *Stage 1-2: Stage 2\n\
+            *Stage 1-3: Stage 3 (1,500% HP/2% AP)"
+        );
+    }
+
     // Encounter name filter or something
     // Remove all catamin stages
     // move removed to section
