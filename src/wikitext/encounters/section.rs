@@ -221,7 +221,7 @@ pub enum SectionRef {
 }
 impl SectionRef {
     /// Get the defined section.
-    pub const fn get_section(self) -> &'static EncountersSection {
+    pub const fn section(self) -> &'static EncountersSection {
         &SECTIONS[self as usize]
     }
 }
@@ -236,54 +236,54 @@ mod tests {
 
     #[test]
     fn assert_section_ref() {
-        assert_eq!(Ref::EoC.get_section().heading, "[[Empire of Cats]]");
+        assert_eq!(Ref::EoC.section().heading, "[[Empire of Cats]]");
         assert_eq!(
-            Ref::EoCOutbreak.get_section().heading,
+            Ref::EoCOutbreak.section().heading,
             "[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]"
         );
-        assert_eq!(Ref::ItF.get_section().heading, "[[Into the Future]]");
+        assert_eq!(Ref::ItF.section().heading, "[[Into the Future]]");
         assert_eq!(
-            Ref::ItFOutbreak.get_section().heading,
+            Ref::ItFOutbreak.section().heading,
             "[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]"
         );
-        assert_eq!(Ref::CotC.get_section().heading, "[[Cats of the Cosmos]]");
+        assert_eq!(Ref::CotC.section().heading, "[[Cats of the Cosmos]]");
         assert_eq!(
-            Ref::CotCOutbreak.get_section().heading,
+            Ref::CotCOutbreak.section().heading,
             "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]"
         );
-        assert_eq!(Ref::AkuRealms.get_section().heading, "[[The Aku Realms]]");
+        assert_eq!(Ref::AkuRealms.section().heading, "[[The Aku Realms]]");
         assert_eq!(
-            Ref::SoL.get_section().heading,
+            Ref::SoL.section().heading,
             "[[Legend Stages#Stories of Legend|Stories of Legend]]"
         );
         assert_eq!(
-            Ref::UL.get_section().heading,
+            Ref::UL.section().heading,
             "[[Legend Stages#Uncanny Legends|Uncanny Legends]]"
         );
         assert_eq!(
-            Ref::ZL.get_section().heading,
+            Ref::ZL.section().heading,
             "[[Legend Stages#Zero Legends|Zero Legends]]"
         );
         assert_eq!(
-            Ref::Event.get_section().heading,
+            Ref::Event.section().heading,
             "[[Special Events|Event Stages]]"
         );
         assert_eq!(
-            Ref::Labyrinth.get_section().heading,
+            Ref::Labyrinth.section().heading,
             "[[Underground Labyrinth]]"
         );
         assert_eq!(
-            Ref::Collab.get_section().heading,
+            Ref::Collab.section().heading,
             "[[Collaboration Event Stages|Collaboration Stages]]"
         );
-        assert_eq!(Ref::Enigma.get_section().heading, "[[Enigma Stages]]");
-        assert_eq!(Ref::Dojo.get_section().heading, "[[Catclaw Dojo]]");
+        assert_eq!(Ref::Enigma.section().heading, "[[Enigma Stages]]");
+        assert_eq!(Ref::Dojo.section().heading, "[[Catclaw Dojo]]");
         assert_eq!(
-            Ref::Removed.get_section().heading,
+            Ref::Removed.section().heading,
             "[[:Category:Removed Content|Removed Stages]]"
         );
-        assert_eq!(Ref::Extra.get_section().heading, "Extra Stages");
-        assert_eq!(Ref::Catamin.get_section().heading, "[[Catamin Stages]]");
+        assert_eq!(Ref::Extra.section().heading, "Extra Stages");
+        assert_eq!(Ref::Catamin.section().heading, "[[Catamin Stages]]");
     }
 
     fn stringify(
@@ -303,7 +303,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
         const MAGS: &str = "";
 
-        let section = Ref::EoC.get_section();
+        let section = Ref::EoC.section();
         assert_eq!(
             stringify(section, &korea, name, MAGS),
             "Stage 1: [[Korea (Empire of Cats)|Korea]]"
@@ -316,7 +316,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&moon_ch2).unwrap().name;
         const MAGS: &str = "";
 
-        let section = Ref::EoC.get_section();
+        let section = Ref::EoC.section();
         assert_eq!(
             stringify(section, &moon_ch2, name, MAGS),
             "Stage 2-48: [[Moon (Empire of Cats)|Moon]]"
@@ -329,7 +329,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&great_abyss).unwrap().name;
         const MAGS: &str = "(150%)";
 
-        let section = Ref::ItF.get_section();
+        let section = Ref::ItF.section();
         assert_eq!(
             stringify(section, &great_abyss, name, MAGS),
             "Stage 1-24: [[The Great Abyss (Into the Future)|The Great Abyss]] (150%)"
@@ -342,7 +342,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&sighter_star).unwrap().name;
         const MAGS: &str = "(150%)";
 
-        let section = Ref::CotC.get_section();
+        let section = Ref::CotC.section();
         assert_eq!(
             stringify(section, &sighter_star, name, MAGS),
             "Stage 2-25: [[Sighter's Star (Cats of the Cosmos)|Sighter's Star]] (150%)"
@@ -359,7 +359,7 @@ mod tests {
 
         const MAGS: &str = "(1,500%)";
 
-        let section = Ref::CotC.get_section();
+        let section = Ref::CotC.section();
         assert_eq!(
             stringify(section, &filibuster, name, MAGS),
             "Stage 3-IN: [[Filibuster Invasion (Cats of the Cosmos)|Filibuster Invasion]] (1,500%)"
@@ -372,7 +372,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
         const MAGS: &str = "(100%)";
 
-        let section = Ref::AkuRealms.get_section();
+        let section = Ref::AkuRealms.section();
         assert_eq!(
             stringify(section, &korea, name, MAGS),
             "Stage 1: [[Korea (Aku Realm)|Korea]] (100%)"
@@ -385,7 +385,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&torture_room).unwrap().name;
         const MAGS: &str = "(400%)";
 
-        let section = Ref::SoL.get_section();
+        let section = Ref::SoL.section();
         assert_eq!(
             stringify(section, &torture_room, name, MAGS),
             "Stage 22-4: [[Torture Room]] (400%)"
@@ -398,7 +398,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "(400%)";
 
-        let section = Ref::Event.get_section();
+        let section = Ref::Event.section();
         assert_eq!(
             stringify(section, &xp_hard, name, MAGS),
             "[[Sweet XP (Hard)]] (400%)"
@@ -411,7 +411,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
 
-        let section = Ref::AkuRealms.get_section();
+        let section = Ref::AkuRealms.section();
         assert_eq!(
             stringify(section, &zoutbreak, name, MAGS),
             "Stage 3-44: [[Las Vegas (Empire of Cats)|Las Vegas]] (600%)"
@@ -425,7 +425,7 @@ mod tests {
 
         const MAGS: &str = "(400%)";
 
-        let section = Ref::AkuRealms.get_section();
+        let section = Ref::AkuRealms.section();
         assert_eq!(
             stringify(section, &mount_aku_repr, name, MAGS),
             "Stage 30-IN: [[Mount Aku (Aku Realm)/Invasion|Mount Aku Invasion]] (400%)"
@@ -439,7 +439,7 @@ mod tests {
 
         const MAGS: &str = "(400%)";
 
-        let section = Ref::SoL.get_section();
+        let section = Ref::SoL.section();
         assert_eq!(
             stringify(section, &idi_invasion_repr, name, MAGS),
             "Stage 36-IN: [[The Face of God/Invasion|The Face of God Invasion]] (400%)"
@@ -452,7 +452,7 @@ mod tests {
         let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "";
 
-        let section = Ref::Event.get_section();
+        let section = Ref::Event.section();
         assert_eq!(
             stringify(section, &xp_hard, name, MAGS),
             "[[Sweet XP (Hard)]]"
@@ -462,7 +462,7 @@ mod tests {
     #[test]
     fn chapter_normal() {
         let mut buf = String::from("");
-        let section = Ref::Event.get_section();
+        let section = Ref::Event.section();
         section.fmt_chapter(
             &mut buf,
             Chapter::new(
@@ -491,7 +491,7 @@ mod tests {
     #[test]
     fn chapter_flat() {
         let mut buf = String::from("");
-        let section = Ref::Labyrinth.get_section();
+        let section = Ref::Labyrinth.section();
         section.fmt_chapter(
             &mut buf,
             Chapter::new(
@@ -519,7 +519,7 @@ mod tests {
     #[test]
     fn chapter_story() {
         let mut buf = String::from("");
-        let section = Ref::SoL.get_section();
+        let section = Ref::SoL.section();
         section.fmt_chapter(
             &mut buf,
             Chapter::new(

@@ -64,7 +64,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
 
-    println!("{:?}", SectionRef::AkuRealms.get_section());
+    println!("{:?}", SectionRef::AkuRealms.section());
 
 // let sections_map : [(&'static str, )]
     /*
