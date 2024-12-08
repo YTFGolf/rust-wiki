@@ -195,6 +195,7 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
 ];
 
 #[allow(missing_docs)]
+#[repr(u8)]
 /// Enum reference to a section.
 pub enum SectionRef {
     EoC,

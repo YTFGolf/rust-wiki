@@ -2,7 +2,6 @@
 
 pub mod chapter;
 pub mod section;
-use section::SectionRef;
 use crate::{
     config::Config,
     data::{
@@ -13,7 +12,11 @@ use crate::{
         },
     },
 };
+use section::SectionRef;
+type Ref = SectionRef;
 
+// maybe try some const magic that evaluates `enumerate_meta` at compile time or
+// something
 const TYPE_ORDER: [T; 22] = [
     T::MainChapters,
     T::Outbreaks,
@@ -58,15 +61,45 @@ fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
     encounters
 }
 
+/// Get the section that the stage refers to.
+///
+/// Note: this does nothing about Removed Stages or any filtering based on type.
+fn raw_section(meta: &StageMeta) -> SectionRef {
+    match meta.type_enum {
+        T::MainChapters => {
+            todo!()
+        }
+        T::Outbreaks => {
+            todo!()
+        }
+        T::Filibuster => Ref::CotC,
+        T::AkuRealms => Ref::AkuRealms,
+        T::SoL => Ref::SoL,
+        T::UL => Ref::UL,
+        T::ZL => Ref::ZL,
+        T::Event | T::Tower | T::Challenge | T::Gauntlet | T::Behemoth | T::Colosseum => Ref::Event,
+        T::Labyrinth => Ref::Labyrinth,
+        T::Collab | T::CollabGauntlet => Ref::Collab,
+        T::Enigma => Ref::Enigma,
+        T::Dojo | T::RankingDojo | T::Championships => Ref::Dojo,
+        T::Extra => Ref::Extra,
+        T::Catamin => Ref::Catamin,
+    }
+}
+
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
 
-    println!("{:?}", SectionRef::AkuRealms.section());
+    // for encounter in encounters
 
-// let sections_map : [(&'static str, )]
+    println!("{:?}", Ref::AkuRealms.section());
+
+    // let sections_map: &[(Ref, u8)];
+    // let a = Ref::AkuRealms;
+    // a.section();
     /*
     - [x] get
     - [x] sort
