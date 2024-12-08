@@ -15,9 +15,11 @@ use crate::{
 use section::SectionRef;
 type Ref = SectionRef;
 
-// maybe try some const magic that evaluates `enumerate_meta` at compile time or
-// something
-const TYPE_ORDER: [T; 22] = [
+/// Amount of individual [StageTypes][T] (count is based on enums).
+const STYPE_AMT: usize = 22;
+
+/// Order of the [StageTypes][T] in Encounters section.
+const TYPE_ORDER: [T; STYPE_AMT] = [
     T::MainChapters,
     T::Outbreaks,
     T::Filibuster,
@@ -47,12 +49,35 @@ const TYPE_ORDER: [T; 22] = [
     T::Extra,
 ];
 
-#[allow(clippy::zero_prefixed_literal)]
-fn enumerate_meta(meta: &StageMeta) -> usize {
-    TYPE_ORDER
-        .iter()
-        .position(|e| *e == meta.type_enum)
-        .unwrap()
+/// Convert [TYPE_ORDER] to its indices. Allows [enumerate_meta] to be a
+/// constant time function.
+const fn get_type_order() -> [usize; STYPE_AMT] {
+    let mut sum = [0; STYPE_AMT];
+
+    let mut i = 0;
+    // for loops and iterators don't work in constant functions,
+    // but while loops do
+    while i < STYPE_AMT {
+        let t = TYPE_ORDER[i] as usize;
+        sum[t] = i;
+        i += 1;
+    }
+
+    sum
+}
+
+/// Order indices using the [usize] value of [StageTypeEnum][T].
+///
+/// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
+/// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
+// Making the above a doctest would cause problems with visibility so it's
+// easier to just write this here. Hopefully this behaviour doesn't ever need to
+// change, at least not MainChapters being first.
+const TYPE_ORDER_INDICES: [usize; STYPE_AMT] = get_type_order();
+
+/// Enumerate a [StageMeta] object for use in comparisons.
+const fn enumerate_meta(meta: &StageMeta) -> usize {
+    TYPE_ORDER_INDICES[meta.type_enum as usize]
 }
 
 fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
@@ -96,6 +121,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     // for encounter in encounters
 
     println!("{:?}", Ref::AkuRealms.section());
+    println!("{:?}", TYPE_ORDER_INDICES);
 
     // let sections_map: &[(Ref, u8)];
     // let a = Ref::AkuRealms;
@@ -130,6 +156,8 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
 // eliminate unlinked stages and warn
 // move extra stages into correct section
 // remove princess punt eoc stages
+// from stage meta get heading
+// removed is done just by string search
 
 /*
 # Flow

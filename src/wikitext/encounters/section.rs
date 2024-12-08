@@ -227,8 +227,6 @@ impl SectionRef {
     }
 }
 
-// from stage meta get heading
-// removed is done just by string search
 #[cfg(test)]
 mod tests {
     use super::*;
