@@ -12,7 +12,7 @@ use crate::{
         },
     },
 };
-use section::SectionRef;
+use section::{DisplayType, SectionRef};
 type Ref = SectionRef;
 
 /// Amount of individual [StageTypes][T] (count is based on enums).
@@ -118,14 +118,33 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
 
-    // for encounter in encounters
+    // println!("{:?}", encounters);
 
-    println!("{:?}", Ref::AkuRealms.section());
-    println!("{:?}", TYPE_ORDER_INDICES);
-
-    // let sections_map: &[(Ref, u8)];
+    // iterate
+    // if skip continue
     // let a = Ref::AkuRealms;
     // a.section();
+    let mut sections_map: Vec<(Ref, Vec<StageData<'_>>)> = Vec::new();
+
+    for encounter in encounters {
+        let raw = raw_section(&encounter.meta);
+        let section = raw.section();
+        // println!("{raw:?}, {section:?}");
+
+        if *section.display_type() == DisplayType::Skip {
+            continue;
+        }
+
+        // I don't like the time complexity in this loop
+        if let Some(pos) = sections_map.iter().position(|(r, _)| *r == raw) {
+            sections_map[pos].1.push(encounter);
+        } else {
+            sections_map.push((raw, vec![encounter]))
+        };
+    }
+
+    println!("{sections_map:#?}");
+
     /*
     - [x] get
     - [x] sort
@@ -146,8 +165,6 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     - [ ] analyse all stages to see if has same mag in all
     - [ ] analyse eoc outbreaks
     */
-
-    println!("{:?}", encounters);
 }
 
 // Encounter name filter or something

@@ -4,9 +4,9 @@ use super::chapter::Chapter;
 use crate::data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta};
 use std::fmt::Write;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// How you display the section.
-enum DisplayType {
+pub enum DisplayType {
     /// E.g. SoL: `*Stage x: name (mags)`.
     Story,
     /// Standard `*map: stage` or `*map:\n**stage 1`.
@@ -34,6 +34,16 @@ pub struct EncountersSection {
     display_type: DisplayType,
 }
 impl EncountersSection {
+    /// Get display type.
+    pub fn display_type(&self) -> &DisplayType {
+        &self.display_type
+    }
+
+    /// Get heading.
+    pub fn heading(&self) -> &'static str {
+        &self.heading
+    }
+
     fn fmt_encounter_custom(buf: &mut String, meta: &StageMeta, name: &str) {
         // EoC
         if meta.type_enum == T::MainChapters && meta.map_num == 0 {
@@ -194,8 +204,11 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
     get_new_section("[[Catamin Stages]]",                                    D::Skip),
 ];
 
-#[allow(missing_docs)]
+type SectionRefRepr = u8;
 #[repr(u8)]
+// DO NOT CHANGE ONE OF THESE, UPDATE NEITHER OR UPDATE BOTH
+#[allow(missing_docs)]
+#[derive(Debug, PartialEq)]
 /// Enum reference to a section.
 pub enum SectionRef {
     EoC,
@@ -222,8 +235,13 @@ pub enum SectionRef {
 }
 impl SectionRef {
     /// Get the defined section.
-    pub const fn section(self) -> &'static EncountersSection {
-        &SECTIONS[self as usize]
+    pub const fn section(&self) -> &'static EncountersSection {
+        let index = unsafe { *(self as *const Self as *const SectionRefRepr) } as usize;
+        // this is horrible and ChatGPT-generated, but it works for some reason
+        // appears to work on release mode so fine
+        // Safety: as long as SectionRefRepr is kept in line with SectionRef's
+        // repr this works fine
+        &SECTIONS[index]
     }
 }
 
