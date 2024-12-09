@@ -12,7 +12,7 @@ pub struct Stage<'a> {
     pub meta: &'a StageMeta,
 }
 impl<'a> Stage<'a> {
-    /// Create new stage.
+    /// Create new Stage.
     pub fn new(stage_name: &'a str, mags: &'a str, meta: &'a StageMeta) -> Self {
         Self {
             stage_name,
@@ -22,8 +22,8 @@ impl<'a> Stage<'a> {
     }
 }
 
-/// Represents a contiguous block of stages of the same type with the same map
-/// num.
+/// Represents a contiguous block of stages of the same display type with the
+/// same map num.
 pub struct Chapter<'a> {
     /// Name of chapter.
     pub chapter_name: &'a str,
@@ -37,5 +37,19 @@ impl<'a> Chapter<'a> {
             chapter_name,
             stages,
         }
+    }
+}
+
+/// Block of chapters grouped under 1 heading.
+pub struct Group<'a> {
+    /// Heading.
+    pub heading: &'a str,
+    /// Chapters under heading.
+    pub chapters: &'a [Chapter<'a>],
+}
+impl<'a> Group<'a> {
+    /// Create new Group.
+    pub fn new(heading: &'a str, chapters: &'a [Chapter<'a>]) -> Self {
+        Self { heading, chapters }
     }
 }
