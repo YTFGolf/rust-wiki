@@ -206,7 +206,7 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
 
 type SectionRefRepr = u8;
 #[repr(u8)]
-// DO NOT CHANGE ONE OF THESE, UPDATE NEITHER OR UPDATE BOTH
+// IF YOU UPDATE ONE OF THE ABOVE TWO VALUES UPDATE BOTH OF THEM
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq)]
 /// Enum reference to a section.
@@ -236,12 +236,21 @@ pub enum SectionRef {
 impl SectionRef {
     /// Get the defined section.
     pub const fn section(&self) -> &'static EncountersSection {
-        let index = unsafe { *(self as *const Self as *const SectionRefRepr) } as usize;
-        // this is horrible and ChatGPT-generated, but it works for some reason
-        // appears to work on release mode so fine
+        let index_repr = unsafe { *(self as *const SectionRef as *const SectionRefRepr) };
+        // Casts the borrow to a SectionRef pointer (obviously borrows are
+        // pointers with extra compiler magic), then converts that to a pointer
+        // to a SectionRefRepr pointer, which can then be dereferenced without
+        // the borrow checker complaining.
+
         // Safety: as long as SectionRefRepr is kept in line with SectionRef's
-        // repr this works fine
-        &SECTIONS[index]
+        // memory representation this works fine. I.e. if they take up the same
+        // number of bytes then no information is lost or corrupted when doing
+        // raw casts.
+
+        // Unsafe is necessary, otherwise calling this function on a borrowed
+        // SectionRef would require a clone, which is just completely
+        // unnecessary when the function can take care of that detail itself.
+        &SECTIONS[index_repr as usize]
     }
 }
 
