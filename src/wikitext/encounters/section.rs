@@ -41,7 +41,7 @@ impl EncountersSection {
 
     /// Get heading.
     pub fn heading(&self) -> &'static str {
-        &self.heading
+        self.heading
     }
 
     fn fmt_encounter_custom(buf: &mut String, meta: &StageMeta, name: &str) {
@@ -138,7 +138,7 @@ impl EncountersSection {
 
     /// Write a chapter of encounters.
     pub fn fmt_chapter(&self, buf: &mut String, chapter: Chapter) {
-        assert!(chapter.stages.len() > 0);
+        assert!(!chapter.stages.is_empty());
         match self.display_type {
             D::Skip => unreachable!(),
             D::Normal | D::Warn => {

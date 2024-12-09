@@ -102,7 +102,7 @@ pub mod consts {
         }
     }
 
-    /// All possible type of stage.
+    /// All possible types of stage.
     #[allow(missing_docs)]
     #[derive(Debug, PartialEq, Clone, Copy)]
     pub enum StageTypeEnum {
@@ -243,6 +243,7 @@ static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
 pub struct StageMeta {
     /// Long-form name of the stage type.
     pub type_name: &'static str,
+    /// [STAGE_TYPES]: consts::STAGE_TYPES
     /// Short-form name of the stage type. All codes are given in [STAGE_TYPES].
     pub type_code: &'static str,
     /// Numerical value of the [StageType].
@@ -413,6 +414,7 @@ impl StageMeta {
         Self::from_split_parsed(stage_type, map_num, stage_num)
     }
 
+    /// [STAGE_TYPES]: consts::STAGE_TYPES
     /// [from_split][StageMeta::from_split] but with `stage_type` being a code
     /// from [STAGE_TYPES].
     fn from_split_parsed(

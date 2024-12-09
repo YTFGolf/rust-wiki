@@ -118,7 +118,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
 
-    // println!("{:?}", encounters);
+    println!("{:?}", encounters);
 
     // iterate
     // if skip continue
@@ -129,32 +129,32 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     for encounter in encounters {
         let raw = raw_section(&encounter.meta);
         let section = raw.section();
-        // println!("{raw:?}, {section:?}");
 
         if *section.display_type() == DisplayType::Skip {
             continue;
         }
 
-        // I don't like the time complexity in this loop
+        // - [ ] if extra use continuestages to find actual place
+
         if let Some(pos) = sections_map.iter().position(|(r, _)| *r == raw) {
             sections_map[pos].1.push(encounter);
         } else {
             sections_map.push((raw, vec![encounter]))
         };
     }
+    // maybe append removed to end here
 
-    println!("{sections_map:#?}");
+    // println!("{sections_map:#?}");
 
     /*
     - [x] get
     - [x] sort
-    - [ ] iterate
-      - [ ] find section
-        - [ ] if extra use continuestages to find actual place
-        - [ ] if Skip then skip
-      - [ ] add to section list
-    - [ ] If any warn stages then warn
+    - [x] iterate
+      - [x] find section
+        - [x] if Skip then skip
+      - [x] add to section list
     - [ ] Go through each section
+      - [ ] Warn about extra stages
       - [ ] find stage name, filter/move to removed stages
       - [ ] for each chapter:
         - [ ] remove dupes
