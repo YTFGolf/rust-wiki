@@ -204,9 +204,11 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
     get_new_section("[[Catamin Stages]]",                                    D::Skip),
 ];
 
+const _: () = assert!(std::mem::size_of::<SectionRef>() == std::mem::size_of::<SectionRefRepr>());
 type SectionRefRepr = u8;
+// make sure that this stays in line with the representation of SectionRef
+
 #[repr(u8)]
-// IF YOU UPDATE ONE OF THE ABOVE TWO VALUES UPDATE BOTH OF THEM
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq)]
 /// Enum reference to a section.
@@ -245,7 +247,8 @@ impl SectionRef {
         // Safety: as long as SectionRefRepr is kept in line with SectionRef's
         // memory representation this works fine. I.e. if they take up the same
         // number of bytes then no information is lost or corrupted when doing
-        // raw casts.
+        // raw casts. This behaviour is guaranteed at compile time with the
+        // const assert above.
 
         // Unsafe is necessary, otherwise calling this function on a borrowed
         // SectionRef would require a clone, which is just completely
