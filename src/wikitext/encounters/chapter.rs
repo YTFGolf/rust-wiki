@@ -28,11 +28,11 @@ pub struct Chapter<'a> {
     /// Name of chapter.
     pub chapter_name: &'a str,
     /// Stages in chapter.
-    pub stages: &'a [Stage<'a>],
+    pub stages: Vec<Stage<'a>>,
 }
 impl<'a> Chapter<'a> {
     /// Create new Chapter.
-    pub fn new(chapter_name: &'a str, stages: &'a [Stage<'a>]) -> Self {
+    pub fn new(chapter_name: &'a str, stages: Vec<Stage<'a>>) -> Self {
         Self {
             chapter_name,
             stages,
@@ -45,11 +45,11 @@ pub struct Group<'a> {
     /// Heading.
     pub heading: &'a str,
     /// Chapters under heading.
-    pub chapters: &'a [Chapter<'a>],
+    pub chapters: Vec<Chapter<'a>>,
 }
 impl<'a> Group<'a> {
     /// Create new Group.
-    pub fn new(heading: &'a str, chapters: &'a [Chapter<'a>]) -> Self {
+    pub fn new(heading: &'a str, chapters: Vec<Chapter<'a>>) -> Self {
         Self { heading, chapters }
     }
 }

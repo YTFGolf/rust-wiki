@@ -496,7 +496,7 @@ mod tests {
             &mut buf,
             Chapter::new(
                 "Chapter",
-                &[
+                vec![
                     Stage::new("Stage 1", "(100%)", &StageMeta::new("event 0 0").unwrap()),
                     Stage::new("Stage 2", "", &StageMeta::new("event 0 1").unwrap()),
                     Stage::new(
@@ -525,7 +525,7 @@ mod tests {
             &mut buf,
             Chapter::new(
                 "Chapter",
-                &[
+                vec![
                     Stage::new("Stage 1", "(100%)", &StageMeta::new("l 0 0").unwrap()),
                     Stage::new("Stage 2", "", &StageMeta::new("l 0 1").unwrap()),
                     Stage::new(
@@ -553,7 +553,7 @@ mod tests {
             &mut buf,
             Chapter::new(
                 "Chapter",
-                &[
+                vec![
                     Stage::new("Stage 1", "(100%)", &StageMeta::new("sol 0 0").unwrap()),
                     Stage::new("Stage 2", "", &StageMeta::new("sol 0 1").unwrap()),
                     Stage::new(
