@@ -145,7 +145,7 @@ impl EncountersSection {
                 if chapter.stages.len() == 1 {
                     write!(buf, "*{chap}: ", chap = chapter.chapter_name).unwrap();
                     let stage = &chapter.stages[0];
-                    self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
+                    self.fmt_encounter(buf, stage.meta, stage.stage_name, &stage.mags);
 
                     return;
                 }
@@ -153,7 +153,7 @@ impl EncountersSection {
                 write!(buf, "*{chap}:", chap = chapter.chapter_name).unwrap();
                 for stage in chapter.stages {
                     *buf += "\n**";
-                    self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
+                    self.fmt_encounter(buf, stage.meta, stage.stage_name, &stage.mags);
                 }
             }
             D::Story | D::Flat | D::Custom => {
@@ -161,7 +161,7 @@ impl EncountersSection {
                 // the moment
                 for stage in chapter.stages {
                     *buf += "*";
-                    self.fmt_encounter(buf, stage.meta, stage.stage_name, stage.mags);
+                    self.fmt_encounter(buf, stage.meta, stage.stage_name, &stage.mags);
                     *buf += "\n"
                 }
                 buf.pop();
@@ -497,11 +497,19 @@ mod tests {
             Chapter::new(
                 "Chapter",
                 vec![
-                    Stage::new("Stage 1", "(100%)", &StageMeta::new("event 0 0").unwrap()),
-                    Stage::new("Stage 2", "", &StageMeta::new("event 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 1",
+                        "(100%)".to_string(),
+                        &StageMeta::new("event 0 0").unwrap(),
+                    ),
+                    Stage::new(
+                        "Stage 2",
+                        "".to_string(),
+                        &StageMeta::new("event 0 1").unwrap(),
+                    ),
                     Stage::new(
                         "Stage 3",
-                        "(1,500% HP/2% AP)",
+                        "(1,500% HP/2% AP)".to_string(),
                         &StageMeta::new("event 0 2").unwrap(),
                     ),
                 ],
@@ -526,11 +534,15 @@ mod tests {
             Chapter::new(
                 "Chapter",
                 vec![
-                    Stage::new("Stage 1", "(100%)", &StageMeta::new("l 0 0").unwrap()),
-                    Stage::new("Stage 2", "", &StageMeta::new("l 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 1",
+                        "(100%)".to_string(),
+                        &StageMeta::new("l 0 0").unwrap(),
+                    ),
+                    Stage::new("Stage 2", "".to_string(), &StageMeta::new("l 0 1").unwrap()),
                     Stage::new(
                         "Stage 3",
-                        "(1,500% HP/2% AP)",
+                        "(1,500% HP/2% AP)".to_string(),
                         &StageMeta::new("l 0 2").unwrap(),
                     ),
                 ],
@@ -554,11 +566,19 @@ mod tests {
             Chapter::new(
                 "Chapter",
                 vec![
-                    Stage::new("Stage 1", "(100%)", &StageMeta::new("sol 0 0").unwrap()),
-                    Stage::new("Stage 2", "", &StageMeta::new("sol 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 1",
+                        "(100%)".to_string(),
+                        &StageMeta::new("sol 0 0").unwrap(),
+                    ),
+                    Stage::new(
+                        "Stage 2",
+                        "".to_string(),
+                        &StageMeta::new("sol 0 1").unwrap(),
+                    ),
                     Stage::new(
                         "Stage 3",
-                        "(1,500% HP/2% AP)",
+                        "(1,500% HP/2% AP)".to_string(),
                         &StageMeta::new("sol 0 2").unwrap(),
                     ),
                 ],

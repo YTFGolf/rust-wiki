@@ -1,19 +1,21 @@
 //! Deals with singular chapters of encounters.
 
+use super::section::EncountersSection;
 use crate::data::stage::raw::stage_metadata::StageMeta;
 
+#[derive(Debug)]
 /// Represents a stage for encounters.
 pub struct Stage<'a> {
     /// Name of stage.
     pub stage_name: &'a str,
     /// Enemy magnifications in stage.
-    pub mags: &'a str,
+    pub mags: String,
     /// Stage metadata.
     pub meta: &'a StageMeta,
 }
 impl<'a> Stage<'a> {
     /// Create new Stage.
-    pub fn new(stage_name: &'a str, mags: &'a str, meta: &'a StageMeta) -> Self {
+    pub fn new(stage_name: &'a str, mags: String, meta: &'a StageMeta) -> Self {
         Self {
             stage_name,
             mags,
@@ -22,6 +24,7 @@ impl<'a> Stage<'a> {
     }
 }
 
+#[derive(Debug)]
 /// Represents a contiguous block of stages of the same display type with the
 /// same map num.
 pub struct Chapter<'a> {
@@ -40,16 +43,17 @@ impl<'a> Chapter<'a> {
     }
 }
 
-/// Block of chapters grouped under 1 heading.
+#[derive(Debug)]
+/// Represents a section of the encounters.
 pub struct Group<'a> {
-    /// Heading.
-    pub heading: &'a str,
+    /// Section
+    pub section: &'a EncountersSection,
     /// Chapters under heading.
     pub chapters: Vec<Chapter<'a>>,
 }
 impl<'a> Group<'a> {
     /// Create new Group.
-    pub fn new(heading: &'a str, chapters: Vec<Chapter<'a>>) -> Self {
-        Self { heading, chapters }
+    pub fn new(section: &'a EncountersSection, chapters: Vec<Chapter<'a>>) -> Self {
+        Self { section, chapters }
     }
 }
