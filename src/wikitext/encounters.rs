@@ -11,8 +11,11 @@ use crate::{
             stage_metadata::{consts::StageTypeEnum as T, StageMeta},
         },
     },
+    wikitext::data_files::stage_page_data::STAGE_NAMES,
 };
+use chapter::{Chapter, Group, Stage};
 use section::{DisplayType, SectionRef};
+use std::fmt::Write;
 type Ref = SectionRef;
 
 /// Amount of individual [StageTypes][T] (count is based on enums).
@@ -118,7 +121,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     let encounters = get_encounters(abs_enemy_id, &config.current_version);
     let encounters = sort_encounters(encounters);
 
-    println!("{:?}", encounters);
+    // println!("{:?}", encounters);
 
     // iterate
     // if skip continue
@@ -142,9 +145,72 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
             sections_map.push((raw, vec![encounter]))
         };
     }
-    // maybe append removed to end here
 
-    // println!("{sections_map:#?}");
+    // let removed: (Ref, Vec<StageData<'_>>) = (Ref::Removed, vec![]);
+    let mut groups: Vec<Group> = Vec::new();
+    for map in sections_map.iter() {
+        if map.1.is_empty() {
+            continue;
+        }
+
+        let section = map.0.section();
+        if *section.display_type() == DisplayType::Warn {
+            eprintln!("Warning: {:?} stages encountered.", map.1[0].meta.type_enum);
+            // TODO log warning
+        }
+
+        let mut group = Group::new(section, vec![]);
+        let group_chapters = &mut group.chapters;
+        for stage in map.1.iter() {
+            let stage_map = STAGE_NAMES
+                .stage_map(stage.meta.type_num, stage.meta.map_num)
+                .unwrap();
+            // Add to removed
+
+            let chap = if let Some(pos) = group_chapters
+                .iter()
+                .position(|c| c.chapter_name == stage_map.name)
+            {
+                &mut group_chapters[pos]
+            } else {
+                let chap = Chapter::new(&stage_map.name, vec![]);
+                group_chapters.push(chap);
+
+                let i = group_chapters.len() - 1;
+                &mut group_chapters[i]
+            };
+
+            let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
+            // TODO
+            let mags = "".to_string();
+            chap.stages
+                .push(Stage::new(&stage_name.name, mags, &stage.meta));
+        }
+
+        groups.push(group);
+    }
+
+    let mut buf = String::from("==Encounters==\n{{Collapsible}}");
+    for group in groups {
+        if group.chapters.is_empty() {
+            continue;
+        }
+
+        write!(
+            &mut buf,
+            "\n==={heading}===\n",
+            heading = group.section.heading()
+        )
+        .unwrap();
+
+        for chapter in group.chapters {
+            group.section.fmt_chapter(&mut buf, chapter);
+            buf += "\n";
+        }
+    }
+    buf += "</div>";
+
+    println!("{buf}");
 
     /*
     - [x] get
@@ -153,10 +219,11 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
       - [x] find section
         - [x] if Skip then skip
       - [x] add to section list
-    - [ ] Go through each section
-      - [ ] Warn about extra stages
-      - [ ] find stage name, filter/move to removed stages
-      - [ ] for each chapter:
+    - [x] Go through each section
+      - [x] Warn about extra stages
+      - [x] find stage name
+      - [ ] filter/move to removed stages
+      - [x] for each chapter:
         - [ ] remove dupes
         - [ ] get mags
         - [ ] format section

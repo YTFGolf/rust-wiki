@@ -19,7 +19,7 @@ fn test() {
     //     return;
     // }
 
-    let wiki_enemy_id = 267;
+    let wiki_enemy_id = 317;
     let config: Config = get_user_config().unwrap().into();
 
     rust_wiki::wikitext::encounters::do_thing(wiki_enemy_id, &config);
