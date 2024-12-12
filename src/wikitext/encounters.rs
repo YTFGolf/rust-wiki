@@ -8,7 +8,7 @@ use crate::{
         enemy::raw_encounters::get_encounters,
         stage::raw::{
             stage_data::StageData,
-            stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+            stage_metadata::{consts::{StageTypeEnum as T, STAGE_TYPES}, StageMeta},
         },
     },
     wikitext::data_files::stage_page_data::STAGE_NAMES,
@@ -19,7 +19,7 @@ use std::fmt::Write;
 type Ref = SectionRef;
 
 /// Amount of individual [StageTypes][T] (count is based on enums).
-const STYPE_AMT: usize = 22;
+const STYPE_AMT: usize = STAGE_TYPES.len();
 
 /// Order of the [StageTypes][T] in Encounters section.
 const TYPE_ORDER: [T; STYPE_AMT] = [
@@ -226,7 +226,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
       - [x] for each chapter:
         - [ ] remove dupes
         - [ ] get mags
-        - [ ] format section
+        - [x] format section
 
     ## extensions
     - [ ] analyse all stages to see if has same mag in all
@@ -269,11 +269,9 @@ Other things:
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::stage::raw::stage_metadata::consts::STAGE_TYPES;
 
     #[test]
     fn test_type_order() {
-        assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
         for stype in STAGE_TYPES {
             assert!(
                 TYPE_ORDER.contains(&stype.type_enum),
