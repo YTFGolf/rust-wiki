@@ -8,7 +8,10 @@ use crate::{
         enemy::raw_encounters::get_encounters,
         stage::raw::{
             stage_data::StageData,
-            stage_metadata::{consts::{StageTypeEnum as T, STAGE_TYPES}, StageMeta},
+            stage_metadata::{
+                consts::{StageTypeEnum as T, STAGE_TYPES},
+                StageMeta,
+            },
         },
     },
     wikitext::data_files::stage_page_data::STAGE_NAMES,
@@ -272,6 +275,7 @@ mod tests {
 
     #[test]
     fn test_type_order() {
+        assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
         for stype in STAGE_TYPES {
             assert!(
                 TYPE_ORDER.contains(&stype.type_enum),

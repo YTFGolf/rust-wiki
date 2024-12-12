@@ -195,7 +195,7 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
 
     get_new_section("[[Special Events|Event Stages]]",                       D::Normal),
     get_new_section("[[Underground Labyrinth]]",                             D::Flat),
-    get_new_section("[[Collaboration Event Stages|Collaboration Stages]]",   D::Normal),
+    get_new_section("[[Collaboration Events|Collaboration Stages]]",         D::Normal),
     get_new_section("[[Enigma Stages]]",                                     D::Normal),
     get_new_section("[[Catclaw Dojo]]",                                      D::Normal),
     get_new_section("[[:Category:Removed Content|Removed Stages]]",          D::Normal),
@@ -303,7 +303,7 @@ mod tests {
         );
         assert_eq!(
             Ref::Collab.section().heading,
-            "[[Collaboration Event Stages|Collaboration Stages]]"
+            "[[Collaboration Events|Collaboration Stages]]"
         );
         assert_eq!(Ref::Enigma.section().heading, "[[Enigma Stages]]");
         assert_eq!(Ref::Dojo.section().heading, "[[Catclaw Dojo]]");
