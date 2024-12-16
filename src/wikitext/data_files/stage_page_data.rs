@@ -47,7 +47,7 @@ pub struct StageData {
 
 const MAX_TYPE_ID: usize = STAGE_TYPES[STAGE_TYPES.len() - 1].number as usize;
 type StageNameMap = [Option<TypeData>; MAX_TYPE_ID + 1];
-type ContinueStagesMap = Vec<(u32, u32)>;
+type ContinueStagesMap = Vec<Option<(u32, u32)>>;
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
 /// Container for [STAGE_NAMES] static.
@@ -75,12 +75,12 @@ impl StagePageData {
     }
 
     /// Get the type and map numbers from the ex map id.
-    pub fn continue_id(&self, ex_map_id: u32) -> (u32, u32) {
+    pub fn continue_id(&self, ex_map_id: u32) -> Option<(u32, u32)> {
         self.continue_stages[ex_map_id as usize]
     }
     /// Get map data from ex map id.
     pub fn continue_map(&self, ex_map_id: u32) -> &MapData {
-        let (t, m) = self.continue_id(ex_map_id);
+        let (t, m) = self.continue_id(ex_map_id).unwrap();
         self.stage_map(t, m).unwrap()
     }
 
@@ -185,15 +185,18 @@ fn get_stage_name_map() -> StageNameMap {
 fn get_continue_stages_map() -> ContinueStagesMap {
     let rdr = csv::ReaderBuilder::new()
         .has_headers(true)
-        .delimiter(b'\t')
-        .comment(Some(b'#'))
+        .delimiter(b',')
         .from_path(get_file_location(FileLocation::WikiData).join("ContinueStages.csv"));
 
     rdr.unwrap()
         .deserialize::<ContinueStagesLine>()
         .map(|c| {
-            let c = c.unwrap();
-            (c.type_num, c.map_num)
+            let c = match c {
+                Ok(c) => c,
+                Err(_) => return None,
+                // I can't be bothered to deal with the error properly.
+            };
+            Some((c.type_num, c.map_num))
         })
         .collect()
 }
