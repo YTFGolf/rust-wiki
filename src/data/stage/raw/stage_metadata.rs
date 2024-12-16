@@ -388,8 +388,8 @@ impl StageMeta {
         }
     }
 
-    /// Is this even necessary?
-    fn from_numbers(
+    /// Get meta from numbers.
+    pub fn from_numbers(
         stage_type: u32,
         map_num: u32,
         stage_num: u32,

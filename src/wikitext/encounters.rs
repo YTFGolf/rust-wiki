@@ -113,10 +113,19 @@ mod order {
     }
 }
 
-fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
-    let mut encounters = encounters;
-    encounters.sort_by(|s, o| enumerate_meta(&s.meta).cmp(&enumerate_meta(&o.meta)));
-    encounters
+fn key(meta: &StageMeta) -> (usize, u32, u32)  {
+    let m = match meta.type_enum {
+        T::Extra => match STAGE_NAMES.continue_id(meta.map_num) {
+            None => meta,
+            Some((t, m)) => &StageMeta::from_numbers(t, m, 999).unwrap(),
+        },
+        _ => meta,
+    };
+    (enumerate_meta(m), m.map_num, m.stage_num)
+}
+
+fn sort_encounters(encounters: &mut Vec<StageData>) {
+    encounters.sort_by(|s, o| key(&s.meta).cmp(&key(&o.meta)));
 }
 
 /// Get the section that the stage refers to.
@@ -252,15 +261,9 @@ fn get_encounter_groups<'a>(
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
-    let encounters = get_encounters(abs_enemy_id, &config.current_version);
-    let encounters = sort_encounters(encounters);
+    let mut encounters = get_encounters(abs_enemy_id, &config.current_version);
+    sort_encounters(&mut encounters);
 
-    // println!("{:?}", encounters);
-
-    // iterate
-    // if skip continue
-    // let a = Ref::AkuRealms;
-    // a.section();
     let mut sections_map: Vec<(Ref, Vec<StageData<'_>>)> = Vec::new();
 
     for encounter in encounters {

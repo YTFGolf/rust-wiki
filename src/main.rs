@@ -20,6 +20,9 @@ fn test() {
     // }
 
     let wiki_enemy_id = 317;
+    // daboo
+    // let wiki_enemy_id = 525;
+    // super hyppoh
     let config: Config = get_user_config().unwrap().into();
 
     rust_wiki::wikitext::encounters::do_thing(wiki_enemy_id, &config);
