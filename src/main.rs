@@ -7,6 +7,7 @@ use rust_wiki::{
     },
     config::{get_user_config, Config},
     wiki_files::update_wiki_files,
+    wikitext::data_files::enemy_data::ENEMY_DATA,
 };
 
 fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
@@ -14,27 +15,7 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
     merge_config_and_args(config, args).into()
 }
 
-fn test() {
-    // if true {
-    //     return;
-    // }
-
-    let wiki_enemy_id = 317;
-    // daboo
-    // let wiki_enemy_id = 525;
-    // super hyppoh
-    let config: Config = get_user_config().unwrap().into();
-
-    rust_wiki::wikitext::encounters::do_thing(wiki_enemy_id, &config);
-
-    if true {
-        std::process::exit(0)
-    }
-}
-
 fn main() {
-    test();
-
     let cli = Cli::parse();
     let config = get_user_config();
 
@@ -43,6 +24,11 @@ fn main() {
         Command::StageInfo(si) => {
             let config = &get_config(config, si.config.clone());
             stage_info(si, config)
+        }
+        Command::Encounters(e) => {
+            let config = &get_config(config, e.config.clone());
+            let id = ENEMY_DATA.get_id_from_name(e.name.join(" "));
+            rust_wiki::wikitext::encounters::do_thing(id, &config);
         }
         Command::Config(c) => update_config(config, c),
     }

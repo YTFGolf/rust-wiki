@@ -15,12 +15,23 @@ pub struct StageInfoOptions {
     pub config: UserConfigCli,
 }
 
+#[derive(Debug, Args, PartialEq)]
+pub struct EncountersOptions {
+    pub name: Vec<String>,
+
+    #[command(flatten)]
+    /// User config.
+    pub config: UserConfigCli,
+}
+
 #[derive(Debug, Subcommand, PartialEq)]
 /// Which program to run.
 pub enum Command {
     #[command(visible_aliases(["stage"]))]
     /// Get information about a stage.
     StageInfo(StageInfoOptions),
+
+    Encounters(EncountersOptions),
 
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.

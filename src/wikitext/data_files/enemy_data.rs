@@ -56,6 +56,15 @@ impl EnemyDataContainer {
     pub fn get_data(&self, id: u32) -> &EnemyData {
         self.data.get(&id).unwrap()
     }
+    // no docs yet because I want a warning
+    pub fn get_id_from_name(&self, name: String) -> u32 {
+        for e in self.data.iter() {
+            if e.1.name.to_lowercase() == name.to_lowercase() {
+                return *e.0;
+            }
+        }
+        unreachable!()
+    }
 }
 /// Contains enemy data.
 pub static ENEMY_DATA: EnemyDataContainer = EnemyDataContainer {
