@@ -47,12 +47,13 @@ pub struct StageData {
 
 const MAX_TYPE_ID: usize = STAGE_TYPES[STAGE_TYPES.len() - 1].number as usize;
 type StageNameMap = [Option<TypeData>; MAX_TYPE_ID + 1];
+type ContinueStagesMap = Vec<(u32, u32)>;
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
 /// Container for [STAGE_NAMES] static.
 pub struct StagePageData {
     stage_name_map: LazyLock<StageNameMap>,
-    _continue_stages: (),
+    continue_stages: LazyLock<ContinueStagesMap>,
     stage_difficulty_map: LazyLock<StageDifficultyMap>,
 }
 impl StagePageData {
@@ -73,6 +74,16 @@ impl StagePageData {
         self.stage(meta.type_num, meta.map_num, meta.stage_num)
     }
 
+    /// Get the type and map numbers from the ex map id.
+    pub fn continue_id(&self, ex_map_id: u32) -> (u32, u32) {
+        self.continue_stages[ex_map_id as usize]
+    }
+    /// Get map data from ex map id.
+    pub fn continue_map(&self, ex_map_id: u32) -> &MapData {
+        let (t, m) = self.continue_id(ex_map_id);
+        self.stage_map(t, m).unwrap()
+    }
+
     /// Get stage difficulty.
     pub fn difficulty(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&u8> {
         self.difficulty_str(&format!("{type_id:03}-{map_id:03}-{stage_id:03}"))
@@ -87,7 +98,7 @@ impl StagePageData {
 // TODO rename
 pub static STAGE_NAMES: StagePageData = StagePageData {
     stage_name_map: LazyLock::new(get_stage_name_map),
-    _continue_stages: (),
+    continue_stages: LazyLock::new(get_continue_stages_map),
     stage_difficulty_map: LazyLock::new(get_stage_difficulty_map),
 };
 
@@ -101,6 +112,15 @@ struct StageNamesLine {
     s_stage: Option<u32>,
     #[serde(rename = "Link (EN)")]
     s_link: String,
+}
+#[derive(Debug, Deserialize)]
+struct ContinueStagesLine {
+    #[serde(rename = "EX Map Name", skip)]
+    _ex_map_name: String,
+    #[serde(rename = "Type")]
+    type_num: u32,
+    #[serde(rename = "Map")]
+    map_num: u32,
 }
 #[derive(Debug, Deserialize)]
 struct StageDifficultyLine {
@@ -160,6 +180,22 @@ fn get_stage_name_map() -> StageNameMap {
     }
 
     map
+}
+
+fn get_continue_stages_map() -> ContinueStagesMap {
+    let rdr = csv::ReaderBuilder::new()
+        .has_headers(true)
+        .delimiter(b'\t')
+        .comment(Some(b'#'))
+        .from_path(get_file_location(FileLocation::WikiData).join("ContinueStages.csv"));
+
+    rdr.unwrap()
+        .deserialize::<ContinueStagesLine>()
+        .map(|c| {
+            let c = c.unwrap();
+            (c.type_num, c.map_num)
+        })
+        .collect()
 }
 
 fn get_stage_difficulty_map() -> StageDifficultyMap {
