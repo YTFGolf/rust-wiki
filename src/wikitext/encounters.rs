@@ -265,14 +265,20 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     sort_encounters(&mut encounters);
 
     let mut sections_map: Vec<(Ref, Vec<StageData<'_>>)> = Vec::new();
-
     for encounter in encounters {
-        let raw = raw_section(&encounter.meta);
-        let section = raw.section();
+        let mut raw = raw_section(&encounter.meta);
 
-        if *section.display_type() == DisplayType::Skip {
+        if *raw.section().display_type() == DisplayType::Skip {
             continue;
         }
+
+        if raw == Ref::Extra {
+            if let Some(ids) = STAGE_NAMES.continue_id(encounter.meta.map_num) {
+                let new_meta = StageMeta::from_numbers(ids.0, ids.1, 999).unwrap();
+                raw = raw_section(&new_meta);
+            };
+        }
+        let raw = raw;
 
         // - [ ] if extra use continuestages to find actual place
 
