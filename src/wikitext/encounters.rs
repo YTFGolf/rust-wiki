@@ -17,6 +17,8 @@ use chapter::{Chapter, Group, Stage};
 use order::enumerate_meta;
 use section::{DisplayType, SectionRef};
 use std::fmt::Write;
+
+use super::data_files::stage_page_data::MapData;
 type Ref = SectionRef;
 
 mod order {
@@ -139,7 +141,32 @@ fn raw_section(meta: &StageMeta) -> SectionRef {
     }
 }
 
-fn get_encounter_groups<'a>(sections_map: &'a Vec<(SectionRef, Vec<StageData<'_>>)>) -> Vec<Group<'a>> {
+/// Get a mutable reference to the item in `group_chapters` that has the same
+/// name as `stage_map`, creating it if it doesn't exist.
+fn get_group_chapter<'a, 'b>(
+    group_chapters: &'b mut Vec<Chapter<'a>>,
+    stage_map: &'a MapData,
+) -> &'b mut Chapter<'a>
+where
+    'a: 'b,
+{
+    if let Some(pos) = group_chapters
+        .iter()
+        .position(|c| c.chapter_name == stage_map.name)
+    {
+        &mut group_chapters[pos]
+    } else {
+        let chap = Chapter::new(&stage_map.name, vec![]);
+        group_chapters.push(chap);
+
+        let i = group_chapters.len() - 1;
+        &mut group_chapters[i]
+    }
+}
+
+fn get_encounter_groups<'a>(
+    sections_map: &'a Vec<(SectionRef, Vec<StageData<'_>>)>,
+) -> Vec<Group<'a>> {
     // let removed: (Ref, Vec<StageData<'_>>) = (Ref::Removed, vec![]);
     let mut groups: Vec<Group> = Vec::new();
     for map in sections_map {
@@ -161,18 +188,7 @@ fn get_encounter_groups<'a>(sections_map: &'a Vec<(SectionRef, Vec<StageData<'_>
                 .unwrap();
             // Add to removed
 
-            let chap = if let Some(pos) = group_chapters
-                .iter()
-                .position(|c| c.chapter_name == stage_map.name)
-            {
-                &mut group_chapters[pos]
-            } else {
-                let chap = Chapter::new(&stage_map.name, vec![]);
-                group_chapters.push(chap);
-
-                let i = group_chapters.len() - 1;
-                &mut group_chapters[i]
-            };
+            let chap = get_group_chapter(group_chapters, stage_map);
 
             let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
             // TODO
@@ -263,8 +279,6 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     - [ ] analyse eoc outbreaks
     */
 }
-
-
 
 // Encounter name filter or something
 // Remove all catamin stages
