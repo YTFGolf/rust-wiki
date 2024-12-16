@@ -8,82 +8,104 @@ use crate::{
         enemy::raw_encounters::get_encounters,
         stage::raw::{
             stage_data::StageData,
-            stage_metadata::{
-                consts::{StageTypeEnum as T, STAGE_TYPES},
-                StageMeta,
-            },
+            stage_metadata::{consts::StageTypeEnum as T, StageMeta},
         },
     },
     wikitext::data_files::stage_page_data::STAGE_NAMES,
 };
 use chapter::{Chapter, Group, Stage};
+use order::enumerate_meta;
 use section::{DisplayType, SectionRef};
 use std::fmt::Write;
 type Ref = SectionRef;
 
-/// Amount of individual [StageTypes][T] (count is based on enums).
-const STYPE_AMT: usize = STAGE_TYPES.len();
+mod order {
+    use crate::data::stage::raw::stage_metadata::{
+        consts::{StageTypeEnum as T, STAGE_TYPES},
+        StageMeta,
+    };
 
-/// Order of the [StageTypes][T] in Encounters section.
-const TYPE_ORDER: [T; STYPE_AMT] = [
-    T::MainChapters,
-    T::Outbreaks,
-    T::Filibuster,
-    T::AkuRealms,
-    //
-    T::SoL,
-    T::UL,
-    T::ZL,
-    //
-    T::Challenge,
-    T::Event,
-    T::Tower,
-    T::Gauntlet,
-    T::Behemoth,
-    T::Colosseum,
-    //
-    T::Labyrinth,
-    T::Collab,
-    T::CollabGauntlet,
-    T::Enigma,
-    //
-    T::Dojo,
-    T::RankingDojo,
-    T::Championships,
-    //
-    T::Catamin,
-    T::Extra,
-];
+    /// Amount of individual [StageTypes][T] (count is based on enums).
+    const STYPE_AMT: usize = STAGE_TYPES.len();
 
-/// Convert [TYPE_ORDER] to its indices. Allows [enumerate_meta] to be a
-/// constant time function.
-const fn get_type_order() -> [usize; STYPE_AMT] {
-    let mut sum = [0; STYPE_AMT];
+    /// Order of the [StageTypes][T] in Encounters section.
+    const TYPE_ORDER: [T; STYPE_AMT] = [
+        T::MainChapters,
+        T::Outbreaks,
+        T::Filibuster,
+        T::AkuRealms,
+        //
+        T::SoL,
+        T::UL,
+        T::ZL,
+        //
+        T::Challenge,
+        T::Event,
+        T::Tower,
+        T::Gauntlet,
+        T::Behemoth,
+        T::Colosseum,
+        //
+        T::Labyrinth,
+        T::Collab,
+        T::CollabGauntlet,
+        T::Enigma,
+        //
+        T::Dojo,
+        T::RankingDojo,
+        T::Championships,
+        //
+        T::Catamin,
+        T::Extra,
+    ];
 
-    let mut i = 0;
-    // for loops and iterators don't work in constant functions,
-    // but while loops do
-    while i < STYPE_AMT {
-        let t = TYPE_ORDER[i] as usize;
-        sum[t] = i;
-        i += 1;
+    /// Convert [TYPE_ORDER] to its indices. Allows [enumerate_meta] to be a
+    /// constant time function.
+    const fn get_type_order() -> [usize; STYPE_AMT] {
+        let mut sum = [0; STYPE_AMT];
+
+        let mut i = 0;
+        // for loops and iterators don't work in constant functions,
+        // but while loops do
+        while i < STYPE_AMT {
+            let t = TYPE_ORDER[i] as usize;
+            sum[t] = i;
+            i += 1;
+        }
+
+        sum
     }
 
-    sum
-}
+    /// Order indices using the [usize] value of [StageTypeEnum][T].
+    ///
+    /// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
+    /// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
+    // Making the above a doctest would cause problems with visibility so it's
+    // easier to just write this here. Hopefully this behaviour doesn't ever need to
+    // change, at least not MainChapters being first.
+    const TYPE_ORDER_INDICES: [usize; STYPE_AMT] = get_type_order();
 
-/// Order indices using the [usize] value of [StageTypeEnum][T].
-///
-/// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
-/// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
-// Making the above a doctest would cause problems with visibility so it's
-// easier to just write this here. Hopefully this behaviour doesn't ever need to
-// change, at least not MainChapters being first.
-const TYPE_ORDER_INDICES: [usize; STYPE_AMT] = get_type_order();
+    /// Enumerate a [StageMeta] object for use in comparisons.
+    pub const fn enumerate_meta(meta: &StageMeta) -> usize {
+        TYPE_ORDER_INDICES[meta.type_enum as usize]
+    }
 
-/// Enumerate a [StageMeta] object for use in comparisons.
-const fn enumerate_meta(meta: &StageMeta) -> usize {
-    TYPE_ORDER_INDICES[meta.type_enum as usize]
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn test_type_order() {
+            assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
+            for stype in STAGE_TYPES {
+                assert!(
+                    TYPE_ORDER.contains(&stype.type_enum),
+                    "Type order array does not contain variant {:?}",
+                    stype.type_enum
+                );
+            }
+        }
+    }
 }
 
 fn sort_encounters(encounters: Vec<StageData>) -> Vec<StageData<'_>> {
@@ -268,20 +290,3 @@ Other things:
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically
 */
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_type_order() {
-        assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
-        for stype in STAGE_TYPES {
-            assert!(
-                TYPE_ORDER.contains(&stype.type_enum),
-                "Type order array does not contain variant {:?}",
-                stype.type_enum
-            );
-        }
-    }
-}
