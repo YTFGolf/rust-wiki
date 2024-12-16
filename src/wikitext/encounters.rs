@@ -139,40 +139,10 @@ fn raw_section(meta: &StageMeta) -> SectionRef {
     }
 }
 
-/// temp
-pub fn do_thing(wiki_id: u32, config: &Config) {
-    let abs_enemy_id = wiki_id + 2;
-    let encounters = get_encounters(abs_enemy_id, &config.current_version);
-    let encounters = sort_encounters(encounters);
-
-    // println!("{:?}", encounters);
-
-    // iterate
-    // if skip continue
-    // let a = Ref::AkuRealms;
-    // a.section();
-    let mut sections_map: Vec<(Ref, Vec<StageData<'_>>)> = Vec::new();
-
-    for encounter in encounters {
-        let raw = raw_section(&encounter.meta);
-        let section = raw.section();
-
-        if *section.display_type() == DisplayType::Skip {
-            continue;
-        }
-
-        // - [ ] if extra use continuestages to find actual place
-
-        if let Some(pos) = sections_map.iter().position(|(r, _)| *r == raw) {
-            sections_map[pos].1.push(encounter);
-        } else {
-            sections_map.push((raw, vec![encounter]))
-        };
-    }
-
+fn get_encounter_groups<'a>(sections_map: &'a Vec<(SectionRef, Vec<StageData<'_>>)>) -> Vec<Group<'a>> {
     // let removed: (Ref, Vec<StageData<'_>>) = (Ref::Removed, vec![]);
     let mut groups: Vec<Group> = Vec::new();
-    for map in sections_map.iter() {
+    for map in sections_map {
         if map.1.is_empty() {
             continue;
         }
@@ -213,6 +183,42 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
 
         groups.push(group);
     }
+
+    groups
+}
+
+/// temp
+pub fn do_thing(wiki_id: u32, config: &Config) {
+    let abs_enemy_id = wiki_id + 2;
+    let encounters = get_encounters(abs_enemy_id, &config.current_version);
+    let encounters = sort_encounters(encounters);
+
+    // println!("{:?}", encounters);
+
+    // iterate
+    // if skip continue
+    // let a = Ref::AkuRealms;
+    // a.section();
+    let mut sections_map: Vec<(Ref, Vec<StageData<'_>>)> = Vec::new();
+
+    for encounter in encounters {
+        let raw = raw_section(&encounter.meta);
+        let section = raw.section();
+
+        if *section.display_type() == DisplayType::Skip {
+            continue;
+        }
+
+        // - [ ] if extra use continuestages to find actual place
+
+        if let Some(pos) = sections_map.iter().position(|(r, _)| *r == raw) {
+            sections_map[pos].1.push(encounter);
+        } else {
+            sections_map.push((raw, vec![encounter]))
+        };
+    }
+
+    let groups = get_encounter_groups(&sections_map);
 
     let mut buf = String::from("==Encounters==\n{{Collapsible}}");
     for group in groups {
@@ -257,6 +263,8 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     - [ ] analyse eoc outbreaks
     */
 }
+
+
 
 // Encounter name filter or something
 // Remove all catamin stages
