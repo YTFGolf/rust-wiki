@@ -80,10 +80,9 @@ mod order {
     ///
     /// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
     /// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
-    // Making the above a doctest would cause problems with visibility so it's
-    // easier to just write this here. Hopefully this behaviour doesn't ever need to
-    // change, at least not MainChapters being first.
     const TYPE_ORDER_INDICES: [usize; STYPE_AMT] = get_type_order();
+    // doctest would cause visibility nightmares so just use const assert
+    const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
 
     /// Enumerate a [StageMeta] object for use in comparisons.
     pub const fn enumerate_meta(meta: &StageMeta) -> usize {
