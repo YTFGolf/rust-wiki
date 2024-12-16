@@ -2,23 +2,27 @@
 
 pub mod chapter;
 pub mod section;
+use super::data_files::stage_page_data::MapData;
 use crate::{
     config::Config,
     data::{
         enemy::raw_encounters::get_encounters,
-        stage::raw::{
-            stage_data::StageData,
-            stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+        stage::{
+            parsed::stage_enemy::StageEnemy,
+            raw::{
+                stage_data::StageData,
+                stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+            },
         },
     },
     wikitext::data_files::stage_page_data::STAGE_NAMES,
 };
 use chapter::{Chapter, Group, Stage};
+use either::Either::{Left, Right};
+use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use section::{DisplayType, SectionRef};
 use std::fmt::Write;
-
-use super::data_files::stage_page_data::MapData;
 type Ref = SectionRef;
 
 mod order {
@@ -164,8 +168,51 @@ where
     }
 }
 
+fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
+    if stage.meta.type_enum == T::MainChapters && stage.meta.map_num == 0 {
+        return "".to_string();
+    };
+
+    let mut mags = vec![];
+    for enemy in stage.stage_csv_data.enemies.iter() {
+        if enemy.num == abs_enemy_id {
+            mags.push(StageEnemy::get_magnification(enemy))
+        }
+    }
+    // fn enum_mag(mag: Magnification) -> (u8, u32) {
+    //     match mag {
+    //         Left(n) => (0, n),
+    //         Right((n, _)) => (1, n),
+    //     }
+    // }
+    // fn cmp_mag(m1: Magnification, m2: Magnification) -> Ordering {
+    //     enum_mag(m1).cmp(&enum_mag(m2))
+    // }
+
+    mags.sort();
+    mags.dedup();
+
+    let mut buf = String::from("(");
+    for mag in mags {
+        match mag {
+            Left(n) => {
+                buf.write_formatted(&n, &Locale::en).unwrap();
+                buf += "%";
+            }
+            Right(_) => todo!(),
+        }
+
+        buf += ", ";
+    }
+    buf.truncate(buf.len() - ", ".len());
+    buf += ")";
+
+    buf
+}
+
 fn get_encounter_groups<'a>(
     sections_map: &'a Vec<(SectionRef, Vec<StageData<'_>>)>,
+    abs_enemy_id: u32,
 ) -> Vec<Group<'a>> {
     // let removed: (Ref, Vec<StageData<'_>>) = (Ref::Removed, vec![]);
     let mut groups: Vec<Group> = Vec::new();
@@ -191,8 +238,7 @@ fn get_encounter_groups<'a>(
             let chap = get_group_chapter(group_chapters, stage_map);
 
             let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
-            // TODO
-            let mags = "".to_string();
+            let mags = get_stage_mags(stage, abs_enemy_id);
             chap.stages
                 .push(Stage::new(&stage_name.name, mags, &stage.meta));
         }
@@ -234,7 +280,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         };
     }
 
-    let groups = get_encounter_groups(&sections_map);
+    let groups = get_encounter_groups(&sections_map, abs_enemy_id);
 
     let mut buf = String::from("==Encounters==\n{{Collapsible}}");
     for group in groups {

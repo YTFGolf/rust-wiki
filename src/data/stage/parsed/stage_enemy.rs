@@ -111,7 +111,7 @@ impl StageEnemy {
     }
 
     /// Get enemy magnification.
-    fn get_magnification(old: &StageEnemyCSV) -> Magnification {
+    pub fn get_magnification(old: &StageEnemyCSV) -> Magnification {
         let hpmag = old.magnification.unwrap_or(100);
         // 100 is for EoC
         match old.attack_magnification {
