@@ -27,7 +27,7 @@ fn main() {
         }
         Command::Encounters(e) => {
             let config = &get_config(config, e.config.clone());
-            let id = ENEMY_DATA.get_id_from_name(e.name.join(" "));
+            let id = ENEMY_DATA.get_id_from_name(&e.name.join(" "));
             rust_wiki::wikitext::encounters::do_thing(id, &config);
         }
         Command::Config(c) => update_config(config, c),

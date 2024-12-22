@@ -21,6 +21,7 @@ pub struct EnemyName {
 /// Enemy data.
 pub struct EnemyData {
     #[serde(rename = "Image")]
+    /// Can use this as id.
     _image: u32,
     #[serde(rename = "Name")]
     /// Common name.
@@ -41,6 +42,8 @@ pub struct EnemyDataContainer {
     names: LazyLock<Vec<EnemyName>>,
     /// Doge = 0.
     data: LazyLock<HashMap<u32, EnemyData>>,
+    /// Doge = 0.
+    reverse_id_map: LazyLock<HashMap<String, u32>>,
 }
 impl EnemyDataContainer {
     /// Get the singular and plural names of an enemy based on their wiki id
@@ -56,20 +59,16 @@ impl EnemyDataContainer {
     pub fn get_data(&self, id: u32) -> &EnemyData {
         self.data.get(&id).unwrap()
     }
-    // no docs yet because I want a warning
-    pub fn get_id_from_name(&self, name: String) -> u32 {
-        for e in self.data.iter() {
-            if e.1.name.to_lowercase() == name.to_lowercase() {
-                return *e.0;
-            }
-        }
-        unreachable!()
+    /// Get unit's id from name. Case-insensitive. Uses common name.
+    pub fn get_id_from_name(&self, name: &str) -> u32 {
+        *self.reverse_id_map.get(&name.to_lowercase()).unwrap()
     }
 }
 /// Contains enemy data.
 pub static ENEMY_DATA: EnemyDataContainer = EnemyDataContainer {
     names: LazyLock::new(get_enemy_names),
     data: LazyLock::new(get_enemy_data),
+    reverse_id_map: LazyLock::new(get_reverse_map),
 };
 
 fn get_enemy_names() -> Vec<EnemyName> {
@@ -93,6 +92,19 @@ fn get_enemy_data() -> HashMap<u32, EnemyData> {
         .map(|r| {
             let enemy: EnemyData = r.unwrap();
             (enemy._image, enemy)
+        })
+        .collect()
+}
+fn get_reverse_map() -> HashMap<String, u32> {
+    let rdr = csv::ReaderBuilder::new()
+        .delimiter(b'\t')
+        .from_path(get_file_location(FileLocation::WikiData).join("EnemyNames.csv"));
+
+    rdr.unwrap()
+        .deserialize::<EnemyData>()
+        .map(|r| {
+            let enemy: EnemyData = r.unwrap();
+            (enemy.name.to_lowercase(), enemy._image)
         })
         .collect()
 }
@@ -147,5 +159,28 @@ mod tests {
 
         let doge = ENEMY_DATA.get_data(0);
         assert_eq!(doge.link, None);
+    }
+
+    #[test]
+    fn test_reverse_map() {
+        let id = 0;
+        let name = "Doge";
+        assert_eq!(ENEMY_DATA.get_id_from_name(name), id);
+
+        let id = 21;
+        let name = "Ms. Sign";
+        assert_eq!(ENEMY_DATA.get_id_from_name(name), id);
+
+        let id = 644;
+        let name = "644";
+        assert_eq!(ENEMY_DATA.get_id_from_name(name), id);
+    }
+
+    #[test]
+    fn test_case_reverse_map() {
+        assert_eq!(
+            ENEMY_DATA.get_id_from_name("ms. sign"),
+            ENEMY_DATA.get_id_from_name("MS. SIGN")
+        );
     }
 }
