@@ -2,7 +2,21 @@
 
 use crate::data::stage::raw::stage_data::StageData;
 
-/// Does the stage contain the given enemy.
+/// Does the stage contain the given enemy. Useful for filter operations.
+///
+/// ```rust,no_run
+/// # use rust_wiki::data::enemy::raw_encounters::stage_contains_enemy;
+/// # use rust_wiki::data::stage::get_stages;
+/// # use rust_wiki::data::version::Version;
+/// # let version = Version::new("~", "en", "1.0".to_string()).unwrap();
+/// let abs_enemy_id = 2;
+/// let all_stages = get_stages(&version).collect::<Vec<_>>();
+///
+/// let encounters_iter = all_stages
+///     .iter()
+///     .filter(|s| stage_contains_enemy(abs_enemy_id, s));
+/// let encounters = encounters_iter.collect::<Vec<_>>();
+/// ```
 pub fn stage_contains_enemy(abs_enemy_id: u32, stage: &StageData) -> bool {
     stage
         .stage_csv_data
@@ -10,19 +24,3 @@ pub fn stage_contains_enemy(abs_enemy_id: u32, stage: &StageData) -> bool {
         .iter()
         .any(|e| e.num == abs_enemy_id)
 }
-
-/// Filter an iterator over stages by whether it contains the absolute enemy id.
-pub fn filter_encounters<'a: 'b, 'b, I>(
-    abs_enemy_id: u32,
-    encounters: I,
-) -> impl Iterator<Item = &'b StageData<'a>>
-where
-    I: Iterator<Item = &'b StageData<'a>>,
-{
-    encounters.filter(move |stage_data| stage_contains_enemy(abs_enemy_id, &stage_data))
-}
-
-/*
-Due to how the encounters section is constantly evolving, this module cannot be
-tested any other way than empirically.
-*/

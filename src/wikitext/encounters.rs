@@ -5,14 +5,17 @@ pub mod section;
 use super::data_files::stage_page_data::MapData;
 use crate::{
     config::Config,
-    data::{enemy::raw_encounters::filter_encounters, stage::{
-        get_stages,
-        parsed::stage_enemy::StageEnemy,
-        raw::{
-            stage_data::StageData,
-            stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+    data::{
+        enemy::raw_encounters::stage_contains_enemy,
+        stage::{
+            get_stages,
+            parsed::stage_enemy::StageEnemy,
+            raw::{
+                stage_data::StageData,
+                stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+            },
         },
-    }},
+    },
     wikitext::data_files::stage_page_data::STAGE_NAMES,
 };
 use chapter::{Chapter, Group, Stage};
@@ -260,8 +263,12 @@ fn get_encounter_groups<'a>(
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
 
-    let encounters = get_stages(&config.current_version).collect::<Vec<_>>();
-    let mut encounters = filter_encounters(abs_enemy_id, encounters.iter()).collect::<Vec<_>>();
+    let all_stages = get_stages(&config.current_version).collect::<Vec<_>>();
+
+    let mut encounters = all_stages
+        .iter()
+        .filter(|s| stage_contains_enemy(abs_enemy_id, s))
+        .collect::<Vec<_>>();
     sort_encounters(&mut encounters);
 
     let mut sections_map: Vec<(Ref, Vec<&StageData<'_>>)> = Vec::new();
@@ -345,6 +352,9 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
 // removed is done just by string search
 
 /*
+Due to how the encounters section is constantly evolving, this module cannot be
+tested any other way than empirically.
+
 # Flow
 ## Wikitext
 - Order stages + sort out extra stages
