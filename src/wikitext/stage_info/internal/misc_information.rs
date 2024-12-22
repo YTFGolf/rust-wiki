@@ -343,16 +343,16 @@ mod tests {
 
     #[test]
     fn test_ex_invasion() {
-        let 薩摩芋国 = Stage::new_current("s 385 0").unwrap();
-        let data = get_stage_wiki_data(&薩摩芋国);
+        let sweet_potato_province = Stage::new_current("s 385 0").unwrap();
+        let data = get_stage_wiki_data(&sweet_potato_province);
         assert_eq!(
-            stage_nav(&薩摩芋国, &data),
+            stage_nav(&sweet_potato_province, &data),
             vec![
                 TemplateParameter::new("prev stage", "N/A".to_string()),
                 TemplateParameter::new(
                     "next stage",
-                    "[[阿火山国]]<br>\n\
-                    [[わんこの乱 (薩摩芋国)|わんこの乱]] (''Invasion Stage'')"
+                    "[[Volcano Province]]<br>\n\
+                    [[Doge Disturbance (Sweet Potato Province)|Doge Disturbance]] (''Invasion Stage'')"
                         .to_string()
                 )
             ]
