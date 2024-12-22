@@ -224,26 +224,14 @@ mod tests {
 
     #[test]
     fn assert_continue_stages_name_is_correct() {
-        // let mut max_index = 0
-        //  = &STAGE_NAMES.stage_name_map[4].as_ref().unwrap().maps.keys();
-        // let mut max_index = 0;
-        // for i in 0.. {
-        //     let d = Stage::new_current(&format!("4 {i} 0"));
-        //     match d {
-        //         None => break,
-        //         Some(_) => max_index = i,
-        //     }
-        // }
-
-        // for i in 0..max_index {
-        //     let map = STAGE_NAMES
-        //         .stage_map(4, i)
-        //         .unwrap_or_else(|| panic!("Map name data does not exist for ex map {i}."));
-
-        //     let a = STAGE_NAMES.continue_stages[i as usize].;
-        //     panic!("{a:?}, {map:?}")
-        // }
-
+        let mut max_index = 0;
+        for i in 0.. {
+            let d = Stage::new_current(&format!("4 {i} 0"));
+            match d {
+                None => break,
+                Some(_) => max_index = i,
+            }
+        }
         let rdr = csv::ReaderBuilder::new()
             .has_headers(true)
             .delimiter(b',')
@@ -262,5 +250,7 @@ mod tests {
             assert_eq!(real_map_name, continue_map_name, "Error on map {i}:");
             i += 1;
         }
+
+        assert_eq!(max_index, i - 1, "Not all ex stages are in ContinueStages!")
     }
 }
