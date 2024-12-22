@@ -165,15 +165,15 @@ mod tests {
     fn test_reverse_map() {
         let id = 0;
         let name = "Doge";
-        assert_eq!(ENEMY_DATA.get_id_from_name(name).unwrap(), &id);
+        assert_eq!(*ENEMY_DATA.get_id_from_name(name).unwrap(), id);
 
         let id = 21;
         let name = "Ms. Sign";
-        assert_eq!(ENEMY_DATA.get_id_from_name(name).unwrap(), &id);
+        assert_eq!(*ENEMY_DATA.get_id_from_name(name).unwrap(), id);
 
         let id = 644;
         let name = "644";
-        assert_eq!(ENEMY_DATA.get_id_from_name(name).unwrap(), &id);
+        assert_eq!(*ENEMY_DATA.get_id_from_name(name).unwrap(), id);
     }
 
     #[test]
