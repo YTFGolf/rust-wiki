@@ -60,8 +60,8 @@ impl EnemyDataContainer {
         self.data.get(&id).unwrap()
     }
     /// Get unit's id from name. Case-insensitive. Uses common name.
-    pub fn get_id_from_name(&self, name: &str) -> u32 {
-        *self.reverse_id_map.get(&name.to_lowercase()).unwrap()
+    pub fn get_id_from_name(&self, name: &str) -> Option<&u32> {
+        self.reverse_id_map.get(&name.to_lowercase())
     }
 }
 /// Contains enemy data.
@@ -165,15 +165,15 @@ mod tests {
     fn test_reverse_map() {
         let id = 0;
         let name = "Doge";
-        assert_eq!(ENEMY_DATA.get_id_from_name(name), id);
+        assert_eq!(ENEMY_DATA.get_id_from_name(name).unwrap(), &id);
 
         let id = 21;
         let name = "Ms. Sign";
-        assert_eq!(ENEMY_DATA.get_id_from_name(name), id);
+        assert_eq!(ENEMY_DATA.get_id_from_name(name).unwrap(), &id);
 
         let id = 644;
         let name = "644";
-        assert_eq!(ENEMY_DATA.get_id_from_name(name), id);
+        assert_eq!(ENEMY_DATA.get_id_from_name(name).unwrap(), &id);
     }
 
     #[test]

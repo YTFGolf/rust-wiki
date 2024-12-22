@@ -16,8 +16,10 @@ pub struct StageInfoOptions {
 }
 
 #[derive(Debug, Args, PartialEq)]
+/// Encounters options.
 pub struct EncountersOptions {
-    pub name: Vec<String>,
+    /// Which units to get encounters for.
+    pub names: Vec<String>,
 
     #[command(flatten)]
     /// User config.
@@ -31,6 +33,7 @@ pub enum Command {
     /// Get information about a stage.
     StageInfo(StageInfoOptions),
 
+    /// Get a list of stages certain enemies appear in.
     Encounters(EncountersOptions),
 
     #[command(visible_aliases(["wiki", "get"]))]
