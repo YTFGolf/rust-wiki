@@ -341,23 +341,15 @@ impl Stage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::DEFAULT_CONFIG;
-    use regex::Regex;
+    use crate::{config::DEFAULT_CONFIG, data::stage::get_stages};
 
     // test none values, esp. with crown data
 
     #[test]
     #[ignore]
     fn get_all() {
-        let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
-        for f in
-            std::fs::read_dir(&DEFAULT_CONFIG.current_version.get_file_path("DataLocal")).unwrap()
-        {
-            let file_name = f.unwrap().file_name().into_string().unwrap();
-            if !stage_file_re.is_match(&file_name) {
-                continue;
-            };
-            let _stage = Stage::new_current(&file_name).unwrap();
+        for stage in get_stages(&DEFAULT_CONFIG.current_version) {
+            let _stage: Stage = stage.into();
         }
     }
 
