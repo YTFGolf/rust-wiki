@@ -5,16 +5,14 @@ pub mod section;
 use super::data_files::stage_page_data::MapData;
 use crate::{
     config::Config,
-    data::{
-        enemy::raw_encounters::get_encounters,
-        stage::{
-            parsed::stage_enemy::StageEnemy,
-            raw::{
-                stage_data::StageData,
-                stage_metadata::{consts::StageTypeEnum as T, StageMeta},
-            },
+    data::{enemy::raw_encounters::filter_encounters, stage::{
+        get_stages,
+        parsed::stage_enemy::StageEnemy,
+        raw::{
+            stage_data::StageData,
+            stage_metadata::{consts::StageTypeEnum as T, StageMeta},
         },
-    },
+    }},
     wikitext::data_files::stage_page_data::STAGE_NAMES,
 };
 use chapter::{Chapter, Group, Stage};
@@ -113,7 +111,7 @@ mod order {
     }
 }
 
-fn key(meta: &StageMeta) -> (usize, u32, u32)  {
+fn key(meta: &StageMeta) -> (usize, u32, u32) {
     let m = match meta.type_enum {
         T::Extra => match STAGE_NAMES.continue_id(meta.map_num) {
             None => meta,
@@ -124,7 +122,7 @@ fn key(meta: &StageMeta) -> (usize, u32, u32)  {
     (enumerate_meta(m), m.map_num, m.stage_num)
 }
 
-fn sort_encounters(encounters: &mut Vec<StageData>) {
+fn sort_encounters(encounters: &mut Vec<&StageData>) {
     encounters.sort_by(|s, o| key(&s.meta).cmp(&key(&o.meta)));
 }
 
@@ -220,7 +218,7 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
 }
 
 fn get_encounter_groups<'a>(
-    sections_map: &'a Vec<(SectionRef, Vec<StageData<'_>>)>,
+    sections_map: &'a Vec<(SectionRef, Vec<&StageData<'_>>)>,
     abs_enemy_id: u32,
 ) -> Vec<Group<'a>> {
     // let removed: (Ref, Vec<StageData<'_>>) = (Ref::Removed, vec![]);
@@ -261,10 +259,12 @@ fn get_encounter_groups<'a>(
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
-    let mut encounters = get_encounters(abs_enemy_id, &config.current_version);
+
+    let encounters = get_stages(&config.current_version).collect::<Vec<_>>();
+    let mut encounters = filter_encounters(abs_enemy_id, encounters.iter()).collect::<Vec<_>>();
     sort_encounters(&mut encounters);
 
-    let mut sections_map: Vec<(Ref, Vec<StageData<'_>>)> = Vec::new();
+    let mut sections_map: Vec<(Ref, Vec<&StageData<'_>>)> = Vec::new();
     for encounter in encounters {
         let mut raw = raw_section(&encounter.meta);
 
