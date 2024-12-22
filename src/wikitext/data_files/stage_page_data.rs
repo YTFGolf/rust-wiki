@@ -216,3 +216,51 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
         })
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::data::stage::parsed::stage::Stage;
+
+    #[test]
+    fn assert_continue_stages_name_is_correct() {
+        // let mut max_index = 0
+        //  = &STAGE_NAMES.stage_name_map[4].as_ref().unwrap().maps.keys();
+        // let mut max_index = 0;
+        // for i in 0.. {
+        //     let d = Stage::new_current(&format!("4 {i} 0"));
+        //     match d {
+        //         None => break,
+        //         Some(_) => max_index = i,
+        //     }
+        // }
+
+        // for i in 0..max_index {
+        //     let map = STAGE_NAMES
+        //         .stage_map(4, i)
+        //         .unwrap_or_else(|| panic!("Map name data does not exist for ex map {i}."));
+
+        //     let a = STAGE_NAMES.continue_stages[i as usize].;
+        //     panic!("{a:?}, {map:?}")
+        // }
+
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(true)
+            .delimiter(b',')
+            .from_path(get_file_location(FileLocation::WikiData).join("ContinueStages.csv"));
+
+        let mut i = 0;
+        for record in rdr.unwrap().records() {
+            let result = record.as_ref().unwrap();
+            let continue_map_name = &result[0];
+
+            let map_data = STAGE_NAMES
+                .stage_map(4, i)
+                .unwrap_or_else(|| panic!("Map name data does not exist for ex map {i}."));
+            let real_map_name = &map_data.name;
+
+            assert_eq!(real_map_name, continue_map_name, "Error on map {i}:");
+            i += 1;
+        }
+    }
+}
