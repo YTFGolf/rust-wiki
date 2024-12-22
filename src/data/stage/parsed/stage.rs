@@ -327,7 +327,7 @@ fn u8_to_bool(n: u8) -> bool {
 impl Stage {
     /// Create a new stage object from `selector`.
     pub fn new(selector: &str, version: &Version) -> Option<Self> {
-        Some(StageData::new(selector, version)?.into())
+        Some(StageData::new(selector, version).ok()?.into())
     }
 
     /// Create a new stage object from `selector` in current version.

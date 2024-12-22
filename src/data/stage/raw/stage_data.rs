@@ -13,7 +13,11 @@ use crate::data::{
 };
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
-use std::{fs::File, io::BufReader, path::PathBuf};
+use std::{
+    fs::File,
+    io::{self, BufReader},
+    path::PathBuf,
+};
 
 /// Types to deserialise csv files.
 pub mod csv_types {
@@ -122,11 +126,18 @@ pub struct StageData<'a> {
     version: &'a Version,
 }
 
+#[derive(Debug)]
+/// Error when creating [StageData].
+pub enum StageDataError {
+    /// Error opening file given.
+    IOError(io::Error),
+    /// Selector doesn't work.
+    InvalidSelector,
+}
+
 impl<'a> StageData<'_> {
     /// Create new StageData object.
-    pub fn new(selector: &str, version: &'a Version) -> Option<StageData<'a>> {
-        // FIXME there is no reason for this to be an option, other than
-        // removing that would require some more editing
+    pub fn new(selector: &str, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
         let meta = match StageMeta::new(selector) {
             Some(meta) => meta,
             None => panic!("Invalid selector: {selector:?}"),
@@ -134,14 +145,13 @@ impl<'a> StageData<'_> {
 
         let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
         let reader = BufReader::new(
-            File::open(version.get_file_path(&stage_file))
-                .unwrap_or_else(|e| panic!("Error opening {stage_file:?}: {e:?}")),
+            File::open(version.get_file_path(&stage_file)).map_err(StageDataError::IOError)?,
         );
 
         let stage_file_reader = reader;
         let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
-        Some(StageData {
+        Ok(StageData {
             meta,
             stage_csv_data,
             version,
