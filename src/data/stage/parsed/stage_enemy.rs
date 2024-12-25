@@ -118,8 +118,19 @@ impl StageEnemy {
             None => Left(hpmag),
             Some(a) => match a {
                 0 => Left(hpmag),
-                _ => Right((hpmag, a)),
+                _ => {
+                    if hpmag == a {
+                        Left(hpmag)
+                    } else {
+                        Right((hpmag, a))
+                    }
+                }
             },
         }
     }
 }
+
+// Test get magnification
+// standard
+// is same
+// normal hp/ap
