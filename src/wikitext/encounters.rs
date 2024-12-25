@@ -384,6 +384,10 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
             heading = group.section.heading()
         )
         .unwrap();
+        if group.section.heading() == "[[Empire of Cats]]" {
+            buf += "Strength magnifications are 100% in Chapter 1, 150% in \
+                    Chapter 2, and 400% in Chapter 3.\n"
+        }
 
         for mut chapter in group.chapters {
             if chapter.stages.is_empty() {
@@ -439,12 +443,6 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     println!("{buf}");
 
     /*
-    - [x] Go through each section
-      - [x] for each chapter:
-        - [ ] remove dupes
-        - [x] get mags
-        - [x] format section
-
     ## extensions
     - [ ] analyse all stages to see if has same mag in all
     - [ ] analyse eoc outbreaks
