@@ -28,12 +28,12 @@ fn main() {
         Command::Encounters(e) => {
             let config = &get_config(config, e.config.clone());
             let name_or_id = &e.names[0];
-            let id = match ENEMY_DATA.get_id_from_name(&name_or_id) {
+            let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
                 None => name_or_id.parse().unwrap(),
                 Some(id) => *id,
             };
 
-            rust_wiki::wikitext::encounters::do_thing(id, &config);
+            rust_wiki::wikitext::encounters::do_thing(id, config);
         }
         Command::Config(c) => update_config(config, c),
     }
