@@ -16,7 +16,7 @@ use crate::{
             },
         },
     },
-    wikitext::data_files::stage_page_data::STAGE_NAMES,
+    wikitext::{data_files::stage_page_data::STAGE_NAMES, wiki_utils::REGEXES},
 };
 use chapter::{Chapter, Group, Stage};
 use either::Either::{Left, Right};
@@ -220,43 +220,55 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     buf
 }
 
+/// Group section map into encounter [Groups][Group].
 fn get_encounter_groups<'a>(
-    sections_map: &'a Vec<(SectionRef, Vec<&StageData<'_>>)>,
+    sections_map: &[(SectionRef, Vec<&'a StageData<'_>>)],
     abs_enemy_id: u32,
 ) -> Vec<Group<'a>> {
-    // let removed: (Ref, Vec<StageData<'_>>) = (Ref::Removed, vec![]);
+    let mut removed = (Ref::Removed, vec![]);
     let mut groups: Vec<Group> = Vec::new();
     for map in sections_map {
         if map.1.is_empty() {
             continue;
         }
-
-        let section = map.0.section();
-        if *section.display_type() == DisplayType::Warn {
-            eprintln!("Warning: {:?} stages encountered.", map.1[0].meta.type_enum);
-            // TODO log warning
-        }
-
-        let mut group = Group::new(section, vec![]);
-        let group_chapters = &mut group.chapters;
-        for stage in map.1.iter() {
-            let stage_map = STAGE_NAMES
-                .stage_map(stage.meta.type_num, stage.meta.map_num)
-                .unwrap();
-            // Add to removed
-
-            let chap = get_group_chapter(group_chapters, stage_map);
-
-            let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
-            let mags = get_stage_mags(stage, abs_enemy_id);
-            chap.stages
-                .push(Stage::new(&stage_name.name, mags, &stage.meta));
-        }
-
+        let group = get_group(abs_enemy_id, map, &mut removed.1, true);
         groups.push(group);
     }
 
     groups
+}
+
+fn get_group<'a: 'b, 'b>(
+    abs_enemy_id: u32,
+    map: &'b (SectionRef, Vec<&'a StageData<'_>>),
+    _removed_vec: &mut Vec<&'a StageData<'_>>,
+    add_to_removed: bool,
+) -> Group<'a> {
+    let section = map.0.section();
+    if *section.display_type() == DisplayType::Warn {
+        eprintln!("Warning: {:?} stages encountered.", map.1[0].meta.type_enum);
+        // TODO log warning
+    }
+
+    let mut group = Group::new(section, vec![]);
+    let group_chapters = &mut group.chapters;
+    for stage in map.1.iter() {
+        let stage_map = STAGE_NAMES
+            .stage_map(stage.meta.type_num, stage.meta.map_num)
+            .unwrap();
+
+        // if add_to_removed && REGEXES.old_or_removed_detect.is_match(&stage_map.name) {
+        //     println!("{stage_map:?}")
+        // }
+
+        let chap = get_group_chapter(group_chapters, stage_map);
+
+        let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
+        let mags = get_stage_mags(stage, abs_enemy_id);
+        chap.stages
+            .push(Stage::new(&stage_name.name, mags, &stage.meta));
+    }
+    group
 }
 
 /// Map [SectionRefs][SectionRef] to a list of [StageData].
@@ -278,8 +290,6 @@ fn get_section_map<'a>(
             };
         }
         let raw = raw;
-
-        // - [ ] if extra use continuestages to find actual place
 
         if let Some(pos) = sections_map.iter().position(|(r, _)| *r == raw) {
             sections_map[pos].1.push(encounter);
