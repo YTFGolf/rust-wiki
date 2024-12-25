@@ -365,9 +365,11 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         .unwrap();
 
         for chapter in group.chapters {
-            // if chapter.stages.is_empty() {
-            //     continue;
-            // }
+            if chapter.stages.is_empty() {
+                eprintln!("Warning: {:?} has no valid stages.", chapter.chapter_name);
+                // TODO warn macro
+                continue;
+            }
             group.section.fmt_chapter(&mut buf, chapter);
             buf += "\n";
         }
