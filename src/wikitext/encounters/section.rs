@@ -1,7 +1,10 @@
 //! Deals with sections of encounters.
 
 use super::chapter::Chapter;
-use crate::data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta};
+use crate::{
+    data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+    wikitext::data_files::stage_page_data::STAGE_NAMES,
+};
 use std::fmt::Write;
 
 #[derive(Debug, PartialEq)]
@@ -161,7 +164,19 @@ impl EncountersSection {
                 // the moment
                 for stage in chapter.stages {
                     *buf += "*";
-                    self.fmt_encounter(buf, stage.meta, stage.stage_name, &stage.mags);
+
+                    let meta = match stage.meta.type_enum {
+                        T::Extra => {
+                            if let Some(ids) = STAGE_NAMES.continue_id(stage.meta.map_num) {
+                                &StageMeta::from_numbers(ids.0, ids.1, 999).unwrap()
+                            } else {
+                                todo!()
+                            }
+                        }
+                        _ => stage.meta,
+                    };
+
+                    self.fmt_encounter(buf, meta, stage.stage_name, &stage.mags);
                     *buf += "\n"
                 }
                 buf.pop();
