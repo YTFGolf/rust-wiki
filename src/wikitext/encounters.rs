@@ -21,6 +21,7 @@ use chapter::{Chapter, Group, Stage};
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
+use regex::Regex;
 use section::{DisplayType, SectionRef};
 use std::{borrow::Cow, fmt::Write};
 type Ref = SectionRef;
@@ -380,6 +381,39 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         }
     }
     buf += "</div>";
+
+    let percentage_pattern = r" \([\d,%\s]+%\)\n";
+    let re = Regex::new(percentage_pattern).unwrap();
+    // This should probably be done in the actual code but oh well
+
+    let map = re
+        .find_iter(&buf)
+        .map(|c| c.as_str())
+        .collect::<HashSet<&str>>();
+
+    let diff_mags = r"\([\d,%\s]+% HP/[\d,%\s]+% AP\)\n";
+    let re = Regex::new(diff_mags).unwrap();
+
+    let diff_map = re
+        .find_iter(&buf)
+        .map(|c| c.as_str())
+        .collect::<HashSet<&str>>();
+
+    if map.len() == 1 && diff_map.is_empty() {
+        let mag = map.iter().next().unwrap().to_string();
+        buf = buf.replace(&mag, "\n");
+
+        let matched: &(&str, [&str; 1]) = &Regex::new(r"\((.*)\)\n$")
+            .unwrap()
+            .captures(&mag)
+            .unwrap()
+            .extract();
+        let percentage = matched.1[0];
+
+        let repl = "{{Collapsible}}".to_string()
+            + &format!("\nThis enemy has always appeared at {percentage} strength magnification.");
+        buf = buf.replace("{{Collapsible}}", &repl)
+    }
 
     println!("{buf}");
 
