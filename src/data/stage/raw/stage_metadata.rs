@@ -533,7 +533,7 @@ impl StageMeta {
 
                     type_num = 20 + ((chap_num - 1) / 3);
                     let map_num = (chap_num - 1) % 3;
-                    let stage_num = selector[2].parse::<u32>().unwrap();
+                    let mut stage_num = selector[2].parse::<u32>().unwrap();
 
                     let map_file = format!(
                         "stageNormal{}_{}_Z.csv",
@@ -545,6 +545,11 @@ impl StageMeta {
                         chap_num -= 1;
                     }
                     let stage_file = format!("stageZ{chap_num:02}_{stage_num:02}.csv");
+
+                    if type_num == 20 && stage_num > 47 {
+                        stage_num = 47;
+                    }
+                    // makes other calculations easier
 
                     (map_num, stage_num, map_file, stage_file)
                 }
