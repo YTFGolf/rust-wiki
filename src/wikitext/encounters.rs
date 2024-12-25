@@ -2,7 +2,6 @@
 
 pub mod chapter;
 pub mod section;
-use super::data_files::stage_page_data::MapData;
 use crate::{
     config::Config,
     data::{
@@ -23,7 +22,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use section::{DisplayType, SectionRef};
-use std::fmt::Write;
+use std::{borrow::Cow, fmt::Write};
 type Ref = SectionRef;
 
 mod order {
@@ -159,18 +158,18 @@ fn raw_section(meta: &StageMeta) -> SectionRef {
 /// name as `stage_map`, creating it if it doesn't exist.
 fn get_group_chapter<'a, 'b>(
     group_chapters: &'b mut Vec<Chapter<'a>>,
-    stage_map: &'a MapData,
+    map_name: Cow<'a, str>,
 ) -> &'b mut Chapter<'a>
 where
     'a: 'b,
 {
     if let Some(pos) = group_chapters
         .iter()
-        .position(|c| c.chapter_name == stage_map.name)
+        .position(|c| c.chapter_name == map_name)
     {
         &mut group_chapters[pos]
     } else {
-        let chap = Chapter::new(&stage_map.name, vec![]);
+        let chap = Chapter::new(map_name, vec![]);
         group_chapters.push(chap);
 
         let i = group_chapters.len() - 1;
@@ -237,7 +236,6 @@ fn get_encounter_groups<'a>(
     if !removed.1.is_empty() {
         let map = removed;
         let group = get_group(abs_enemy_id, &map, &mut vec![], false);
-        // this is horrible
         groups.push(group);
     }
 
@@ -271,7 +269,8 @@ fn get_group<'a: 'b, 'b>(
             continue;
         }
 
-        let chap = get_group_chapter(group_chapters, stage_map);
+        let map_name = REGEXES.old_or_removed_sub.replace_all(&stage_map.name, "$1");
+        let chap = get_group_chapter(group_chapters, map_name);
 
         let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
         let mags = get_stage_mags(stage, abs_enemy_id);
