@@ -175,6 +175,7 @@ impl EncountersSection {
                         }
                         _ => stage.meta,
                     };
+                    // Get correct numbers for continue stages.
 
                     self.fmt_encounter(buf, meta, stage.stage_name, &stage.mags);
                     *buf += "\n"

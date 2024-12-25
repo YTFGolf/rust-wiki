@@ -193,7 +193,7 @@ pub mod consts {
         initialise_type_map("UL|13|NA|RNA",             T::UL),
         initialise_type_map("Catamin|14|B|RB",          T::Catamin),
         initialise_type_map("Z",                        T::Outbreaks),
-        initialise_type_map("Filibuster|30",            T::Filibuster),
+        initialise_type_map("Filibuster|23",            T::Filibuster),
         // initialise_type_map("LQ|16|D",                  "Why would you want to do Legend Quest"),
         initialise_type_map("Gauntlet|Baron|24|A|RA",   T::Gauntlet),
         initialise_type_map("Enigma|25|H|RH",           T::Enigma),
