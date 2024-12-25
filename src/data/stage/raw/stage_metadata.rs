@@ -1088,6 +1088,41 @@ mod tests {
     }
 
     #[test]
+    fn test_outbreak_number_coercion() {
+        let selector = "z 2 49";
+        // EoC Moon 2
+        assert_eq!(
+            StageMeta::new(selector).unwrap(),
+            StageMeta {
+                type_name: "Outbreaks",
+                type_code: "main",
+                type_num: 20,
+                type_enum: T::Outbreaks,
+                map_num: 1,
+                stage_num: 47,
+                map_file_name: "stageNormal0_1_Z.csv".to_string(),
+                stage_file_name: "stageZ01_49.csv".to_string()
+            }
+        );
+
+        let selector = "z 4 49";
+        // check that doesn't do the same thing for itf/cotc
+        assert_eq!(
+            StageMeta::new(selector).unwrap(),
+            StageMeta {
+                type_name: "Outbreaks",
+                type_code: "main",
+                type_num: 21,
+                type_enum: T::Outbreaks,
+                map_num: 0,
+                stage_num: 49,
+                map_file_name: "stageNormal1_0_Z.csv".to_string(),
+                stage_file_name: "stageZ04_49.csv".to_string()
+            }
+        );
+    }
+
+    #[test]
     fn test_stage_type_error() {
         assert_eq!(StageMeta::new("unknown 0"), None);
         assert_eq!(
@@ -1344,6 +1379,11 @@ mod tests {
             let type_num = 20 + mapind / 3;
             let map_num = mapind % 3;
 
+            let mut stage_num = stage;
+            if type_num == 20 && stage_num > 47 {
+                stage_num = 47;
+            }
+
             assert_eq!(
                 st,
                 StageMeta {
@@ -1352,7 +1392,7 @@ mod tests {
                     type_num,
                     type_enum: code.type_enum,
                     map_num,
-                    stage_num: stage,
+                    stage_num,
 
                     map_file_name: st.map_file_name.to_string(),
                     stage_file_name: st.stage_file_name.to_string(),
