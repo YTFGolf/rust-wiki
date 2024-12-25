@@ -1,9 +1,8 @@
 //! Deals with singular chapters of encounters.
 
-use std::borrow::Cow;
-
 use super::section::EncountersSection;
 use crate::data::stage::raw::stage_metadata::StageMeta;
+use std::borrow::Cow;
 
 #[derive(Debug)]
 /// Represents a stage for encounters.

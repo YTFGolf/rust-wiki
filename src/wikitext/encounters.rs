@@ -124,7 +124,7 @@ fn key(meta: &StageMeta) -> (usize, u32, u32) {
     (enumerate_meta(m), m.map_num, m.stage_num)
 }
 
-fn sort_encounters(encounters: &mut Vec<&StageData>) {
+fn sort_encounters(encounters: &mut [&StageData]) {
     encounters.sort_by(|s, o| key(&s.meta).cmp(&key(&o.meta)));
 }
 
@@ -242,6 +242,7 @@ fn get_encounter_groups<'a>(
     groups
 }
 
+#[inline]
 fn get_group<'a: 'b, 'b>(
     abs_enemy_id: u32,
     section_map: &'b (SectionRef, Vec<&'a StageData<'a>>),
@@ -269,7 +270,9 @@ fn get_group<'a: 'b, 'b>(
             continue;
         }
 
-        let map_name = REGEXES.old_or_removed_sub.replace_all(&stage_map.name, "$1");
+        let map_name = REGEXES
+            .old_or_removed_sub
+            .replace_all(&stage_map.name, "$1");
         let chap = get_group_chapter(group_chapters, map_name);
 
         let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
