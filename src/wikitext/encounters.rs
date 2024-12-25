@@ -259,18 +259,10 @@ fn get_encounter_groups<'a>(
     groups
 }
 
-/// temp
-pub fn do_thing(wiki_id: u32, config: &Config) {
-    let abs_enemy_id = wiki_id + 2;
-
-    let all_stages = get_stages(&config.current_version).collect::<Vec<_>>();
-
-    let mut encounters = all_stages
-        .iter()
-        .filter(|s| stage_contains_enemy(abs_enemy_id, s))
-        .collect::<Vec<_>>();
-    sort_encounters(&mut encounters);
-
+/// Map [SectionRefs][SectionRef] to a list of [StageData].
+fn get_section_map<'a>(
+    encounters: &[&'a StageData<'a>],
+) -> Vec<(SectionRef, Vec<&'a StageData<'a>>)> {
     let mut sections_map: Vec<(Ref, Vec<&StageData<'_>>)> = Vec::new();
     for encounter in encounters {
         let mut raw = raw_section(&encounter.meta);
@@ -295,8 +287,23 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
             sections_map.push((raw, vec![encounter]))
         };
     }
+    sections_map
+}
 
-    let groups = get_encounter_groups(&sections_map, abs_enemy_id);
+/// temp
+pub fn do_thing(wiki_id: u32, config: &Config) {
+    let abs_enemy_id = wiki_id + 2;
+
+    let all_stages = get_stages(&config.current_version).collect::<Vec<_>>();
+
+    let mut encounters = all_stages
+        .iter()
+        .filter(|s| stage_contains_enemy(abs_enemy_id, s))
+        .collect::<Vec<_>>();
+    sort_encounters(&mut encounters);
+
+    let section_map = get_section_map(&encounters);
+    let groups = get_encounter_groups(&section_map, abs_enemy_id);
 
     let mut buf = String::from("==Encounters==\n{{Collapsible}}");
     for group in groups {
