@@ -259,6 +259,8 @@ impl SectionRef {
 
 #[cfg(test)]
 mod tests {
+    use std::borrow::Cow;
+
     use super::*;
     use crate::wikitext::{data_files::stage_page_data::STAGE_NAMES, encounters::chapter::Stage};
     use SectionRef as Ref;
@@ -495,7 +497,7 @@ mod tests {
         section.fmt_chapter(
             &mut buf,
             Chapter::new(
-                "Chapter",
+                Cow::Borrowed("Chapter"),
                 vec![
                     Stage::new(
                         "Stage 1",
@@ -532,7 +534,7 @@ mod tests {
         section.fmt_chapter(
             &mut buf,
             Chapter::new(
-                "Chapter",
+                Cow::Borrowed("Chapter"),
                 vec![
                     Stage::new(
                         "Stage 1",
@@ -564,7 +566,7 @@ mod tests {
         section.fmt_chapter(
             &mut buf,
             Chapter::new(
-                "Chapter",
+                Cow::Borrowed("Chapter"),
                 vec![
                     Stage::new(
                         "Stage 1",

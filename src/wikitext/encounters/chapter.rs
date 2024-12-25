@@ -1,5 +1,7 @@
 //! Deals with singular chapters of encounters.
 
+use std::borrow::Cow;
+
 use super::section::EncountersSection;
 use crate::data::stage::raw::stage_metadata::StageMeta;
 
@@ -29,13 +31,14 @@ impl<'a> Stage<'a> {
 /// same map num.
 pub struct Chapter<'a> {
     /// Name of chapter.
-    pub chapter_name: &'a str,
+    pub chapter_name: Cow<'a, str>,
+
     /// Stages in chapter.
     pub stages: Vec<Stage<'a>>,
 }
 impl<'a> Chapter<'a> {
     /// Create new Chapter.
-    pub fn new(chapter_name: &'a str, stages: Vec<Stage<'a>>) -> Self {
+    pub fn new(chapter_name: Cow<'a, str>, stages: Vec<Stage<'a>>) -> Self {
         Self {
             chapter_name,
             stages,
