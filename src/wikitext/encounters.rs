@@ -23,7 +23,7 @@ use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use regex::Regex;
 use section::{DisplayType, SectionRef};
-use std::{borrow::Cow, fmt::Write};
+use std::{borrow::Cow, collections::HashSet, fmt::Write};
 type Ref = SectionRef;
 
 mod order {
@@ -376,7 +376,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
                 // TODO warn macro
                 continue;
             }
-            group.section.fmt_chapter(&mut buf, chapter);
+            group.section.fmt_chapter(&mut buf, chapter.dedupped());
             buf += "\n";
         }
     }
@@ -418,19 +418,10 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     println!("{buf}");
 
     /*
-    - [x] get
-    - [x] sort
-    - [x] iterate
-      - [x] find section
-        - [x] if Skip then skip
-      - [x] add to section list
     - [x] Go through each section
-      - [x] Warn about extra stages
-      - [x] find stage name
-      - [ ] filter/move to removed stages
       - [x] for each chapter:
         - [ ] remove dupes
-        - [ ] get mags
+        - [x] get mags
         - [x] format section
 
     ## extensions
@@ -472,4 +463,11 @@ Other things:
 - Some logging crate needed to log out which pages are skipped
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically
+*/
+
+/* Testing
+- dedup
+- always appeared at
+- Removed
+- Extra
 */

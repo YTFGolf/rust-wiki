@@ -2,7 +2,7 @@
 
 use super::section::EncountersSection;
 use crate::data::stage::raw::stage_metadata::StageMeta;
-use std::borrow::Cow;
+use std::{borrow::Cow, collections::HashSet};
 
 #[derive(Debug)]
 /// Represents a stage for encounters.
@@ -42,6 +42,20 @@ impl<'a> Chapter<'a> {
             chapter_name,
             stages,
         }
+    }
+
+    /// Return the chapter with all duplicate stage names removed.
+    pub fn dedupped(self) -> Self {
+        let mut names = HashSet::new();
+        let mut dedupped = self;
+        let s = dedupped
+            .stages
+            .into_iter()
+            .filter(|s| names.insert(s.stage_name))
+            .collect::<Vec<_>>();
+        dedupped.stages = s;
+
+        dedupped
     }
 }
 
