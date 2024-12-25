@@ -133,12 +133,18 @@ fn sort_encounters(encounters: &mut [&StageData]) {
 /// Note: this does nothing about Removed Stages or any filtering based on type.
 fn raw_section(meta: &StageMeta) -> SectionRef {
     match meta.type_enum {
-        T::MainChapters => {
-            todo!()
-        }
-        T::Outbreaks => {
-            todo!()
-        }
+        T::MainChapters => match meta.map_num {
+            0..=2 => Ref::EoC,
+            3..=5 => Ref::ItF,
+            6..=8 => Ref::CotC,
+            _ => unreachable!(),
+        },
+        T::Outbreaks => match meta.type_num {
+            20 => Ref::EoCOutbreak,
+            21 => Ref::ItFOutbreak,
+            22 => Ref::CotCOutbreak,
+            _ => unreachable!(),
+        },
         T::Filibuster => Ref::CotC,
         T::AkuRealms => Ref::AkuRealms,
         T::SoL => Ref::SoL,
