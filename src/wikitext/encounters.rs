@@ -214,7 +214,12 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
                 buf.write_formatted(&n, &Locale::en).unwrap();
                 buf += "%";
             }
-            Right(_) => todo!(),
+            Right((hp, ap)) => {
+                buf.write_formatted(&hp, &Locale::en).unwrap();
+                buf += "% HP/";
+                buf.write_formatted(&ap, &Locale::en).unwrap();
+                buf += "% AP";
+            }
         }
 
         buf += ", ";
