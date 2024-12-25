@@ -398,7 +398,12 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
             if chapter.chapter_name == "[[XP Stage]]" {
                 continue;
             }
-            if chapter.chapter_name == "[[XP Stage|Weekend Stage]]" {
+            if matches!(
+                chapter.chapter_name,
+                Cow::Borrowed("[[XP Stage|Weekend Stage]]")
+            ) {
+                // need to match against borrowed since otherwise old weekend
+                // stage would also be matched
                 chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
             }
             group.section.fmt_chapter(&mut buf, chapter.dedupped());
