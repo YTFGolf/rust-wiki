@@ -385,11 +385,17 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         )
         .unwrap();
 
-        for chapter in group.chapters {
+        for mut chapter in group.chapters {
             if chapter.stages.is_empty() {
                 eprintln!("Warning: {:?} has no valid stages.", chapter.chapter_name);
                 // TODO warn macro
                 continue;
+            }
+            if chapter.chapter_name == "[[XP Stage]]" {
+                continue;
+            }
+            if chapter.chapter_name == "[[XP Stage|Weekend Stage]]" {
+                chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
             }
             group.section.fmt_chapter(&mut buf, chapter.dedupped());
             buf += "\n";
