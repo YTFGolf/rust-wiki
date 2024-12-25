@@ -275,6 +275,14 @@ fn get_group<'a: 'b, 'b>(
             removed_vec.push(stage);
             continue;
         }
+        if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
+            eprintln!(
+                "Warning: map {:03}-{:03} is a placeholder.",
+                stage.meta.type_num, stage.meta.map_num
+            );
+            // TODO warn macro
+            continue;
+        }
 
         let map_name = REGEXES
             .old_or_removed_sub
@@ -357,6 +365,9 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         .unwrap();
 
         for chapter in group.chapters {
+            // if chapter.stages.is_empty() {
+            //     continue;
+            // }
             group.section.fmt_chapter(&mut buf, chapter);
             buf += "\n";
         }

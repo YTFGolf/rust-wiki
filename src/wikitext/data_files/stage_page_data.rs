@@ -35,6 +35,10 @@ impl MapData {
     pub fn get(&self, stage_id: u32) -> Option<&StageData> {
         self.stages.get(stage_id as usize)
     }
+    /// Does the map have any stages.
+    pub fn is_empty(&self) -> bool {
+        self.stages.is_empty()
+    }
 }
 
 #[derive(Debug)]
