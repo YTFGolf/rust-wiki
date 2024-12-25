@@ -281,7 +281,17 @@ fn get_group<'a: 'b, 'b>(
             .replace_all(&stage_map.name, "$1");
         let chap = get_group_chapter(group_chapters, map_name);
 
-        let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
+        let stage_name = match stage_map.get(stage.meta.stage_num) {
+            Some(name) => name,
+            None => {
+                eprintln!(
+                    "Warning: stage {:03}-{:03}-{:03} has no name.",
+                    stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
+                );
+                // TODO warn macro
+                continue;
+            }
+        };
         let mags = get_stage_mags(stage, abs_enemy_id);
         chap.stages
             .push(Stage::new(&stage_name.name, mags, &stage.meta));
