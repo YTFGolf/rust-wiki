@@ -290,11 +290,6 @@ fn get_group<'a: 'b, 'b>(
             continue;
         }
 
-        let map_name = REGEXES
-            .old_or_removed_sub
-            .replace_all(&stage_map.name, "$1");
-        let chap = get_group_chapter(group_chapters, map_name);
-
         let stage_name = match stage_map.get(stage.meta.stage_num) {
             Some(name) => name,
             None => {
@@ -306,6 +301,19 @@ fn get_group<'a: 'b, 'b>(
                 continue;
             }
         };
+        if stage_name.name.chars().nth(0).unwrap() != '[' {
+            eprintln!(
+                "{name:?} may be a placeholder. Skipping.",
+                name = stage_name.name
+            );
+            // TODO warn macro
+            continue;
+        }
+
+        let map_name = REGEXES
+            .old_or_removed_sub
+            .replace_all(&stage_map.name, "$1");
+        let chap = get_group_chapter(group_chapters, map_name);
         let mags = get_stage_mags(stage, abs_enemy_id);
         chap.stages
             .push(Stage::new(&stage_name.name, mags, &stage.meta));
