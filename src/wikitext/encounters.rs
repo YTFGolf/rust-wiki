@@ -22,7 +22,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use regex::Regex;
-use section::{DisplayType, SectionRef};
+use section::{DisplayType, SectionRef, SECTIONS};
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
 type Ref = SectionRef;
 
@@ -250,6 +250,13 @@ fn get_encounter_groups<'a>(
         let group = get_group(abs_enemy_id, &map, &mut vec![], false);
         groups.push(group);
     }
+
+    groups.sort_by(|s, o| {
+        let s_pos = SECTIONS.iter().position(|section| section == s.section);
+        let o_pos = SECTIONS.iter().position(|section| section == o.section);
+        s_pos.cmp(&o_pos)
+        // TODO sections map should be a section ref
+    });
 
     groups
 }

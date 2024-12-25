@@ -25,7 +25,7 @@ pub enum DisplayType {
 }
 type D = DisplayType;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 #[allow(dead_code)]
 /// Section of unit encounters.
 ///
@@ -196,7 +196,7 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
 #[rustfmt::skip]
 /// Available sections.
 // Don't update without updating SectionRef and the first test.
- const SECTIONS: [EncountersSection; 18] = [
+pub const SECTIONS: [EncountersSection; 18] = [
     get_new_section("[[Empire of Cats]]",                                    D::Custom),
     get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Custom),
     get_new_section("[[Into the Future]]",                                   D::Custom),
@@ -252,9 +252,9 @@ pub enum SectionRef {
     Catamin,
 }
 impl SectionRef {
-    /// Get the defined section.
-    pub const fn section(&self) -> &'static EncountersSection {
-        let index_repr = unsafe { *(self as *const SectionRef as *const SectionRefRepr) };
+    /// Get the index of the section.
+    pub const fn get_index(&self) -> SectionRefRepr {
+        unsafe { *(self as *const SectionRef as *const SectionRefRepr) }
         // Casts the borrow to a SectionRef pointer (obviously borrows are
         // pointers with extra compiler magic), then converts that to a pointer
         // to a SectionRefRepr pointer, which can then be dereferenced without
@@ -269,7 +269,10 @@ impl SectionRef {
         // Unsafe is necessary, otherwise calling this function on a borrowed
         // SectionRef would require a clone, which is just completely
         // unnecessary when the function can take care of that detail itself.
-        &SECTIONS[index_repr as usize]
+    }
+    /// Get the defined section.
+    pub const fn section(&self) -> &'static EncountersSection {
+        &SECTIONS[self.get_index() as usize]
     }
 }
 
