@@ -371,6 +371,52 @@ fn get_section_map<'a>(
     sections_map
 }
 
+/// If enemy has always appeared at a certain mag, then remove mags after stage names and replace with single message at top
+fn always_appeared_at(buf: &mut String) {
+    let percentage_pattern = r" \([\d,%\s]+%\)\n";
+    let re = Regex::new(percentage_pattern).unwrap();
+    // This should probably be done in the actual code but oh well
+
+    let map = re
+        .find_iter(&*buf)
+        .map(|c| c.as_str())
+        .collect::<HashSet<&str>>();
+    if map.len() != 1 {
+        return;
+    }
+
+    let diff_mags = r"\([\d,%\s]+% HP/[\d,%\s]+% AP\)\n";
+    let re = Regex::new(diff_mags).unwrap();
+
+    let diff_map = re
+        .find_iter(&*buf)
+        .map(|c| c.as_str())
+        .collect::<HashSet<&str>>();
+
+    if diff_map.is_empty() {
+        return;
+    }
+
+    let mag = map.iter().next().unwrap().to_string();
+    *buf = buf.replace(&mag, "\n");
+
+    let matched: &(&str, [&str; 1]) = &Regex::new(r"\((.*)\)\n$")
+        .unwrap()
+        .captures(&mag)
+        .unwrap()
+        .extract();
+    let percentage = matched.1[0];
+
+    let repl = "{{Collapsible}}".to_string()
+        + &format!("\nThis enemy has always appeared at {percentage} strength magnification.");
+    *buf = buf.replace("{{Collapsible}}", &repl)
+}
+
+/// Post-process the buffer and apply some text transformations.
+fn cleanup(buf: &mut String) {
+    always_appeared_at(buf);
+}
+
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
@@ -429,38 +475,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     }
     buf += "</div>";
 
-    let percentage_pattern = r" \([\d,%\s]+%\)\n";
-    let re = Regex::new(percentage_pattern).unwrap();
-    // This should probably be done in the actual code but oh well
-
-    let map = re
-        .find_iter(&buf)
-        .map(|c| c.as_str())
-        .collect::<HashSet<&str>>();
-
-    let diff_mags = r"\([\d,%\s]+% HP/[\d,%\s]+% AP\)\n";
-    let re = Regex::new(diff_mags).unwrap();
-
-    let diff_map = re
-        .find_iter(&buf)
-        .map(|c| c.as_str())
-        .collect::<HashSet<&str>>();
-
-    if map.len() == 1 && diff_map.is_empty() {
-        let mag = map.iter().next().unwrap().to_string();
-        buf = buf.replace(&mag, "\n");
-
-        let matched: &(&str, [&str; 1]) = &Regex::new(r"\((.*)\)\n$")
-            .unwrap()
-            .captures(&mag)
-            .unwrap()
-            .extract();
-        let percentage = matched.1[0];
-
-        let repl = "{{Collapsible}}".to_string()
-            + &format!("\nThis enemy has always appeared at {percentage} strength magnification.");
-        buf = buf.replace("{{Collapsible}}", &repl)
-    }
+    cleanup(&mut buf);
 
     println!("{buf}");
 
