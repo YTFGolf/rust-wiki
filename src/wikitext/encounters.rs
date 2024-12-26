@@ -373,31 +373,41 @@ fn get_section_map<'a>(
 
 /// If enemy has always appeared at a certain mag, then remove mags after stage names and replace with single message at top
 fn always_appeared_at(buf: &mut String) {
-    let percentage_pattern = r" \([\d,%\s]+%\)\n";
+    let percentage_pattern = r"\([\d,%\s]+%\)\n";
     let re = Regex::new(percentage_pattern).unwrap();
     // This should probably be done in the actual code but oh well
 
     let map = re
-        .find_iter(&*buf)
-        .map(|c| c.as_str())
+        .find_iter(buf)
+        .map(|cap| cap.as_str())
         .collect::<HashSet<&str>>();
+    // set of all unique percentages
     if map.len() != 1 {
         return;
     }
 
     let diff_mags = r"\([\d,%\s]+% HP/[\d,%\s]+% AP\)\n";
+    // instances of different hp and ap mags
+    // FIXME this only works if enemy only appears once at different
+    // magnfications, which isn't always true e.g. Satanmaria. Empirically it
+    // probably doesn't matter though.
+    // let diff_mags = r"\(([\d,%\s]+% HP/[\d,%\s]+% AP(, )?)+\)\n";
     let re = Regex::new(diff_mags).unwrap();
 
     let diff_map = re
-        .find_iter(&*buf)
-        .map(|c| c.as_str())
+        .find_iter(buf)
+        .map(|cap| cap.as_str())
         .collect::<HashSet<&str>>();
-
-    if diff_map.is_empty() {
+    if !diff_map.is_empty() {
         return;
     }
 
     let mag = map.iter().next().unwrap().to_string();
+    if mag.contains(" ") {
+        // if is like "(10%, 100%)"
+        return;
+    }
+
     *buf = buf.replace(&mag, "\n");
 
     let matched: &(&str, [&str; 1]) = &Regex::new(r"\((.*)\)\n$")
