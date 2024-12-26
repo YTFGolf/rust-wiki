@@ -251,7 +251,7 @@ fn get_encounter_groups<'a>(
         groups.push(group);
     }
 
-    groups.sort_by(|s, o| s.section.get_index().cmp(&o.section.get_index()));
+    groups.sort_by(|s, o| s.section.index().cmp(&o.section.index()));
 
     groups
 }
@@ -303,7 +303,7 @@ fn get_group<'a: 'b, 'b>(
                 continue;
             }
         };
-        if stage_name.name.chars().nth(0).unwrap() != '[' {
+        if stage_name.name.chars().next().unwrap() != '[' {
             eprintln!(
                 "{name:?} may be a placeholder. Skipping.",
                 name = stage_name.name

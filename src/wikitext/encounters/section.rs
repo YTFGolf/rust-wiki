@@ -252,8 +252,9 @@ pub enum SectionRef {
     Catamin,
 }
 impl SectionRef {
-    /// Get the index of the section.
-    pub const fn get_index(&self) -> SectionRefRepr {
+    /// Get the index of the section in the ordered list of sections. Can be
+    /// used as an ordering function.
+    pub const fn index(&self) -> SectionRefRepr {
         unsafe { *(self as *const SectionRef as *const SectionRefRepr) }
         // Casts the borrow to a SectionRef pointer (obviously borrows are
         // pointers with extra compiler magic), then converts that to a pointer
@@ -272,7 +273,7 @@ impl SectionRef {
     }
     /// Get the defined section.
     pub const fn section(&self) -> &'static EncountersSection {
-        &SECTIONS[self.get_index() as usize]
+        &SECTIONS[self.index() as usize]
     }
 }
 
