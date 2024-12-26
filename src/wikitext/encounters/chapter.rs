@@ -1,6 +1,6 @@
 //! Deals with singular chapters of encounters.
 
-use super::section::EncountersSection;
+use super::section::SectionRef;
 use crate::data::stage::raw::stage_metadata::StageMeta;
 use std::{borrow::Cow, collections::HashSet};
 
@@ -62,14 +62,14 @@ impl<'a> Chapter<'a> {
 #[derive(Debug)]
 /// Represents a section of the encounters.
 pub struct Group<'a> {
-    /// Section
-    pub section: &'a EncountersSection,
+    /// Section.
+    pub section: SectionRef,
     /// Chapters under heading.
     pub chapters: Vec<Chapter<'a>>,
 }
 impl<'a> Group<'a> {
     /// Create new Group.
-    pub fn new(section: &'a EncountersSection, chapters: Vec<Chapter<'a>>) -> Self {
+    pub fn new(section: SectionRef, chapters: Vec<Chapter<'a>>) -> Self {
         Self { section, chapters }
     }
 }

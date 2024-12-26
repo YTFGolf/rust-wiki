@@ -196,7 +196,7 @@ const fn get_new_section(heading: &'static str, display_type: DisplayType) -> En
 #[rustfmt::skip]
 /// Available sections.
 // Don't update without updating SectionRef and the first test.
-pub const SECTIONS: [EncountersSection; 18] = [
+const SECTIONS: [EncountersSection; 18] = [
     get_new_section("[[Empire of Cats]]",                                    D::Custom),
     get_new_section("[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",     D::Custom),
     get_new_section("[[Into the Future]]",                                   D::Custom),

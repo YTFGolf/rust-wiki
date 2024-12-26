@@ -22,7 +22,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use regex::Regex;
-use section::{DisplayType, SectionRef, SECTIONS};
+use section::{DisplayType, SectionRef};
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
 type Ref = SectionRef;
 
@@ -233,7 +233,7 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
 
 /// Group section map into encounter [Groups][Group].
 fn get_encounter_groups<'a>(
-    sections_map: &[(SectionRef, Vec<&'a StageData<'_>>)],
+    sections_map: Vec<(SectionRef, Vec<&'a StageData<'_>>)>,
     abs_enemy_id: u32,
 ) -> Vec<Group<'a>> {
     let mut removed = (Ref::Removed, vec![]);
@@ -247,16 +247,11 @@ fn get_encounter_groups<'a>(
     }
     if !removed.1.is_empty() {
         let map = removed;
-        let group = get_group(abs_enemy_id, &map, &mut vec![], false);
+        let group = get_group(abs_enemy_id, map, &mut vec![], false);
         groups.push(group);
     }
 
-    groups.sort_by(|s, o| {
-        let s_pos = SECTIONS.iter().position(|section| section == s.section);
-        let o_pos = SECTIONS.iter().position(|section| section == o.section);
-        s_pos.cmp(&o_pos)
-        // TODO sections map should be a section ref
-    });
+    groups.sort_by(|s, o| s.section.get_index().cmp(&o.section.get_index()));
 
     groups
 }
@@ -264,7 +259,7 @@ fn get_encounter_groups<'a>(
 #[inline]
 fn get_group<'a: 'b, 'b>(
     abs_enemy_id: u32,
-    section_map: &'b (SectionRef, Vec<&'a StageData<'a>>),
+    section_map: (SectionRef, Vec<&'a StageData<'a>>),
     removed_vec: &mut Vec<&'a StageData<'a>>,
     add_to_removed: bool,
 ) -> Group<'a> {
@@ -277,7 +272,7 @@ fn get_group<'a: 'b, 'b>(
         // TODO log warning
     }
 
-    let mut group = Group::new(section, vec![]);
+    let mut group = Group::new(section_map.0, vec![]);
     let group_chapters = &mut group.chapters;
     for stage in section_map.1.iter() {
         let stage_map = STAGE_NAMES
@@ -370,7 +365,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     sort_encounters(&mut encounters);
 
     let section_map = get_section_map(&encounters);
-    let groups = get_encounter_groups(&section_map, abs_enemy_id);
+    let groups = get_encounter_groups(section_map, abs_enemy_id);
 
     let mut buf = String::from("==Encounters==\n{{Collapsible}}");
     for group in groups {
@@ -381,10 +376,10 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         write!(
             &mut buf,
             "\n==={heading}===\n",
-            heading = group.section.heading()
+            heading = group.section.section().heading()
         )
         .unwrap();
-        if group.section.heading() == "[[Empire of Cats]]" {
+        if group.section == SectionRef::EoC {
             buf += "Strength magnifications are 100% in Chapter 1, 150% in \
                     Chapter 2, and 400% in Chapter 3.\n"
         }
@@ -406,7 +401,10 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
                 // stage would also be matched
                 chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
             }
-            group.section.fmt_chapter(&mut buf, chapter.dedupped());
+            group
+                .section
+                .section()
+                .fmt_chapter(&mut buf, chapter.dedupped());
             buf += "\n";
         }
     }
