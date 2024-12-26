@@ -32,7 +32,7 @@ mod order {
         StageMeta,
     };
 
-    /// Amount of individual [StageTypes][T] (count is based on enums).
+    /// Amount of individual [StageTypes][T] contained in [STAGE_TYPES].
     const STYPE_AMT: usize = STAGE_TYPES.len();
 
     /// Order of the [StageTypes][T] in Encounters section.
@@ -69,18 +69,18 @@ mod order {
     /// Convert [TYPE_ORDER] to its indices. Allows [enumerate_meta] to be a
     /// constant time function.
     const fn get_type_order() -> [usize; STYPE_AMT] {
-        let mut sum = [0; STYPE_AMT];
+        let mut order_indices = [0; STYPE_AMT];
 
         let mut i = 0;
         // for loops and iterators don't work in constant functions,
         // but while loops do
         while i < STYPE_AMT {
-            let t = TYPE_ORDER[i] as usize;
-            sum[t] = i;
+            let enum_value = TYPE_ORDER[i] as usize;
+            order_indices[enum_value] = i;
             i += 1;
         }
 
-        sum
+        order_indices
     }
 
     /// Order indices using the [usize] value of [StageTypeEnum][T].
@@ -101,7 +101,10 @@ mod order {
         use super::*;
 
         #[test]
+        /// Ensure type order has all [STAGE_TYPES].
         fn test_type_order() {
+            // technically this could be converted to a const assert but why
+            // bother.
             assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
             for stype in STAGE_TYPES {
                 assert!(
@@ -114,17 +117,26 @@ mod order {
     }
 }
 
+/// For use in [sort_encounters].
 fn key(meta: &StageMeta) -> (usize, u32, u32) {
     let m = match meta.type_enum {
         T::Extra => match STAGE_NAMES.continue_id(meta.map_num) {
             None => meta,
             Some((t, m)) => &StageMeta::from_numbers(t, m, 999).unwrap(),
         },
+        // Obviously want extra stages to be in correct place if possible
         _ => meta,
     };
     (enumerate_meta(m), m.map_num, m.stage_num)
+    // extra stages will need the map (and possibly stage idk) num to be in the
+    // correct place
+    // TODO check if stage num is necessary
+
+    // Type num is not necessary since it will only make a difference for
+    // outbreaks, which each have their own section anyway.
 }
 
+/// Sort `encounters` in-place.
 fn sort_encounters(encounters: &mut [&StageData]) {
     encounters.sort_by(|s, o| key(&s.meta).cmp(&key(&o.meta)));
 }
@@ -162,7 +174,7 @@ fn raw_section(meta: &StageMeta) -> SectionRef {
 }
 
 /// Get a mutable reference to the item in `group_chapters` that has the same
-/// name as `stage_map`, creating it if it doesn't exist.
+/// chapter name as `map_name`, creating it if it doesn't exist.
 fn get_group_chapter<'a, 'b>(
     group_chapters: &'b mut Vec<Chapter<'a>>,
     map_name: Cow<'a, str>,
@@ -174,16 +186,17 @@ where
         .iter()
         .position(|c| c.chapter_name == map_name)
     {
-        &mut group_chapters[pos]
-    } else {
-        let chap = Chapter::new(map_name, vec![]);
-        group_chapters.push(chap);
-
-        let i = group_chapters.len() - 1;
-        &mut group_chapters[i]
+        return &mut group_chapters[pos];
     }
+
+    let chap = Chapter::new(map_name, vec![]);
+    group_chapters.push(chap);
+
+    let i = group_chapters.len() - 1;
+    &mut group_chapters[i]
 }
 
+/// Get a list of magnifications the enemy appears at.
 fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     if stage.meta.type_enum == T::MainChapters && stage.meta.map_num == 0 {
         return "".to_string();
@@ -195,17 +208,9 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
             mags.push(StageEnemy::get_magnification(enemy))
         }
     }
-    // fn enum_mag(mag: Magnification) -> (u8, u32) {
-    //     match mag {
-    //         Left(n) => (0, n),
-    //         Right((n, _)) => (1, n),
-    //     }
-    // }
-    // fn cmp_mag(m1: Magnification, m2: Magnification) -> Ordering {
-    //     enum_mag(m1).cmp(&enum_mag(m2))
-    // }
 
     mags.sort();
+    // Order is Left > Right and then for any Right variant it checks hp then ap
     mags.dedup();
 
     let mut buf = String::from("(");
