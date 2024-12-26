@@ -23,6 +23,8 @@ pub struct UtilRegexes {
 }
 /// Utility regexes.
 pub static REGEXES: LazyLock<UtilRegexes> = LazyLock::new(|| UtilRegexes {
+    // TODO this does not need to be a struct
+    // These should be and, not or
     old_or_removed_detect: Regex::new(r"\((Old|Removed)\)").unwrap(),
     old_or_removed_sub: Regex::new(r" \((?:Old|Removed)\)([^\|\]/]|$)").unwrap(),
 });

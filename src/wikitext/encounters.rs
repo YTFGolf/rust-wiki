@@ -307,6 +307,7 @@ fn get_group<'a: 'b, 'b>(
         let map_name = REGEXES
             .old_or_removed_sub
             .replace_all(&stage_map.name, "$1");
+        // Get rid of `(Old)` and `(Removed)`.
         let chap = get_group_chapter(group_chapters, map_name);
         let mags = get_stage_mags(stage, abs_enemy_id);
         chap.stages.push(Stage::new(&stage_name, mags, &stage.meta));
@@ -314,7 +315,7 @@ fn get_group<'a: 'b, 'b>(
     group
 }
 
-/// Group section map into encounter [Groups][Group].
+/// Collect sections map into encounter [Groups][Group].
 fn get_encounter_groups<'a>(
     sections_map: Vec<(SectionRef, Vec<&'a StageData<'_>>)>,
     abs_enemy_id: u32,
@@ -329,8 +330,7 @@ fn get_encounter_groups<'a>(
         groups.push(group);
     }
     if !removed.1.is_empty() {
-        let map = removed;
-        let group = get_group(abs_enemy_id, map, &mut vec![], false);
+        let group = get_group(abs_enemy_id, removed, &mut vec![], false);
         groups.push(group);
     }
 
@@ -356,14 +356,17 @@ fn get_section_map<'a>(
                 let new_meta = StageMeta::from_numbers(ids.0, ids.1, 999).unwrap();
                 raw = raw_section(&new_meta);
             };
+            // Use continuestages to get proper section.
         }
         let raw = raw;
 
-        if let Some(pos) = sections_map.iter().position(|(r, _)| *r == raw) {
+        if let Some(pos) = sections_map.iter().position(|(sref, _)| *sref == raw) {
             sections_map[pos].1.push(encounter);
         } else {
             sections_map.push((raw, vec![encounter]))
         };
+        // if section in map then add to add to section, otherwise add new
+        // section to map
     }
     sections_map
 }

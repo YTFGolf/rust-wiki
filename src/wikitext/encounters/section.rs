@@ -26,7 +26,6 @@ pub enum DisplayType {
 type D = DisplayType;
 
 #[derive(Debug, PartialEq)]
-#[allow(dead_code)]
 /// Section of unit encounters.
 ///
 /// Methods on this object are purely for formatting. Processes such as
