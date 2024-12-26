@@ -62,14 +62,14 @@ impl<'a> Chapter<'a> {
 #[derive(Debug)]
 /// Represents a section of the encounters.
 pub struct Group<'a> {
-    /// Section.
-    pub section: SectionRef,
+    /// Section reference.
+    pub sref: SectionRef,
     /// Chapters under heading.
     pub chapters: Vec<Chapter<'a>>,
 }
 impl<'a> Group<'a> {
     /// Create new Group.
-    pub fn new(section: SectionRef, chapters: Vec<Chapter<'a>>) -> Self {
-        Self { section, chapters }
+    pub fn new(sref: SectionRef, chapters: Vec<Chapter<'a>>) -> Self {
+        Self { sref, chapters }
     }
 }

@@ -334,7 +334,7 @@ fn get_encounter_groups<'a>(
         groups.push(group);
     }
 
-    groups.sort_by(|s, o| s.section.index().cmp(&o.section.index()));
+    groups.sort_by(|s, o| s.sref.index().cmp(&o.sref.index()));
 
     groups
 }
@@ -429,7 +429,7 @@ fn cleanup(buf: &mut String) {
 
 /// Write the section text of an encounter group. Includes trailing newline.
 fn write_encounter_group(buf: &mut String, group: Group<'_>) {
-    if group.section == SectionRef::EoC {
+    if group.sref == SectionRef::EoC {
         *buf += "Strength magnifications are 100% in Chapter 1, 150% in \
                     Chapter 2, and 400% in Chapter 3.\n"
     }
@@ -452,7 +452,7 @@ fn write_encounter_group(buf: &mut String, group: Group<'_>) {
             chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
         }
 
-        group.section.section().fmt_chapter(buf, chapter.dedupped());
+        group.sref.section().fmt_chapter(buf, chapter.dedupped());
         *buf += "\n";
     }
 }
@@ -481,7 +481,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         write!(
             &mut buf,
             "\n==={heading}===\n",
-            heading = group.section.section().heading()
+            heading = group.sref.section().heading()
         )
         .unwrap();
 
