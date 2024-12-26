@@ -27,6 +27,8 @@ fn main() {
         }
         Command::Encounters(e) => {
             let config = &get_config(config, e.config.clone());
+            eprintln!("Note: this currently only works on the first enemy");
+            // TODO info macro
             let name_or_id = &e.names[0];
             let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
                 None => name_or_id.parse().unwrap(),
