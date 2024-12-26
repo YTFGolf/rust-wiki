@@ -236,6 +236,84 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     buf
 }
 
+#[inline]
+/// Get an encounters group from the `abs_enemy_id` and `section_map`.
+///
+/// If `add_to_removed` is true, then any map with `(Old)` or `(Removed)` in its
+/// name will be added to `removed_vec` rather than being added to the group.
+/// This function is mainly a convenience so the logic doesn't have to appear
+/// twice.
+fn get_group<'a: 'b, 'b>(
+    abs_enemy_id: u32,
+    section_map: (SectionRef, Vec<&'a StageData<'a>>),
+    removed_vec: &mut Vec<&'a StageData<'a>>,
+    add_to_removed: bool,
+) -> Group<'a> {
+    let sec_ref = section_map.0;
+    if *sec_ref.section().display_type() == DisplayType::Warn {
+        eprintln!(
+            "Warning: {:?} stages encountered.",
+            section_map.1[0].meta.type_enum
+        );
+        // TODO log warning
+    }
+    // warn if that is display type
+
+    let mut group = Group::new(sec_ref, vec![]);
+    let group_chapters = &mut group.chapters;
+    for stage in section_map.1.iter() {
+        let stage_map = STAGE_NAMES
+            .stage_map(stage.meta.type_num, stage.meta.map_num)
+            .unwrap();
+
+        if add_to_removed && REGEXES.old_or_removed_detect.is_match(&stage_map.name) {
+            removed_vec.push(stage);
+            continue;
+        }
+        // Add to removed and skip.
+        if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
+            eprintln!(
+                "Warning: map {:03}-{:03} is a placeholder.",
+                stage.meta.type_num, stage.meta.map_num
+            );
+            // TODO warn macro
+            continue;
+        }
+        // Remove placeholder maps. Technically doesn't need to happen since the
+        // below statement will catch it without any errors, but it's a better
+        // error message.
+
+        let stage_data = match stage_map.get(stage.meta.stage_num) {
+            Some(name) => name,
+            None => {
+                eprintln!(
+                    "Warning: stage {:03}-{:03}-{:03} has no name.",
+                    stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
+                );
+                // TODO warn macro
+                continue;
+            }
+        };
+        let stage_name = &stage_data.name;
+
+        // If stage doesn't have a name in csv file, then skip.
+        if stage_name.chars().next().unwrap() != '[' {
+            eprintln!("{stage_name:?} may be a placeholder. Skipping.",);
+            // TODO warn macro
+            continue;
+        }
+        // If stage name isn't a link, then skip.
+
+        let map_name = REGEXES
+            .old_or_removed_sub
+            .replace_all(&stage_map.name, "$1");
+        let chap = get_group_chapter(group_chapters, map_name);
+        let mags = get_stage_mags(stage, abs_enemy_id);
+        chap.stages.push(Stage::new(&stage_name, mags, &stage.meta));
+    }
+    group
+}
+
 /// Group section map into encounter [Groups][Group].
 fn get_encounter_groups<'a>(
     sections_map: Vec<(SectionRef, Vec<&'a StageData<'_>>)>,
@@ -259,73 +337,6 @@ fn get_encounter_groups<'a>(
     groups.sort_by(|s, o| s.section.index().cmp(&o.section.index()));
 
     groups
-}
-
-#[inline]
-fn get_group<'a: 'b, 'b>(
-    abs_enemy_id: u32,
-    section_map: (SectionRef, Vec<&'a StageData<'a>>),
-    removed_vec: &mut Vec<&'a StageData<'a>>,
-    add_to_removed: bool,
-) -> Group<'a> {
-    let section = section_map.0.section();
-    if *section.display_type() == DisplayType::Warn {
-        eprintln!(
-            "Warning: {:?} stages encountered.",
-            section_map.1[0].meta.type_enum
-        );
-        // TODO log warning
-    }
-
-    let mut group = Group::new(section_map.0, vec![]);
-    let group_chapters = &mut group.chapters;
-    for stage in section_map.1.iter() {
-        let stage_map = STAGE_NAMES
-            .stage_map(stage.meta.type_num, stage.meta.map_num)
-            .unwrap();
-
-        if add_to_removed && REGEXES.old_or_removed_detect.is_match(&stage_map.name) {
-            removed_vec.push(stage);
-            continue;
-        }
-        if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
-            eprintln!(
-                "Warning: map {:03}-{:03} is a placeholder.",
-                stage.meta.type_num, stage.meta.map_num
-            );
-            // TODO warn macro
-            continue;
-        }
-
-        let stage_name = match stage_map.get(stage.meta.stage_num) {
-            Some(name) => name,
-            None => {
-                eprintln!(
-                    "Warning: stage {:03}-{:03}-{:03} has no name.",
-                    stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
-                );
-                // TODO warn macro
-                continue;
-            }
-        };
-        if stage_name.name.chars().next().unwrap() != '[' {
-            eprintln!(
-                "{name:?} may be a placeholder. Skipping.",
-                name = stage_name.name
-            );
-            // TODO warn macro
-            continue;
-        }
-
-        let map_name = REGEXES
-            .old_or_removed_sub
-            .replace_all(&stage_map.name, "$1");
-        let chap = get_group_chapter(group_chapters, map_name);
-        let mags = get_stage_mags(stage, abs_enemy_id);
-        chap.stages
-            .push(Stage::new(&stage_name.name, mags, &stage.meta));
-    }
-    group
 }
 
 /// Map [SectionRefs][SectionRef] to a list of [StageData].
