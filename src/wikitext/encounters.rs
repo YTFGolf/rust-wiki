@@ -427,6 +427,36 @@ fn cleanup(buf: &mut String) {
     always_appeared_at(buf);
 }
 
+/// Write the section text of an encounter group. Includes trailing newline.
+fn write_encounter_group(buf: &mut String, group: Group<'_>) {
+    if group.section == SectionRef::EoC {
+        *buf += "Strength magnifications are 100% in Chapter 1, 150% in \
+                    Chapter 2, and 400% in Chapter 3.\n"
+    }
+
+    for mut chapter in group.chapters {
+        if chapter.stages.is_empty() {
+            eprintln!("Warning: {:?} has no valid stages.", chapter.chapter_name);
+            // TODO warn macro
+            continue;
+        }
+        if chapter.chapter_name == "[[XP Stage]]" {
+            continue;
+        }
+        if matches!(
+            chapter.chapter_name,
+            Cow::Borrowed("[[XP Stage|Weekend Stage]]")
+        ) {
+            // need to match against borrowed since otherwise old weekend
+            // stage would also be matched
+            chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
+        }
+
+        group.section.section().fmt_chapter(buf, chapter.dedupped());
+        *buf += "\n";
+    }
+}
+
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
@@ -454,34 +484,8 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
             heading = group.section.section().heading()
         )
         .unwrap();
-        if group.section == SectionRef::EoC {
-            buf += "Strength magnifications are 100% in Chapter 1, 150% in \
-                    Chapter 2, and 400% in Chapter 3.\n"
-        }
 
-        for mut chapter in group.chapters {
-            if chapter.stages.is_empty() {
-                eprintln!("Warning: {:?} has no valid stages.", chapter.chapter_name);
-                // TODO warn macro
-                continue;
-            }
-            if chapter.chapter_name == "[[XP Stage]]" {
-                continue;
-            }
-            if matches!(
-                chapter.chapter_name,
-                Cow::Borrowed("[[XP Stage|Weekend Stage]]")
-            ) {
-                // need to match against borrowed since otherwise old weekend
-                // stage would also be matched
-                chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
-            }
-            group
-                .section
-                .section()
-                .fmt_chapter(&mut buf, chapter.dedupped());
-            buf += "\n";
-        }
+        write_encounter_group(&mut buf, group);
     }
     buf += "</div>";
 
