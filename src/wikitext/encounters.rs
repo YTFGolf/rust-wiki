@@ -297,7 +297,7 @@ fn get_group<'a: 'b, 'b>(
         let stage_name = &stage_data.name;
 
         // If stage doesn't have a name in csv file, then skip.
-        if stage_name.chars().next().unwrap() != '[' {
+        if !stage_name.starts_with('[') {
             eprintln!("{stage_name:?} may be a placeholder. Skipping.",);
             // TODO warn macro
             continue;
@@ -310,7 +310,7 @@ fn get_group<'a: 'b, 'b>(
         // Get rid of `(Old)` and `(Removed)`.
         let chap = get_group_chapter(group_chapters, map_name);
         let mags = get_stage_mags(stage, abs_enemy_id);
-        chap.stages.push(Stage::new(&stage_name, mags, &stage.meta));
+        chap.stages.push(Stage::new(stage_name, mags, &stage.meta));
     }
     group
 }
