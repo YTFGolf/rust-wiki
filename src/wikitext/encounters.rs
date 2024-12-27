@@ -236,7 +236,6 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     buf
 }
 
-#[inline]
 /// Get an encounters group from the `abs_enemy_id` and `section_map`.
 ///
 /// If `add_to_removed` is true, then any map with `(Old)` or `(Removed)` in its
