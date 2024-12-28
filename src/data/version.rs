@@ -105,6 +105,11 @@ impl Version {
         let type_id = TypeId::of::<T>();
         // honestly this should probably just return an Rc
 
+        // Actually thinking about it now was all this stuff just some ChatGPT
+        // hallucination. Like it's only the boxes that will get moved, not the
+        // data. The boxes will never reallocate the data that they hold, and
+        // they won't be dropped because of elision.
+
         let mut version_data_lock = self.version_data.lock().unwrap();
 
         if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {
