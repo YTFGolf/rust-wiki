@@ -101,8 +101,18 @@ impl Version {
         let mut version_data = self.version_data.lock().unwrap();
 
         if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
-            let data_vec = unsafe { &*(version_data.as_ptr().add(position)) };
-            return data_vec
+            let version_data_ptr = version_data.as_ptr();
+            // Pointer to underlying vec. Allows the mutex to go out of scope
+            // while the pointer still points to valid memory.
+            drop(version_data);
+            // Note that it still compiles even with the drop. All the drop does
+            // is release the mutex lock.
+            let file_data = unsafe { &*(version_data_ptr.add(position)) };
+            // Immutable reference to version_data[position].
+            // All this might seem a bit pointless but it means that the
+            // function can just return a &T rather than a MutexGuard or
+            // something, so calling code can be much simpler.
+            return file_data
                 .1
                 .downcast_ref::<T>()
                 .expect("Something went horribly wrong.");
@@ -112,12 +122,35 @@ impl Version {
         version_data.push((type_id, new_value));
 
         if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
-            let data_vec = unsafe { &*(version_data.as_ptr().add(position)) };
-            return data_vec
+            let version_data_ptr = version_data.as_ptr();
+            drop(version_data);
+            let file_data = unsafe { &*(version_data_ptr.add(position)) };
+            return file_data
                 .1
                 .downcast_ref::<T>()
                 .expect("Something went horribly wrong.");
         }
+
+        // Note I don't really know much about safety, this is a guess.
+        // Safety: it's just pointers. If the unsafe pointers were mutable then
+        // there would probably be problems, but they aren't so there aren't.
+
+        // This is inside a mutex, so no data races or anything.
+
+        // If needs to update the vec, then it can do that easily since nothing
+        // else will be reading from or writing to the vec due to Mutex.
+
+        // When reading, it just gets a pointer to the vec and then does normal
+        // pointer arithmetic to get to the appropriate position. All the unsafe
+        // bit does is allow me to drop the mutex while still having a pointer
+        // to valid data. The reference is immutable, so assuming that nothing
+        // weird happens when accessing immutable data, then even if multiple
+        // things were to access it at the same time nothing bad happens.
+
+        // Assuming `file_data` is a valid reference for the reasons above, then
+        // all that needs to be done is getting the boxed data and converting it
+        // from Any to T. That bit appears to work fine and I can't be bothered
+        // to audit it.
 
         unreachable!()
     }
