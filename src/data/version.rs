@@ -96,7 +96,10 @@ impl Version {
     /// ```
     /// This can be run with any type that implements [CacheableVersionData].
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
+        // ABSOLUTELY DO NOT MODIFY THIS FUNCTION IF YOU DON'T KNOW WHAT YOU'RE
+        // DOING.
         let type_id = TypeId::of::<T>();
+        // honestly this should probably just return an Rc
 
         let mut version_data_lock = self.version_data.lock().unwrap();
 
@@ -117,6 +120,12 @@ impl Version {
                 .downcast_ref::<T>()
                 .expect("Something went horribly wrong.");
         }
+
+        if version_data_lock.capacity() <= version_data_lock.len() {
+            panic!("Cannot append new items to version data!")
+        }
+        // Raw pointers could start pointing to invalid memory if a resize
+        // occurs.
 
         let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
         version_data_lock.push((type_id, new_value));
@@ -139,6 +148,8 @@ impl Version {
 
         // If needs to update the vec, then it can do that easily since nothing
         // else will be reading from or writing to the vec due to Mutex.
+        // All pointers to the vec will remain valid since the vec will never be
+        // resized.
 
         // When reading, it just gets a pointer to the vec and then does normal
         // pointer arithmetic to get to the appropriate position. All the unsafe
