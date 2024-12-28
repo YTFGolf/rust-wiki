@@ -98,13 +98,13 @@ impl Version {
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 
-        let mut version_data = self.version_data.lock().unwrap();
+        let mut version_data_lock = self.version_data.lock().unwrap();
 
-        if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
-            let version_data_ptr = version_data.as_ptr();
+        if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {
+            let version_data_ptr = version_data_lock.as_ptr();
             // Pointer to underlying vec. Allows the mutex to go out of scope
             // while the pointer still points to valid memory.
-            drop(version_data);
+            drop(version_data_lock);
             // Note that it still compiles even with the drop. All the drop does
             // is release the mutex lock.
             let file_data = unsafe { &*(version_data_ptr.add(position)) };
@@ -119,11 +119,11 @@ impl Version {
         }
 
         let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
-        version_data.push((type_id, new_value));
+        version_data_lock.push((type_id, new_value));
 
-        if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
-            let version_data_ptr = version_data.as_ptr();
-            drop(version_data);
+        if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {
+            let version_data_ptr = version_data_lock.as_ptr();
+            drop(version_data_lock);
             let file_data = unsafe { &*(version_data_ptr.add(position)) };
             return file_data
                 .1
