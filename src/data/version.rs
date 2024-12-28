@@ -121,7 +121,7 @@ impl Version {
                 .expect("Something went horribly wrong.");
         }
 
-        if version_data_lock.capacity() <= version_data_lock.len() {
+        if version_data_lock.capacity() == version_data_lock.len() {
             panic!("Cannot append new items to version data!")
         }
         // Raw pointers could start pointing to invalid memory if a resize
@@ -162,6 +162,21 @@ impl Version {
         // all that needs to be done is getting the boxed data and converting it
         // from Any to T. That bit appears to work fine and I can't be bothered
         // to audit it.
+
+        /*
+        Anyway, main invariants:
+        - The vec is never concurrently modified
+          - The vec is only ever modified through a mutex guard.
+          - These modifications only add new items to the vec, they don't mutate
+            existing ones.
+        - All returned references remain valid
+          - All references are immutable so cannot alter the data they point to.
+          - No existing data is ever modified, only new data is added.
+          - Due to the capacity check the vec is never reallocated.
+          - The function signature has an elided lifetime, i.e. the reference
+            can only live as long as the version object, thus the vec is never
+            dropped while the pointer is in use.
+        */
 
         unreachable!()
     }
