@@ -53,16 +53,12 @@ impl Version {
     where
         PathBuf: From<P>,
     {
-        const VEC_CAPACITY: usize = 4;
-        // Increase if necessary.
-        // As of time writing this comment, only 4 structs implement the
-        // CacheableVersionData trait.
         Ok(Self {
             location: PathBuf::from(location),
             language: language.try_into()?,
             number,
 
-            version_data: Mutex::from(Vec::with_capacity(VEC_CAPACITY)),
+            version_data: Mutex::from(Vec::new()),
         })
     }
 
@@ -100,15 +96,7 @@ impl Version {
     /// ```
     /// This can be run with any type that implements [CacheableVersionData].
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
-        // ABSOLUTELY DO NOT MODIFY THIS FUNCTION IF YOU DON'T KNOW WHAT YOU'RE
-        // DOING.
         let type_id = TypeId::of::<T>();
-        // honestly this should probably just return an Rc
-
-        // Actually thinking about it now was all this stuff just some ChatGPT
-        // hallucination. Like it's only the boxes that will get moved, not the
-        // data. The boxes will never reallocate the data that they hold, and
-        // they won't be dropped because of elision.
 
         let mut version_data_lock = self.version_data.lock().unwrap();
 
@@ -116,9 +104,6 @@ impl Version {
             let version_data_ptr = version_data_lock.as_ptr();
             // Pointer to underlying vec. Allows the mutex to go out of scope
             // while the pointer still points to valid memory.
-            drop(version_data_lock);
-            // Note that it still compiles even with the drop. All the drop does
-            // is release the mutex lock.
             let file_data = unsafe { &*(version_data_ptr.add(position)) };
             // Immutable reference to version_data[position].
             // All this might seem a bit pointless but it means that the
@@ -130,18 +115,11 @@ impl Version {
                 .expect("Something went horribly wrong.");
         }
 
-        if version_data_lock.capacity() == version_data_lock.len() {
-            panic!("Cannot append new items to version data!")
-        }
-        // Raw pointers could start pointing to invalid memory if a resize
-        // occurs.
-
         let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
         version_data_lock.push((type_id, new_value));
 
         if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {
             let version_data_ptr = version_data_lock.as_ptr();
-            drop(version_data_lock);
             let file_data = unsafe { &*(version_data_ptr.add(position)) };
             return file_data
                 .1
@@ -149,42 +127,31 @@ impl Version {
                 .expect("Something went horribly wrong.");
         }
 
-        // Note I don't really know much about safety, this is a guess.
-        // Safety: it's just pointers. If the unsafe pointers were mutable then
-        // there would probably be problems, but they aren't so there aren't.
-
-        // This is inside a mutex, so no data races or anything.
-
-        // If needs to update the vec, then it can do that easily since nothing
-        // else will be reading from or writing to the vec due to Mutex.
-        // All pointers to the vec will remain valid since the vec will never be
-        // resized.
-
-        // When reading, it just gets a pointer to the vec and then does normal
-        // pointer arithmetic to get to the appropriate position. All the unsafe
-        // bit does is allow me to drop the mutex while still having a pointer
-        // to valid data. The reference is immutable, so assuming that nothing
-        // weird happens when accessing immutable data, then even if multiple
-        // things were to access it at the same time nothing bad happens.
-
-        // Assuming `file_data` is a valid reference for the reasons above, then
-        // all that needs to be done is getting the boxed data and converting it
-        // from Any to T. That bit appears to work fine and I can't be bothered
-        // to audit it.
-
         /*
-        Anyway, main invariants:
-        - The vec is never concurrently modified
-          - The vec is only ever modified through a mutex guard.
-          - These modifications only add new items to the vec, they don't mutate
-            existing ones.
-        - All returned references remain valid
-          - All references are immutable so cannot alter the data they point to.
-          - No existing data is ever modified, only new data is added.
-          - Due to the capacity check the vec is never reallocated.
+        Safety invariants:
+        - Modification is atomic
+          - The only point where modification occurs is through the MutexGuard.
+            This will always be atomic because that's what Mutexes do.
+        - Underlying data is valid
+          - As long as the underlying struct doesn't get dropped/reallocated it
+            should be fine, even if the underlying data was slightly modified.
+            Probably.
+        - All pointers are always valid
+          - The MutexGuard remains active until the function returns, so at the
+            moment that it returns the pointer will be valid. The function
+            returns a pointer to the struct of type T. If this struct never gets
+            dropped/reallocated while the pointer is in use, the pointer will
+            always be valid.
+          - The struct will never be dropped because the Version owns the Box
+            that owns the struct. Therefore, it will never get dropped until the
+            Box is dropped, which won't happen until the Vec is dropped, which
+            won't happen until ... etc. until you get to the Version object.
+            Basically, the struct won't be dropped until version is dropped.
           - The function signature has an elided lifetime, i.e. the reference
-            can only live as long as the version object, thus the vec is never
+            can only live as long as the version object, thus the data is never
             dropped while the pointer is in use.
+          - No reallocation is kind of an assumption, but I don't know why the
+            struct itself would get reallocated.
         */
 
         unreachable!()
