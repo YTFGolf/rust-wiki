@@ -2,7 +2,6 @@
 
 use std::{
     any::{Any, TypeId},
-    cell::RefCell,
     path::{Path, PathBuf},
     sync::Mutex,
 };
@@ -46,7 +45,7 @@ pub struct Version {
     /// Represents the version's number.
     pub number: String,
 
-    version_data: Mutex<RefCell<Vec<(TypeId, VersionDataContents)>>>,
+    version_data: Mutex<Vec<(TypeId, VersionDataContents)>>,
 }
 impl Version {
     /// Create new Version object.
@@ -59,7 +58,7 @@ impl Version {
             language: language.try_into()?,
             number,
 
-            version_data: Mutex::from(RefCell::new(Vec::new())),
+            version_data: Mutex::from(Vec::new()),
         })
     }
 
@@ -99,30 +98,22 @@ impl Version {
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 
-        let version_data = self.version_data.lock().unwrap();
+        let mut version_data = self.version_data.lock().unwrap();
 
-        if let Some(position) = version_data
-            .borrow()
-            .iter()
-            .position(|(id, _)| *id == type_id)
-        {
-            let data_vec = unsafe { &(*version_data.as_ptr()) };
-            return data_vec[position]
+        if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
+            let data_vec = unsafe { &*(version_data.as_ptr().add(position)) };
+            return data_vec
                 .1
                 .downcast_ref::<T>()
                 .expect("Something went horribly wrong.");
         }
 
         let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
-        version_data.borrow_mut().push((type_id, new_value));
+        version_data.push((type_id, new_value));
 
-        if let Some(position) = version_data
-            .borrow()
-            .iter()
-            .position(|(id, _)| *id == type_id)
-        {
-            let data_vec = unsafe { &(*version_data.as_ptr()) };
-            return data_vec[position]
+        if let Some(position) = version_data.iter().position(|(id, _)| *id == type_id) {
+            let data_vec = unsafe { &*(version_data.as_ptr().add(position)) };
+            return data_vec
                 .1
                 .downcast_ref::<T>()
                 .expect("Something went horribly wrong.");
