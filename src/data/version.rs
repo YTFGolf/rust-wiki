@@ -53,12 +53,16 @@ impl Version {
     where
         PathBuf: From<P>,
     {
+        const VEC_CAPACITY: usize = 4;
+        // Increase if necessary.
+        // As of time writing this comment, only 4 structs implement the
+        // CacheableVersionData trait.
         Ok(Self {
             location: PathBuf::from(location),
             language: language.try_into()?,
             number,
 
-            version_data: Mutex::from(Vec::new()),
+            version_data: Mutex::from(Vec::with_capacity(VEC_CAPACITY)),
         })
     }
 
