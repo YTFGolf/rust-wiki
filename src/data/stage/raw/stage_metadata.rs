@@ -296,7 +296,7 @@ impl StageMeta {
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_selector(selector: &str) -> Result<StageMeta, StageMetaParseError> {
-        let selector: Vec<&str> = selector.split(" ").collect();
+        let selector: Vec<&str> = selector.split(' ').collect();
 
         let Some(stage_type) =
             get_selector_type(selector.first().expect("Selector should have content!"))
@@ -331,7 +331,7 @@ impl StageMeta {
             Self::from_selector_main(&["eoc", &FILE_PATTERNS.eoc.replace(file_name, "$1")])
         } else if FILE_PATTERNS.other_main.is_match(file_name) {
             Self::from_file_other_main(file_name)
-        } else if file_name.contains("_") {
+        } else if file_name.contains('_') {
             let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
             let map_num: u32 = caps[2].parse::<u32>().unwrap();
             let stage_num: u32 = caps[3].parse::<u32>().unwrap();
@@ -429,7 +429,7 @@ impl StageMeta {
         let type_code;
         let map_file_name;
         let stage_file_name;
-        if stage_type.code.contains("|") {
+        if stage_type.code.contains('|') {
             // If more than RE|EX is needed this could completely break
             let map = &stage_type.code[..2];
             let stage = &stage_type.code[3..];

@@ -404,7 +404,7 @@ fn always_appeared_at(buf: &mut String) {
     }
 
     let mag = map.iter().next().unwrap().to_string();
-    if mag.contains(" ") {
+    if mag.contains(' ') {
         // if is like "(10%, 100%)"
         return;
     }

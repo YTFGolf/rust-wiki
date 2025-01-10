@@ -169,7 +169,7 @@ impl GameMap {
         if split_line.is_empty() {
             return None;
         }
-        if split_line.ends_with(",") {
+        if split_line.ends_with(',') {
             split_line = &split_line[0..split_line.len() - 1];
             // remove final bit since parse function relies on it
         }

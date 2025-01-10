@@ -33,7 +33,7 @@ pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
         }
         let n = n;
 
-        let end = format.find("}").expect("Invalid stage info format!");
+        let end = format.find('}').expect("Invalid stage info format!");
         let var_name = &format[n + 2..end];
         parsed.push(ParseNode {
             content: var_name,

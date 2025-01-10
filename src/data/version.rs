@@ -71,7 +71,7 @@ impl Version {
     ///
     /// Literally just checks the last word of the directory and returns that.
     pub fn get_lang(path: &str) -> Option<&str> {
-        path.rsplit(" ").next()
+        path.rsplit(' ').next()
     }
 
     /// Automatically extract version number from directory name.
