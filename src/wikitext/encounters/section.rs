@@ -93,9 +93,12 @@ impl EncountersSection {
             return;
         }
 
-        if meta.type_enum != T::Outbreaks {
-            panic!("Type should be Outbreaks, not {:?}", meta.type_enum);
-        }
+        assert_eq!(
+            meta.type_enum,
+            T::Outbreaks,
+            "Type should be Outbreaks, not {:?}",
+            meta.type_enum
+        );
 
         // TODO something to do with the stage numbers and formatting if has
         // loads of stages in eoc outbreaks. probably works if map num is set to
