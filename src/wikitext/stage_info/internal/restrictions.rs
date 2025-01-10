@@ -24,7 +24,7 @@ const fn non_zero_u8(value: u8) -> NonZero<u8> {
 /// Specials and rares only and only applies to 4-crown.
 const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
     crowns_applied: Crowns::One(non_zero_u8(4)),
-    rarity: NonZeroU8::new(0b000110),
+    rarity: NonZeroU8::new(0b00_0110),
     deploy_limit: None,
     rows: None,
     min_cost: None,

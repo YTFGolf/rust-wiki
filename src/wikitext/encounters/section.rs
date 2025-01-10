@@ -254,7 +254,7 @@ impl SectionRef {
     /// Get the index of the section in the ordered list of sections. Can be
     /// used as an ordering function.
     pub const fn index(&self) -> SectionRefRepr {
-        unsafe { *(self as *const SectionRef as *const SectionRefRepr) }
+        unsafe { *std::ptr::from_ref::<SectionRef>(self).cast::<SectionRefRepr>() }
         // Casts the borrow to a SectionRef pointer (obviously borrows are
         // pointers with extra compiler magic), then converts that to a pointer
         // to a SectionRefRepr pointer, which can then be dereferenced without

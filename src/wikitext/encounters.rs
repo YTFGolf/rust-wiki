@@ -285,16 +285,13 @@ fn get_group<'a: 'b, 'b>(
         // below statement will catch it without any errors, but it's a better
         // error message.
 
-        let stage_data = match stage_map.get(stage.meta.stage_num) {
-            Some(name) => name,
-            None => {
-                eprintln!(
-                    "Warning: stage {:03}-{:03}-{:03} has no name.",
-                    stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
-                );
-                // TODO warn macro
-                continue;
-            }
+        let stage_data = if let Some(name) = stage_map.get(stage.meta.stage_num) { name } else {
+            eprintln!(
+                "Warning: stage {:03}-{:03}-{:03} has no name.",
+                stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
+            );
+            // TODO warn macro
+            continue;
         };
         let stage_name = &stage_data.name;
 
@@ -403,7 +400,7 @@ fn always_appeared_at(buf: &mut String) {
         return;
     }
 
-    let mag = map.iter().next().unwrap().to_string();
+    let mag = (*map.iter().next().unwrap()).to_string();
     if mag.contains(' ') {
         // if is like "(10%, 100%)"
         return;
