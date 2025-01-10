@@ -313,7 +313,7 @@ impl StageMeta {
                 // let chapter: u32 = stage_type.parse().unwrap();
                 let submap: u32 = selector[1].parse().unwrap();
                 let stage: u32 = selector[2].parse::<u32>().unwrap();
-                Self::from_split_parsed(stage_type, submap, stage)
+                Ok(Self::from_split_parsed(stage_type, submap, stage))
             }
         }
     }
@@ -411,7 +411,7 @@ impl StageMeta {
         let Some(stage_type) = get_selector_type(stage_type) else {
             return Err(StageMetaParseError::Invalid);
         };
-        Self::from_split_parsed(stage_type, map_num, stage_num)
+        Ok(Self::from_split_parsed(stage_type, map_num, stage_num))
     }
 
     /// [STAGE_TYPES]: consts::STAGE_TYPES
@@ -421,7 +421,7 @@ impl StageMeta {
         stage_type: &StageType,
         map_num: u32,
         stage_num: u32,
-    ) -> Result<StageMeta, StageMetaParseError> {
+    ) -> StageMeta  {
         let type_name = stage_type.name;
         let type_num = stage_type.number;
         let type_enum = stage_type.type_enum;
@@ -449,7 +449,7 @@ impl StageMeta {
         }
         // let type_code = code.code
 
-        Ok(StageMeta {
+        StageMeta {
             type_name,
             type_code,
             type_num,
@@ -458,7 +458,7 @@ impl StageMeta {
             stage_num,
             map_file_name,
             stage_file_name,
-        })
+        }
     }
 
     /// Formats:
@@ -1199,7 +1199,7 @@ mod tests {
 
             for _ in 0..NUM_ITERATIONS {
                 let (map, stage) = (random::<u32>() % 1000, random::<u32>() % 1000);
-                let st = StageMeta::from_split_parsed(&code, map, stage).unwrap();
+                let st = StageMeta::from_split_parsed(&code, map, stage);
                 let file_name = &st.stage_file_name;
                 assert_eq!(
                     file_name,
