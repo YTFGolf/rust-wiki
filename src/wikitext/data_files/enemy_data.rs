@@ -129,7 +129,7 @@ mod tests {
             .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"))
             .unwrap();
 
-        let it = rdr.deserialize::<EnemyData>().into_iter();
+        let it = rdr.deserialize::<EnemyData>();
 
         let mut seen = HashSet::new();
         it.map(|e| assert!(seen.insert(e.unwrap()._image)))

@@ -50,10 +50,8 @@ impl CatDataContainer {
     fn clean_cat_name(name: &str) -> &str {
         match name {
             "C&D Swordsman" => "Swordsman",
-            "Cat Bros EX" => "Cat Bros",
-            "Cat Bros R" => "Cat Bros",
+            "Cat Bros EX" | "Cat Bros R" | "Cat Bros Sw" => "Cat Bros",
             "Kitaro Cat & Nezumi-Otoko Cat 2" => "Kitaro Cat & Nezumi-Otoko Cat",
-            "Cat Bros Sw" => "Cat Bros",
             "Kabuto Cat Sw" => "Kabuto Cat",
             "Kuwagata Cat Sw" => "Kuwagata Cat",
             other => other,
