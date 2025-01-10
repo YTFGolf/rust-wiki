@@ -69,7 +69,7 @@ pub static CAT_DATA: CatDataContainer = CatDataContainer {
 fn get_cat_names() -> Vec<CatName> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b'\t')
-        .from_path(get_file_location(FileLocation::WikiData).join("UnitNames.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("UnitNames.csv"));
 
     rdr.unwrap()
         .deserialize::<CatName>()

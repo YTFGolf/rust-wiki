@@ -75,7 +75,7 @@ fn get_enemy_names() -> Vec<EnemyName> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b',')
         .comment(Some(b'#'))
-        .from_path(get_file_location(FileLocation::WikiData).join("EnemyLinkData.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("EnemyLinkData.csv"));
 
     rdr.unwrap()
         .deserialize::<EnemyName>()
@@ -85,7 +85,7 @@ fn get_enemy_names() -> Vec<EnemyName> {
 fn get_enemy_data() -> HashMap<u32, EnemyData> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b'\t')
-        .from_path(get_file_location(FileLocation::WikiData).join("EnemyNames.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"));
 
     rdr.unwrap()
         .deserialize::<EnemyData>()
@@ -98,7 +98,7 @@ fn get_enemy_data() -> HashMap<u32, EnemyData> {
 fn get_reverse_map() -> HashMap<String, u32> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b'\t')
-        .from_path(get_file_location(FileLocation::WikiData).join("EnemyNames.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"));
 
     rdr.unwrap()
         .deserialize::<EnemyData>()
@@ -126,7 +126,7 @@ mod tests {
     fn test_no_duplicate_data_keys() {
         let mut rdr = csv::ReaderBuilder::new()
             .delimiter(b'\t')
-            .from_path(get_file_location(FileLocation::WikiData).join("EnemyNames.csv"))
+            .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"))
             .unwrap();
 
         let it = rdr.deserialize::<EnemyData>().into_iter();

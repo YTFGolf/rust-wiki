@@ -38,7 +38,7 @@ fn get_treasure_data() -> MapStructure {
     let rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .delimiter(b'\t')
-        .from_path(get_file_location(FileLocation::WikiData).join("Treasures.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("Treasures.csv"));
 
     rdr.unwrap()
         .byte_records()

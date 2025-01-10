@@ -138,7 +138,7 @@ fn get_stage_name_map() -> StageNameMap {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b',')
         .comment(Some(b'#'))
-        .from_path(get_file_location(FileLocation::WikiData).join("StageNames.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("StageNames.csv"));
 
     for result in rdr.unwrap().deserialize() {
         let record: StageNamesLine = result.unwrap();
@@ -190,7 +190,7 @@ fn get_continue_stages_map() -> ContinueStagesMap {
     let rdr = csv::ReaderBuilder::new()
         .has_headers(true)
         .delimiter(b',')
-        .from_path(get_file_location(FileLocation::WikiData).join("ContinueStages.csv"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("ContinueStages.csv"));
 
     rdr.unwrap()
         .deserialize::<ContinueStagesLine>()
@@ -210,7 +210,7 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
         .has_headers(false)
         .delimiter(b'\t')
         .comment(Some(b'#'))
-        .from_path(get_file_location(FileLocation::WikiData).join("Difficulty.txt"));
+        .from_path(get_file_location(&FileLocation::WikiData).join("Difficulty.txt"));
 
     rdr.unwrap()
         .deserialize::<StageDifficultyLine>()
@@ -239,7 +239,7 @@ mod tests {
         let rdr = csv::ReaderBuilder::new()
             .has_headers(true)
             .delimiter(b',')
-            .from_path(get_file_location(FileLocation::WikiData).join("ContinueStages.csv"));
+            .from_path(get_file_location(&FileLocation::WikiData).join("ContinueStages.csv"));
 
         let mut i = 0;
         for record in rdr.unwrap().records() {

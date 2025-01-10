@@ -92,7 +92,7 @@ impl StageEnemy {
         let boss_type = old.boss_type.into();
         let is_base = old.num == anim_base_id;
 
-        let magnification = Self::get_magnification(&old);
+        let magnification = Self::get_magnification(old);
         let kill_count = std::num::NonZeroU32::new(old.kill_count.unwrap_or(0));
 
         Self {
