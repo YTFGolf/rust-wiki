@@ -72,7 +72,7 @@ pub struct StageEnemy {
 
 impl StageEnemy {
     /// Create new StageEnemy out of raw data.
-    pub fn new(old: StageEnemyCSV, anim_base_id: u32) -> Self {
+    pub fn new(old: &StageEnemyCSV, anim_base_id: u32) -> Self {
         let id = old.num - 2;
         let amount = old.amt.into();
 

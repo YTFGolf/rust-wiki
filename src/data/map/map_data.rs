@@ -180,10 +180,10 @@ impl GameMap {
             .from_reader(Cursor::new(split_line));
         let stage_line = rdr.byte_records().next().unwrap().unwrap();
 
-        Some(Self::parse_stage_line(stage_line))
+        Some(Self::parse_stage_line(&stage_line))
     }
 
-    fn parse_stage_line(record: ByteRecord) -> StageDataCSV {
+    fn parse_stage_line(record: &ByteRecord) -> StageDataCSV {
         // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
 
         let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();

@@ -231,7 +231,7 @@ impl From<StageData<'_>> for Stage {
             .stage_csv_data
             .enemies
             .into_iter()
-            .map(|e| StageEnemy::new(e, data.stage_csv_data.line2.anim_base_id))
+            .map(|e| StageEnemy::new(&e, data.stage_csv_data.line2.anim_base_id))
             .collect();
 
         let energy: Option<u32>;

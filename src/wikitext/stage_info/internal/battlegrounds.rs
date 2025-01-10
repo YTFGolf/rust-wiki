@@ -229,7 +229,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
     // this is not an abstraction, this is a convenience. having a bool here
     // only works because I always know it's a bool
     fn stringify_enemy_list(
-        enemies: Vec<&StageEnemy>,
+        enemies: &[&StageEnemy],
         is_base_hit: bool,
         enemies_dupe: &[u32],
     ) -> String {
@@ -254,7 +254,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
     if stage.is_base_indestructible {
         buf += "*The enemy base is indestructible until the boss is defeated.\n";
     }
-    buf += &stringify_enemy_list(default_spawn, false, &enemies_dupe);
+    buf += &stringify_enemy_list(&default_spawn, false, &enemies_dupe);
 
     for other in other_spawn {
         if !is_dojo {
@@ -265,14 +265,14 @@ pub fn battlegrounds(stage: &Stage) -> String {
                 buf += "\n";
             }
             writeln!(buf, "*When the base reaches {hp}% HP:", hp = other.0).unwrap();
-            buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
+            buf += &stringify_enemy_list(&other.1, true, &enemies_dupe);
             continue;
         }
 
         buf += "\n*When the base takes ";
         buf.write_formatted(&other.0, &Locale::en).unwrap();
         buf += " damage:\n";
-        buf += &stringify_enemy_list(other.1, true, &enemies_dupe);
+        buf += &stringify_enemy_list(&other.1, true, &enemies_dupe);
     }
 
     buf
