@@ -55,12 +55,12 @@ type ContinueStagesMap = Vec<Option<(u32, u32)>>;
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
 /// Container for [STAGE_NAMES] static.
-pub struct StagePageData {
+pub struct StageWikiData {
     stage_name_map: LazyLock<StageNameMap>,
     continue_stages: LazyLock<ContinueStagesMap>,
     stage_difficulty_map: LazyLock<StageDifficultyMap>,
 }
-impl StagePageData {
+impl StageWikiData {
     /// Get stage type from stage type id.
     pub fn stage_type(&self, id: u32) -> Option<&TypeData> {
         self.stage_name_map.get(id as usize)?.into()
@@ -99,8 +99,7 @@ impl StagePageData {
 }
 
 /// Contains parsed StageNames.csv file.
-// TODO rename
-pub static STAGE_WIKI_DATA: StagePageData = StagePageData {
+pub static STAGE_WIKI_DATA: StageWikiData = StageWikiData {
     stage_name_map: LazyLock::new(get_stage_name_map),
     continue_stages: LazyLock::new(get_continue_stages_map),
     stage_difficulty_map: LazyLock::new(get_stage_difficulty_map),
