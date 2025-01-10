@@ -12,7 +12,7 @@ use std::{collections::HashSet, fmt::Write};
 
 /// Get the enemies appearing line.
 pub fn enemies_appearing(stage: &Stage) -> String {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     buf.write_str("{{EnemiesAppearing").unwrap();
 
     let mut displayed = HashSet::new();
@@ -39,7 +39,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
         );
     }
 
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     write!(
         buf,
         "'''{name}''' is the ",

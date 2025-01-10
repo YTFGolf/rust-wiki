@@ -36,7 +36,7 @@ fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
 
 /// When treasure type is first item drops once then rest are all unlimited.
 fn once_then_unlimited(rewards: &StageRewards) -> String {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     let t = &rewards.treasure_drop;
 
     buf.write_str("- ").unwrap();
@@ -66,7 +66,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
 
 /// When treasure type is that all items have unlimited drop potential.
 fn all_unlimited(rewards: &StageRewards) -> String {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     let t = &rewards.treasure_drop;
 
     let mut total_allowed: f64 = 100.0;
@@ -90,7 +90,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
     }
 
     if buf.is_empty() {
-        "".to_string()
+        String::new()
     } else {
         buf.truncate(buf.len() - "<br>\n".len());
         buf
@@ -102,10 +102,10 @@ fn single_raw(rewards: &StageRewards) -> String {
     let t = &rewards.treasure_drop;
     assert_eq!(t.len(), 1);
     if t[0].item_chance == 0 {
-        return "".to_string();
+        return String::new();
     }
 
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     buf.write_str("- ").unwrap();
     write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
     write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
@@ -132,7 +132,7 @@ fn get_total_chance(treasure: &[TreasureCSV]) -> (bool, f64) {
 /// When treasure type is that a treasure is guaranteed but can only be received
 /// once.
 fn guaranteed_once(rewards: &StageRewards) -> String {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     let t = &rewards.treasure_drop;
     if t.len() == 1 {
         buf.write_str("- ").unwrap();
@@ -160,7 +160,7 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
 /// When treasure type is that a treasure is guaranteed and the stage has
 /// unlimited drops.
 fn guaranteed_unlimited(rewards: &StageRewards) -> String {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     let t = &rewards.treasure_drop;
 
     if t.len() == 1 {
@@ -215,7 +215,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
     let scores = rewards
         .iter()
         .map(|r| {
-            let mut buf = "".to_string();
+            let mut buf = String::new();
             buf.write_str("'''").unwrap();
             buf.write_formatted(&r.score, &Locale::en).unwrap();
             buf.write_str("''': ").unwrap();

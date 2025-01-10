@@ -115,14 +115,14 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
         restrictions.push(buf);
     }
     if let Some(min) = restriction.min_cost {
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         buf.write_str("Cat Deploy Cost: Only ").unwrap();
         buf.write_formatted(&min, &Locale::en).unwrap();
         buf.write_str("¢ or more").unwrap();
         restrictions.push(buf);
     }
     if let Some(max) = restriction.max_cost {
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         buf.write_str("Cat Deploy Cost: Only ").unwrap();
         buf.write_formatted(&max, &Locale::en).unwrap();
         buf.write_str("¢ or less").unwrap();
@@ -258,7 +258,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 /// Get content of restrictions section.
 pub fn restrictions_section(stage: &Stage) -> String {
     let restrictions = match get_restriction_list(stage) {
-        None => return "".to_string(),
+        None => return String::new(),
         Some(r) => r,
     };
 
@@ -266,7 +266,7 @@ pub fn restrictions_section(stage: &Stage) -> String {
         return restrictions.into_iter().next().unwrap();
     }
 
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     for restriction in restrictions {
         buf.write_str("*").unwrap();
         buf.write_str(&restriction).unwrap();

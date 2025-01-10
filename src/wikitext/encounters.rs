@@ -202,7 +202,7 @@ where
 /// Get a list of magnifications the enemy appears at.
 fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     if stage.meta.type_enum == T::MainChapters && stage.meta.map_num == 0 {
-        return "".to_string();
+        return String::new();
     };
 
     let mut mags = vec![];

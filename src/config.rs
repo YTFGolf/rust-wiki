@@ -77,7 +77,7 @@ fn read_config_file() -> Option<String> {
     let f = File::open(CONFIG_FILE);
     match f {
         Ok(mut f) => {
-            let mut buf = String::from("");
+            let mut buf = String::new();
             f.read_to_string(&mut buf).unwrap();
             Some(buf)
         }

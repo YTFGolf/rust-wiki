@@ -98,7 +98,7 @@ pub fn enemies_list(
         filtered_enemies_vec
             .iter()
             .map(|e| {
-                let mut buf = "".to_string();
+                let mut buf = String::new();
                 write_enemy_f(&mut buf, e, multiplier);
                 buf
             })
@@ -109,7 +109,7 @@ pub fn enemies_list(
 
     let mut param_vec: Vec<TemplateParameter> = vec![];
     let mut add_to_enemy_vec = |key: &'static str, list: String| {
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         buf.write_str("{{Magnification").unwrap();
         buf.write_str(&list).unwrap();
         buf.write_str("}}").unwrap();

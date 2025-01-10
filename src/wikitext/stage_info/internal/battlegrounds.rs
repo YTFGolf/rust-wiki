@@ -68,7 +68,7 @@ fn get_single_enemy_line(
     is_base_hit: bool,
     show_magnification: bool,
 ) -> String {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
 
     if is_base_hit {
         buf += "**";
@@ -250,7 +250,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
             .join("\n")
     }
 
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     if stage.is_base_indestructible {
         buf += "*The enemy base is indestructible until the boss is defeated.\n"
     }

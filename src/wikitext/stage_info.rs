@@ -59,7 +59,7 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> String {
 pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
     let parsed = parse_si_format(format);
 
-    let mut buf = "".to_string();
+    let mut buf = String::new();
 
     let stage_map = STAGE_NAMES
         .stage_map(stage.meta.type_num, stage.meta.map_num)
@@ -112,7 +112,7 @@ fn get_stage_variable(
         "stage_location" => internal::stage_location(stage).to_string(),
         "energy" => internal::energy(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "base_hp" => internal::base_hp(stage)
             .into_iter()
             .map(|p| p.to_string())
@@ -125,16 +125,16 @@ fn get_stage_variable(
             .join("\n"),
         "treasure" => internal::treasure(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "restrictions_info" => internal::restrictions_info(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "score_rewards" => internal::score_rewards(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "xp" => internal::xp(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "width" => internal::width(stage).to_string(),
         "max_enemies" => internal::max_enemies(stage).to_string(),
         "star" => internal::star(stage).to_string(),
@@ -145,10 +145,10 @@ fn get_stage_variable(
             .join("\n"),
         "max_clears" => internal::max_clears(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "difficulty" => internal::difficulty(stage)
             .map(|param| param.to_string())
-            .unwrap_or("".to_string()),
+            .unwrap_or_default(),
         "stage_nav" => internal::stage_nav(stage, stage_wiki_data)
             .into_iter()
             .map(|p| p.to_string())

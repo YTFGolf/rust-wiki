@@ -10,7 +10,7 @@ use std::fmt::Write;
 
 /// Get the `|stage name` parameter.
 pub fn stage_name(stage: &Stage) -> TemplateParameter {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
 
     match stage.anim_base_id {
         None => write!(buf, "[[File:rc{base_id:03}.png]]", base_id = stage.base_id).unwrap(),
@@ -53,7 +53,7 @@ pub fn stage_location(stage: &Stage) -> TemplateParameter {
 /// Get the `|energy` parameter.
 pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     let energy = stage.energy?;
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     match stage.meta.type_enum {
         StageTypeEnum::Catamin | StageTypeEnum::Extra => {
             buf.write_str("N/A").unwrap();
@@ -78,7 +78,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     }
     // Dojo
     if stage.anim_base_id.is_none() {
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         buf.write_formatted(&stage.base_hp, &Locale::en).unwrap();
         buf.write_str(" HP").unwrap();
         return vec![TemplateParameter::new(PARAM_NAME, buf)];
@@ -103,7 +103,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
 
     let magnification_hp = mag * base_hp / 100;
     if stage.crown_data.is_none() {
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         buf.write_formatted(&magnification_hp, &Locale::en).unwrap();
         buf.write_str(" HP").unwrap();
         return vec![TemplateParameter::new(PARAM_NAME, buf)];
@@ -111,7 +111,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
 
     let mut params = vec![];
     let get_new_param = |key, value| {
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         buf.write_formatted(&value, &Locale::en).unwrap();
         buf.write_str(" HP").unwrap();
         TemplateParameter::new(key, buf)
@@ -154,7 +154,7 @@ pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
     if matches!(stage.meta.type_enum, StageTypeEnum::RankingDojo) && xp == 0 {
         return None;
     }
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     buf.write_formatted(&xp, &Locale::en).unwrap();
     buf.write_str(" XP").unwrap();
 
@@ -163,7 +163,7 @@ pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
 
 /// Get the width of a stage.
 pub fn width(stage: &Stage) -> TemplateParameter {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     buf.write_formatted(&stage.width, &Locale::en).unwrap();
 
     TemplateParameter::new("width", buf)
@@ -171,7 +171,7 @@ pub fn width(stage: &Stage) -> TemplateParameter {
 
 /// Get the max enemies of a stage.
 pub fn max_enemies(stage: &Stage) -> TemplateParameter {
-    let mut buf = "".to_string();
+    let mut buf = String::new();
     buf.write_formatted(&stage.max_enemies, &Locale::en)
         .unwrap();
 
