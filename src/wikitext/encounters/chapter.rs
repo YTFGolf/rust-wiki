@@ -45,6 +45,7 @@ impl<'a> Chapter<'a> {
     }
 
     /// Return the chapter with all duplicate stage names removed.
+    #[must_use]
     pub fn dedupped(self) -> Self {
         let mut names = HashSet::new();
         let mut dedupped = self;
