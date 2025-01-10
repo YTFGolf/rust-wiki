@@ -1,7 +1,7 @@
 //! Prints information about a stage.
 
 mod internal;
-use super::data_files::stage_page_data::{MapData, StageData, STAGE_NAMES};
+use super::data_files::stage_page_data::{MapData, StageData, STAGE_WIKI_DATA};
 use super::format_parser::{parse_si_format, ParseType};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
@@ -61,7 +61,7 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
 
     let mut buf = String::new();
 
-    let stage_map = STAGE_NAMES
+    let stage_map = STAGE_WIKI_DATA
         .stage_map(stage.meta.type_num, stage.meta.map_num)
         .unwrap_or_else(|| {
             panic!(

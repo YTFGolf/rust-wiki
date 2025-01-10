@@ -100,7 +100,7 @@ impl StagePageData {
 
 /// Contains parsed StageNames.csv file.
 // TODO rename
-pub static STAGE_NAMES: StagePageData = StagePageData {
+pub static STAGE_WIKI_DATA: StagePageData = StagePageData {
     stage_name_map: LazyLock::new(get_stage_name_map),
     continue_stages: LazyLock::new(get_continue_stages_map),
     stage_difficulty_map: LazyLock::new(get_stage_difficulty_map),
@@ -242,7 +242,7 @@ mod tests {
             let result = record.as_ref().unwrap();
             let continue_map_name = &result[0];
 
-            let map_data = STAGE_NAMES
+            let map_data = STAGE_WIKI_DATA
                 .stage_map(4, i)
                 .unwrap_or_else(|| panic!("Map name data does not exist for ex map {i}."));
             let real_map_name = &map_data.name;

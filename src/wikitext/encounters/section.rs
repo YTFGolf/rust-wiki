@@ -3,7 +3,7 @@
 use super::chapter::Chapter;
 use crate::{
     data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta},
-    wikitext::data_files::stage_page_data::STAGE_NAMES,
+    wikitext::data_files::stage_page_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;
 
@@ -169,7 +169,7 @@ impl EncountersSection {
 
                     let meta = match stage.meta.type_enum {
                         T::Extra => {
-                            if let Some(ids) = STAGE_NAMES.continue_id(stage.meta.map_num) {
+                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.meta.map_num) {
                                 &StageMeta::from_numbers(ids.0, ids.1, 999).unwrap()
                             } else {
                                 todo!()
@@ -282,7 +282,7 @@ impl SectionRef {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::wikitext::{data_files::stage_page_data::STAGE_NAMES, encounters::chapter::Stage};
+    use crate::wikitext::{data_files::stage_page_data::STAGE_WIKI_DATA, encounters::chapter::Stage};
     use std::borrow::Cow;
     use SectionRef as Ref;
 
@@ -352,7 +352,7 @@ mod tests {
     #[test]
     fn single_eoc_format() {
         let korea = StageMeta::new("eoc 0").unwrap();
-        let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&korea).unwrap().name;
         const MAGS: &str = "";
 
         let section = Ref::EoC.section();
@@ -365,7 +365,7 @@ mod tests {
     #[test]
     fn single_eoc_moon() {
         let moon_ch2 = StageMeta::new("eoc 49").unwrap();
-        let name = &STAGE_NAMES.from_meta(&moon_ch2).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&moon_ch2).unwrap().name;
         const MAGS: &str = "";
 
         let section = Ref::EoC.section();
@@ -378,7 +378,7 @@ mod tests {
     #[test]
     fn single_itf_format() {
         let great_abyss = StageMeta::new("itf 1 23").unwrap();
-        let name = &STAGE_NAMES.from_meta(&great_abyss).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&great_abyss).unwrap().name;
         const MAGS: &str = "(150%)";
 
         let section = Ref::ItF.section();
@@ -391,7 +391,7 @@ mod tests {
     #[test]
     fn single_cotc_format() {
         let sighter_star = StageMeta::new("cotc 2 24").unwrap();
-        let name = &STAGE_NAMES.from_meta(&sighter_star).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&sighter_star).unwrap().name;
         const MAGS: &str = "(150%)";
 
         let section = Ref::CotC.section();
@@ -404,7 +404,7 @@ mod tests {
     #[test]
     fn single_filibuster_format() {
         let mut filibuster = StageMeta::new("filibuster").unwrap();
-        let name = &STAGE_NAMES.from_meta(&filibuster).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&filibuster).unwrap().name;
         filibuster.map_num = 8;
         filibuster.stage_num = 999;
         // expected from ContinueStages
@@ -421,7 +421,7 @@ mod tests {
     #[test]
     fn single_aku_realms() {
         let korea = StageMeta::new("aku 0").unwrap();
-        let name = &STAGE_NAMES.from_meta(&korea).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&korea).unwrap().name;
         const MAGS: &str = "(100%)";
 
         let section = Ref::AkuRealms.section();
@@ -434,7 +434,7 @@ mod tests {
     #[test]
     fn single_story_format() {
         let torture_room = StageMeta::new("sol 21 3").unwrap();
-        let name = &STAGE_NAMES.from_meta(&torture_room).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&torture_room).unwrap().name;
         const MAGS: &str = "(400%)";
 
         let section = Ref::SoL.section();
@@ -447,7 +447,7 @@ mod tests {
     #[test]
     fn single_normal_format() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
-        let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "(400%)";
 
         let section = Ref::Event.section();
@@ -460,7 +460,7 @@ mod tests {
     #[test]
     fn single_z_outbreak() {
         let zoutbreak = StageMeta::new("z 3 43").unwrap();
-        let name = &STAGE_NAMES.from_meta(&zoutbreak).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
 
         let section = Ref::AkuRealms.section();
@@ -472,7 +472,7 @@ mod tests {
 
     #[test]
     fn single_aku_invasion() {
-        let name = &STAGE_NAMES.stage(4, 42, 0).unwrap().name;
+        let name = &STAGE_WIKI_DATA.stage(4, 42, 0).unwrap().name;
         let mount_aku_repr = StageMeta::new("aku 999").unwrap();
 
         const MAGS: &str = "(400%)";
@@ -486,7 +486,7 @@ mod tests {
 
     #[test]
     fn single_doron_invasion() {
-        let name = &STAGE_NAMES.stage(4, 68, 0).unwrap().name;
+        let name = &STAGE_WIKI_DATA.stage(4, 68, 0).unwrap().name;
         let idi_invasion_repr = StageMeta::new("sol 35 999").unwrap();
 
         const MAGS: &str = "(400%)";
@@ -501,7 +501,7 @@ mod tests {
     #[test]
     fn single_always_appeared_at() {
         let xp_hard = StageMeta::new("event 28 2").unwrap();
-        let name = &STAGE_NAMES.from_meta(&xp_hard).unwrap().name;
+        let name = &STAGE_WIKI_DATA.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "";
 
         let section = Ref::Event.section();

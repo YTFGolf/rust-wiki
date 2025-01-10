@@ -16,7 +16,7 @@ use crate::{
         },
     },
     wikitext::{
-        data_files::stage_page_data::STAGE_NAMES,
+        data_files::stage_page_data::STAGE_WIKI_DATA,
         wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
     },
 };
@@ -123,7 +123,7 @@ mod order {
 /// For use in [sort_encounters].
 fn key(meta: &StageMeta) -> (usize, u32, u32) {
     let m = match meta.type_enum {
-        T::Extra => match STAGE_NAMES.continue_id(meta.map_num) {
+        T::Extra => match STAGE_WIKI_DATA.continue_id(meta.map_num) {
             None => meta,
             Some((t, m)) => &StageMeta::from_numbers(t, m, 999).unwrap(),
         },
@@ -264,7 +264,7 @@ fn get_group<'a: 'b, 'b>(
     let mut group = Group::new(sec_ref, vec![]);
     let group_chapters = &mut group.chapters;
     for stage in &section_map.1 {
-        let stage_map = STAGE_NAMES
+        let stage_map = STAGE_WIKI_DATA
             .stage_map(stage.meta.type_num, stage.meta.map_num)
             .unwrap();
 
@@ -349,7 +349,7 @@ fn get_section_map<'a>(
         }
 
         if raw == Ref::Extra {
-            if let Some(ids) = STAGE_NAMES.continue_id(encounter.meta.map_num) {
+            if let Some(ids) = STAGE_WIKI_DATA.continue_id(encounter.meta.map_num) {
                 let new_meta = StageMeta::from_numbers(ids.0, ids.1, 999).unwrap();
                 raw = raw_section(&new_meta);
             };

@@ -6,7 +6,7 @@ use crate::{
         raw::stage_metadata::consts::StageTypeEnum as T,
     },
     wikitext::{
-        data_files::stage_page_data::{MapData, StageData, STAGE_NAMES},
+        data_files::stage_page_data::{MapData, StageData, STAGE_WIKI_DATA},
         stage_info::StageWikiData,
         template_parameter::TemplateParameter,
         wiki_utils::OLD_OR_REMOVED_SUB,
@@ -72,7 +72,7 @@ pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
 
 /// Get star difficulty of stage.
 pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
-    let difficulty = STAGE_NAMES.difficulty(
+    let difficulty = STAGE_WIKI_DATA.difficulty(
         stage.meta.type_num,
         stage.meta.map_num,
         stage.meta.stage_num,
@@ -105,7 +105,7 @@ fn get_single_nav(location: Option<&StageData>) -> String {
 
 /// Get all continuation stages possible from current stage.
 fn get_continuation_stages(data: &ContinueStages) -> String {
-    let map = STAGE_NAMES
+    let map = STAGE_WIKI_DATA
         .stage_map(4, data.map_id)
         .unwrap_or_else(|| panic!("Extra stages map with id {} was not found!", data.map_id));
     let stage_names = (data.stage_ids.0..=data.stage_ids.1).map(|id| {
@@ -156,7 +156,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
     }
 
     if let Some(ex_map_id) = stage.ex_invasion {
-        let stage = &STAGE_NAMES
+        let stage = &STAGE_WIKI_DATA
             .stage(4, ex_map_id % 1000, stage.meta.stage_num)
             .unwrap()
             .name;
