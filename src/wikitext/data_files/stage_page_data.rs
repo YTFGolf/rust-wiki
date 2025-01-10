@@ -195,11 +195,7 @@ fn get_continue_stages_map() -> ContinueStagesMap {
     rdr.unwrap()
         .deserialize::<ContinueStagesLine>()
         .map(|c| {
-            let c = match c {
-                Ok(c) => c,
-                Err(_) => return None,
-                // I can't be bothered to deal with the error properly.
-            };
+            let Ok(c) = c else { return None };
             Some((c.type_num, c.map_num))
         })
         .collect()

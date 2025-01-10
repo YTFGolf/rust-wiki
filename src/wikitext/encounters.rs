@@ -285,7 +285,7 @@ fn get_group<'a: 'b, 'b>(
         // below statement will catch it without any errors, but it's a better
         // error message.
 
-        let stage_data = if let Some(name) = stage_map.get(stage.meta.stage_num) { name } else {
+        let Some(stage_data) = stage_map.get(stage.meta.stage_num) else {
             eprintln!(
                 "Warning: stage {:03}-{:03}-{:03} has no name.",
                 stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num

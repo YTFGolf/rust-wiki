@@ -38,10 +38,7 @@ fn get_ex_option(path: &Path) -> Option<Vec<ExOptionCSV>> {
 
     let mut options = vec![];
     for record in rdr.byte_records() {
-        let result = match record {
-            Ok(r) => r,
-            Err(_) => break,
-        };
+        let Ok(result) = record else { break };
 
         let opt = result.deserialize(None).unwrap();
         options.push(opt);

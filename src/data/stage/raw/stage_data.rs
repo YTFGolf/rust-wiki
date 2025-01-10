@@ -138,10 +138,7 @@ pub enum StageDataError {
 impl<'a> StageData<'_> {
     /// Create new StageData object.
     pub fn new(selector: &str, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
-        let meta = match StageMeta::new(selector) {
-            Some(meta) => meta,
-            None => panic!("Invalid selector: {selector:?}"),
-        };
+        let Some(meta) = StageMeta::new(selector) else { panic!("Invalid selector: {selector:?}") };
 
         let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
         let reader = BufReader::new(
@@ -202,10 +199,7 @@ impl<'a> StageData<'_> {
             if record[0].contains('/') {
                 continue;
             }
-            let enemy = match deserialise_single_enemy(record) {
-                Some(value) => value,
-                None => continue,
-            };
+            let Some(enemy) = deserialise_single_enemy(record) else { continue };
 
             if enemy.num == 0 {
                 break;

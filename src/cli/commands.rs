@@ -86,10 +86,7 @@ mod cli_tests {
             }
         );
 
-        let si = match cli.command {
-            Command::StageInfo(si) => si,
-            _ => unreachable!(),
-        };
+        let Command::StageInfo(si) = cli.command else { unreachable!() };
         stage_info(si, &DEFAULT_CONFIG);
     }
 
@@ -107,10 +104,7 @@ mod cli_tests {
             }
         );
 
-        let si = match cli.command {
-            Command::StageInfo(si) => si,
-            _ => unreachable!(),
-        };
+        let Command::StageInfo(si) = cli.command else { unreachable!() };
         stage_info(si, &DEFAULT_CONFIG);
     }
 
@@ -128,10 +122,7 @@ mod cli_tests {
             }
         );
 
-        let si = match cli.command {
-            Command::StageInfo(si) => si,
-            _ => unreachable!(),
-        };
+        let Command::StageInfo(si) = cli.command else { unreachable!() };
         stage_info(si, &DEFAULT_CONFIG);
     }
 

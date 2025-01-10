@@ -1413,10 +1413,7 @@ mod tests {
     #[test]
     fn test_selector_numbers() {
         for t in STAGE_TYPES {
-            let m = match StageMeta::from_numbers(t.number, 0, 0) {
-                Ok(m) => m,
-                Err(_) => continue,
-            };
+            let Ok(m) = StageMeta::from_numbers(t.number, 0, 0) else { continue };
 
             assert_eq!(t.number, m.type_num)
         }
