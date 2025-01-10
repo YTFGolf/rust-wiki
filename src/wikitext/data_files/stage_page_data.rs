@@ -109,13 +109,13 @@ pub static STAGE_NAMES: StagePageData = StagePageData {
 #[derive(Debug, Deserialize)]
 struct StageNamesLine {
     #[serde(rename = "Type")]
-    s_type: u32,
+    type_num: u32,
     #[serde(rename = "Map")]
-    s_map: Option<u32>,
+    map_num: Option<u32>,
     #[serde(rename = "Stage")]
-    s_stage: Option<u32>,
+    stage_num: Option<u32>,
     #[serde(rename = "Link (EN)")]
-    s_link: String,
+    link: String,
 }
 #[derive(Debug, Deserialize)]
 struct ContinueStagesLine {
@@ -142,10 +142,10 @@ fn get_stage_name_map() -> StageNameMap {
 
     for result in rdr.unwrap().deserialize() {
         let record: StageNamesLine = result.unwrap();
-        match (record.s_type, record.s_map, record.s_stage) {
+        match (record.type_num, record.map_num, record.stage_num) {
             (n, None, None) => {
                 map[n as usize] = Some(TypeData {
-                    name: record.s_link,
+                    name: record.link,
                     _num: n,
                     maps: HashMap::new(),
                 });
@@ -155,7 +155,7 @@ fn get_stage_name_map() -> StageNameMap {
                 type_data.maps.insert(
                     m,
                     MapData {
-                        name: record.s_link,
+                        name: record.link,
                         _num: m,
                         stages: Vec::new(),
                     },
@@ -175,7 +175,7 @@ fn get_stage_name_map() -> StageNameMap {
                 );
 
                 stages.push(StageData {
-                    name: record.s_link,
+                    name: record.link,
                     _num: s,
                 });
             }
