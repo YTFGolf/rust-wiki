@@ -7,7 +7,6 @@ use clap::{Args, Parser, Subcommand};
 /// Stage info options.
 pub struct StageInfoOptions {
     /// Stage selector.
-    // TODO put a proper place for docs here.
     pub selector: Vec<String>,
 
     #[command(flatten)]
