@@ -100,7 +100,7 @@ pub mod charagroups {
                         .unwrap()
                         .parse::<u32>()
                         .unwrap();
-                    units.push(n)
+                    units.push(n);
                 }
 
                 CharaGroup {

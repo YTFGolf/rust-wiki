@@ -208,7 +208,7 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     let mut mags = vec![];
     for enemy in stage.stage_csv_data.enemies.iter() {
         if enemy.num == abs_enemy_id {
-            mags.push(StageEnemy::get_magnification(enemy))
+            mags.push(StageEnemy::get_magnification(enemy));
         }
     }
 
@@ -363,7 +363,7 @@ fn get_section_map<'a>(
         if let Some(pos) = sections_map.iter().position(|(sref, _)| *sref == raw) {
             sections_map[pos].1.push(encounter);
         } else {
-            sections_map.push((raw, vec![encounter]))
+            sections_map.push((raw, vec![encounter]));
         };
         // if section in map then add to add to section, otherwise add new
         // section to map
@@ -420,7 +420,7 @@ fn always_appeared_at(buf: &mut String) {
 
     let repl = "{{Collapsible}}".to_string()
         + &format!("\nThis enemy has always appeared at {percentage} strength magnification.");
-    *buf = buf.replace("{{Collapsible}}", &repl)
+    *buf = buf.replace("{{Collapsible}}", &repl);
 }
 
 /// Post-process the buffer and apply some text transformations.
@@ -432,7 +432,7 @@ fn cleanup(buf: &mut String) {
 fn write_encounter_group(buf: &mut String, group: Group<'_>) {
     if group.sref == SectionRef::EoC {
         *buf += "Strength magnifications are 100% in Chapter 1, 150% in \
-                    Chapter 2, and 400% in Chapter 3.\n"
+                    Chapter 2, and 400% in Chapter 3.\n";
     }
 
     for mut chapter in group.chapters {
@@ -450,7 +450,7 @@ fn write_encounter_group(buf: &mut String, group: Group<'_>) {
         ) {
             // need to match against borrowed since otherwise old weekend
             // stage would also be matched
-            chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]")
+            chapter.chapter_name = Cow::Borrowed("[[XP Stage|XP Stage/Weekend Stage]]");
         }
 
         group.sref.section().fmt_chapter(buf, chapter.dedupped());

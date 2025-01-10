@@ -138,7 +138,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
     let next;
     if [T::Extra].contains(&stage.meta.type_enum) {
         prev = None;
-        next = None
+        next = None;
     } else {
         prev = if stage.meta.stage_num == 0 {
             None

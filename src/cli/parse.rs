@@ -37,7 +37,7 @@ pub fn stage_info(info: StageInfoOptions, config: &Config) {
             &Stage::new(&selector, &config.current_version).unwrap(),
             config
         )
-    )
+    );
 }
 
 /// Replace all fields of `config` with appropriate fields from `args` if they

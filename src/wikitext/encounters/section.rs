@@ -83,7 +83,7 @@ impl EncountersSection {
         if meta.type_enum == T::AkuRealms {
             *buf += "Stage ";
             if meta.stage_num == 999 {
-                *buf += "30-IN"
+                *buf += "30-IN";
             } else {
                 write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
             }
@@ -122,7 +122,7 @@ impl EncountersSection {
                 write!(buf, "Stage {chap}-", chap = meta.map_num + 1).unwrap();
 
                 if meta.stage_num == 999 {
-                    *buf += "IN"
+                    *buf += "IN";
                 } else {
                     write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
                 }
@@ -177,7 +177,7 @@ impl EncountersSection {
                     // Get correct numbers for continue stages.
 
                     self.fmt_encounter(buf, meta, stage.stage_name, &stage.mags);
-                    *buf += "\n"
+                    *buf += "\n";
                 }
                 buf.pop();
             }

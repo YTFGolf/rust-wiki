@@ -108,7 +108,7 @@ fn get_single_enemy_line(
             Left(mag) => {
                 buf += " (";
                 buf.write_formatted(&mag, &Locale::en).unwrap();
-                buf += "%)"
+                buf += "%)";
             }
             Right((hp, ap)) => {
                 buf += " (";
@@ -184,7 +184,7 @@ fn get_enemy_spawns(
                 enemies_dupe.push(enemy.id);
             }
         } else {
-            enemies_mags.push((enemy.id, enemy.magnification))
+            enemies_mags.push((enemy.id, enemy.magnification));
         }
 
         if is_default_spawn(enemy) {
@@ -198,7 +198,7 @@ fn get_enemy_spawns(
         {
             percentage_vec.push(enemy);
         } else {
-            other_spawn.push((enemy.base_hp, vec![enemy]))
+            other_spawn.push((enemy.base_hp, vec![enemy]));
         }
     }
     let order_function: fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering = match is_dojo {
@@ -252,7 +252,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
 
     let mut buf = String::new();
     if stage.is_base_indestructible {
-        buf += "*The enemy base is indestructible until the boss is defeated.\n"
+        buf += "*The enemy base is indestructible until the boss is defeated.\n";
     }
     buf += &stringify_enemy_list(default_spawn, false, &enemies_dupe);
 

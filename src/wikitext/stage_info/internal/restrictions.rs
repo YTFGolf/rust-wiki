@@ -130,7 +130,7 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
     }
     if let Some(group) = &restriction.charagroup {
         let buf = get_charagroup_restriction(group);
-        restrictions.push(buf)
+        restrictions.push(buf);
     }
 
     restrictions
@@ -150,10 +150,10 @@ fn add_restriction_or_crown(
         .find(|(res_already, _)| res_already == &res_new)
     {
         if !crowns.contains(&crown) {
-            crowns.push(crown)
+            crowns.push(crown);
         }
     } else {
-        restriction_crowns.push((res_new, vec![crown]))
+        restriction_crowns.push((res_new, vec![crown]));
     }
 }
 
@@ -165,7 +165,7 @@ fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
     assert!(restriction_crowns.iter().all(|(_, crowns)| {
         let mut seen = HashSet::new();
         crowns.iter().all(|crown| seen.insert(crown))
-    }))
+    }));
 }
 
 /// Get restrictions when the stage has multiple restrictions being applied to

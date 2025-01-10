@@ -148,7 +148,7 @@ fn get_stage_name_map() -> StageNameMap {
                     name: record.s_link,
                     _num: n,
                     maps: HashMap::new(),
-                })
+                });
             }
             (t, Some(m), None) => {
                 let type_data = map[t as usize].as_mut().unwrap();

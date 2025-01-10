@@ -279,7 +279,7 @@ impl From<StageData<'_>> for Stage {
                 } else {
                     None
                 },
-            })
+            });
         } else {
             max_clears = None;
             cooldown = None;
