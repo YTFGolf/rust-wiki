@@ -57,7 +57,6 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> String {
 
 /// Get stage info based on specified format.
 pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
-    // TODO pre and post probably
     let parsed = parse_si_format(format);
 
     let mut buf = "".to_string();

@@ -5,7 +5,7 @@ use crate::{
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         stage_info::StageWikiData,
-        wiki_utils::{extract_name, REGEXES},
+        wiki_utils::{extract_name, OLD_OR_REMOVED_SUB},
     },
 };
 use std::{collections::HashSet, fmt::Write};
@@ -74,9 +74,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
             StageTypeEnum::Tower => "floor of",
             _ => "stage in",
         },
-        map_name = REGEXES
-            .old_or_removed_sub
-            .replace(&data.stage_map.name, "$1"),
+        map_name = OLD_OR_REMOVED_SUB.replace(&data.stage_map.name, "$1"),
         punct = match extract_name(&data.stage_map.name).chars().last().unwrap() {
             '!' | '.' => "",
             _ => ".",

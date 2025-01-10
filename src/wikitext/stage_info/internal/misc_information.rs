@@ -9,7 +9,7 @@ use crate::{
         data_files::stage_page_data::{MapData, StageData, STAGE_NAMES},
         stage_info::StageWikiData,
         template_parameter::TemplateParameter,
-        wiki_utils::REGEXES,
+        wiki_utils::OLD_OR_REMOVED_SUB,
     },
 };
 use regex::Regex;
@@ -29,7 +29,7 @@ pub fn star(stage: &Stage) -> TemplateParameter {
 pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
     #[inline]
     fn get_map_name(map: &MapData) -> Cow<'_, str> {
-        REGEXES.old_or_removed_sub.replace_all(&map.name, "$1")
+        OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1")
     }
 
     match stage.meta.type_enum {
@@ -89,9 +89,7 @@ fn get_single_nav(location: Option<&StageData>) -> String {
     assert!(
         location.is_none()
             || matches!(
-                REGEXES
-                    .old_or_removed_sub
-                    .replace_all(&location.unwrap().name, "$1"),
+                OLD_OR_REMOVED_SUB.replace_all(&location.unwrap().name, "$1"),
                 Cow::Borrowed(_)
             ),
         "Debug assert: stage has (Old) or (Removed) and needs to be added to \
@@ -99,8 +97,7 @@ fn get_single_nav(location: Option<&StageData>) -> String {
     );
     match location {
         None => "N/A".to_string(),
-        Some(location) => location.name.clone(), // Some(location) => REGEXES
-                                                 //     .old_or_removed_sub
+        Some(location) => location.name.clone(), // Some(location) => OLD_OR_REMOVED_SUB
                                                  //     .replace_all(&location.name, "$1")
                                                  //     .to_string(),
     }

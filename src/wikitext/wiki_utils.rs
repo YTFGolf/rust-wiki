@@ -3,31 +3,25 @@
 use regex::Regex;
 use std::sync::LazyLock;
 
-/// Regular expressions for wikitext functions.
-pub struct UtilRegexes {
-    /// Detects if stage is old or removed.
-    pub old_or_removed_detect: Regex,
-    /// Used for getting rid of the ` (Old)` or ` (Removed)` at the end of stage
-    /// or map names.
-    ///
-    /// Captures `[some_char]` (i.e. you'll need to replace with `"$1"` instead
-    /// of standard replacing with `""`). `some_char` is only captured since
-    /// Regex crate doesn't support lookarounds.
-    ///
-    /// ```
-    /// # use rust_wiki::wikitext::wiki_utils::REGEXES;
-    /// let map_name = "[[Deleted Event]] (Removed)";
-    /// assert_eq!(REGEXES.old_or_removed_sub.replace_all(&map_name, "$1"), "[[Deleted Event]]");
-    /// ```
-    pub old_or_removed_sub: Regex,
-}
-/// Utility regexes.
-pub static REGEXES: LazyLock<UtilRegexes> = LazyLock::new(|| UtilRegexes {
-    // TODO this does not need to be a struct
-    // These should be and, not or
-    old_or_removed_detect: Regex::new(r"\((Old|Removed)\)").unwrap(),
-    old_or_removed_sub: Regex::new(r" \((?:Old|Removed)\)([^\|\]/]|$)").unwrap(),
-});
+// Utility regexes.
+/// Detects if stage is old or removed.
+pub static OLD_OR_REMOVED_DETECT: LazyLock<Regex> = LazyLock::new(|| Regex::new(DET_PAT).unwrap());
+const DET_PAT: &str = r"\((Old|Removed)\)";
+
+/// Used for getting rid of the ` (Old)` or ` (Removed)` at the end of stage
+/// or map names.
+///
+/// Captures `[some_char]` (i.e. you'll need to replace with `"$1"` instead
+/// of standard replacing with `""`). `some_char` is only captured since
+/// Regex crate doesn't support lookarounds.
+///
+/// ```
+/// # use rust_wiki::wikitext::wiki_utils::REGEXES;
+/// let map_name = "[[Deleted Event]] (Removed)";
+/// assert_eq!(REGEXES.old_or_removed_sub.replace_all(&map_name, "$1"), "[[Deleted Event]]");
+/// ```
+pub static OLD_OR_REMOVED_SUB: LazyLock<Regex> = LazyLock::new(|| Regex::new(SUB_PAT).unwrap());
+const SUB_PAT: &str = r" \((?:Old|Removed)\)([^\|\]/]|$)";
 
 /**
 Extracts the name from a link:
