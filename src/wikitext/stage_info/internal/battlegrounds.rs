@@ -178,7 +178,7 @@ fn get_enemy_spawns(
     let mut other_spawn: Vec<OtherSpawnItem> = vec![];
     let mut enemies_mags = vec![];
     let mut enemies_dupe = vec![];
-    for enemy in stage.enemies.iter() {
+    for enemy in &stage.enemies {
         if let Some((_id, mag)) = enemies_mags.iter().find(|(id, _mag)| *id == enemy.id) {
             if *mag != enemy.magnification {
                 enemies_dupe.push(enemy.id);

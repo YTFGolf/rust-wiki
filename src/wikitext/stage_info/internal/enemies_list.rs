@@ -29,7 +29,7 @@ pub fn enemies_list(
         enemies: vec![],
         boss: vec![],
     };
-    for enemy in stage.enemies.iter() {
+    for enemy in &stage.enemies {
         if enemy.is_base {
             enemy_list.base.push(enemy);
         } else if enemy.boss_type == BossType::None {

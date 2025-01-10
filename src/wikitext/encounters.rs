@@ -206,7 +206,7 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     };
 
     let mut mags = vec![];
-    for enemy in stage.stage_csv_data.enemies.iter() {
+    for enemy in &stage.stage_csv_data.enemies {
         if enemy.num == abs_enemy_id {
             mags.push(StageEnemy::get_magnification(enemy));
         }
@@ -263,7 +263,7 @@ fn get_group<'a: 'b, 'b>(
 
     let mut group = Group::new(sec_ref, vec![]);
     let group_chapters = &mut group.chapters;
-    for stage in section_map.1.iter() {
+    for stage in &section_map.1 {
         let stage_map = STAGE_NAMES
             .stage_map(stage.meta.type_num, stage.meta.map_num)
             .unwrap();
