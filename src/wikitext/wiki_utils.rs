@@ -16,9 +16,9 @@ const DET_PAT: &str = r"\((Old|Removed)\)";
 /// Regex crate doesn't support lookarounds.
 ///
 /// ```
-/// # use rust_wiki::wikitext::wiki_utils::REGEXES;
+/// # use rust_wiki::wikitext::wiki_utils::OLD_OR_REMOVED_SUB;
 /// let map_name = "[[Deleted Event]] (Removed)";
-/// assert_eq!(REGEXES.old_or_removed_sub.replace_all(&map_name, "$1"), "[[Deleted Event]]");
+/// assert_eq!(OLD_OR_REMOVED_SUB.replace_all(&map_name, "$1"), "[[Deleted Event]]");
 /// ```
 pub static OLD_OR_REMOVED_SUB: LazyLock<Regex> = LazyLock::new(|| Regex::new(SUB_PAT).unwrap());
 const SUB_PAT: &str = r" \((?:Old|Removed)\)([^\|\]/]|$)";
@@ -47,5 +47,3 @@ pub fn extract_name(name: &str) -> &str {
         name
     }
 }
-
-// TODO put container for wiki file data into here instead of `data_files`
