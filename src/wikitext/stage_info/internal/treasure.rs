@@ -59,7 +59,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
         } else {
             "unlimited"
         };
-        write!(buf, " ({:.1$}%, {limit})", chance, precision).unwrap();
+        write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
     }
     buf
 }
@@ -85,7 +85,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
         } else {
             "unlimited"
         };
-        write!(buf, " ({:.1$}%, {limit})", chance, precision).unwrap();
+        write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
         buf.write_str("<br>\n").unwrap();
     }
 
@@ -150,7 +150,7 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
         if !is_equal_chance {
             let item_chance = f64::from(100 * item.item_chance) / total;
             let precision = if item_chance % 1.0 == 0.0 { 0 } else { 1 };
-            write!(buf, " ({item_chance:.0$}%)", precision).unwrap();
+            write!(buf, " ({item_chance:.precision$}%)").unwrap();
         }
     }
 
@@ -179,7 +179,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> String {
         if !is_equal_chance {
             let item_chance = f64::from(100 * item.item_chance) / total;
             let precision = if item_chance % 1.0 == 0.0 { 0 } else { 1 };
-            write!(buf, " ({item_chance:.0$}%)", precision).unwrap();
+            write!(buf, " ({item_chance:.precision$}%)").unwrap();
         }
     }
 

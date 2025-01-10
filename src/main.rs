@@ -23,7 +23,7 @@ fn main() {
         Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
         Command::StageInfo(si) => {
             let config = &get_config(config, si.config.clone());
-            stage_info(si, config)
+            stage_info(si, config);
         }
         Command::Encounters(e) => {
             let config = &get_config(config, e.config.clone());

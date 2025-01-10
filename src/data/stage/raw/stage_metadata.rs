@@ -51,7 +51,7 @@ pub mod consts {
     }
 
     fn initialise_type_map(pattern: &'static str, stage_type: StageTypeEnum) -> StageTypeMap {
-        let re = format!("^({})$", pattern);
+        let re = format!("^({pattern})$");
         let matcher = RegexBuilder::new(&re)
             .case_insensitive(true)
             .build()

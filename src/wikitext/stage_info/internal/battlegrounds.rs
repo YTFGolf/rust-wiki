@@ -26,7 +26,7 @@ fn write_single_spawn_s(buf: &mut String, time_f: u32) {
     } else {
         2
     };
-    write!(buf, "{:.1$}", respawn_s, precision).unwrap();
+    write!(buf, "{respawn_s:.precision$}").unwrap();
 }
 
 /// Write the enemy delay part of the battlegrounds lines.

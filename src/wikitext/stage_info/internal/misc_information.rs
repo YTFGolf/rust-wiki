@@ -121,10 +121,7 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
                 } else {
                     1
                 };
-                format!(
-                    "{stage} (''Continuation Stage'', {single_cont_chance:.0$}%)",
-                    precision
-                )
+                format!("{stage} (''Continuation Stage'', {single_cont_chance:.precision$}%)")
             }
         }
     });

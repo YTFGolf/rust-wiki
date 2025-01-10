@@ -107,11 +107,11 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
         restrictions.push(buf);
     }
     if let Some(limit) = restriction.deploy_limit {
-        let buf = format!("Max # of Deployable Cats: {}", limit);
+        let buf = format!("Max # of Deployable Cats: {limit}");
         restrictions.push(buf);
     }
     if let Some(row) = restriction.rows {
-        let buf = format!("Deploy from Row {} only", row);
+        let buf = format!("Deploy from Row {row} only");
         restrictions.push(buf);
     }
     if let Some(min) = restriction.min_cost {
