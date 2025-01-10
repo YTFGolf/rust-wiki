@@ -417,11 +417,7 @@ impl StageMeta {
     /// [STAGE_TYPES]: consts::STAGE_TYPES
     /// [from_split][StageMeta::from_split] but with `stage_type` being a code
     /// from [STAGE_TYPES].
-    fn from_split_parsed(
-        stage_type: &StageType,
-        map_num: u32,
-        stage_num: u32,
-    ) -> StageMeta  {
+    fn from_split_parsed(stage_type: &StageType, map_num: u32, stage_num: u32) -> StageMeta {
         let type_name = stage_type.name;
         let type_num = stage_type.number;
         let type_enum = stage_type.type_enum;
@@ -1413,7 +1409,9 @@ mod tests {
     #[test]
     fn test_selector_numbers() {
         for t in STAGE_TYPES {
-            let Ok(m) = StageMeta::from_numbers(t.number, 0, 0) else { continue };
+            let Ok(m) = StageMeta::from_numbers(t.number, 0, 0) else {
+                continue;
+            };
 
             assert_eq!(t.number, m.type_num)
         }
