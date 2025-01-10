@@ -3,7 +3,7 @@
 use super::chapter::Chapter;
 use crate::{
     data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta},
-    wikitext::data_files::stage_page_data::STAGE_WIKI_DATA,
+    wikitext::data_files::stage_wiki_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;
 
@@ -282,7 +282,7 @@ impl SectionRef {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::wikitext::{data_files::stage_page_data::STAGE_WIKI_DATA, encounters::chapter::Stage};
+    use crate::wikitext::{data_files::stage_wiki_data::STAGE_WIKI_DATA, encounters::chapter::Stage};
     use std::borrow::Cow;
     use SectionRef as Ref;
 

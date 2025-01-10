@@ -16,7 +16,7 @@ use crate::{
         },
     },
     wikitext::{
-        data_files::stage_page_data::STAGE_WIKI_DATA,
+        data_files::stage_wiki_data::STAGE_WIKI_DATA,
         wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
     },
 };

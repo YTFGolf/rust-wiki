@@ -2,7 +2,7 @@
 #![cfg(test)]
 use crate::{
     data::stage::parsed::stage::Stage,
-    wikitext::{data_files::stage_page_data::STAGE_WIKI_DATA, stage_info::StageWikiData},
+    wikitext::{data_files::stage_wiki_data::STAGE_WIKI_DATA, stage_info::StageWikiData},
 };
 /// Get the stage's [StageWikiData] for a test function.
 pub fn get_stage_wiki_data(stage: &Stage) -> StageWikiData {

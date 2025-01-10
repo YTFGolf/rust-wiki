@@ -6,7 +6,7 @@ use crate::{
         raw::stage_metadata::consts::StageTypeEnum as T,
     },
     wikitext::{
-        data_files::stage_page_data::{MapData, StageData, STAGE_WIKI_DATA},
+        data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA},
         stage_info::StageWikiData,
         template_parameter::TemplateParameter,
         wiki_utils::OLD_OR_REMOVED_SUB,
