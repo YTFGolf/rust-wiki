@@ -68,6 +68,7 @@ pub enum RestrictionCrowns {
     One(std::num::NonZeroU8),
 }
 impl From<i8> for RestrictionCrowns {
+    #[allow(clippy::cast_sign_loss)]
     fn from(value: i8) -> Self {
         match std::num::NonZeroU8::new((value + 1) as u8) {
             None => Self::All,

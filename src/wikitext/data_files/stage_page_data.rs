@@ -170,7 +170,7 @@ fn get_stage_name_map() -> StageNameMap {
 
                 assert_eq!(
                     s,
-                    stages.len() as u32,
+                    u32::try_from(stages.len()).unwrap(),
                     "Error parsing stage names record {record:?}: data is out of order."
                 );
 
