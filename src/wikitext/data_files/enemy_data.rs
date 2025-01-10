@@ -22,7 +22,7 @@ pub struct EnemyName {
 pub struct EnemyData {
     #[serde(rename = "Image")]
     /// Can use this as id.
-    _image: u32,
+    image_id: u32,
     #[serde(rename = "Name")]
     /// Common name.
     pub name: String,
@@ -91,7 +91,7 @@ fn get_enemy_data() -> HashMap<u32, EnemyData> {
         .deserialize::<EnemyData>()
         .map(|r| {
             let enemy: EnemyData = r.unwrap();
-            (enemy._image, enemy)
+            (enemy.image_id, enemy)
         })
         .collect()
 }
@@ -104,7 +104,7 @@ fn get_reverse_map() -> HashMap<String, u32> {
         .deserialize::<EnemyData>()
         .map(|r| {
             let enemy: EnemyData = r.unwrap();
-            (enemy.name.to_lowercase(), enemy._image)
+            (enemy.name.to_lowercase(), enemy.image_id)
         })
         .collect()
 }
@@ -132,7 +132,7 @@ mod tests {
         let it = rdr.deserialize::<EnemyData>();
 
         let mut seen = HashSet::new();
-        it.map(|e| assert!(seen.insert(e.unwrap()._image)))
+        it.map(|e| assert!(seen.insert(e.unwrap().image_id)))
             .for_each(drop);
     }
 

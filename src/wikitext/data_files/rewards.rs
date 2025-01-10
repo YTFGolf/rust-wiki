@@ -7,7 +7,7 @@ use std::{collections::HashMap, sync::LazyLock};
 #[derive(Debug, Deserialize)]
 /// Entry in the Treasures.csv file.
 pub struct TreasureEntry {
-    _id: u32,
+    id: u32,
     /// Name of treasure.
     pub name: String,
 }
@@ -44,7 +44,7 @@ fn get_treasure_data() -> MapStructure {
         .byte_records()
         .map(|result| {
             let map = result.unwrap().deserialize::<TreasureEntry>(None).unwrap();
-            (map._id, map)
+            (map.id, map)
         })
         .collect()
 }
