@@ -271,7 +271,8 @@ fn get_group<'a: 'b, 'b>(
         if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
             log::info!(
                 "Map {:03}-{:03} is a placeholder.",
-                stage.meta.type_num, stage.meta.map_num
+                stage.meta.type_num,
+                stage.meta.map_num
             );
             continue;
         }
@@ -282,7 +283,9 @@ fn get_group<'a: 'b, 'b>(
         let Some(stage_data) = stage_map.get(stage.meta.stage_num) else {
             log::info!(
                 "Stage {:03}-{:03}-{:03} has no name.",
-                stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
+                stage.meta.type_num,
+                stage.meta.map_num,
+                stage.meta.stage_num
             );
             continue;
         };
@@ -344,8 +347,15 @@ fn get_section_map<'a>(
             if let Some(ids) = STAGE_WIKI_DATA.continue_id(encounter.meta.map_num) {
                 let new_meta = StageMeta::from_numbers(ids.0, ids.1, 999).unwrap();
                 raw = raw_section(&new_meta);
-            };
+            }
             // Use continuestages to get proper section.
+            else {
+                log::info!(
+                    "Extra stage map {} has no continue id. Skipping.",
+                    encounter.meta.map_num
+                );
+                continue;
+            };
         }
         let raw = raw;
 
