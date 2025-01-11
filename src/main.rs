@@ -21,7 +21,6 @@ fn main() {
     let config = get_user_config();
 
     init_logger();
-    log::error!("epic");
 
     match cli.command {
         Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
@@ -31,8 +30,7 @@ fn main() {
         }
         Command::Encounters(e) => {
             let config = &get_config(config, e.config.clone());
-            eprintln!("Note: this currently only works on the first enemy");
-            // TODO info macro
+            log::info!("This currently only works on the first enemy");
             let name_or_id = &e.names[0];
             let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
                 None => name_or_id.parse().unwrap(),

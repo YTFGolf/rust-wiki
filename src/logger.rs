@@ -6,12 +6,16 @@ use log::{Level, LevelFilter, Metadata, Record};
 
 enum Color {
     Red,
+    Yellow,
+    Blue,
     Blank,
 }
 impl Color {
     const fn get_color_num(&self) -> &str {
         match self {
             Color::Red => "31",
+            Color::Yellow => "33",
+            Color::Blue => "34",
             Color::Blank => "0",
         }
     }
@@ -43,12 +47,21 @@ impl log::Log for SimpleExampleLogger {
                 blank = Color::Blank,
                 args = record.args()
             ),
-            Level::Warn => todo!(),
-            Level::Info => todo!(),
+            Level::Warn => eprintln!(
+                "{yellow}Warning{blank}: {args}",
+                yellow = Color::Yellow,
+                blank = Color::Blank,
+                args = record.args()
+            ),
+            Level::Info => eprintln!(
+                "{blue}Info{blank}: {args}",
+                blue = Color::Blue,
+                blank = Color::Blank,
+                args = record.args()
+            ),
             Level::Debug => todo!(),
             Level::Trace => todo!(),
         }
-        println!("{} - {}", record.level(), record.args());
     }
 
     fn flush(&self) {}
