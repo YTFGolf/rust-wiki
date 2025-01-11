@@ -2,7 +2,7 @@
 
 use std::fmt::Display;
 
-use log::{Level, LevelFilter, Metadata, Record};
+use log::{Level, Metadata, Record};
 
 #[allow(dead_code)]
 enum Color {
@@ -30,10 +30,11 @@ impl Display for Color {
     }
 }
 
+const MAX_LEVEL: Level = Level::Info;
 struct SimpleExampleLogger;
 impl log::Log for SimpleExampleLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
-        metadata.level() <= Level::Info
+        metadata.level() <= MAX_LEVEL
     }
 
     fn log(&self, record: &Record) {
@@ -74,5 +75,5 @@ static LOGGER: SimpleExampleLogger = SimpleExampleLogger;
 /// Initialise the logger. Must be called before logger is used.
 pub fn init_logger() {
     log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(LevelFilter::Info);
+    log::set_max_level(MAX_LEVEL.to_level_filter());
 }
