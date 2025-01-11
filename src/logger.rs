@@ -4,6 +4,7 @@ use std::fmt::Display;
 
 use log::{Level, LevelFilter, Metadata, Record};
 
+#[allow(dead_code)]
 enum Color {
     Red,
     Yellow,
@@ -53,12 +54,13 @@ impl log::Log for SimpleExampleLogger {
                 blank = Color::Blank,
                 args = record.args()
             ),
-            Level::Info => eprintln!(
-                "{blue}Info{blank}: {args}",
-                blue = Color::Blue,
-                blank = Color::Blank,
-                args = record.args()
-            ),
+            // Level::Info => eprintln!(
+            //     "{blue}Info{blank}: {args}",
+            //     blue = Color::Blue,
+            //     blank = Color::Blank,
+            //     args = record.args()
+            // ),
+            Level::Info => eprintln!("{}", record.args()),
             Level::Debug => todo!(),
             Level::Trace => todo!(),
         }

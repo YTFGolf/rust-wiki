@@ -253,13 +253,8 @@ fn get_group<'a: 'b, 'b>(
 ) -> Group<'a> {
     let sec_ref = section_map.0;
     if *sec_ref.section().display_type() == DisplayType::Warn {
-        eprintln!(
-            "Warning: {:?} stages encountered.",
-            section_map.1[0].meta.type_enum
-        );
-        // TODO log warning
+        log::warn!("{:?} stages encountered.", section_map.1[0].meta.type_enum);
     }
-    // warn if that is display type
 
     let mut group = Group::new(sec_ref, vec![]);
     let group_chapters = &mut group.chapters;
@@ -274,11 +269,10 @@ fn get_group<'a: 'b, 'b>(
         }
         // Add to removed and skip.
         if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
-            eprintln!(
-                "Warning: map {:03}-{:03} is a placeholder.",
+            log::info!(
+                "Map {:03}-{:03} is a placeholder.",
                 stage.meta.type_num, stage.meta.map_num
             );
-            // TODO warn macro
             continue;
         }
         // Remove placeholder maps. Technically doesn't need to happen since the
@@ -286,19 +280,17 @@ fn get_group<'a: 'b, 'b>(
         // error message.
 
         let Some(stage_data) = stage_map.get(stage.meta.stage_num) else {
-            eprintln!(
-                "Warning: stage {:03}-{:03}-{:03} has no name.",
+            log::info!(
+                "Stage {:03}-{:03}-{:03} has no name.",
                 stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
             );
-            // TODO warn macro
             continue;
         };
         let stage_name = &stage_data.name;
 
         // If stage doesn't have a name in csv file, then skip.
         if !stage_name.starts_with('[') {
-            eprintln!("{stage_name:?} may be a placeholder. Skipping.",);
-            // TODO warn macro
+            log::info!("{stage_name:?} may be a placeholder. Skipping.",);
             continue;
         }
         // If stage name isn't a link, then skip.
@@ -434,8 +426,7 @@ fn write_encounter_group(buf: &mut String, group: Group<'_>) {
 
     for mut chapter in group.chapters {
         if chapter.stages.is_empty() {
-            eprintln!("Warning: {:?} has no valid stages.", chapter.chapter_name);
-            // TODO warn macro
+            log::info!("{:?} has no valid stages.", chapter.chapter_name);
             continue;
         }
         if chapter.chapter_name == "[[XP Stage]]" {

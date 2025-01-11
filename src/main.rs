@@ -30,7 +30,7 @@ fn main() {
         }
         Command::Encounters(e) => {
             let config = &get_config(config, e.config.clone());
-            log::info!("This currently only works on the first enemy");
+            log::warn!("This currently only works on the first enemy");
             let name_or_id = &e.names[0];
             let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
                 None => name_or_id.parse().unwrap(),
