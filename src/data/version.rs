@@ -34,18 +34,25 @@ impl TryFrom<&str> for VersionLanguage {
     }
 }
 
+/// Holds any [CacheableVersionData] object.
+///
+/// For technical reasons, this cannot be a pointer to [CacheableVersionData].
+/// Based on compiler diagnostics the exact reason appears to be that trait
+/// objects need to be "object safe", although the exact meaning of this is
+/// unclear.
 type VersionDataContents = Pin<Box<dyn Any + Send + Sync>>;
 #[derive(Debug)]
 /// Represents a version of the game.
 pub struct Version {
-    /// Root location of game files (i.e. `{location()}/DataLocal/stage.csv`
+    /// Root location of game files (i.e. `location.join("DataLocal/stage.csv")`
     /// contains the energy cost of each EoC stage).
     location: PathBuf,
-    /// Version's language.
-    pub language: VersionLanguage,
-    /// Represents the version's number.
-    pub number: String,
 
+    _language: VersionLanguage,
+    /// E.g. `"14.0"`.
+    _number: String,
+
+    /// Contains cached data so large files don't have to be parsed repeatedly.
     version_data: Mutex<Vec<(TypeId, VersionDataContents)>>,
 }
 impl Version {
@@ -56,16 +63,11 @@ impl Version {
     {
         Ok(Self {
             location: PathBuf::from(location),
-            language: language.try_into()?,
-            number,
+            _language: language.try_into()?,
+            _number: number,
 
             version_data: Mutex::from(Vec::new()),
         })
-    }
-
-    /// Get full absolute file path of the version's game directory.
-    pub fn get_file_path<P: AsRef<Path>>(&self, path: P) -> PathBuf {
-        self.location.join(path)
     }
 
     /// Automatically extract the language code from the directory name.
@@ -82,6 +84,23 @@ impl Version {
     pub fn get_version_number(path: &str) -> Option<&str> {
         path.split_whitespace()
             .find(|&part| part.chars().all(|c| c.is_ascii_digit() || c == '.'))
+    }
+}
+
+impl Version {
+    // /// Get version's language.
+    // pub fn language(&self) -> &VersionLanguage {
+    //     &self.language
+    // }
+
+    // /// Get version's number.
+    // pub fn number(&self) -> &str {
+    //     &self.number
+    // }
+
+    /// Get full absolute file path of the version's game directory.
+    pub fn get_file_path<P: AsRef<Path>>(&self, path: P) -> PathBuf {
+        self.location.join(path)
     }
 
     /// Get a cached data object.
@@ -157,7 +176,8 @@ impl Version {
             can only live as long as the version object, thus the data is never
             dropped while the pointer is in use.
           - No reallocation is kind of an assumption, but I don't know why the
-            struct itself would get reallocated when it's pinned.
+            struct itself would get reallocated. The struct is also pinned, so
+            any possible reallocation would result in a compiler error probably.
         */
 
         unreachable!()
