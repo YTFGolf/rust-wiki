@@ -3,6 +3,7 @@
 use std::{
     any::{Any, TypeId},
     path::{Path, PathBuf},
+    pin::Pin,
     sync::Mutex,
 };
 pub mod version_data;
@@ -33,7 +34,7 @@ impl TryFrom<&str> for VersionLanguage {
     }
 }
 
-type VersionDataContents = Box<dyn Any + Send + Sync>;
+type VersionDataContents = Pin<Box<dyn Any + Send + Sync>>;
 #[derive(Debug)]
 /// Represents a version of the game.
 pub struct Version {
@@ -115,7 +116,7 @@ impl Version {
                 .expect("Something went horribly wrong.");
         }
 
-        let new_value: VersionDataContents = Box::new(T::init_data(&self.location));
+        let new_value: VersionDataContents = Box::pin(T::init_data(&self.location));
         version_data_lock.push((type_id, new_value));
 
         if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {
@@ -128,6 +129,11 @@ impl Version {
         }
 
         /*
+        This might be safe. The following is just the ramblings of someone who
+        doesn't truly understand how to make `unsafe` code thread-safe. At time
+        of writing the code is single-threaded anyway, so safety is pretty much
+        guaranteed.
+
         Safety invariants:
         - Modification is atomic
           - The only point where modification occurs is through the MutexGuard.
@@ -151,7 +157,7 @@ impl Version {
             can only live as long as the version object, thus the data is never
             dropped while the pointer is in use.
           - No reallocation is kind of an assumption, but I don't know why the
-            struct itself would get reallocated.
+            struct itself would get reallocated when it's pinned.
         */
 
         unreachable!()
