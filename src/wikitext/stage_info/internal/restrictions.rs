@@ -157,15 +157,17 @@ fn add_restriction_or_crown(
     }
 }
 
-/// Assert that the restriction's crowns haven't been duplicated, which means
-/// that `restriction_crowns[i].len()` is the amount of crowns the restriction
-/// applies to.
-// Is this necessary, probably not
+/// Assert that no numbers are duplicated in any of the nested u8 vecs.
 fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
-    assert!(restriction_crowns.iter().all(|(_, crowns)| {
+    restriction_crowns.iter().for_each(|(_, crowns)| {
         let mut seen = HashSet::new();
-        crowns.iter().all(|crown| seen.insert(crown))
-    }));
+        crowns.iter().for_each(|crown| {
+            assert!(
+                seen.insert(crown),
+                "Crown {crown} is duplicated in vec {crowns:?}."
+            )
+        });
+    });
 }
 
 /// Get restrictions when the stage has multiple restrictions being applied to
@@ -559,7 +561,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "Crown 1 is duplicated in vec [1, 1, 1, 1]."]
     fn test_assert_all_restrictions_unique() {
         let restrictions: &[(std::string::String, Vec<u8>)] = &[
             ("Rarity: Short lines".to_string(), [1, 1, 1, 1].to_vec()),

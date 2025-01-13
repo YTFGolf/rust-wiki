@@ -388,7 +388,8 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "left: 5\n right: 10"]
+    // . is not at end of line so panics
     fn test_parse_error_panics() {
         let unparsable = Cursor::new("4,0,20,50,.,100,0,8,0,2400");
         let mut rdr = csv::ReaderBuilder::new()
