@@ -2,7 +2,7 @@
 
 use crate::config::Config;
 use serde::Deserialize;
-use std::{collections::HashMap, fs::File};
+use std::{collections::HashMap, fs::File, mem};
 
 #[derive(Debug, Deserialize)]
 struct RawRuleType {
@@ -33,7 +33,7 @@ enum ContentsType {
     Colosseum = 0,
     Anni12 = 1,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum RuleType {
     TrustFund = 0,
     CooldownEquality = 1,
@@ -43,19 +43,41 @@ enum RuleType {
     RestrictPriceOrCd2 = 6,
     DeployLimit = 7,
 }
+const AMT_RARITIES: usize = 6;
 impl RuleType {
     pub fn len(&self) -> usize {
-        const AMT_RARITIES: usize = 6;
         match self {
             Self::TrustFund | Self::CooldownEquality | Self::CheapLabor | Self::DeployLimit => 1,
             Self::RarityLimit | Self::RestrictPriceOrCd1 | Self::RestrictPriceOrCd2 => AMT_RARITIES,
         }
     }
 }
+impl From<u8> for RuleType {
+    fn from(value: u8) -> Self {
+        let rule = match value {
+            0 => Self::TrustFund,
+            1 => Self::CooldownEquality,
+            3 => Self::RarityLimit,
+            4 => Self::CheapLabor,
+            5 => Self::RestrictPriceOrCd1,
+            6 => Self::RestrictPriceOrCd2,
+            7 => Self::DeployLimit,
+            _ => unreachable!(),
+        };
+
+        assert_eq!(rule.clone() as u8, value);
+        rule
+    }
+}
+#[derive(Debug)]
+enum ArrayType<T> {
+    Single([T; 1]),
+    Rarity([T; AMT_RARITIES]),
+}
 #[derive(Debug)]
 pub struct SpecialRule {
     contents_type: ContentsType,
-    rule_type: Vec<(RuleType, Vec<u32>)>,
+    rule_type: Vec<(RuleType, ArrayType<u32>)>,
     // rule_name_label: Option<String>,
     // rule_explanation_label: Option<String>,
 }
