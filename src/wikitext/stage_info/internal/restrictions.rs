@@ -1,9 +1,12 @@
 //! Get the stage's restrictions.
 
 use crate::{
-    data::stage::{
-        parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
-        raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
+    data::{
+        map::special_rules::{ContentsType, RuleType},
+        stage::{
+            parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
+            raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
+        },
     },
     wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameter},
 };
@@ -299,7 +302,17 @@ pub fn rules(stage: &Stage) -> String {
         buf += "}}";
         return buf;
     }
-    todo!()
+
+    match rules.contents_type {
+        ContentsType::Anni12 => {
+            assert_eq!(&rules.rule_type, &[RuleType::TrustFund([4500])]);
+            String::from("{{StageRule|12thAnni}}")
+        }
+        ContentsType::Colosseum => unreachable!(
+            "Should have reached {:?} in earlier code.",
+            rules.contents_type
+        ),
+    }
 }
 
 #[cfg(test)]
@@ -595,8 +608,17 @@ mod tests {
     }
 
     #[test]
-    fn rule_trust_fund(){
+    fn rule_trust_fund() {
         let trust_fund_2 = Stage::new_current("sr 0 1").unwrap();
         assert_eq!(rules(&trust_fund_2), "{{ColosseumRule|Trust Fund}}");
+    }
+
+    #[test]
+    fn rule_12th_anniversary() {
+        let doge_disturbance_last = Stage::new_current("ex 71 9").unwrap();
+        assert_eq!(
+            rules(&doge_disturbance_last),
+            "{{StageRule|12thAnni}}"
+        );
     }
 }
