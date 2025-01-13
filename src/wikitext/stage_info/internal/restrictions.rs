@@ -159,15 +159,15 @@ fn add_restriction_or_crown(
 
 /// Assert that no numbers are duplicated in any of the nested u8 vecs.
 fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
-    restriction_crowns.iter().for_each(|(_, crowns)| {
+    for (_, crowns) in restriction_crowns {
         let mut seen = HashSet::new();
-        crowns.iter().for_each(|crown| {
+        for crown in crowns {
             assert!(
                 seen.insert(crown),
                 "Crown {crown} is duplicated in vec {crowns:?}."
-            )
-        });
-    });
+            );
+        }
+    }
 }
 
 /// Get restrictions when the stage has multiple restrictions being applied to
