@@ -29,7 +29,7 @@ mod raw {
         #[serde(rename = "RuleType")]
         pub rule_type: HashMap<RuleKeySize, RawRuleType>,
         #[serde(rename = "RuleNameLabel")]
-        _rule_name_label: Option<String>,
+        pub rule_name_label: Option<String>,
         #[serde(rename = "RuleExplanationLabel")]
         _rule_explanation_label: Option<String>,
     }
@@ -124,10 +124,11 @@ impl RuleType {
 #[derive(Debug, Clone)]
 pub struct SpecialRule {
     /// Unclear what the purpose is, other than war funds.
-    _contents_type: ContentsType,
+    pub contents_type: ContentsType,
     /// All of the map's rules.
     pub rule_type: Vec<RuleType>,
-    // rule_name_label: Option<String>,
+    /// `"ResLocal/localizable"` name label
+    pub rule_name_label: Option<String>,
     // rule_explanation_label: Option<String>,
 }
 impl From<RawRuleData> for SpecialRule {
@@ -142,8 +143,9 @@ impl From<RawRuleData> for SpecialRule {
         let mut rule_type = rule_type;
         rule_type.sort();
         Self {
-            _contents_type: contents_type,
+            contents_type,
             rule_type,
+            rule_name_label:value.rule_name_label
         }
     }
 }

@@ -278,6 +278,30 @@ pub fn restrictions_section(stage: &Stage) -> String {
     buf
 }
 
+pub fn rules(stage: &Stage) -> String {
+    let Some(rules) = &stage.rules else {
+        return String::new();
+    };
+    if let Some(name) = &rules.rule_name_label {
+        let rule_desc = match name.as_str() {
+            "SpecialRuleName000" => "Trust Fund",
+            "SpecialRuleName001" => "Cooldown Equality",
+            "SpecialRuleName002" => "Only One Rarity",
+            "SpecialRuleName003" => "Cheap Labor",
+            "SpecialRuleName004" => "Super Rare Sale",
+            "SpecialRuleName005" => "Deploy Limit",
+            "SpecialRuleName006" => "超特売セール EX",
+            _ => panic!("Error: unknown label {name:?}"),
+        };
+
+        let mut buf = "{{ColosseumRule|".to_string();
+        buf += rule_desc;
+        buf += "}}";
+        return buf;
+    }
+    todo!()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -568,5 +592,11 @@ mod tests {
             ("Max # of Deployable Cats: 10".to_string(), [4].to_vec()),
         ];
         assert_all_restrictions_unique(restrictions);
+    }
+
+    #[test]
+    fn rule_trust_fund(){
+        let trust_fund_2 = Stage::new_current("sr 0 1").unwrap();
+        assert_eq!(rules(&trust_fund_2), "{{ColosseumRule|Trust Fund}}");
     }
 }
