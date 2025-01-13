@@ -7,7 +7,8 @@ use crate::data::{
     map::{
         ex_option::ExOption,
         map_data::{csv_types::StageDataCSV, GameMap},
-        map_option::{MapOption, MapOptionCSV}, special_rules::{SpecialRule, SpecialRules},
+        map_option::{MapOption, MapOptionCSV},
+        special_rules::{SpecialRule, SpecialRules},
     },
     version::Version,
 };

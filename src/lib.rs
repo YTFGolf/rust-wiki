@@ -5,6 +5,6 @@ pub mod cli;
 pub mod config;
 pub mod data;
 pub mod file_handler;
+pub mod logger;
 pub mod wiki_files;
 pub mod wikitext;
-pub mod logger;
