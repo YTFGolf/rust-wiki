@@ -236,7 +236,7 @@ mod tests {
     #[test]
     fn write_name_and_amount_normal() {
         const CAT_FOOD: u32 = 22;
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         write_name_and_amount(&mut buf, CAT_FOOD, 22_222);
         assert_eq!(buf, "[[Cat Food]] +22,222");
     }
@@ -244,7 +244,7 @@ mod tests {
     #[test]
     fn write_name_and_amount_xp() {
         const XP: u32 = 6;
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         write_name_and_amount(&mut buf, XP, 40_000);
         assert_eq!(buf, "40,000 XP");
     }
@@ -252,7 +252,7 @@ mod tests {
     #[test]
     fn write_name_and_amount_unit() {
         const CRAZED_CAT: u32 = 1_103;
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         write_name_and_amount(&mut buf, CRAZED_CAT, 40_000);
         assert_eq!(buf, "[[Crazed Cat (Super Rare Cat)|Crazed Cat]]");
     }
@@ -260,7 +260,7 @@ mod tests {
     #[test]
     fn write_name_and_amount_tf() {
         const MANIC_MOHAWK: u32 = 10_092;
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         write_name_and_amount(&mut buf, MANIC_MOHAWK, 40_000);
         assert_eq!(
             buf,
@@ -271,7 +271,7 @@ mod tests {
     #[test]
     fn write_name_and_amount_orb() {
         const RED_ATTACK_ORB: u32 = 30_000;
-        let mut buf = "".to_string();
+        let mut buf = String::new();
         write_name_and_amount(&mut buf, RED_ATTACK_ORB, 1);
         assert_eq!(buf, "Attack Up D [[Talent Orbs|Orb]]: Red +1");
     }
@@ -429,7 +429,7 @@ mod tests {
                 "treasure",
                 "- [[Summer Break Cats (Event Gacha)|Legend Net]] +1 (100%, unlimited)".to_string()
             ))
-        )
+        );
     }
 
     #[test]
@@ -489,7 +489,7 @@ mod tests {
                 score_rewards: vec![]
             })
         );
-        assert_eq!(treasure(&explosion_in_sky), None)
+        assert_eq!(treasure(&explosion_in_sky), None);
     }
 
     #[test]
@@ -506,7 +506,7 @@ mod tests {
                 - Meteorite +1 (38.5%)"
                     .to_string()
             )),
-        )
+        );
     }
 
     #[test]
@@ -519,6 +519,6 @@ mod tests {
                 "- [[Shinji & Cat (Rare Cat)|Shinji & Cat]]'s [[True Form]] (5%, 1 time)"
                     .to_string()
             ))
-        )
+        );
     }
 }

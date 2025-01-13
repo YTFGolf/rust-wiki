@@ -346,7 +346,7 @@ mod tests {
         stage_name: &str,
         mags: &str,
     ) -> String {
-        let mut buf = String::from("");
+        let mut buf = String::new();
         section.fmt_encounter(&mut buf, meta, stage_name, mags);
         buf
     }
@@ -515,7 +515,7 @@ mod tests {
 
     #[test]
     fn chapter_normal() {
-        let mut buf = String::from("");
+        let mut buf = String::new();
         let section = Ref::Event.section();
         section.fmt_chapter(
             &mut buf,
@@ -529,7 +529,7 @@ mod tests {
                     ),
                     Stage::new(
                         "Stage 2",
-                        "".to_string(),
+                        String::new(),
                         &StageMeta::new("event 0 1").unwrap(),
                     ),
                     Stage::new(
@@ -552,7 +552,7 @@ mod tests {
 
     #[test]
     fn chapter_flat() {
-        let mut buf = String::from("");
+        let mut buf = String::new();
         let section = Ref::Labyrinth.section();
         section.fmt_chapter(
             &mut buf,
@@ -564,7 +564,7 @@ mod tests {
                         "(100%)".to_string(),
                         &StageMeta::new("l 0 0").unwrap(),
                     ),
-                    Stage::new("Stage 2", "".to_string(), &StageMeta::new("l 0 1").unwrap()),
+                    Stage::new("Stage 2", String::new(), &StageMeta::new("l 0 1").unwrap()),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
@@ -584,7 +584,7 @@ mod tests {
 
     #[test]
     fn chapter_story() {
-        let mut buf = String::from("");
+        let mut buf = String::new();
         let section = Ref::SoL.section();
         section.fmt_chapter(
             &mut buf,
@@ -598,7 +598,7 @@ mod tests {
                     ),
                     Stage::new(
                         "Stage 2",
-                        "".to_string(),
+                        String::new(),
                         &StageMeta::new("sol 0 1").unwrap(),
                     ),
                     Stage::new(
