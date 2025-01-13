@@ -47,6 +47,7 @@ impl From<UserVersion> for Version {
 // the latter 2 blank if you want path to infer them
 #[derive(Debug)]
 pub struct Config {
+    // TODO store all versions in config
     /// Current game version.
     pub current_version: Version,
     /// Your name.
