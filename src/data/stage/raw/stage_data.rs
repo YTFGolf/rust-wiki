@@ -7,7 +7,7 @@ use crate::data::{
     map::{
         ex_option::ExOption,
         map_data::{csv_types::StageDataCSV, GameMap},
-        map_option::{MapOption, MapOptionCSV},
+        map_option::{MapOption, MapOptionCSV}, special_rules::{SpecialRule, SpecialRules},
     },
     version::Version,
 };
@@ -251,6 +251,13 @@ impl<'a> StageData<'_> {
         let map_id = self.get_map_id();
         let ex_option = self.version.get_cached_file::<ExOption>();
         ex_option.get_ex_map(map_id)
+    }
+
+    /// Get SpecialRulesMap data if it exists.
+    pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
+        let map_id = self.get_map_id();
+        let special_rules = self.version.get_cached_file::<SpecialRules>();
+        special_rules.get_map(map_id)
     }
 
     /// Get the data object's version.

@@ -2,7 +2,10 @@
 
 use super::stage_enemy::StageEnemy;
 use crate::data::{
-    map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+    map::{
+        map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+        special_rules::SpecialRule,
+    },
     stage::raw::{
         stage_data::StageData,
         stage_metadata::StageMeta,
@@ -187,12 +190,15 @@ pub struct Stage {
     pub ex_invasion: Option<u32>,
     /// Stage's restrictions.
     pub restrictions: Option<Vec<Restriction>>,
+    /// Stage's rules.
+    pub rules: Option<SpecialRule>,
 }
 impl From<StageData<'_>> for Stage {
     fn from(data: StageData) -> Self {
         let map_stage_data = data.get_map_stage_data();
         let map_option_data = data.get_map_option_data();
         let ex_invasion = data.get_ex_option_data();
+        let rules = data.get_special_rules_data().map(|d| d.clone());
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = data.get_stage_option_data() {
@@ -312,6 +318,7 @@ impl From<StageData<'_>> for Stage {
             star_mask,
             crown_data,
 
+            rules,
             ex_invasion,
             restrictions,
         }

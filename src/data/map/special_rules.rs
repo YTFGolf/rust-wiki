@@ -1,6 +1,6 @@
 //! Deals with `SpecialRulesMap.json`.
 
-use crate::config::Config;
+use crate::data::version::version_data::CacheableVersionData;
 use raw::{RawRuleData, RawRuleType, RulesMap};
 use std::{collections::HashMap, fs::File};
 
@@ -69,7 +69,7 @@ type Single = [ParamSize; 1];
 type Rarity = [ParamSize; AMT_RARITIES];
 
 /// Type of special rule.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum RuleType {
     /// Trust Fund: param is starting cash in ¢.
     TrustFund(Single),
@@ -122,8 +122,8 @@ impl RuleType {
     }
 }
 
-/// Represents a special rule for an individual map.
-#[derive(Debug)]
+/// Represents all special rules for an individual map.
+#[derive(Debug, Clone)]
 pub struct SpecialRule {
     /// Unclear what the purpose is, other than war funds.
     _contents_type: ContentsType,
@@ -171,16 +171,9 @@ impl From<RulesMap> for SpecialRules {
         Self { map }
     }
 }
-
-/// Temp.
-pub fn do_thing(config: &Config) {
-    let data = config
-        .current_version
-        .get_file_path("DataLocal/SpecialRulesMap.json");
-    let data: RulesMap = serde_json::from_reader(File::open(data).unwrap()).unwrap();
-
-    println!("{:?}", SpecialRules::from(data));
-    // println!("{:?}", data.get_map(1385));
-
-    panic!("End")
+impl CacheableVersionData for SpecialRules {
+    fn init_data(path: &std::path::Path) -> Self {
+        let data: RulesMap = serde_json::from_reader(File::open(path).unwrap()).unwrap();
+        data.into()
+    }
 }
