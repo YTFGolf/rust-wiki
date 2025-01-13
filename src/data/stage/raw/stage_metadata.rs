@@ -1141,43 +1141,43 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_negative_selector() {
         let _ = StageMeta::from_selector("Q 2 -1");
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_non_numeric_selector() {
         let _ = StageMeta::from_selector("Labyrinth two three");
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "index out of bounds"]
     fn test_not_enough_args() {
         let _ = StageMeta::from_selector_main(&["itf"]);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
     fn test_invalid_number_low_itf() {
         let _ = StageMeta::from_selector_main(&["itf", "0", "0"]);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
     fn test_invalid_number_low_cotc() {
         let _ = StageMeta::from_selector_main(&["cotc", "0", "0"]);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "assertion failed: (1..=9).contains(&chap_num)"]
     fn test_invalid_number_high() {
         let _ = StageMeta::from_selector_main(&["z", "10", "0"]);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_invalid_number_neg() {
         let _ = StageMeta::from_selector_main(&["itf", "1", "-1"]);
     }
