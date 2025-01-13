@@ -1,8 +1,7 @@
 //! Deals with `SpecialRulesMap.json`.
 
-use raw::{RawRuleData, RawRuleType, RulesMap};
-
 use crate::config::Config;
+use raw::{RawRuleData, RawRuleType, RulesMap};
 use std::{collections::HashMap, fs::File};
 
 /// Size of numeric parameters to rules.
@@ -42,8 +41,11 @@ mod raw {
 }
 
 #[derive(Debug, Clone)]
+/// Exact meaning is unclear.
 pub enum ContentsType {
+    /// Only used in Colosseum stages.
     Colosseum = 0,
+    /// Only used in 12th anniversary stages.
     Anni12 = 1,
 }
 impl From<ContentsSize> for ContentsType {
@@ -90,10 +92,11 @@ pub enum RuleType {
     /// Deploy Limit: param is max units that can be spawned in battle.
     DeployLimit(Single),
 }
+/// Item in [RawRuleData::rule_type].
 type RawRuleItem = (RuleKeySize, RawRuleType);
 impl From<RawRuleItem> for RuleType {
     fn from(value: RawRuleItem) -> Self {
-        let rule = match value.0 {
+        match value.0 {
             0 => Self::TrustFund(Self::to_arr(value.1.parameters)),
             1 => Self::CooldownEquality(Self::to_arr(value.1.parameters)),
             //
@@ -103,14 +106,11 @@ impl From<RawRuleItem> for RuleType {
             6 => Self::RestrictPriceOrCd2(Self::to_arr(value.1.parameters)),
             7 => Self::DeployLimit(Self::to_arr(value.1.parameters)),
             _ => unreachable!(),
-        };
-
-        // assert_eq!()
-        // maybe figure out value of
-        rule
+        }
     }
 }
 impl RuleType {
+    /// Copy `params` to statically sized array.
     fn to_arr<const N: usize>(params: Vec<ParamSize>) -> [ParamSize; N] {
         assert_eq!(params.len(), N, "Params is incorrect size!");
         let mut arr = [0; N];
@@ -120,13 +120,15 @@ impl RuleType {
 
         arr
     }
-
-    // fn value
 }
+
+/// Represents a special rule for an individual map.
 #[derive(Debug)]
 pub struct SpecialRule {
-    contents_type: ContentsType,
-    rule_type: Vec<RuleType>,
+    /// Unclear what the purpose is, other than war funds.
+    _contents_type: ContentsType,
+    /// All of the map's rules.
+    pub rule_type: Vec<RuleType>,
     // rule_name_label: Option<String>,
     // rule_explanation_label: Option<String>,
 }
@@ -142,12 +144,13 @@ impl From<RawRuleData> for SpecialRule {
         let mut rule_type = rule_type;
         rule_type.sort();
         Self {
-            contents_type,
+            _contents_type: contents_type,
             rule_type,
         }
     }
 }
 
+/// Map of all map ids to their special rules.
 #[derive(Debug)]
 pub struct SpecialRules {
     map: HashMap<u32, SpecialRule>,
