@@ -1,38 +1,48 @@
 //! Deals with `SpecialRulesMap.json`.
 
+use raw::{RawRuleData, RawRuleType, RulesMap};
+
 use crate::config::Config;
-use serde::Deserialize;
 use std::{collections::HashMap, fs::File};
 
+/// Size of numeric parameters to rules.
 type ParamSize = u32;
+/// Size of the `"ContentsType"` numeric field.
 type ContentsSize = u8;
+/// Size of the `"RuleType"` numeric keys.
 type RuleKeySize = u8;
-#[derive(Debug, Deserialize)]
-struct RawRuleType {
-    #[serde(rename = "Parameters")]
-    parameters: Vec<ParamSize>,
-}
-#[derive(Debug, Deserialize)]
-struct RawRuleData {
-    #[serde(rename = "ContentsType")]
-    contents_type: ContentsSize,
-    #[serde(rename = "RuleType")]
-    rule_type: HashMap<RuleKeySize, RawRuleType>,
-    #[serde(rename = "RuleNameLabel")]
-    _rule_name_label: Option<String>,
-    #[serde(rename = "RuleExplanationLabel")]
-    _rule_explanation_label: Option<String>,
-}
-#[derive(Debug, Deserialize)]
-struct RulesMap {
-    #[serde(rename = "MapID")]
-    map_id: HashMap<u32, RawRuleData>,
-}
 
-////////////////////////////////////////////////////////////////////////////////
+/// Raw types used for deserialising.
+mod raw {
+    use super::{ContentsSize, ParamSize, RuleKeySize};
+    use serde::Deserialize;
+    use std::collections::HashMap;
+
+    #[derive(Debug, Deserialize)]
+    pub struct RawRuleType {
+        #[serde(rename = "Parameters")]
+        pub parameters: Vec<ParamSize>,
+    }
+    #[derive(Debug, Deserialize)]
+    pub struct RawRuleData {
+        #[serde(rename = "ContentsType")]
+        pub contents_type: ContentsSize,
+        #[serde(rename = "RuleType")]
+        pub rule_type: HashMap<RuleKeySize, RawRuleType>,
+        #[serde(rename = "RuleNameLabel")]
+        _rule_name_label: Option<String>,
+        #[serde(rename = "RuleExplanationLabel")]
+        _rule_explanation_label: Option<String>,
+    }
+    #[derive(Debug, Deserialize)]
+    pub struct RulesMap {
+        #[serde(rename = "MapID")]
+        pub map_id: HashMap<u32, RawRuleData>,
+    }
+}
 
 #[derive(Debug, Clone)]
-enum ContentsType {
+pub enum ContentsType {
     Colosseum = 0,
     Anni12 = 1,
 }
@@ -49,17 +59,35 @@ impl From<ContentsSize> for ContentsType {
     }
 }
 
+/// Rarities in game.
 const AMT_RARITIES: usize = 6;
+/// Rule with single parameter.
 type Single = [ParamSize; 1];
+/// Rule with parameters for each rarity.
 type Rarity = [ParamSize; AMT_RARITIES];
+
+/// Type of special rule.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-enum RuleType {
+pub enum RuleType {
+    /// Trust Fund: param is starting cash in ¢.
     TrustFund(Single),
+    /// Cooldown Equality: param is frames that global cooldown is set to.
     CooldownEquality(Single),
+    /// Limit each rarity to specified amount of frames.
+    ///
+    /// Used in Only One Rarity, where each param is 1.
     RarityLimit(Rarity),
+    /// Cheap Labor: param is global unit cost.
     CheapLabor(Single),
+    /// Restrict either the price or the cooldown of enemies in each rarity.
+    ///
+    /// Used in multiple restrictions. A rarity's value is its cost/cd as a
+    /// percentage of its usual.
     RestrictPriceOrCd1(Rarity),
+    /// See [Self::RestrictPriceOrCd1]. Since these never appear individually,
+    /// it's impossible to tell them apart.
     RestrictPriceOrCd2(Rarity),
+    /// Deploy Limit: param is max units that can be spawned in battle.
     DeployLimit(Single),
 }
 type RawRuleItem = (RuleKeySize, RawRuleType);
@@ -84,7 +112,7 @@ impl From<RawRuleItem> for RuleType {
 }
 impl RuleType {
     fn to_arr<const N: usize>(params: Vec<ParamSize>) -> [ParamSize; N] {
-        assert_eq!(params.len(), N);
+        assert_eq!(params.len(), N, "Params is incorrect size!");
         let mut arr = [0; N];
         for i in 0..N {
             arr[i] = params[i];
@@ -141,6 +169,7 @@ impl From<RulesMap> for SpecialRules {
     }
 }
 
+/// Temp.
 pub fn do_thing(config: &Config) {
     let data = config
         .current_version
