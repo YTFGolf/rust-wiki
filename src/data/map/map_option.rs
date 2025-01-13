@@ -157,7 +157,8 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "err: DeserializeError { field: Some(2), kind: ParseInt(ParseIntError { kind: InvalidDigit }) }"]
+    // -100 is not a valid u32
     fn assert_parse_checker_works() {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
@@ -183,7 +184,8 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "assertion failed: !seen.contains(&map_id)"]
+    // two lines with same map id so should fail
     fn assert_dupe_checker_works() {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
@@ -210,7 +212,8 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "Message(\"invalid value: integer `0`, expected a nonzero u8\")"]
+    // fails on first line as crown is 0
     fn assert_difficulty_checker_works_0() {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
@@ -237,7 +240,8 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "assertion failed: (1..=4).contains(&d)"]
+    // fails on first line as crown is 5
     fn assert_difficulty_checker_works_5() {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
@@ -264,11 +268,12 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic = "left: 101\n right: 100"]
+    // fails on first line as 1-crown mag is not 100
     fn assert_crown_1_checker_works() {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,5,101,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
+            "0,4,101,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
              0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
         );
         let rdr = csv::ReaderBuilder::new()
