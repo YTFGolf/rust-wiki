@@ -171,7 +171,10 @@ impl From<RulesMap> for SpecialRules {
 }
 impl CacheableVersionData for SpecialRules {
     fn init_data(path: &std::path::Path) -> Self {
-        let data: RulesMap = serde_json::from_reader(File::open(path).unwrap()).unwrap();
+        let data: RulesMap = serde_json::from_reader(
+            File::open(path.join("DataLocal/SpecialRulesMap.json")).unwrap(),
+        )
+        .unwrap();
         data.into()
     }
 }
