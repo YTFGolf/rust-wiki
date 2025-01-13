@@ -12,13 +12,13 @@ struct RawRuleType {
 #[derive(Debug, Deserialize)]
 struct RawRuleData {
     #[serde(rename = "ContentsType")]
-    contents_type: u32,
+    contents_type: u8,
     #[serde(rename = "RuleType")]
     rule_type: HashMap<u32, RawRuleType>,
     #[serde(rename = "RuleNameLabel")]
-    rule_name_label: Option<String>,
+    _rule_name_label: Option<String>,
     #[serde(rename = "RuleExplanationLabel")]
-    rule_explanation_label: Option<String>,
+    _rule_explanation_label: Option<String>,
 }
 #[derive(Debug, Deserialize)]
 struct RulesMap {
@@ -29,18 +29,47 @@ struct RulesMap {
 ////////////////////////////////////////////////////////////////////////////////
 
 #[derive(Debug)]
-pub struct SpecialRule<'a> {
-    contents_type: u32,
-    rule_type: HashMap<u32, &'a [u32]>,
-    rule_name_label: Option<String>,
-    rule_explanation_label: Option<String>,
+enum ContentsType {
+    Colosseum = 0,
+    Anni12 = 1,
+}
+#[derive(Debug)]
+enum RuleType {
+    TrustFund = 0,
+    CooldownEquality = 1,
+    RarityLimit = 3,
+    CheapLabor = 4,
+    RestrictPriceOrCd1 = 5,
+    RestrictPriceOrCd2 = 6,
+    DeployLimit = 7,
+}
+impl RuleType {
+    pub fn len(&self) -> usize {
+        const AMT_RARITIES: usize = 6;
+        match self {
+            Self::TrustFund | Self::CooldownEquality | Self::CheapLabor | Self::DeployLimit => 1,
+            Self::RarityLimit | Self::RestrictPriceOrCd1 | Self::RestrictPriceOrCd2 => AMT_RARITIES,
+        }
+    }
+}
+#[derive(Debug)]
+pub struct SpecialRule {
+    contents_type: ContentsType,
+    rule_type: Vec<(RuleType, Vec<u32>)>,
+    // rule_name_label: Option<String>,
+    // rule_explanation_label: Option<String>,
+}
+impl From<RawRuleData> for SpecialRule {
+    fn from(value: RawRuleData) -> Self {
+        todo!()
+    }
 }
 
 #[derive(Debug)]
-pub struct SpecialRules<'a> {
-    map: HashMap<u32, SpecialRule<'a>>,
+pub struct SpecialRules {
+    map: HashMap<u32, SpecialRule>,
 }
-impl SpecialRules<'_> {
+impl SpecialRules {
     /// Get the map data that `map_id` corresponds to.
     pub fn get_map(&self, map_id: u32) -> Option<&SpecialRule> {
         self.map.get(&map_id)
