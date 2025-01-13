@@ -110,6 +110,8 @@ fn get_reverse_map() -> HashMap<String, u32> {
 }
 
 #[cfg(test)]
+#[allow(clippy::used_underscore_binding)]
+// Need to check id in these tests but don't want it to give clippy a stroke.
 mod tests {
     use super::*;
     use crate::wikitext::wiki_utils::extract_name;

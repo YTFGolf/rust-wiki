@@ -80,6 +80,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[allow(clippy::used_underscore_binding)]
     fn test_id_equals_index() {
         for (i, cat) in CAT_DATA.names.iter().enumerate() {
             assert_eq!(cat._id as usize, i);
