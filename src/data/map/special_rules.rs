@@ -2,19 +2,22 @@
 
 use crate::config::Config;
 use serde::Deserialize;
-use std::{collections::HashMap, fs::File, mem};
+use std::{collections::HashMap, fs::File};
 
+type ParamSize = u32;
+type ContentsSize = u8;
+type RuleKeySize = u8;
 #[derive(Debug, Deserialize)]
 struct RawRuleType {
     #[serde(rename = "Parameters")]
-    parameters: Vec<u32>,
+    parameters: Vec<ParamSize>,
 }
 #[derive(Debug, Deserialize)]
 struct RawRuleData {
     #[serde(rename = "ContentsType")]
-    contents_type: u8,
+    contents_type: ContentsSize,
     #[serde(rename = "RuleType")]
-    rule_type: HashMap<u8, RawRuleType>,
+    rule_type: HashMap<RuleKeySize, RawRuleType>,
     #[serde(rename = "RuleNameLabel")]
     _rule_name_label: Option<String>,
     #[serde(rename = "RuleExplanationLabel")]
@@ -33,84 +36,69 @@ enum ContentsType {
     Colosseum = 0,
     Anni12 = 1,
 }
-impl From<u8> for ContentsType {
-    fn from(value: u8) -> Self {
+impl From<ContentsSize> for ContentsType {
+    fn from(value: ContentsSize) -> Self {
         let ctype = match value {
             0 => Self::Colosseum,
             1 => Self::Anni12,
             _ => unreachable!(),
         };
 
-        assert_eq!(ctype.clone() as u8, value);
+        assert_eq!(ctype.clone() as ContentsSize, value);
         ctype
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+
+const AMT_RARITIES: usize = 6;
+type Single = [ParamSize; 1];
+type Rarity = [ParamSize; AMT_RARITIES];
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum RuleType {
-    TrustFund = 0,
-    CooldownEquality = 1,
-    RarityLimit = 3,
-    CheapLabor = 4,
-    RestrictPriceOrCd1 = 5,
-    RestrictPriceOrCd2 = 6,
-    DeployLimit = 7,
+    TrustFund(Single),
+    CooldownEquality(Single),
+    RarityLimit(Rarity),
+    CheapLabor(Single),
+    RestrictPriceOrCd1(Rarity),
+    RestrictPriceOrCd2(Rarity),
+    DeployLimit(Single),
 }
-impl From<u8> for RuleType {
-    fn from(value: u8) -> Self {
-        let rule = match value {
-            0 => Self::TrustFund,
-            1 => Self::CooldownEquality,
-            3 => Self::RarityLimit,
-            4 => Self::CheapLabor,
-            5 => Self::RestrictPriceOrCd1,
-            6 => Self::RestrictPriceOrCd2,
-            7 => Self::DeployLimit,
+type RawRuleItem = (RuleKeySize, RawRuleType);
+impl From<RawRuleItem> for RuleType {
+    fn from(value: RawRuleItem) -> Self {
+        let rule = match value.0 {
+            0 => Self::TrustFund(Self::to_arr(value.1.parameters)),
+            1 => Self::CooldownEquality(Self::to_arr(value.1.parameters)),
+            //
+            3 => Self::RarityLimit(Self::to_arr(value.1.parameters)),
+            4 => Self::CheapLabor(Self::to_arr(value.1.parameters)),
+            5 => Self::RestrictPriceOrCd1(Self::to_arr(value.1.parameters)),
+            6 => Self::RestrictPriceOrCd2(Self::to_arr(value.1.parameters)),
+            7 => Self::DeployLimit(Self::to_arr(value.1.parameters)),
             _ => unreachable!(),
         };
 
-        assert_eq!(rule.clone() as u8, value);
+        // assert_eq!()
+        // maybe figure out value of
         rule
     }
 }
-const AMT_RARITIES: usize = 6;
-#[derive(Debug)]
-enum RuleArray<T> {
-    Single([T; 1]),
-    Rarity([T; AMT_RARITIES]),
-}
-// TODO merge into RuleType
 impl RuleType {
-    pub fn get_rule_array(&self, params: Vec<u32>) -> RuleArray<u32> {
-        match self {
-            Self::TrustFund | Self::CooldownEquality | Self::CheapLabor | Self::DeployLimit => {
-                const LEN: usize = 1;
-                assert_eq!(params.len(), LEN);
-
-                let mut arr = [0; LEN];
-                for i in 0..LEN {
-                    arr[i] = params[i];
-                }
-
-                RuleArray::Single(arr)
-            }
-            Self::RarityLimit | Self::RestrictPriceOrCd1 | Self::RestrictPriceOrCd2 => {
-                const LEN: usize = AMT_RARITIES;
-                assert_eq!(params.len(), LEN);
-
-                let mut arr = [0; LEN];
-                for i in 0..LEN {
-                    arr[i] = params[i];
-                }
-
-                RuleArray::Rarity(arr)
-            }
+    fn to_arr<const N: usize>(params: Vec<ParamSize>) -> [ParamSize; N] {
+        assert_eq!(params.len(), N);
+        let mut arr = [0; N];
+        for i in 0..N {
+            arr[i] = params[i];
         }
+
+        arr
     }
+
+    // fn value
 }
 #[derive(Debug)]
 pub struct SpecialRule {
     contents_type: ContentsType,
-    rule_type: Vec<(RuleType, RuleArray<u32>)>,
+    rule_type: Vec<RuleType>,
     // rule_name_label: Option<String>,
     // rule_explanation_label: Option<String>,
 }
@@ -120,15 +108,11 @@ impl From<RawRuleData> for SpecialRule {
         let rule_type = value
             .rule_type
             .into_iter()
-            .map(|(rule_id, rule_type)| {
-                let rule: RuleType = rule_id.into();
-                let arr = rule.get_rule_array(rule_type.parameters);
-                (rule, arr)
-            })
+            .map(|crt| crt.into())
             .collect::<Vec<_>>();
 
         let mut rule_type = rule_type;
-        rule_type.sort_by(|a, b| a.0.cmp(&b.0));
+        rule_type.sort();
         Self {
             contents_type,
             rule_type,
@@ -163,7 +147,7 @@ pub fn do_thing(config: &Config) {
         .get_file_path("DataLocal/SpecialRulesMap.json");
     let data: RulesMap = serde_json::from_reader(File::open(data).unwrap()).unwrap();
 
-    println!("{:#?}", SpecialRules::from(data));
+    println!("{:?}", SpecialRules::from(data));
     // println!("{:?}", data.get_map(1385));
 
     panic!("End")
