@@ -145,7 +145,7 @@ impl From<RawRuleData> for SpecialRule {
         Self {
             contents_type,
             rule_type,
-            rule_name_label:value.rule_name_label
+            rule_name_label: value.rule_name_label,
         }
     }
 }

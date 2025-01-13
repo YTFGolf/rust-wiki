@@ -32,6 +32,9 @@ ${difficulty}
 ${stage_nav}
 }}
 
+==Rules==
+${rules}
+
 ==Restrictions==
 ${restrictions_section}
 
@@ -155,6 +158,7 @@ fn get_stage_variable(
             .collect::<Vec<String>>()
             .join("\n"),
         "restrictions_section" => internal::restrictions_section(stage),
+        "rules" => internal::rules(stage),
         "battlegrounds" => internal::battlegrounds(stage),
         "reference" => internal::reference(stage),
 
