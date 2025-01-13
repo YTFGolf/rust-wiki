@@ -43,15 +43,6 @@ enum RuleType {
     RestrictPriceOrCd2 = 6,
     DeployLimit = 7,
 }
-const AMT_RARITIES: usize = 6;
-impl RuleType {
-    pub fn len(&self) -> usize {
-        match self {
-            Self::TrustFund | Self::CooldownEquality | Self::CheapLabor | Self::DeployLimit => 1,
-            Self::RarityLimit | Self::RestrictPriceOrCd1 | Self::RestrictPriceOrCd2 => AMT_RARITIES,
-        }
-    }
-}
 impl From<u8> for RuleType {
     fn from(value: u8) -> Self {
         let rule = match value {
@@ -69,21 +60,55 @@ impl From<u8> for RuleType {
         rule
     }
 }
+const AMT_RARITIES: usize = 6;
 #[derive(Debug)]
-enum ArrayType<T> {
+enum RuleArray<T> {
     Single([T; 1]),
     Rarity([T; AMT_RARITIES]),
+}
+impl RuleType {
+    pub fn get_rule_array(&self, params: Vec<u32>) -> RuleArray<u32> {
+        match self {
+            Self::TrustFund | Self::CooldownEquality | Self::CheapLabor | Self::DeployLimit => {
+                const LEN: usize = 1;
+                assert_eq!(params.len(), LEN);
+
+                let mut arr = [0; LEN];
+                for i in 0..LEN {
+                    arr[i] = params[i];
+                }
+
+                RuleArray::Single(arr)
+            }
+            Self::RarityLimit | Self::RestrictPriceOrCd1 | Self::RestrictPriceOrCd2 => {
+                const LEN: usize = AMT_RARITIES;
+                assert_eq!(params.len(), LEN);
+
+                let mut arr = [0; LEN];
+                for i in 0..LEN {
+                    arr[i] = params[i];
+                }
+
+                RuleArray::Rarity(arr)
+            }
+        }
+    }
 }
 #[derive(Debug)]
 pub struct SpecialRule {
     contents_type: ContentsType,
-    rule_type: Vec<(RuleType, ArrayType<u32>)>,
+    rule_type: Vec<(RuleType, RuleArray<u32>)>,
     // rule_name_label: Option<String>,
     // rule_explanation_label: Option<String>,
 }
 impl From<RawRuleData> for SpecialRule {
     fn from(value: RawRuleData) -> Self {
-        todo!()
+        let contents_type = todo!();
+        let rule_type = todo!();
+        Self {
+            contents_type,
+            rule_type,
+        }
     }
 }
 
@@ -97,6 +122,11 @@ impl SpecialRules {
         self.map.get(&map_id)
     }
 }
+impl From<RulesMap> for SpecialRules {
+    fn from(value: RulesMap) -> Self {
+        todo!()
+    }
+}
 
 pub fn do_thing(config: &Config) {
     let data = config
@@ -104,7 +134,7 @@ pub fn do_thing(config: &Config) {
         .get_file_path("DataLocal/SpecialRulesMap.json");
     let data: RulesMap = serde_json::from_reader(File::open(data).unwrap()).unwrap();
 
-    // println!("{:?}", data);
+    println!("{:?}", SpecialRules::from(data));
     // println!("{:?}", data.get_map(1385));
 
     panic!("End")
