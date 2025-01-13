@@ -96,28 +96,26 @@ pub enum RuleType {
 type RawRuleItem = (RuleKeySize, RawRuleType);
 impl From<RawRuleItem> for RuleType {
     fn from(value: RawRuleItem) -> Self {
+        let params = &value.1.parameters;
         match value.0 {
-            0 => Self::TrustFund(Self::to_arr(value.1.parameters)),
-            1 => Self::CooldownEquality(Self::to_arr(value.1.parameters)),
+            0 => Self::TrustFund(Self::to_arr(params)),
+            1 => Self::CooldownEquality(Self::to_arr(params)),
             //
-            3 => Self::RarityLimit(Self::to_arr(value.1.parameters)),
-            4 => Self::CheapLabor(Self::to_arr(value.1.parameters)),
-            5 => Self::RestrictPriceOrCd1(Self::to_arr(value.1.parameters)),
-            6 => Self::RestrictPriceOrCd2(Self::to_arr(value.1.parameters)),
-            7 => Self::DeployLimit(Self::to_arr(value.1.parameters)),
+            3 => Self::RarityLimit(Self::to_arr(params)),
+            4 => Self::CheapLabor(Self::to_arr(params)),
+            5 => Self::RestrictPriceOrCd1(Self::to_arr(params)),
+            6 => Self::RestrictPriceOrCd2(Self::to_arr(params)),
+            7 => Self::DeployLimit(Self::to_arr(params)),
             _ => unreachable!(),
         }
     }
 }
 impl RuleType {
     /// Copy `params` to statically sized array.
-    fn to_arr<const N: usize>(params: Vec<ParamSize>) -> [ParamSize; N] {
+    fn to_arr<const N: usize>(params: &[ParamSize]) -> [ParamSize; N] {
         assert_eq!(params.len(), N, "Params is incorrect size!");
         let mut arr = [0; N];
-        for i in 0..N {
-            arr[i] = params[i];
-        }
-
+        arr[..N].copy_from_slice(&params[..N]);
         arr
     }
 }
@@ -138,7 +136,7 @@ impl From<RawRuleData> for SpecialRule {
         let rule_type = value
             .rule_type
             .into_iter()
-            .map(|crt| crt.into())
+            .map(RuleType::from)
             .collect::<Vec<_>>();
 
         let mut rule_type = rule_type;

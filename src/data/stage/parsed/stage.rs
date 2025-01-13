@@ -198,7 +198,7 @@ impl From<StageData<'_>> for Stage {
         let map_stage_data = data.get_map_stage_data();
         let map_option_data = data.get_map_option_data();
         let ex_invasion = data.get_ex_option_data();
-        let rules = data.get_special_rules_data().map(|d| d.clone());
+        let rules = data.get_special_rules_data().cloned();
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = data.get_stage_option_data() {
@@ -318,9 +318,9 @@ impl From<StageData<'_>> for Stage {
             star_mask,
             crown_data,
 
-            rules,
             ex_invasion,
             restrictions,
+            rules,
         }
     }
 }
