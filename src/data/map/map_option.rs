@@ -121,7 +121,8 @@ mod tests {
 
     /// Assert that 1 <= difficulty <= 4, map id is not in `seen`, crown 1 =
     /// 100.
-    fn assert_conditions(record_parsed: MapOptionCSV, seen: &HashSet<u32>) -> u32 {
+    #[allow(clippy::used_underscore_binding)]
+    fn assert_conditions(record_parsed: &MapOptionCSV, seen: &HashSet<u32>) -> u32 {
         let map_id = record_parsed.map_id;
         let d: u8 = record_parsed.max_difficulty.into();
 
@@ -150,7 +151,7 @@ mod tests {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
 
-            let map_id = assert_conditions(record_parsed, &seen);
+            let map_id = assert_conditions(&record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -176,7 +177,7 @@ mod tests {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
 
-            let map_id = assert_conditions(record_parsed, &seen);
+            let map_id = assert_conditions(&record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -203,7 +204,7 @@ mod tests {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
 
-            let map_id = assert_conditions(record_parsed, &seen);
+            let map_id = assert_conditions(&record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -230,7 +231,7 @@ mod tests {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
 
-            let map_id = assert_conditions(record_parsed, &seen);
+            let map_id = assert_conditions(&record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -257,7 +258,7 @@ mod tests {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
 
-            let map_id = assert_conditions(record_parsed, &seen);
+            let map_id = assert_conditions(&record_parsed, &seen);
             seen.insert(map_id);
         }
     }
@@ -284,7 +285,7 @@ mod tests {
             let record = result.unwrap();
             let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
 
-            let map_id = assert_conditions(record_parsed, &seen);
+            let map_id = assert_conditions(&record_parsed, &seen);
             seen.insert(map_id);
         }
     }
