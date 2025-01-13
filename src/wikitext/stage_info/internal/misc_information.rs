@@ -275,7 +275,7 @@ mod tests {
         assert_eq!(
             max_clears(&steel_visage),
             Some(TemplateParameter::new("max clears", "1".to_string()))
-        )
+        );
     }
 
     #[test]
@@ -291,7 +291,7 @@ mod tests {
                     "[[Miracle Iris (Deadly)]] (''Continuation Stage'', 40%)".to_string()
                 ),
             ]
-        )
+        );
     }
 
     #[test]
@@ -332,7 +332,7 @@ mod tests {
                         .to_string()
                 )
             ]
-        )
+        );
     }
 
     #[test]

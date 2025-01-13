@@ -384,7 +384,7 @@ mod tests {
                 .magnification
                 .unwrap(),
             2400
-        )
+        );
     }
 
     #[test]
@@ -409,7 +409,7 @@ mod tests {
             .flexible(true)
             .from_reader(invalid);
         let line = rdr.records().next().unwrap().unwrap();
-        assert_eq!(deserialise_single_enemy(line), None)
+        assert_eq!(deserialise_single_enemy(line), None);
     }
 
     #[test]

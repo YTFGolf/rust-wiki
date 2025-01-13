@@ -676,7 +676,7 @@ mod tests {
                 ),
                 TemplateParameter::new("boss", "{{Magnification|Baron Seal|0}}".to_string()),
             ]
-        )
+        );
     }
 
     #[test]
@@ -697,7 +697,7 @@ mod tests {
                 ),
                 TemplateParameter::new("boss", "{{Magnification|Baron Seal|6,000%}}".to_string()),
             ]
-        )
+        );
     }
 
     #[test]

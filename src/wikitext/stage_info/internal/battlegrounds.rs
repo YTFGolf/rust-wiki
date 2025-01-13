@@ -313,7 +313,7 @@ mod tests {
             *When the base reaches 90% HP:\n\
             **1 [[H. Nah]] spawns as the boss.\n\
             **Infinite [[Doge Dark]]s (400%) spawn, delay 2~6.6 seconds<sup>60f~198f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -333,7 +333,7 @@ mod tests {
             **1 [[Master A.]] spawns.\n\
             **1 [[Dagshund]] spawns.\n\
             **1 [[Dagshund]] spawns."
-        )
+        );
     }
 
     #[test]
@@ -348,7 +348,7 @@ mod tests {
             **1 [[Oversleeping Beauty Punt (Enemy)|Oversleeping Beauty Punt]] spawns as the boss.\n\
             **Infinite [[Pigge]]s spawn, delay 40~80 seconds<sup>1,200f~2,400f</sup>.\n\
             **10 [[Sir Seal]]s spawn, delay 40~80 seconds<sup>1,200f~2,400f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -373,7 +373,7 @@ mod tests {
             **1 [[Chocolate Doge]] spawns.\n\
             **3 [[Ice Doge]]s spawn, delay 3.33 seconds<sup>100f</sup>.\n\
             **5 [[Wall Doge]]s spawn, delay 3.33 seconds<sup>100f</sup>."
-        )
+        );
         // good candidate for ordering tests
     }
 
@@ -387,7 +387,7 @@ mod tests {
             *1 [[Galactic Overseer Nyandam]] spawns as the boss after 66.67 seconds<sup>2,000f</sup>.\n\
             *1 [[Kory]] spawns after 4 seconds<sup>120f</sup>.\n\
             *1 [[Berserkory]] spawns after 80 seconds<sup>2,400f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -408,7 +408,7 @@ mod tests {
             *1 [[Lucky Sloth]] spawns as the boss after 46.67 seconds<sup>1,400f</sup>.\n\
             *3 [[Shy Boy]]s spawn after 133.33 seconds<sup>4,000f</sup>, delay 6.67 seconds<sup>200f</sup>.\n\
             *1 [[Kory]] spawns as the boss after 213.33 seconds<sup>6,400f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -425,7 +425,7 @@ mod tests {
             **5 [[Doge Dark]]s spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
             **3 [[Shadow Boxer K]]s spawn, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
             **5 [[Doge Dark]]s spawn after 13.33 seconds<sup>400f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>."
-        )
+        );
         // use this one as basis for ordering tests
     }
 
@@ -442,7 +442,7 @@ mod tests {
             *Infinite [[Baa Baa]]s spawn after 40 seconds<sup>1,200f</sup>, delay 46.67~53.33 seconds<sup>1,400f~1,600f</sup>.\n\
             *2 [[Kang Roo]]s spawn after 53.33 seconds<sup>1,600f</sup>, delay 60 seconds<sup>1,800f</sup>.\n\
             *Infinite [[Jackie Peng]]s spawn after 86.67 seconds<sup>2,600f</sup>, delay 36.67~40 seconds<sup>1,100f~1,200f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -459,7 +459,7 @@ mod tests {
             **8 [[Relic Doge]]s spawn, delay 10 seconds<sup>300f</sup>.\n\
             **2 [[Zang Roo]]s spawn after 13.33 seconds<sup>400f</sup>, delay 53.33~56.67 seconds<sup>1,600f~1,700f</sup>.\n\
             **3 [[Zapy|Zapies]] spawn, delay 33.33~36.67 seconds<sup>1,000f~1,100f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -481,7 +481,7 @@ mod tests {
             **1 [[Othom]] spawns as the boss.\n\
             **1 [[Deathkory]] spawns.\n\
             **1 [[Ackey]] spawns after 36.67 seconds<sup>1,100f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -506,7 +506,7 @@ mod tests {
             **Infinite [[Gabriel]]s spawn, delay 10~20 seconds<sup>300f~600f</sup>.\n\
             **15 [[Gabriel]]s spawn, delay 3.33~6.67 seconds<sup>100f~200f</sup>.\n\
             **5 [[Fallen Bear]]s spawn, delay 10 seconds<sup>300f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -527,7 +527,7 @@ mod tests {
             **5 [[Aku Gory|Aku Gories]] spawn, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
             **2 [[Oldhorn]]s spawn, delay 20 seconds<sup>600f</sup>.\n\
             **1 [[Midnite D.]] spawns."
-        )
+        );
     }
 
     #[test]
@@ -543,7 +543,7 @@ mod tests {
             *1 [[St. Dober]] spawns as the boss after 33.33 seconds<sup>1,000f</sup>.\n\
             *1 [[M. Ost]] spawns as the boss after 33.33 seconds<sup>1,000f</sup>.\n\
             *1 [[Elder Sloth]] spawns as the boss after 3.33 seconds<sup>100f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -558,7 +558,7 @@ mod tests {
             *Infinite [[Wild Doge]]s spawn after 56.67 seconds<sup>1,700f</sup>, delay 33.33~40 seconds<sup>1,000f~1,200f</sup>.\n\
             *2 [[Ragin' Gory|Ragin' Gories]] spawn once 60 Cat Units have been defeated, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
             *2 [[Ragin' Gory|Ragin' Gories]] spawn once 120 Cat Units have been defeated, delay 20~23.33 seconds<sup>600f~700f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -571,7 +571,7 @@ mod tests {
             **5 [[Rat Doge]]s (50%) spawn, delay 8~12 seconds<sup>240f~360f</sup>.\n\
             **10 [[Rat Doge]]s (50%) spawn, delay 4~6 seconds<sup>120f~180f</sup>.\n\
             **15 [[Rat Doge]]s (50%) spawn, delay 2~3 seconds<sup>60f~90f</sup>."
-        )
+        );
     }
 
     #[test]
@@ -767,6 +767,6 @@ mod tests {
             **2 [[One Horn]]s (3,900%) spawn, delay 20 seconds<sup>600f</sup>.\n\
             **5 [[Doge Dark]]s (1,600%) spawn, delay 3.33~5 seconds<sup>100f~150f</sup>.\n\
             **9 [[Fireworks Guys (High-Yield)]] spawn, delay 3.33~10 seconds<sup>100f~300f</sup>."
-        )
+        );
     }
 }

@@ -1413,7 +1413,7 @@ mod tests {
                 continue;
             };
 
-            assert_eq!(t.number, m.type_num)
+            assert_eq!(t.number, m.type_num);
         }
     }
 }
