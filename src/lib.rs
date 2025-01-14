@@ -3,6 +3,7 @@
 #![warn(missing_docs)]
 pub mod cli;
 pub mod config;
+pub mod config2;
 pub mod data;
 pub mod file_handler;
 pub mod logger;

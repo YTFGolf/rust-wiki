@@ -85,6 +85,7 @@ impl Version {
         path.split_whitespace()
             .find(|&part| part.chars().all(|c| c.is_ascii_digit() || c == '.'))
     }
+    // TODO remove these functions
 }
 
 impl Version {
