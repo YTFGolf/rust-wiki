@@ -49,12 +49,12 @@ impl From<UserVersion> for Version {
 pub struct Config {
     // TODO store all versions in config
     /// Current game version.
-    pub current_version: Version,
+    current_version: Version,
     /// Your name.
-    pub user_name: String,
+    user_name: String,
     /// Make `Magnification` put `|name|0` on gauntlet pages rather than the
     /// enemy's actual magnification.
-    pub suppress_gauntlet_magnification: bool,
+    suppress_gauntlet_magnification: bool,
 }
 impl From<UserConfig> for Config {
     fn from(value: UserConfig) -> Self {
@@ -63,6 +63,20 @@ impl From<UserConfig> for Config {
             user_name: value.username,
             suppress_gauntlet_magnification: value.suppress_gauntlet_magnification,
         }
+    }
+}
+impl Config {
+    /// Get current game version.
+    pub fn current_version(&self) -> &Version {
+        &self.current_version
+    }
+    /// Get username.
+    pub fn user_name(&self) -> &str {
+        &self.user_name
+    }
+    /// Do you suppress gauntlet magnifications.
+    pub fn suppress_gauntlet_magnification(&self) -> bool {
+        self.suppress_gauntlet_magnification
     }
 }
 

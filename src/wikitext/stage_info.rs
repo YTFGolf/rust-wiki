@@ -121,7 +121,7 @@ fn get_stage_variable(
             .map(|p| p.to_string())
             .collect::<Vec<String>>()
             .join("\n"),
-        "enemies_list" => internal::enemies_list(stage, config.suppress_gauntlet_magnification)
+        "enemies_list" => internal::enemies_list(stage, config.suppress_gauntlet_magnification())
             .into_iter()
             .map(|p| p.to_string())
             .collect::<Vec<String>>()

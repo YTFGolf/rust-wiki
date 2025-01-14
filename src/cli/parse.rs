@@ -34,7 +34,7 @@ pub fn stage_info(info: StageInfoOptions, config: &Config) {
     println!(
         "{}",
         get_stage_info(
-            &Stage::new(&selector, &config.current_version).unwrap(),
+            &Stage::new(&selector, &config.current_version()).unwrap(),
             config
         )
     );

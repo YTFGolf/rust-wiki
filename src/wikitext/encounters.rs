@@ -460,7 +460,7 @@ fn write_encounter_group(buf: &mut String, group: Group<'_>) {
 pub fn do_thing(wiki_id: u32, config: &Config) {
     let abs_enemy_id = wiki_id + 2;
 
-    let all_stages = get_stages(&config.current_version).collect::<Vec<_>>();
+    let all_stages = get_stages(&config.current_version()).collect::<Vec<_>>();
 
     let mut encounters = all_stages
         .iter()

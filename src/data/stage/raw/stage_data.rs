@@ -416,7 +416,7 @@ mod tests {
     #[test]
     fn test_basic() {
         let earthshaker =
-            StageData::new("stageRN000_00.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageRN000_00.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let doge = &earthshaker.stage_csv_data.enemies[0];
         assert_eq!(doge.amt, 50);
         assert_eq!(doge.respawn_frame_min, 30);
@@ -427,7 +427,7 @@ mod tests {
     #[test]
     fn test_once_then_unlimited_treasure() {
         let whole_new_world =
-            StageData::new("stageRND000_00.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageRND000_00.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let mdata = whole_new_world.get_map_stage_data().unwrap();
         assert_eq!(
             mdata.treasure_drop,
@@ -450,7 +450,7 @@ mod tests {
     #[test]
     fn test_guaranteed_once_treasure() {
         let it_floor_20 =
-            StageData::new("stageRV006_19.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageRV006_19.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let mdata = it_floor_20.get_map_stage_data().unwrap();
         assert_eq!(
             mdata.treasure_drop,
@@ -477,7 +477,7 @@ mod tests {
 
     #[test]
     fn test_killcount() {
-        let dja10 = StageData::new("stageRQ000_09.csv", &DEFAULT_CONFIG.current_version).unwrap();
+        let dja10 = StageData::new("stageRQ000_09.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         assert_eq!(dja10.stage_csv_data.enemies[5].kill_count, Some(60));
         assert_eq!(dja10.stage_csv_data.enemies[6].kill_count, Some(120));
     }
@@ -485,7 +485,7 @@ mod tests {
     #[test]
     fn test_equal_chance() {
         let spring_popstar =
-            StageData::new("stageRC128_00.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageRC128_00.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let mdata = spring_popstar.get_map_stage_data().unwrap();
         assert_eq!(
             mdata.treasure_drop,
@@ -518,7 +518,7 @@ mod tests {
     #[test]
     fn test_continue_multiple() {
         let proving_grounds =
-            StageData::new("stageRS250_00.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageRS250_00.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         assert_eq!(proving_grounds.stage_csv_data.header.no_cont, 1);
         assert_eq!(proving_grounds.stage_csv_data.header.cont_chance, 100);
         assert_eq!(proving_grounds.stage_csv_data.header.cont_stage_id_min, 0);
@@ -529,7 +529,7 @@ mod tests {
     #[test]
     fn test_once_then_unlimited_treasure_2() {
         let taste_of_success =
-            StageData::new("stageRS155_00.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageRS155_00.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let mdata = taste_of_success.get_map_stage_data().unwrap();
         assert_eq!(
             mdata.treasure_drop,
@@ -557,7 +557,7 @@ mod tests {
     #[test]
     fn test_all_unlimited() {
         let jubilee_green_night =
-            StageData::new("stageEX000_00.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageEX000_00.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let mdata = jubilee_green_night.get_map_stage_data().unwrap();
         assert_eq!(
             mdata.treasure_drop,
@@ -585,7 +585,7 @@ mod tests {
     #[test]
     fn test_timed_scores() {
         let germany_itf_1 =
-            StageData::new("stageW04_08.csv", &DEFAULT_CONFIG.current_version).unwrap();
+            StageData::new("stageW04_08.csv", &DEFAULT_CONFIG.current_version()).unwrap();
         let mdata = germany_itf_1.get_map_stage_data().unwrap();
         assert_eq!(
             mdata.score_rewards,
