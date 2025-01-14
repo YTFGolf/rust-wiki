@@ -81,7 +81,7 @@ impl From<i8> for RestrictionCrowns {
 }
 
 #[derive(Debug, PartialEq)]
-/// Stage's restriction.
+/// Stage's restriction. Multiple fields can be active at once.
 pub struct Restriction {
     /// Crown difficulties that the restrictions apply to.
     pub crowns_applied: RestrictionCrowns,
@@ -122,16 +122,6 @@ impl Restriction {
             max_cost: NonZeroU32::new(value.max_cost),
             charagroup,
         }
-    }
-
-    /// Compare restriction to other restriction, ignoring the crown difficulty.
-    pub fn compare_without_crowns(&self, other: &Self) -> bool {
-        self.rarity == other.rarity
-            && self.deploy_limit == other.deploy_limit
-            && self.rows == other.rows
-            && self.min_cost == other.min_cost
-            && self.max_cost == other.max_cost
-            && self.charagroup == other.charagroup
     }
 }
 
