@@ -71,25 +71,25 @@ type Rarity = [ParamSize; AMT_RARITIES];
 /// Type of special rule.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum RuleType {
-    /// Trust Fund: param is starting cash in ¢.
+    /// Param is starting cash in ¢.
     TrustFund(Single),
-    /// Cooldown Equality: param is frames that global cooldown is set to.
+    /// Param is frames that global cooldown is set to.
     CooldownEquality(Single),
-    /// Limit each rarity to specified amount of frames.
+    /// Limit each rarity to specified amount of deploys.
     ///
     /// Used in Only One Rarity, where each param is 1.
     RarityLimit(Rarity),
-    /// Cheap Labor: param is global unit cost.
+    /// Param is global unit cost.
     CheapLabor(Single),
     /// Restrict either the price or the cooldown of enemies in each rarity.
     ///
-    /// Used in multiple restrictions. A rarity's value is its cost/cd as a
-    /// percentage of its usual.
+    /// Used in multiple different Colosseum rules. A rarity's value is its
+    /// cost/cd as a percentage of its usual.
     RestrictPriceOrCd1(Rarity),
-    /// See [Self::RestrictPriceOrCd1]. Since these never appear individually,
-    /// it's impossible to tell them apart.
+    /// See [RuleType::RestrictPriceOrCd1]. Since these never appear
+    /// individually, it's impossible to tell them apart.
     RestrictPriceOrCd2(Rarity),
-    /// Deploy Limit: param is max units that can be spawned in battle.
+    /// Param is max units that can be spawned in battle.
     DeployLimit(Single),
 }
 /// Item in [RawRuleData::rule_type].
