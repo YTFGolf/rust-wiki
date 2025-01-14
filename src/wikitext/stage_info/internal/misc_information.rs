@@ -27,16 +27,15 @@ pub fn star(stage: &Stage) -> TemplateParameter {
 
 /// Get the `event`, `event-chapter` or `sub-chapter` items.
 pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
-    #[inline]
-    fn get_map_name(map: &MapData) -> Cow<'_, str> {
-        OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1")
+    fn get_map_name(map: &MapData) -> String {
+        OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1").to_string()
     }
 
     match stage.meta.type_enum {
         T::MainChapters => vec![],
         T::SoL | T::UL | T::ZL => vec![TemplateParameter::new(
             "sub-chapter",
-            get_map_name(data.stage_map).to_string(),
+            get_map_name(data.stage_map),
         )],
         T::Collab | T::CollabGauntlet => {
             let collab_name = Regex::new(r"\[\[(.*? Event)").unwrap();
@@ -48,16 +47,16 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
             let event = TemplateParameter::new("event", format!("[[{collab_name}]]"));
             vec![
                 event,
-                TemplateParameter::new("event-chapter", get_map_name(data.stage_map).to_string()),
+                TemplateParameter::new("event-chapter", get_map_name(data.stage_map)),
             ]
         }
         T::Dojo | T::RankingDojo | T::Championships => vec![TemplateParameter::new(
             "dojo-chapter",
-            get_map_name(data.stage_map).to_string(),
+            get_map_name(data.stage_map),
         )],
         _ => vec![TemplateParameter::new(
             "event-chapter",
-            get_map_name(data.stage_map).to_string(),
+            get_map_name(data.stage_map),
         )],
     }
 }

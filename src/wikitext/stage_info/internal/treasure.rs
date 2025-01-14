@@ -10,7 +10,6 @@ use crate::{
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
-#[inline]
 /// Is the reward a cat unit/true form.
 fn is_unit_drop(id: u32) -> bool {
     (1_000..30_000).contains(&id)
