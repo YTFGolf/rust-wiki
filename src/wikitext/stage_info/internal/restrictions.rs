@@ -17,7 +17,7 @@ use std::{
     num::{NonZero, NonZeroU8},
 };
 
-/// Sometimes I don't like Rust's type system.
+/// Convert `value` to a NonZero [`u8`].
 const fn non_zero_u8(value: u8) -> NonZero<u8> {
     match NonZeroU8::new(value) {
         Some(v) => v,
@@ -35,11 +35,13 @@ const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
     charagroup: None,
 };
 
-/// Get only rarities allowed.
+/// Get `"Rarity: Only ..."` restriction.
 fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
     let rarities: Vec<&str> = (0..6)
         .filter_map(|i| {
             let rarity_bit = u8::from(rarity) & (1 << i);
+            // e.g. for number 0b00_0001
+            // if i = 0 this gets the 1 at the end of the number
             if rarity_bit == 0 {
                 return None;
             };
@@ -70,7 +72,8 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
     buf
 }
 
-/// Get the restriction defined by the charagroup.
+/// Get the restriction defined by the charagroup (i.e. the can only use or
+/// cannot use certain units).
 fn get_charagroup_restriction(group: &CharaGroup) -> String {
     // Alternatively, hardcode some of these like heartbeat catcademy and JRA
     // since they'll always be changing but will always have the same concept.
@@ -173,14 +176,17 @@ fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
     }
 }
 
-/// Get restrictions when the stage has multiple restrictions being applied to
-/// it.
+/// Get restrictions when `restrictions.len()` is greater than 1.
 fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) -> Vec<String> {
     let mut restriction_crowns: Vec<(String, Vec<u8>)> = vec![];
     for restriction in restrictions {
         let crown: u8 = match restriction.crowns_applied {
             Crowns::One(c) => c.into(),
             Crowns::All => panic!("Stage has multiple restrictions that do not apply equally!"),
+            // i.e. restriction that applies to all crowns that isn't the only
+            // restriction on the stage
+            // not sure this error message is the best but it's better to not
+            // deal with this case if I don't have to
         };
         for r in get_single_restriction(restriction) {
             add_restriction_or_crown(&mut restriction_crowns, r, crown);
@@ -193,8 +199,12 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
         .into_iter()
         .map(|(r, crowns)| match crowns.len() {
             x if x == max_difficulty as usize => r,
+            // i.e. restriction applies to all crowns
             1 => format!("{}-Crown: {}", crowns[0], r),
-            _ => panic!("Restrictions don't apply to all stages!"),
+            _ => panic!("Restrictions don't apply to all crowns!"),
+            // kinda misleading, specifically it's doesn't apply to all or 1,
+            // but that's way too long-winded for something that might not
+            // happen
         })
         .collect()
 }
@@ -214,6 +224,7 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
             && stage.crown_data.is_some()
             && (stage.crown_data.as_ref().unwrap().max_difficulty > non_zero_u8(1)
                 || restriction.crowns_applied != Crowns::One(non_zero_u8(1)))
+        // TODO use if-let chains in 2024 version when it stabilises
         // invalidate if either:
         // - stage has multiple crowns available and the restriction does not
         //   apply to all crowns
@@ -239,16 +250,17 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 
     let restrictions = get_restriction_list(stage);
     let r = match restrictions {
+        Some(r) => r,
         None => {
-            if !stage.is_no_continues {
+            if stage.is_no_continues {
+                return Some(TemplateParameter::new(
+                    PARAM_NAME,
+                    "[[No Continues]]".to_string(),
+                ));
+            } else {
                 return None;
             }
-            return Some(TemplateParameter::new(
-                PARAM_NAME,
-                "[[No Continues]]".to_string(),
-            ));
         }
-        Some(r) => r,
     };
 
     let mut buf = r.join("<br>\n");
@@ -281,6 +293,7 @@ pub fn restrictions_section(stage: &Stage) -> String {
     buf
 }
 
+/// Get content of rules section.
 pub fn rules(stage: &Stage) -> String {
     let Some(rules) = &stage.rules else {
         return String::new();
@@ -616,9 +629,6 @@ mod tests {
     #[test]
     fn rule_12th_anniversary() {
         let doge_disturbance_last = Stage::new_current("ex 71 9").unwrap();
-        assert_eq!(
-            rules(&doge_disturbance_last),
-            "{{StageRule|12thAnni}}"
-        );
+        assert_eq!(rules(&doge_disturbance_last), "{{StageRule|12thAnni}}");
     }
 }
