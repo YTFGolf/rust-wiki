@@ -64,7 +64,7 @@ pub mod csv_types {
 
     #[derive(Debug, serde::Deserialize, PartialEq)]
     /// CSV data for enemies. See [Stage Structure
-    /// Page/Battlegrounds](https://battle-cats.fandom.com/wiki/Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds)
+    /// Page/Battlegrounds](https://battlecats.miraheze.org/wiki/The_Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds)
     /// for more complete documentation.
     pub struct StageEnemyCSV {
         /// battle-cats db id (i.e. Doge is 2).

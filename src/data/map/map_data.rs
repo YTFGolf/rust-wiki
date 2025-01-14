@@ -40,7 +40,6 @@ pub mod csv_types {
     /*
      * Other things:
      * - stage_conditions.csv for Labyrinth
-     * - DataLocal/SpecialRulesMap.json for Colosseum
      * - stage_hint_popup.csv for tutorial
      */
 
