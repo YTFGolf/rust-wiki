@@ -7,6 +7,7 @@ use std::{
     sync::Mutex,
 };
 pub mod version_data;
+use crate::config2::version_config::Lang;
 use version_data::CacheableVersionData;
 
 #[derive(Debug)]
@@ -30,6 +31,14 @@ impl TryFrom<&str> for VersionLanguage {
             "en" => Ok(V::EN),
             "jp" | "ja" => Ok(V::JP),
             _ => Err(InvalidLanguage(val_lower)),
+        }
+    }
+}
+impl From<Lang> for VersionLanguage {
+    fn from(value: Lang) -> Self {
+        match value {
+            Lang::EN => Self::EN,
+            Lang::JP => Self::JP,
         }
     }
 }
@@ -68,6 +77,20 @@ impl Version {
 
             version_data: Mutex::from(Vec::new()),
         })
+    }
+
+    /// Temp
+    pub fn new2<P>(location: P, language: Lang, number: Option<String>) -> Self
+    where
+        PathBuf: From<P>,
+    {
+        Self {
+            location: PathBuf::from(location),
+            _language: language.into(),
+            _number: number.unwrap_or_default(),
+
+            version_data: Mutex::from(Vec::new()),
+        }
     }
 
     /// Automatically extract the language code from the directory name.
