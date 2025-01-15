@@ -116,15 +116,10 @@ impl StageEnemy {
         // 100 is for EoC
         match old.attack_magnification {
             None => Left(hpmag),
-            Some(a) => match a {
+            Some(ap) => match ap {
                 0 => Left(hpmag),
-                _ => {
-                    if hpmag == a {
-                        Left(hpmag)
-                    } else {
-                        Right((hpmag, a))
-                    }
-                }
+                ap if ap == hpmag => Left(hpmag),
+                ap => Right((hpmag, ap)),
             },
         }
     }
