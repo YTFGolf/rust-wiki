@@ -21,26 +21,10 @@ use std::str::FromStr;
   each subcommand option type could implement)
 */
 
-fn deserialize_log<'de, D>(deserializer: D) -> Result<Level, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s: &str = Deserialize::deserialize(deserializer)?;
-    Level::from_str(s).map_err(serde::de::Error::custom)
-}
-
-fn serialize_log<S>(level: &Level, serializer: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-{
-    serializer.serialize_str(&level.to_string())
-}
-
 #[derive(Debug, Serialize, Deserialize)]
 /// Configuration
 // TODO remove Serialise and replace with toml-edit.
 pub struct Config {
-    #[serde(deserialize_with = "deserialize_log", serialize_with = "serialize_log")]
     log_level: Level,
     /// Username etc.
     wiki: WikiConfig,
