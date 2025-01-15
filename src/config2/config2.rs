@@ -1,6 +1,6 @@
 //! Represents the config.
 
-use super::{stage_config::StageConfig, wiki_config::WikiConfig};
+use super::{stage_config::StageConfig, version_config::VersionConfig, wiki_config::WikiConfig};
 use log::Level;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::str::FromStr;
@@ -45,7 +45,7 @@ pub struct Config {
     /// Username etc.
     wiki: WikiConfig,
     /// Game version config.
-    version: (),
+    version: VersionConfig,
     /// Config for `stage_info`.
     stage_info: StageConfig,
 }
