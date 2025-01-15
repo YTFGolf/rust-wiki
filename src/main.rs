@@ -16,7 +16,23 @@ fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
     merge_config_and_args(config, args).into()
 }
 
+fn temp() {
+    // if true {
+    //     return;
+    // }
+    // use serde::Serialize;
+    use rust_wiki::config2::config2::Config;
+    let def_config = Config::default();
+    println!("{:?}", def_config);
+    println!("{}", toml::to_string(&def_config).unwrap());
+    println!("{}", serde_json::to_string(&def_config).unwrap());
+
+    let toml_repr =toml::to_string(&def_config).unwrap() ;
+    println!("{:?}", toml::from_str::<Config>(&toml_repr).unwrap());
+}
+
 fn main() {
+    temp();
     let cli = Cli::parse();
     let config = get_user_config();
 
