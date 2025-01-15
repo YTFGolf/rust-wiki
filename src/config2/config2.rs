@@ -8,10 +8,10 @@ use serde::{Deserialize, Serialize};
 # Outline
 
 ## Config
-- [ ] Actual config
-- [ ] Object can do its own serialisation and deserialisation
+- [x] Actual config
+- [x] Object can do its own serialisation and deserialisation
 - [ ] Ideally also includes the comments inside the file
-- [ ] Initialising config comes with default values
+- [x] Initialising config comes with default values
 - [ ] If values are missing then tells you which ones are missing and gives
   option to fill in defaults (could just generate default then merge with
   current config, or maybe tells you how to fill them out, or somehow figures
@@ -29,7 +29,7 @@ where
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-/// Configuration
+/// Configuration for entire project.
 // TODO remove Serialise and replace with toml-edit.
 pub struct Config {
     /// Level of log warning.
