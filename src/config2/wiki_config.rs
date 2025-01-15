@@ -3,6 +3,8 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
+/// Config for interacting with wiki.
 pub struct WikiConfig {
-    username: String,
+    /// Wiki username.
+    pub username: String,
 }

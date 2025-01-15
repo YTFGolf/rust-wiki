@@ -62,3 +62,18 @@ impl VersionConfig {
         self.try_current_version().unwrap()
     }
 }
+
+impl VersionConfig {
+    /// Set the version's `lang`.
+    pub fn set_lang(&mut self, lang: Lang) {
+        self.lang = lang;
+    }
+    /// Set the version's `enpath`.
+    pub fn set_enpath(&mut self, enpath: String) {
+        self.enpath = enpath;
+    }
+    /// Set the version's `jppath`.
+    pub fn set_jppath(&mut self, jppath: String) {
+        self.jppath = jppath;
+    }
+}
