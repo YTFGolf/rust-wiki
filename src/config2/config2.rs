@@ -2,8 +2,7 @@
 
 use super::{stage_config::StageConfig, version_config::VersionConfig, wiki_config::WikiConfig};
 use log::Level;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::str::FromStr;
+use serde::{Deserialize, Serialize};
 
 /*
 # Outline
@@ -32,4 +31,16 @@ pub struct Config {
     version: VersionConfig,
     /// Config for `stage_info`.
     stage_info: StageConfig,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            log_level: Level::Warn,
+            // grr
+            wiki: Default::default(),
+            version: Default::default(),
+            stage_info: Default::default(),
+        }
+    }
 }

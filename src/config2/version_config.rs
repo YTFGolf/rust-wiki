@@ -2,15 +2,18 @@
 
 use serde::{Deserialize, Serialize};
 
-impl<'de> Deserialize<'de> for VersionConfig {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let _ = deserializer;
-        todo!()
-    }
+/// Main language.
+#[allow(missing_docs)]
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub enum Lang {
+    EN,
+    #[default]
+    JP,
 }
 
-#[derive(Debug, Serialize)]
-pub struct VersionConfig {}
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct VersionConfig {
+    lang: Lang,
+}
+
+impl VersionConfig {}
