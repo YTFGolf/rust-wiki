@@ -20,12 +20,22 @@ use serde::{Deserialize, Serialize};
   each subcommand option type could implement)
 */
 
+/// Necessary to make [`Level`] serialise as lower case.
+fn serialize_log_level<S>(level: &Level, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    serializer.serialize_str(&level.as_str().to_lowercase())
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 /// Configuration
 // TODO remove Serialise and replace with toml-edit.
 pub struct Config {
+    /// Level of log warning.
+    #[serde(serialize_with = "serialize_log_level")]
     log_level: Level,
-    /// Username etc.
+    /// Wiki config.
     wiki: WikiConfig,
     /// Game version config.
     version: VersionConfig,
@@ -36,7 +46,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            log_level: Level::Warn,
+            log_level: Level::Info,
             // grr
             wiki: Default::default(),
             version: Default::default(),
