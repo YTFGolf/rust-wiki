@@ -32,15 +32,15 @@ where
 /// Configuration for entire project.
 // TODO remove Serialise and replace with toml-edit.
 pub struct Config {
-    /// Level of log warning.
     #[serde(serialize_with = "serialize_log_level")]
-    log_level: Level,
+    /// Level of log warning.
+    pub log_level: Level,
     /// Wiki config.
-    wiki: WikiConfig,
+    pub wiki: WikiConfig,
     /// Game version config.
-    version: VersionConfig,
+    pub version: VersionConfig,
     /// Config for `stage_info`.
-    stage_info: StageConfig,
+    pub stage_info: StageConfig,
 }
 
 impl Default for Config {
