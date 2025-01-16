@@ -5,7 +5,7 @@
 
 use super::{
     base::BaseOptions,
-    cli2::{CliCommand, CommandExec, ConfigMerge},
+    cli::{CliCommand, CommandExec, ConfigMerge},
 };
 use crate::config2::config2::Config;
 use clap::Args;

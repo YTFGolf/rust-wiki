@@ -1,4 +1,4 @@
-use super::cli2::ConfigMerge;
+use super::cli::ConfigMerge;
 use crate::config2::config2::Config;
 use clap::{
     builder::{PossibleValue, PossibleValuesParser},

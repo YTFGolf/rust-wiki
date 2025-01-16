@@ -1,7 +1,6 @@
 use crate::config2::config2::Config;
 use clap::{Args, Parser, Subcommand};
-
-use super::{cli2::CliCommand, stage_cli::StageInfoOptions};
+use super::{cli::CliCommand, stage_cli::StageInfoOptions};
 
 // #[derive(Args, Debug, PartialEq)]
 // pub struct Test1 {
