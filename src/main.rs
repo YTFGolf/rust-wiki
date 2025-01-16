@@ -1,7 +1,7 @@
 use clap::Parser;
 use rust_wiki::{
     cli::{
-        commands::{Cli, Command},
+        options::Cli,
         parse::{merge_config_and_args, stage_info, update_config},
         user_config::{UserConfig, UserConfigCli},
     },
@@ -27,7 +27,7 @@ fn temp() {
     println!("{}", toml::to_string(&def_config).unwrap());
     println!("{}", serde_json::to_string(&def_config).unwrap());
 
-    let toml_repr =toml::to_string(&def_config).unwrap() ;
+    let toml_repr = toml::to_string(&def_config).unwrap();
     println!("{:?}", toml::from_str::<Config>(&toml_repr).unwrap());
 }
 
@@ -35,26 +35,27 @@ fn main() {
     temp();
     let cli = Cli::parse();
     let config = get_user_config();
+    println!("{cli:?}, {config:?}");
 
     init_logger();
 
-    match cli.command {
-        Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
-        Command::StageInfo(si) => {
-            let config = &get_config(config, si.config.clone());
-            stage_info(si, config);
-        }
-        Command::Encounters(e) => {
-            let config = &get_config(config, e.config.clone());
-            log::warn!("This currently only works on the first enemy");
-            let name_or_id = &e.names[0];
-            let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
-                None => name_or_id.parse().unwrap(),
-                Some(id) => *id,
-            };
+    // match cli.command {
+    //     Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
+    //     Command::StageInfo(si) => {
+    //         let config = &get_config(config, si.config.clone());
+    //         stage_info(si, config);
+    //     }
+    //     Command::Encounters(e) => {
+    //         let config = &get_config(config, e.config.clone());
+    //         log::warn!("This currently only works on the first enemy");
+    //         let name_or_id = &e.names[0];
+    //         let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
+    //             None => name_or_id.parse().unwrap(),
+    //             Some(id) => *id,
+    //         };
 
-            rust_wiki::wikitext::encounters::do_thing(id, config);
-        }
-        Command::Config(c) => update_config(config, c),
-    }
+    //         rust_wiki::wikitext::encounters::do_thing(id, config);
+    //     }
+    //     Command::Config(c) => update_config(config, c),
+    // }
 }

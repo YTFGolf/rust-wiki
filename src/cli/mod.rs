@@ -5,3 +5,4 @@ pub mod parse;
 pub mod user_config;
 
 pub mod cli2;
+pub mod options;
