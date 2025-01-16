@@ -331,22 +331,22 @@ impl Stage {
     /// Create a new stage object from `selector` in current version.
     #[cfg(test)]
     pub fn new_current(selector: &str) -> Option<Self> {
-        use crate::config::DEFAULT_CONFIG;
-        Self::new(selector, &DEFAULT_CONFIG.version.current_version())
+        use crate::config::TEST_CONFIG;
+        Self::new(selector, &TEST_CONFIG.version.current_version())
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::DEFAULT_CONFIG, data::stage::get_stages};
+    use crate::{config::TEST_CONFIG, data::stage::get_stages};
 
     // test none values, esp. with crown data
 
     #[test]
     #[ignore]
     fn get_all() {
-        for stage in get_stages(&DEFAULT_CONFIG.version.current_version()) {
+        for stage in get_stages(&TEST_CONFIG.version.current_version()) {
             let _stage: Stage = stage.into();
         }
     }

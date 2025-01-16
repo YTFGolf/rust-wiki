@@ -105,12 +105,12 @@ fn get_map_option(path: &Path) -> HashMap<u32, ByteRecord> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::DEFAULT_CONFIG;
+    use crate::config::TEST_CONFIG;
     use std::{collections::HashSet, io::Cursor};
 
     #[test]
     fn test_mo() {
-        let s = DEFAULT_CONFIG
+        let s = TEST_CONFIG
             .version
             .current_version()
             .get_cached_file::<MapOption>()
@@ -135,7 +135,7 @@ mod tests {
 
     #[test]
     fn assert_parses_and_no_duplicates_and_correct_fields() {
-        let version = &DEFAULT_CONFIG.version.current_version();
+        let version = &TEST_CONFIG.version.current_version();
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             // technically does have headers but that's an issue for another day

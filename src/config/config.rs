@@ -101,4 +101,4 @@ fn get_config() -> Config {
 
 /// Static variable representing the config, for use in tests.
 #[cfg(test)]
-pub static DEFAULT_CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config());
+pub static TEST_CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config());

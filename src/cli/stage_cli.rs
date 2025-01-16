@@ -60,7 +60,7 @@ mod tests {
     use super::*;
     use crate::{
         cli::commands::{Cli, Command},
-        config::DEFAULT_CONFIG,
+        config::TEST_CONFIG,
     };
     use clap::Parser;
 
@@ -83,7 +83,7 @@ mod tests {
         let Command::StageInfo(si) = cli.command else {
             unreachable!()
         };
-        si.exec(&DEFAULT_CONFIG);
+        si.exec(&TEST_CONFIG);
     }
 
     #[test]
@@ -105,7 +105,7 @@ mod tests {
         let Command::StageInfo(si) = cli.command else {
             unreachable!()
         };
-        si.exec(&DEFAULT_CONFIG);
+        si.exec(&TEST_CONFIG);
     }
 
     #[test]
@@ -127,7 +127,7 @@ mod tests {
         let Command::StageInfo(si) = cli.command else {
             unreachable!()
         };
-        si.exec(&DEFAULT_CONFIG);
+        si.exec(&TEST_CONFIG);
     }
 
     #[test]
@@ -138,6 +138,6 @@ mod tests {
         let Command::StageInfo(si) = cli.command else {
             unreachable!()
         };
-        si.exec(&DEFAULT_CONFIG);
+        si.exec(&TEST_CONFIG);
     }
 }
