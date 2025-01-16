@@ -5,16 +5,11 @@ use rust_wiki::{
         parse::{merge_config_and_args, stage_info, update_config},
         user_config::{UserConfig, UserConfigCli},
     },
-    config::{get_user_config, Config},
+    config2::config2::Config,
     logger::init_logger,
     wiki_files::update_wiki_files,
     wikitext::data_files::enemy_data::ENEMY_DATA,
 };
-
-fn get_config(config: Option<UserConfig>, args: UserConfigCli) -> Config {
-    let config = config.expect("Config not found or is invalid!");
-    merge_config_and_args(config, args).into()
-}
 
 fn temp() {
     // if true {
@@ -34,17 +29,14 @@ fn temp() {
 fn main() {
     temp();
     let cli = Cli::parse();
-    let config = get_user_config();
-    println!("{cli:?}, {config:?}");
+    // let config = get_user_config();
+    // println!("{cli:?}, {config:?}");
 
     init_logger();
+    cli.exec(Config::default());
 
     // match cli.command {
     //     Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
-    //     Command::StageInfo(si) => {
-    //         let config = &get_config(config, si.config.clone());
-    //         stage_info(si, config);
-    //     }
     //     Command::Encounters(e) => {
     //         let config = &get_config(config, e.config.clone());
     //         log::warn!("This currently only works on the first enemy");

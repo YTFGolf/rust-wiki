@@ -1,5 +1,7 @@
+use crate::config2::config2::Config;
 use clap::{Args, Parser, Subcommand};
-use super::stage_cli::StageInfoOptions;
+
+use super::{cli2::CliCommand, stage_cli::StageInfoOptions};
 
 // #[derive(Args, Debug, PartialEq)]
 // pub struct Test1 {
@@ -22,17 +24,15 @@ use super::stage_cli::StageInfoOptions;
 #[derive(Debug, Subcommand, PartialEq)]
 /// Which program to run.
 pub enum Command {
-    StageInfo(StageInfoOptions)
-    //     // #[command(visible_aliases(["stage"]))]
-    //     /// Get information about a stage.
-    //     // StageInfo(StageInfoOptions),
+    #[command(visible_aliases(["stage"]))]
+    /// Get information about a stage.
+    StageInfo(StageInfoOptions),
+    // /// Get a list of stages certain enemies appear in.
+    // Encounters(EncountersOptions),
 
-    //     /// Get a list of stages certain enemies appear in.
-    //     // Encounters(EncountersOptions),
-
-    //     // #[command(visible_aliases(["wiki", "get"]))]
-    //     /// Get data from the wiki.
-    //     // ReadWiki(UserConfigCli),
+    // #[command(visible_aliases(["wiki", "get"]))]
+    // /// Get data from the wiki.
+    // ReadWiki(UserConfigCli),
 }
 
 #[derive(Parser, Debug, PartialEq)]
@@ -47,4 +47,12 @@ pub struct Cli {
     // potential feature: split this up, i.e. Config has everything, StageInfo
     // has data mines and suppress, ReadWiki has username. Would require more
     // complexity on the actual Config.
+}
+
+impl Cli {
+    pub fn exec(self, config: Config) {
+        match self.command {
+            Command::StageInfo(options) => options.run(config),
+        }
+    }
 }
