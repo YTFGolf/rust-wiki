@@ -1,24 +1,6 @@
-use super::{cli::CliCommand, stage_cli::StageInfoOptions};
+use super::{cli::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions};
 use crate::config2::config2::Config;
 use clap::{Parser, Subcommand};
-
-// #[derive(Args, Debug, PartialEq)]
-// pub struct Test1 {
-//     opt1: String,
-//     opt2: String,
-// }
-// #[derive(Args, Debug, PartialEq)]
-// pub struct Test2 {
-//     opt3: String,
-//     opt4: String,
-// }
-// #[derive(Debug, Args, PartialEq)]
-// pub struct TestHolder {
-//     #[command(flatten)]
-//     input: Test1,
-//     #[command(flatten)]
-//     options: Test2,
-// }
 
 #[derive(Debug, Subcommand, PartialEq)]
 /// Which program to run.
@@ -26,9 +8,9 @@ pub enum Command {
     #[command(visible_aliases(["stage"]))]
     /// Get information about a stage.
     StageInfo(StageInfoOptions),
-    // /// Get a list of stages certain enemies appear in.
-    // Encounters(EncountersOptions),
 
+    /// Get a list of stages certain enemies appear in.
+    Encounters(EncountersOptions),
     // #[command(visible_aliases(["wiki", "get"]))]
     // /// Get data from the wiki.
     // ReadWiki(UserConfigCli),
@@ -53,6 +35,7 @@ impl Cli {
     pub fn exec(self, config: Config) {
         match self.command {
             Command::StageInfo(options) => options.run(config),
+            Command::Encounters(options) => options.run(config),
         }
     }
 }
