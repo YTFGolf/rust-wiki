@@ -1,5 +1,9 @@
 use clap::Parser;
-use rust_wiki::{cli::commands::Cli, config2::config2::Config, logger::init_logger};
+use rust_wiki::{
+    cli::commands::Cli,
+    config2::config2::{Config, CONFIG_FILE},
+    logger::init_logger,
+};
 use std::process::exit;
 
 fn temp() {
@@ -20,7 +24,7 @@ fn temp() {
 fn initialise_config() -> ! {
     println!("Config not found, initialising...");
     Config::initialise();
-    println!("Config initialised. Exiting program.");
+    println!("Config initialised at {CONFIG_FILE}. Exiting program.");
 
     exit(0);
 }

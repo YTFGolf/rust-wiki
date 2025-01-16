@@ -59,7 +59,7 @@ impl Default for Config {
     }
 }
 
-const CONFIG_FILE: &str = "user-config.toml";
+pub const CONFIG_FILE: &str = "user-config.toml";
 
 impl Config {
     /// Set config file to `new_value`.
