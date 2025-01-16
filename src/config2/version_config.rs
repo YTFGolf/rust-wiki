@@ -58,7 +58,7 @@ impl VersionConfig {
                 Lang::EN => &self.enpath,
                 Lang::JP => &self.jppath,
             };
-            let location = Self::expand_home(&location);
+            let location = Self::expand_home(location);
             let ind = lang.clone() as usize;
             self.versions[ind] = Some(Version::new2(location, lang, None));
         }

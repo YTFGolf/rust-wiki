@@ -5,7 +5,7 @@
 
 use super::{
     base::BaseOptions,
-    cli::{CliCommand, CommandExec, ConfigMerge},
+    cli::{CommandExec, ConfigMerge},
 };
 use crate::{
     cli::cli::input, config2::config2::Config, data::stage::parsed::stage::Stage,
@@ -51,7 +51,7 @@ impl CommandExec for StageInfoOptions {
         println!(
             "{}",
             get_stage_info(
-                &Stage::new(selector, &config.version.current_version()).unwrap(),
+                &Stage::new(selector, config.version.current_version()).unwrap(),
                 config
             )
         );

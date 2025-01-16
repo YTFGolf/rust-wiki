@@ -22,20 +22,4 @@ fn main() {
 
     init_logger();
     cli.exec(config);
-
-    // match cli.command {
-    //     Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),
-    //     Command::Encounters(e) => {
-    //         let config = &get_config(config, e.config.clone());
-    //         log::warn!("This currently only works on the first enemy");
-    //         let name_or_id = &e.names[0];
-    //         let id = match ENEMY_DATA.get_id_from_name(name_or_id) {
-    //             None => name_or_id.parse().unwrap(),
-    //             Some(id) => *id,
-    //         };
-
-    //         rust_wiki::wikitext::encounters::do_thing(id, config);
-    //     }
-    //     Command::Config(c) => update_config(config, c),
-    // }
 }

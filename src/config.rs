@@ -1,5 +1,5 @@
 //! Contains global config values.
-use crate::data::version::{InvalidLanguage, Version};
+use crate::data::version::Version;
 use home::home_dir;
 use std::fs::File;
 use std::io::{ErrorKind, Read, Write};

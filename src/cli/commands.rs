@@ -1,6 +1,6 @@
-use crate::config2::config2::Config;
-use clap::{Args, Parser, Subcommand};
 use super::{cli::CliCommand, stage_cli::StageInfoOptions};
+use crate::config2::config2::Config;
+use clap::{Parser, Subcommand};
 
 // #[derive(Args, Debug, PartialEq)]
 // pub struct Test1 {
@@ -49,6 +49,7 @@ pub struct Cli {
 }
 
 impl Cli {
+    /// Execute the cli.
     pub fn exec(self, config: Config) {
         match self.command {
             Command::StageInfo(options) => options.run(config),
