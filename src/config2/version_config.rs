@@ -86,15 +86,7 @@ impl VersionConfig {
         }
     }
     /// Set the version's `lang`.
-    fn set_lang(&mut self, lang: Lang) {
+    fn _set_lang(&mut self, lang: Lang) {
         self.lang = lang;
-    }
-    /// Set the version's `enpath`.
-    fn set_enpath(&mut self, enpath: String) {
-        self.enpath = enpath;
-    }
-    /// Set the version's `jppath`.
-    fn set_jppath(&mut self, jppath: String) {
-        self.jppath = jppath;
     }
 }
