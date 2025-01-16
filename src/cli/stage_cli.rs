@@ -1,8 +1,3 @@
-//     Command::StageInfo(si) => {
-//         let config = &get_config(config, si.config.clone());
-//         stage_info(si, config);
-//     }
-
 use super::{
     base::BaseOptions,
     cli::{CommandExec, ConfigMerge},
@@ -57,5 +52,89 @@ impl CommandExec for StageInfoOptions {
                 config
             )
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use clap::Parser;
+
+    use super::*;
+    use crate::{
+        cli::commands::{Cli, Command},
+        config2::config2::DEFAULT_CONFIG,
+    };
+
+    #[test]
+    fn single_full_selector() {
+        const ARGS: [&str; 3] = ["run_program", "stage", "l 0 0"];
+        let cli = Cli::parse_from(ARGS.iter());
+        assert_eq!(
+            cli,
+            Cli {
+                command: Command::StageInfo(StageInfoOptions {
+                    selector: ["l 0 0".to_string()].to_vec(),
+                    suppress: Default::default(),
+                    base: Default::default(),
+                    version: Default::default(),
+                }),
+            }
+        );
+
+        let Command::StageInfo(si) = cli.command else {
+            unreachable!()
+        };
+        si.exec(&DEFAULT_CONFIG);
+    }
+
+    #[test]
+    fn multipart_selector() {
+        const ARGS: [&str; 5] = ["run_program", "stage", "l", "0", "0"];
+        let cli = Cli::parse_from(ARGS.iter());
+        assert_eq!(
+            cli,
+            Cli {
+                command: Command::StageInfo(StageInfoOptions {
+                    selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec(),
+                    suppress: Default::default(),
+                    base: Default::default(),
+                    version: Default::default(),
+                }),
+            }
+        );
+
+        let Command::StageInfo(si) = cli.command else {
+            unreachable!()
+        };
+        si.exec(&DEFAULT_CONFIG);
+    }
+
+    #[test]
+    fn single_selector() {
+        const ARGS: [&str; 3] = ["run_program", "stage", "filibuster"];
+        let cli = Cli::parse_from(ARGS.iter());
+        assert_eq!(
+            cli,
+            Cli {
+                command: Command::StageInfo(StageInfoOptions {
+                    selector: ["filibuster".to_string()].to_vec(),
+                    suppress: Default::default(),
+                    base: Default::default(),
+                    version: Default::default(),
+                }),
+            }
+        );
+
+        let Command::StageInfo(si) = cli.command else {
+            unreachable!()
+        };
+        si.exec(&DEFAULT_CONFIG);
+    }
+
+    #[test]
+    fn invalid_selector() {
+        const ARGS: [&str; 3] = ["run_program", "stage", " 0 0"];
+        let cli = Cli::try_parse_from(ARGS.iter());
+        assert!(cli.is_err());
     }
 }

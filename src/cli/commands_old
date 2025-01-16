@@ -16,7 +16,7 @@ pub enum Command {
 #[cfg(test)]
 mod cli_tests {
     use super::*;
-    use crate::{cli::parse::stage_info, config::DEFAULT_CONFIG};
+    use crate::{cli::parse::stage_info, config2::config2::DEFAULT_CONFIG};
 
     fn blank_config() -> UserConfigCli {
         UserConfigCli {
@@ -24,66 +24,6 @@ mod cli_tests {
             username: None,
             suppress: None,
         }
-    }
-
-    #[test]
-    fn info_single_full_selector() {
-        const ARGS: [&str; 3] = ["run_program", "stage", "l 0 0"];
-        let cli = Cli::parse_from(ARGS.iter());
-        assert_eq!(
-            cli,
-            Cli {
-                command: Command::StageInfo(StageInfoOptions {
-                    selector: ["l 0 0".to_string()].to_vec(),
-                    config: blank_config()
-                }),
-            }
-        );
-
-        let Command::StageInfo(si) = cli.command else {
-            unreachable!()
-        };
-        stage_info(si, &DEFAULT_CONFIG);
-    }
-
-    #[test]
-    fn info_multipart_selector() {
-        const ARGS: [&str; 5] = ["run_program", "stage", "l", "0", "0"];
-        let cli = Cli::parse_from(ARGS.iter());
-        assert_eq!(
-            cli,
-            Cli {
-                command: Command::StageInfo(StageInfoOptions {
-                    selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec(),
-                    config: blank_config()
-                }),
-            }
-        );
-
-        let Command::StageInfo(si) = cli.command else {
-            unreachable!()
-        };
-        stage_info(si, &DEFAULT_CONFIG);
-    }
-
-    #[test]
-    fn info_single_selector() {
-        const ARGS: [&str; 3] = ["run_program", "stage", "filibuster"];
-        let cli = Cli::parse_from(ARGS.iter());
-        assert_eq!(
-            cli,
-            Cli {
-                command: Command::StageInfo(StageInfoOptions {
-                    selector: ["filibuster".to_string()].to_vec(),
-                    config: blank_config()
-                }),
-            }
-        );
-
-        let Command::StageInfo(si) = cli.command else {
-            unreachable!()
-        };
-        stage_info(si, &DEFAULT_CONFIG);
     }
 
     #[test]
