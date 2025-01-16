@@ -335,7 +335,7 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
 mod tests {
     use super::*;
     use crate::{
-        config2::config2::DEFAULT_CONFIG,
+        config::config::DEFAULT_CONFIG,
         data::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
     };
     use std::{io::Cursor, vec};

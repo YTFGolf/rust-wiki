@@ -1,5 +1,5 @@
 use super::cli::{CommandExec, ConfigMerge};
-use crate::{config2::config2::Config, wiki_files::update_wiki_files};
+use crate::{config::config::Config, wiki_files::update_wiki_files};
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]

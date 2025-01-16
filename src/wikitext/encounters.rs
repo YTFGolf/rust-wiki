@@ -3,7 +3,7 @@
 pub mod chapter;
 pub mod section;
 use crate::{
-    config2::config2::Config,
+    config::config::Config,
     data::{
         enemy::raw_encounters::stage_contains_enemy,
         stage::{

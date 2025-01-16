@@ -3,7 +3,7 @@ use super::{
     cli::{CommandExec, ConfigMerge},
     version_opt::VersionOptions,
 };
-use crate::{config2::config2::Config, wikitext::data_files::enemy_data::ENEMY_DATA};
+use crate::{config::config::Config, wikitext::data_files::enemy_data::ENEMY_DATA};
 use clap::{command, Args};
 
 #[derive(Debug, Args, PartialEq)]

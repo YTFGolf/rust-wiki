@@ -4,7 +4,7 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    cli::cli::input, config2::config2::Config, data::stage::parsed::stage::Stage,
+    cli::cli::input, config::config::Config, data::stage::parsed::stage::Stage,
     wikitext::stage_info::get_stage_info,
 };
 use clap::Args;
@@ -60,7 +60,7 @@ mod tests {
     use super::*;
     use crate::{
         cli::commands::{Cli, Command},
-        config2::config2::DEFAULT_CONFIG,
+        config::config::DEFAULT_CONFIG,
     };
     use clap::Parser;
 

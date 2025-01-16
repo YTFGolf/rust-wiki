@@ -1,7 +1,7 @@
 use clap::Parser;
 use rust_wiki::{
     cli::commands::Cli,
-    config2::config2::{Config, CONFIG_FILE},
+    config::config::{Config, CONFIG_FILE},
     logger::init_logger,
 };
 use std::process::exit;
@@ -11,7 +11,7 @@ fn temp() {
         return;
     }
     // use serde::Serialize;
-    use rust_wiki::config2::config2::Config;
+    use rust_wiki::config::config::Config;
     let def_config = Config::default();
     println!("{:?}", def_config);
     println!("{}", toml::to_string(&def_config).unwrap());

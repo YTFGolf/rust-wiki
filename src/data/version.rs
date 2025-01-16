@@ -7,7 +7,7 @@ use std::{
     sync::Mutex,
 };
 pub mod version_data;
-use crate::config2::version_config::Lang;
+use crate::config::version_config::Lang;
 use version_data::CacheableVersionData;
 
 #[derive(Debug)]
