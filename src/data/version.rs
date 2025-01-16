@@ -66,21 +66,7 @@ pub struct Version {
 }
 impl Version {
     /// Create new Version object.
-    pub fn new<P>(location: P, language: &str, number: String) -> Result<Self, InvalidLanguage>
-    where
-        PathBuf: From<P>,
-    {
-        Ok(Self {
-            location: PathBuf::from(location),
-            _language: language.try_into()?,
-            _number: number,
-
-            version_data: Mutex::from(Vec::new()),
-        })
-    }
-
-    /// Temp
-    pub fn new2<P>(location: P, language: Lang, number: Option<String>) -> Self
+    pub fn new<P>(location: P, language: Lang, number: Option<String>) -> Self
     where
         PathBuf: From<P>,
     {
@@ -90,26 +76,10 @@ impl Version {
             _number: number.unwrap_or_default(),
 
             version_data: Mutex::from(Vec::new()),
+            // TODO combine with Lang from VersionConfig, and add number to the
+            // cli
         }
     }
-    // TODO consolidate this and new
-
-    /// Automatically extract the language code from the directory name.
-    ///
-    /// Literally just checks the last word of the directory and returns that.
-    pub fn get_lang(path: &str) -> Option<&str> {
-        path.rsplit(' ').next()
-    }
-
-    /// Automatically extract version number from directory name.
-    ///
-    /// Literally just checks the first instance of a full word that only
-    /// contains numbers and full stops.
-    pub fn get_version_number(path: &str) -> Option<&str> {
-        path.split_whitespace()
-            .find(|&part| part.chars().all(|c| c.is_ascii_digit() || c == '.'))
-    }
-    // TODO remove these functions
 }
 
 impl Version {
@@ -134,8 +104,9 @@ impl Version {
     /// ```rust,no_run
     /// use rust_wiki::data::map::map_option::MapOption;
     /// # use rust_wiki::data::version::Version;
+    /// # use rust_wiki::config::version_config::Lang;
     ///
-    /// let version = Version::new("~", "en", "1.0".to_string()).unwrap();
+    /// let version = Version::new("~", Lang::EN, Some("1.0".to_string()));
     /// let map_option = version.get_cached_file::<MapOption>();
     /// let earthshaker_option = map_option.get_map(0);
     /// ```

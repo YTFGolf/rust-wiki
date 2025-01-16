@@ -1,10 +1,9 @@
 //! Deals with the config for version.
 
-use std::path::PathBuf;
-
 use crate::data::version::Version;
 use home::home_dir;
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 /// Default language.
 #[allow(missing_docs)]
@@ -60,7 +59,7 @@ impl VersionConfig {
             };
             let location = Self::expand_home(location);
             let ind = lang.clone() as usize;
-            self.versions[ind] = Some(Version::new2(location, lang, None));
+            self.versions[ind] = Some(Version::new(location, lang, None));
         }
 
         self.cur_index = self.lang.clone() as usize;
