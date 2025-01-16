@@ -1,7 +1,7 @@
 //! Module that deals with getting and updating wiki files.
 
 use crate::{
-    config::Config,
+    config2::config2::Config,
     file_handler::{get_file_location, FileLocation},
 };
 use similar::{ChangeTag, TextDiff};
@@ -74,7 +74,7 @@ pub fn update_wiki_files(config: &Config) {
     let directory = get_file_location(&FileLocation::WikiData);
     std::fs::create_dir_all(directory).unwrap();
 
-    let user_agent = format!("{}/rust-wiki-reader", config.user_name());
+    let user_agent = format!("{}/rust-wiki-reader", config.wiki.username);
     for (file_name, page_name) in FILES {
         let uri = format!("{WIKI_URL}/{page_name}?action=raw");
         let response = ureq::get(&uri)

@@ -3,7 +3,7 @@
 mod internal;
 use super::data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA};
 use super::format_parser::{parse_si_format, ParseType};
-use crate::config::Config;
+use crate::config2::config2::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
 use std::fmt::Write;
@@ -121,7 +121,7 @@ fn get_stage_variable(
             .map(|p| p.to_string())
             .collect::<Vec<String>>()
             .join("\n"),
-        "enemies_list" => internal::enemies_list(stage, config.suppress_gauntlet_magnification())
+        "enemies_list" => internal::enemies_list(stage, config.stage_info.suppress())
             .into_iter()
             .map(|p| p.to_string())
             .collect::<Vec<String>>()

@@ -111,6 +111,7 @@ mod tests {
     #[test]
     fn test_mo() {
         let s = DEFAULT_CONFIG
+            .version
             .current_version()
             .get_cached_file::<MapOption>()
             .get_map(0)
@@ -134,7 +135,7 @@ mod tests {
 
     #[test]
     fn assert_parses_and_no_duplicates_and_correct_fields() {
-        let version = &DEFAULT_CONFIG.current_version();
+        let version = &DEFAULT_CONFIG.version.current_version();
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             // technically does have headers but that's an issue for another day

@@ -120,8 +120,8 @@ pub fn get_config() -> Option<Config> {
 
 /// Static variable representing the config, for use in tests.
 #[cfg(test)]
-pub static DEFAULT_CONFIG: std::sync::LazyLock<Config> =
-    std::sync::LazyLock::new(|| get_config().unwrap());
+pub static DEFAULT_CONFIG: std::sync::LazyLock<crate::config2::config2::Config> =
+    std::sync::LazyLock::new(Default::default);
 
 // TODO test with just home directory as version, make sure doesn't panic when
 // initialising.
