@@ -7,7 +7,10 @@ use super::{
     base::BaseOptions,
     cli::{CliCommand, CommandExec, ConfigMerge},
 };
-use crate::config2::config2::Config;
+use crate::{
+    cli::cli::input, config2::config2::Config, data::stage::parsed::stage::Stage,
+    wikitext::stage_info::get_stage_info,
+};
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
@@ -33,10 +36,24 @@ impl ConfigMerge for StageInfoOptions {
         if let Some(suppress) = self.suppress {
             info.set_suppress(suppress);
         }
+
+        config.version.init_all();
+        // TODO put this in version
     }
 }
 impl CommandExec for StageInfoOptions {
     fn exec(&self, config: &Config) {
-        todo!()
+        let selector = match self.selector.len() {
+            1 => &self.selector[0],
+            0 => &input("Input file selector: "),
+            _ => &self.selector.join(" "),
+        };
+        println!(
+            "{}",
+            get_stage_info(
+                &Stage::new(selector, &config.version.current_version()).unwrap(),
+                config
+            )
+        );
     }
 }
