@@ -14,6 +14,7 @@ pub enum Command {
 
     /// Get a list of stages certain enemies appear in.
     Encounters(EncountersOptions),
+
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.
     ReadWiki(ReadWikiOptions),

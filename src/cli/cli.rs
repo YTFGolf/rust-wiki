@@ -24,7 +24,7 @@ pub trait CommandExec {
 
 /// Run the CLI command with given options and config.
 pub trait CliCommand: ConfigMerge + CommandExec {
-    ///
+    /// Run the command.
     fn run(&self, mut config: Config) {
         self.merge(&mut config);
         self.exec(&config);

@@ -79,6 +79,8 @@ impl VersionConfig {
 }
 
 impl VersionConfig {
+    /// Set the path of the current version to `path`. Must be called before
+    /// [`init_all`][VersionConfig::init_all] or it will do nothing.
     pub fn set_current_path(&mut self, path: String) {
         match self.lang {
             Lang::EN => self.enpath = path,

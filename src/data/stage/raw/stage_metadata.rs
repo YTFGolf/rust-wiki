@@ -175,10 +175,6 @@ pub mod consts {
     ///
     /// Includes common name for type, type number, type prefix and type prefix
     /// with R if applicable.
-    ///
-    /// ‎
-    // Lines above are necessary otherwise rust-analyzer displays stuff as
-    // headings
     static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 22]> = LazyLock::new(|| {[
         initialise_type_map("SoL|0|N|RN",               T::SoL),
         initialise_type_map("Event|Special|1|S|RS",     T::Event),
