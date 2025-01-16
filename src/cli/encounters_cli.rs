@@ -2,7 +2,7 @@
 
 use super::{
     base::BaseOptions,
-    cli::{CommandExec, ConfigMerge},
+    util::{CommandExec, ConfigMerge},
     version_opt::VersionOptions,
 };
 use crate::{config::Config, wikitext::data_files::enemy_data::ENEMY_DATA};
