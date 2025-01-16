@@ -138,3 +138,9 @@ mod cli_tests {
         assert!(cli.is_err());
     }
 }
+
+pub fn input(prompt: &str) -> String {
+    print!("{prompt}");
+    io::stdout().flush().unwrap();
+    io::stdin().lines().next().unwrap().unwrap()
+}
