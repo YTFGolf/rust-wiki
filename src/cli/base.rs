@@ -1,17 +1,18 @@
 use super::cli::ConfigMerge;
-use crate::config::Config;
-use clap::{builder::PossibleValuesParser, Args};
+use crate::{config::Config, logger::set_log_level};
+use clap::{
+    builder::{PossibleValuesParser, TypedValueParser},
+    Args,
+};
 use log::Level;
 
 const POSSIBLE_LOG_LEVELS: [&str; 5] = ["error", "warn", "info", "debug", "trace"];
-fn get_levels_values() -> PossibleValuesParser {
-    PossibleValuesParser::new(POSSIBLE_LOG_LEVELS)
-}
 
 #[derive(Debug, Default, Args, PartialEq)]
 /// Options that can apply to every submodule.
 pub struct BaseOptions {
-    #[arg(value_parser = get_levels_values(), short)]
+    #[arg(value_parser = PossibleValuesParser::new(POSSIBLE_LOG_LEVELS).map(|s| s.parse::<Level>().unwrap()))]
+    #[arg(ignore_case = true, short)]
     /// Log level.
     pub log: Option<Level>,
 }
@@ -19,6 +20,7 @@ impl ConfigMerge for BaseOptions {
     fn merge(&self, config: &mut Config) {
         if let Some(log) = self.log {
             config.log_level = log;
+            set_log_level(log);
         }
     }
 }
