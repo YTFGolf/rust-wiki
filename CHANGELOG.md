@@ -34,10 +34,6 @@ update since there's just too much to actually make sense of.
 - Prototype encounters
 - Support up to 14.0
 
-### Fixed
-
-- Home directory expansion errors (475b136b46bc18544a3b627494718d40b392c335).
-
 ### Changed
 
 - Move stage info default input to command line rather than stdin.
@@ -51,3 +47,11 @@ update since there's just too much to actually make sense of.
 
 - Stage info
 - Wiki reader
+
+## [0.1.0] - (2024-09-11)[11db433]
+
+Project started.
+
+[0.2.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.2...v0.2.1
+[0.2.0]: https://github.com/YTFGolf/rust-wiki/compare/11db433...v0.2
+[0.1.0]: https://github.com/YTFGolf/rust-wiki/commit/11db4333ba632f3967d85350d66ceef4bdd7090b
