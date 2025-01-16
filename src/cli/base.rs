@@ -20,7 +20,9 @@ impl ConfigMerge for BaseOptions {
     fn merge(&self, config: &mut Config) {
         if let Some(log) = self.log {
             config.log_level = log;
-            set_log_level(log);
+            unsafe { set_log_level(log) };
+            // I cannot be bothered to uphold safety guarantees so I'll just
+            // assume this only will get called once.
         }
     }
 }
