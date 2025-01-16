@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Changelog + version tags.
+
 ### Fixed
 
 ### Changed
@@ -16,6 +18,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ## [0.4.0] - 2025-01-16
+
+This update overhauled the Config and CLI. This includes significant breaking
+changes all over the place.
+
+### Added
+
+- Parser for `SpecialRulesMap.json` and adding rules to stage info.
+- Logger.
+
+### Changed
+
+- Significant amount of fixes suggested by `clippy::all`.
+- Changed the `Version` substantially: removed the version data's `RefCell` and
+  `Pin`ned the contents of its vec.
+
+### Fixed
+
+### Changed
 
 ## [0.3.0] - 2024-12-25
 
@@ -26,9 +46,9 @@ This update finished the Encounters module.
 - Reverse enemy name map.
 - Continue stages map.
 
-### Fixed
+### Changed
 
-- Change `StageData::new` return type from `Option` to `Result`.
+- `StageData::new` return type from `Option` to `Result`.
 - Minor fixes.
 
 ## [0.2.1] - 2024-12-10
@@ -64,6 +84,7 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
+[0.4.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.2...v0.2.1
 [0.2.0]: https://github.com/YTFGolf/rust-wiki/compare/11db433...v0.2
