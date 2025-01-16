@@ -6,19 +6,9 @@ use clap::{
 };
 use log::Level;
 
-/// Get possible values parser for log level.
-///
-/// Do not use this more than necessary, as it leaks memory.
+const POSSIBLE_LOG_LEVELS: [&str; 5] = ["error", "warn", "info", "debug", "trace"];
 fn get_levels_values() -> PossibleValuesParser {
-    let a: Vec<_> = log::Level::iter()
-        .map(|v| {
-            let b: &str = v.as_str().to_lowercase().leak();
-            // Could potentially enable clap's `string` feature so this doesn't
-            // need to leak.
-            PossibleValue::new(b)
-        })
-        .collect();
-    PossibleValuesParser::new(a)
+    PossibleValuesParser::new(POSSIBLE_LOG_LEVELS)
 }
 
 #[derive(Debug, Args, PartialEq)]
@@ -32,6 +22,20 @@ impl ConfigMerge for BaseOptions {
     fn merge(&self, config: &mut Config) {
         if let Some(log) = self.log {
             config.log_level = log;
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::iter::zip;
+
+    #[test]
+    fn assert_compile_time_log_levels_is_valid() {
+        for (comp, run) in zip(POSSIBLE_LOG_LEVELS, log::Level::iter()) {
+            let run = run.as_str().to_lowercase();
+            assert_eq!(comp, run);
         }
     }
 }
