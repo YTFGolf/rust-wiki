@@ -6,6 +6,7 @@
 use super::{
     base::BaseOptions,
     cli::{CommandExec, ConfigMerge},
+    version_opt::VersionOptions,
 };
 use crate::{
     cli::cli::input, config2::config2::Config, data::stage::parsed::stage::Stage,
@@ -27,18 +28,19 @@ pub struct StageInfoOptions {
     #[command(flatten)]
     /// Global options.
     pub base: BaseOptions,
+    #[command(flatten)]
+    /// Version options.
+    pub version: VersionOptions,
 }
 impl ConfigMerge for StageInfoOptions {
     fn merge(&self, config: &mut Config) {
         self.base.merge(config);
+        self.version.merge(config);
 
         let info = &mut config.stage_info;
         if let Some(suppress) = self.suppress {
             info.set_suppress(suppress);
         }
-
-        config.version.init_all();
-        // TODO put this in version
     }
 }
 impl CommandExec for StageInfoOptions {

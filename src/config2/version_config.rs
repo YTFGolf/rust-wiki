@@ -78,16 +78,22 @@ impl VersionConfig {
 }
 
 impl VersionConfig {
+    pub fn set_current_path(&mut self, path: String) {
+        match self.lang {
+            Lang::EN => self.enpath = path,
+            Lang::JP => self.jppath = path,
+        }
+    }
     /// Set the version's `lang`.
-    pub fn set_lang(&mut self, lang: Lang) {
+    fn set_lang(&mut self, lang: Lang) {
         self.lang = lang;
     }
     /// Set the version's `enpath`.
-    pub fn set_enpath(&mut self, enpath: String) {
+    fn set_enpath(&mut self, enpath: String) {
         self.enpath = enpath;
     }
     /// Set the version's `jppath`.
-    pub fn set_jppath(&mut self, jppath: String) {
+    fn set_jppath(&mut self, jppath: String) {
         self.jppath = jppath;
     }
 }

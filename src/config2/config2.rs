@@ -59,6 +59,7 @@ impl Default for Config {
     }
 }
 
+/// Name of the file that the user config is stored in.
 pub const CONFIG_FILE: &str = "user-config.toml";
 
 impl Config {
