@@ -1,6 +1,6 @@
 //! Config values to use in all cli options.
 
-use super::util::ConfigMerge;
+use super::cli_util::ConfigMerge;
 use crate::{config::Config, logger::set_log_level};
 use clap::{
     builder::{PossibleValuesParser, TypedValueParser},

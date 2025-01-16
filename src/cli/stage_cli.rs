@@ -2,11 +2,11 @@
 
 use super::{
     base::BaseOptions,
-    util::{CommandExec, ConfigMerge},
+    cli_util::{CommandExec, ConfigMerge},
     version_opt::VersionOptions,
 };
 use crate::{
-    cli::util::input, config::Config, data::stage::parsed::stage::Stage,
+    cli::cli_util::input, config::Config, data::stage::parsed::stage::Stage,
     wikitext::stage_info::get_stage_info,
 };
 use clap::Args;

@@ -1,7 +1,7 @@
 //! Contains all CLI commands.
 
 use super::{
-    util::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions,
+    cli_util::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions,
     wiki_cli::ReadWikiOptions,
 };
 use crate::config::Config;

@@ -1,6 +1,6 @@
 //! Config values related to the version of the game being used.
 
-use super::util::ConfigMerge;
+use super::cli_util::ConfigMerge;
 use crate::config::Config;
 use clap::Args;
 
