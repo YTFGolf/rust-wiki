@@ -57,13 +57,12 @@ impl CommandExec for StageInfoOptions {
 
 #[cfg(test)]
 mod tests {
-    use clap::Parser;
-
     use super::*;
     use crate::{
         cli::commands::{Cli, Command},
         config2::config2::DEFAULT_CONFIG,
     };
+    use clap::Parser;
 
     #[test]
     fn single_full_selector() {
@@ -132,9 +131,13 @@ mod tests {
     }
 
     #[test]
+    #[should_panic = "Invalid selector: \" 0 0\""]
     fn invalid_selector() {
         const ARGS: [&str; 3] = ["run_program", "stage", " 0 0"];
-        let cli = Cli::try_parse_from(ARGS.iter());
-        assert!(cli.is_err());
+        let cli = Cli::parse_from(ARGS.iter());
+        let Command::StageInfo(si) = cli.command else {
+            unreachable!()
+        };
+        si.exec(&DEFAULT_CONFIG);
     }
 }
