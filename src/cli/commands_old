@@ -3,48 +3,14 @@
 use super::user_config::UserConfigCli;
 use clap::{Args, Parser, Subcommand};
 
-#[derive(Debug, Args, PartialEq)]
-/// Encounters options.
-pub struct EncountersOptions {
-    /// Which units to get encounters for.
-    pub names: Vec<String>,
 
-    #[command(flatten)]
-    /// User config.
-    pub config: UserConfigCli,
-}
 
 #[derive(Debug, Subcommand, PartialEq)]
 /// Which program to run.
 pub enum Command {
-    #[command(visible_aliases(["stage"]))]
-    /// Get information about a stage.
-    StageInfo(StageInfoOptions),
-
-    /// Get a list of stages certain enemies appear in.
-    Encounters(EncountersOptions),
-
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.
     ReadWiki(UserConfigCli),
-
-    /// Update config.
-    Config(UserConfigCli),
-}
-
-#[derive(Parser, Debug, PartialEq)]
-#[command(version, about, long_about = None)]
-/// Top-level cli arguments.
-pub struct Cli {
-    #[command(subcommand)]
-    /// Command to use.
-    pub command: Command,
-    // #[command(flatten)]
-    // /// User config.
-    // pub config: UserConfigCli,
-    // potential feature: split this up, i.e. Config has everything, StageInfo
-    // has data mines and suppress, ReadWiki has username. Would require more
-    // complexity on the actual Config.
 }
 
 #[cfg(test)]

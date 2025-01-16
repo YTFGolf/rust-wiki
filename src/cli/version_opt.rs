@@ -1,12 +1,6 @@
 use super::cli::ConfigMerge;
 use crate::config2::config2::Config;
-use clap::{builder::PossibleValuesParser, Args};
-use log::Level;
-
-const POSSIBLE_LOG_LEVELS: [&str; 5] = ["error", "warn", "info", "debug", "trace"];
-fn get_levels_values() -> PossibleValuesParser {
-    PossibleValuesParser::new(POSSIBLE_LOG_LEVELS)
-}
+use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
 /// Options that can apply to every submodule.
