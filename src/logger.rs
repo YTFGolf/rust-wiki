@@ -78,7 +78,8 @@ static mut LOGGER: Logger = Logger {
 
 /// Set global log level.
 ///
-/// Unsafe because mutates a static variable.
+/// # Safety
+/// Unsafe because mutates a static variable. Don't overuse it.
 pub unsafe fn set_log_level(max_level: Level) {
     unsafe { LOGGER.max_level = max_level };
     log::set_max_level(max_level.to_level_filter());

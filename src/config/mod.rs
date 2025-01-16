@@ -1,6 +1,5 @@
 //! Deals with user config.
 
-// Don't want `import config::config::Config`
 mod config_obj;
 pub mod stage_config;
 pub mod version_config;
