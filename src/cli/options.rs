@@ -1,27 +1,28 @@
 use clap::{Args, Parser, Subcommand};
+use super::stage_cli::StageInfoOptions;
 
-#[derive(Args, Debug, PartialEq)]
-pub struct Test1 {
-    opt1: String,
-    opt2: String,
-}
-#[derive(Args, Debug, PartialEq)]
-pub struct Test2 {
-    opt3: String,
-    opt4: String,
-}
-#[derive(Debug, Args, PartialEq)]
-pub struct TestHolder {
-    #[command(flatten)]
-    input: Test1,
-    #[command(flatten)]
-    options: Test2,
-}
+// #[derive(Args, Debug, PartialEq)]
+// pub struct Test1 {
+//     opt1: String,
+//     opt2: String,
+// }
+// #[derive(Args, Debug, PartialEq)]
+// pub struct Test2 {
+//     opt3: String,
+//     opt4: String,
+// }
+// #[derive(Debug, Args, PartialEq)]
+// pub struct TestHolder {
+//     #[command(flatten)]
+//     input: Test1,
+//     #[command(flatten)]
+//     options: Test2,
+// }
 
 #[derive(Debug, Subcommand, PartialEq)]
 /// Which program to run.
 pub enum Command {
-    Test(TestHolder),
+    StageInfo(StageInfoOptions)
     //     // #[command(visible_aliases(["stage"]))]
     //     /// Get information about a stage.
     //     // StageInfo(StageInfoOptions),
