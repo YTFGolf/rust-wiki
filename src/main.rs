@@ -1,10 +1,11 @@
 use clap::Parser;
 use rust_wiki::{cli::commands::Cli, config2::config2::Config, logger::init_logger};
+use std::process::exit;
 
 fn temp() {
-    // if true {
-    //     return;
-    // }
+    if true {
+        return;
+    }
     // use serde::Serialize;
     use rust_wiki::config2::config2::Config;
     let def_config = Config::default();
@@ -16,9 +17,19 @@ fn temp() {
     println!("{:?}", toml::from_str::<Config>(&toml_repr).unwrap());
 }
 
+fn initialise_config() -> ! {
+    println!("Config not found, initialising...");
+    Config::initialise();
+    println!("Config initialised. Exiting program.");
+
+    exit(0);
+}
+
 fn main() {
+    temp();
     let cli = Cli::parse();
-    let config: Config = toml::from_str(&Config::read_config_file().unwrap()).unwrap();
+    let config: Config =
+        toml::from_str(&Config::read_config_file().unwrap_or_else(|| initialise_config())).unwrap();
 
     init_logger();
     cli.exec(config);
