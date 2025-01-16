@@ -1,8 +1,7 @@
 //! Establishes a logger for the module.
 
-use std::fmt::Display;
-
 use log::{Level, Metadata, Record};
+use std::{fmt::Display, ptr::addr_of};
 
 #[allow(dead_code)]
 enum Color {
@@ -30,11 +29,13 @@ impl Display for Color {
     }
 }
 
-const MAX_LEVEL: Level = Level::Info;
-struct SimpleExampleLogger;
-impl log::Log for SimpleExampleLogger {
+#[derive(Debug)]
+struct Logger {
+    max_level: Level,
+}
+impl log::Log for Logger {
     fn enabled(&self, metadata: &Metadata) -> bool {
-        metadata.level() <= MAX_LEVEL
+        metadata.level() <= self.max_level
     }
 
     fn log(&self, record: &Record) {
@@ -70,10 +71,19 @@ impl log::Log for SimpleExampleLogger {
     fn flush(&self) {}
 }
 
-static LOGGER: SimpleExampleLogger = SimpleExampleLogger;
+const DEFAULT_MAX_LOG: Level = Level::Info;
+static mut LOGGER: Logger = Logger {
+    max_level: DEFAULT_MAX_LOG,
+};
+
+/// Set global log level.
+pub fn set_log_level(max_level: Level) {
+    unsafe { LOGGER.max_level = max_level };
+    log::set_max_level(max_level.to_level_filter());
+}
 
 /// Initialise the logger. Must be called before logger is used.
 pub fn init_logger() {
-    log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(MAX_LEVEL.to_level_filter());
+    log::set_logger(unsafe { &*addr_of!(LOGGER) }).unwrap();
+    log::set_max_level(DEFAULT_MAX_LOG.to_level_filter());
 }
