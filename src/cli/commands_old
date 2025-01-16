@@ -4,17 +4,6 @@ use super::user_config::UserConfigCli;
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Args, PartialEq)]
-/// Stage info options.
-pub struct StageInfoOptions {
-    /// Stage selector.
-    pub selector: Vec<String>,
-
-    #[command(flatten)]
-    /// User config.
-    pub config: UserConfigCli,
-}
-
-#[derive(Debug, Args, PartialEq)]
 /// Encounters options.
 pub struct EncountersOptions {
     /// Which units to get encounters for.

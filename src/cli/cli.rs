@@ -12,14 +12,8 @@ pub fn input(prompt: &str) -> String {
 
 /// Overwrite values of a [`Config`] object.
 pub trait ConfigMerge {
-    /// Overwrites values of `config` with equivalent values from `&self`.
+    /// Overwrite values of `config` with equivalent values from `&self`.
     fn merge(&self, config: &mut Config);
-
-    // /// Returnable implementation of [ConfigMerge::merge].
-    // fn combine(&self, mut config: Config) -> Config {
-    //     self.merge(&mut config);
-    //     config
-    // }
 }
 
 /// Execute a CLI command.
