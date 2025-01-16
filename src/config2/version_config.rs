@@ -1,6 +1,9 @@
 //! Deals with the config for version.
 
+use std::path::PathBuf;
+
 use crate::data::version::Version;
+use home::home_dir;
 use serde::{Deserialize, Serialize};
 
 /// Default language.
@@ -37,6 +40,16 @@ pub struct VersionConfig {
 }
 
 impl VersionConfig {
+    fn expand_home(dir: &str) -> PathBuf {
+        if dir == "~" || dir.is_empty() {
+            home_dir().unwrap()
+        } else if dir.len() >= 2 && &dir[0..2] == "~/" {
+            home_dir().unwrap().join(&dir[2..])
+        } else {
+            PathBuf::from(dir)
+        }
+    }
+
     /// Initialise all versions.
     pub fn init_all(&mut self) {
         const LANGS: [Lang; TOTAL_VERSIONS] = [Lang::EN, Lang::JP];
@@ -45,6 +58,7 @@ impl VersionConfig {
                 Lang::EN => &self.enpath,
                 Lang::JP => &self.jppath,
             };
+            let location = Self::expand_home(&location);
             let ind = lang.clone() as usize;
             self.versions[ind] = Some(Version::new2(location, lang, None));
         }
