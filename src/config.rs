@@ -1,5 +1,4 @@
 //! Contains global config values.
-use crate::cli::user_config::{UserConfig, UserVersion};
 use crate::data::version::{InvalidLanguage, Version};
 use home::home_dir;
 use std::fs::File;
@@ -17,29 +16,29 @@ fn expand_home(dir: &str) -> PathBuf {
     }
 }
 
-impl From<UserVersion> for Version {
-    fn from(value: UserVersion) -> Self {
-        let path = expand_home(&value.path);
+// impl From<UserVersion> for Version {
+//     fn from(value: UserVersion) -> Self {
+//         let path = expand_home(&value.path);
 
-        let lang = match &value.lang {
-            None => {
-                Version::get_lang(&value.path).expect("No language name found in directory name!")
-            }
-            Some(lang) => lang,
-        };
+//         let lang = match &value.lang {
+//             None => {
+//                 Version::get_lang(&value.path).expect("No language name found in directory name!")
+//             }
+//             Some(lang) => lang,
+//         };
 
-        let number = match &value.number {
-            None => Version::get_version_number(&value.path)
-                .expect("No version number found in directory name!"),
-            Some(n) => n,
-        };
+//         let number = match &value.number {
+//             None => Version::get_version_number(&value.path)
+//                 .expect("No version number found in directory name!"),
+//             Some(n) => n,
+//         };
 
-        match Version::new(path, lang, number.to_string()) {
-            Ok(v) => v,
-            Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
-        }
-    }
-}
+//         match Version::new(path, lang, number.to_string()) {
+//             Ok(v) => v,
+//             Err(InvalidLanguage(code)) => panic!("Version language not recognised: {code:?}."),
+//         }
+//     }
+// }
 
 /// Configuration values for the program.
 // Don't update this without updating main
@@ -56,15 +55,15 @@ pub struct Config {
     /// enemy's actual magnification.
     suppress_gauntlet_magnification: bool,
 }
-impl From<UserConfig> for Config {
-    fn from(value: UserConfig) -> Self {
-        Self {
-            current_version: value.version.into(),
-            user_name: value.username,
-            suppress_gauntlet_magnification: value.suppress_gauntlet_magnification,
-        }
-    }
-}
+// impl From<UserConfig> for Config {
+//     fn from(value: UserConfig) -> Self {
+//         Self {
+//             current_version: value.version.into(),
+//             user_name: value.username,
+//             suppress_gauntlet_magnification: value.suppress_gauntlet_magnification,
+//         }
+//     }
+// }
 impl Config {
     /// Get current game version.
     pub fn current_version(&self) -> &Version {
@@ -103,18 +102,20 @@ fn read_config_file() -> Option<String> {
     }
 }
 
-/// Read user config file and return parsed config object, if the file exists.
-pub fn get_user_config() -> Option<UserConfig> {
-    // FIXME currently assumes that if config is None then the file doesn't
-    // exist, but could also be an error with toml parsing if toml doesn't
-    // contain every field.
-    let config: UserConfig = toml::from_str(&read_config_file()?).unwrap();
-    Some(config)
-}
+// /// Read user config file and return parsed config object, if the file exists.
+// pub fn get_user_config() -> Option<UserConfig> {
+//     // FIXME currently assumes that if config is None then the file doesn't
+//     // exist, but could also be an error with toml parsing if toml doesn't
+//     // contain every field.
+//     let config: UserConfig = toml::from_str(&read_config_file()?).unwrap();
+//     Some(config)
+// }
 
-/// Read user config file and parse it into a [Config] object.
+// /// Read user config file and parse it into a [Config] object.
+#[cfg(test)]
 pub fn get_config() -> Option<Config> {
-    Some(get_user_config()?.into())
+    todo!()
+    // Some(get_user_config()?.into())
 }
 
 /// Static variable representing the config, for use in tests.

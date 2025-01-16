@@ -1,15 +1,5 @@
 use clap::Parser;
-use rust_wiki::{
-    cli::{
-        options::Cli,
-        parse::{merge_config_and_args, stage_info, update_config},
-        user_config::{UserConfig, UserConfigCli},
-    },
-    config2::config2::Config,
-    logger::init_logger,
-    wiki_files::update_wiki_files,
-    wikitext::data_files::enemy_data::ENEMY_DATA,
-};
+use rust_wiki::{cli::options::Cli, config2::config2::Config, logger::init_logger};
 
 fn temp() {
     // if true {
