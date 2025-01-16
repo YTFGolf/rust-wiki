@@ -1,4 +1,7 @@
-use super::{cli::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions};
+use super::{
+    cli::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions,
+    wiki_cli::ReadWikiOptions,
+};
 use crate::config2::config2::Config;
 use clap::{Parser, Subcommand};
 
@@ -11,9 +14,9 @@ pub enum Command {
 
     /// Get a list of stages certain enemies appear in.
     Encounters(EncountersOptions),
-    // #[command(visible_aliases(["wiki", "get"]))]
-    // /// Get data from the wiki.
-    // ReadWiki(UserConfigCli),
+    #[command(visible_aliases(["wiki", "get"]))]
+    /// Get data from the wiki.
+    ReadWiki(ReadWikiOptions),
 }
 
 #[derive(Parser, Debug, PartialEq)]
@@ -23,11 +26,6 @@ pub struct Cli {
     #[command(subcommand)]
     /// Command to use.
     pub command: Command,
-    // #[command(flatten)]
-    // /// User config.
-    // potential feature: split this up, i.e. Config has everything, StageInfo
-    // has data mines and suppress, ReadWiki has username. Would require more
-    // complexity on the actual Config.
 }
 
 impl Cli {
@@ -36,6 +34,7 @@ impl Cli {
         match self.command {
             Command::StageInfo(options) => options.run(config),
             Command::Encounters(options) => options.run(config),
+            Command::ReadWiki(options) => options.run(config),
         }
     }
 }
