@@ -1,5 +1,5 @@
 use clap::Parser;
-use rust_wiki::{cli::options::Cli, config2::config2::Config, logger::init_logger};
+use rust_wiki::{cli::commands::Cli, config2::config2::Config, logger::init_logger};
 
 fn temp() {
     // if true {
