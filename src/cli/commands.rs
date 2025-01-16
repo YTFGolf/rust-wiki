@@ -39,3 +39,15 @@ impl Cli {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn invalid_command() {
+        const ARGS: [&str; 2] = ["run_program", "invalid-command"];
+        let cli = Cli::try_parse_from(ARGS.iter());
+        assert!(cli.is_err());
+    }
+}

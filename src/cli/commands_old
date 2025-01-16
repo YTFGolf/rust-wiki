@@ -12,30 +12,3 @@ pub enum Command {
     /// Get data from the wiki.
     ReadWiki(UserConfigCli),
 }
-
-#[cfg(test)]
-mod cli_tests {
-    use super::*;
-    use crate::{cli::parse::stage_info, config2::config2::DEFAULT_CONFIG};
-
-    fn blank_config() -> UserConfigCli {
-        UserConfigCli {
-            path: None,
-            username: None,
-            suppress: None,
-        }
-    }
-
-    #[test]
-    fn invalid_command() {
-        const ARGS: [&str; 2] = ["run_program", "invalid-command"];
-        let cli = Cli::try_parse_from(ARGS.iter());
-        assert!(cli.is_err());
-    }
-}
-
-pub fn input(prompt: &str) -> String {
-    print!("{prompt}");
-    io::stdout().flush().unwrap();
-    io::stdin().lines().next().unwrap().unwrap()
-}
