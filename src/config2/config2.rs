@@ -3,6 +3,10 @@
 use super::{stage_config::StageConfig, version_config::VersionConfig, wiki_config::WikiConfig};
 use log::Level;
 use serde::{Deserialize, Serialize};
+use std::{
+    fs::File,
+    io::{ErrorKind, Read},
+};
 
 /*
 # Outline
@@ -51,6 +55,32 @@ impl Default for Config {
             wiki: Default::default(),
             version: Default::default(),
             stage_info: Default::default(),
+        }
+    }
+}
+
+const CONFIG_FILE: &str = "user-config.toml";
+
+impl Config {
+    // /// Set config file to `new_value`.
+    // pub fn set_config_file(new_value: &str) {
+    //     let f = File::create(CONFIG_FILE);
+    //     f.unwrap().write_all(new_value.as_bytes()).unwrap();
+    //     println!("Successfully set config at {CONFIG_FILE}.");
+    // }
+
+    pub fn read_config_file() -> Option<String> {
+        let f = File::open(CONFIG_FILE);
+        match f {
+            Ok(mut f) => {
+                let mut buf = String::new();
+                f.read_to_string(&mut buf).unwrap();
+                Some(buf)
+            }
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => None,
+                _ => panic!("Error when trying to open {CONFIG_FILE}: {e}"),
+            },
         }
     }
 }
