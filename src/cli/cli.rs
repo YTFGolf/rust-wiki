@@ -1,6 +1,6 @@
 //! Represents the command line interface.
 
-use crate::config::config::Config;
+use crate::config::Config;
 use std::io::{self, Write};
 
 /// Syntax sugar for a function that works like Python's `input`.

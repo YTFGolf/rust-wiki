@@ -1,5 +1,5 @@
 use super::cli::ConfigMerge;
-use crate::config::config::Config;
+use crate::config::Config;
 use clap::Args;
 
 #[derive(Debug, Default, Args, PartialEq)]

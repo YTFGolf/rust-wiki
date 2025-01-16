@@ -3,7 +3,7 @@
 mod internal;
 use super::data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA};
 use super::format_parser::{parse_si_format, ParseType};
-use crate::config::config::Config;
+use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
 use std::fmt::Write;

@@ -2,7 +2,7 @@ use super::{
     cli::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions,
     wiki_cli::ReadWikiOptions,
 };
-use crate::config::config::Config;
+use crate::config::Config;
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Subcommand, PartialEq)]

@@ -105,7 +105,7 @@ fn get_map_option(path: &Path) -> HashMap<u32, ByteRecord> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::config::DEFAULT_CONFIG;
+    use crate::config::DEFAULT_CONFIG;
     use std::{collections::HashSet, io::Cursor};
 
     #[test]

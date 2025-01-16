@@ -1,7 +1,7 @@
 //! Module that deals with getting and updating wiki files.
 
 use crate::{
-    config::config::Config,
+    config::Config,
     file_handler::{get_file_location, FileLocation},
 };
 use similar::{ChangeTag, TextDiff};
