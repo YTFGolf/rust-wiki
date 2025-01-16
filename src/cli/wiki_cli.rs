@@ -1,3 +1,5 @@
+//! `read_wiki` command.
+
 use super::cli::{CommandExec, ConfigMerge};
 use crate::{config::Config, wiki_files::update_wiki_files};
 use clap::Args;

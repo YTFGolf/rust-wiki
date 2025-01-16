@@ -1,3 +1,5 @@
+//! Contains all CLI commands.
+
 use super::{
     cli::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions,
     wiki_cli::ReadWikiOptions,

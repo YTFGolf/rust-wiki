@@ -1,3 +1,5 @@
+//! `stage_info` command.
+
 use super::{
     base::BaseOptions,
     cli::{CommandExec, ConfigMerge},

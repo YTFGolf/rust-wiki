@@ -92,6 +92,7 @@ impl Version {
             version_data: Mutex::from(Vec::new()),
         }
     }
+    // TODO consolidate this and new
 
     /// Automatically extract the language code from the directory name.
     ///

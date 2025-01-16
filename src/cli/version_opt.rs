@@ -1,3 +1,5 @@
+//! Config values related to the version of the game being used.
+
 use super::cli::ConfigMerge;
 use crate::config::Config;
 use clap::Args;
@@ -6,6 +8,7 @@ use clap::Args;
 /// Options that can apply to every submodule.
 pub struct VersionOptions {
     #[arg(short, long)]
+    /// Root directory of decrypted files.
     path: Option<String>,
     // probably do lang as well
 }

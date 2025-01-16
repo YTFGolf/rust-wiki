@@ -1,3 +1,5 @@
+//! `encounters` command.
+
 use super::{
     base::BaseOptions,
     cli::{CommandExec, ConfigMerge},
