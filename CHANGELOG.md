@@ -19,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - 2024-12-25
 
+This update finished the Encounters module.
+
+### Added
+
+- Reverse enemy name map.
+- Continue stages map.
+
+### Fixed
+
+- Change `StageData::new` return type from `Option` to `Result`.
+- Minor fixes.
+
 ## [0.2.1] - 2024-12-10
 
 This update was way too big for a minor version. A significant amount of the
@@ -52,6 +64,7 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
+[0.3.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.2...v0.2.1
 [0.2.0]: https://github.com/YTFGolf/rust-wiki/compare/11db433...v0.2
 [0.1.0]: https://github.com/YTFGolf/rust-wiki/commit/11db4333ba632f3967d85350d66ceef4bdd7090b
