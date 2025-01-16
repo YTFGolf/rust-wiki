@@ -8,7 +8,7 @@ fn get_levels_values() -> PossibleValuesParser {
     PossibleValuesParser::new(POSSIBLE_LOG_LEVELS)
 }
 
-#[derive(Debug, Args, PartialEq)]
+#[derive(Debug, Default, Args, PartialEq)]
 /// Options that can apply to every submodule.
 pub struct BaseOptions {
     #[arg(value_parser = get_levels_values(), short)]
