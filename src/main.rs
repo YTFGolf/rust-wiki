@@ -17,13 +17,11 @@ fn temp() {
 }
 
 fn main() {
-    temp();
     let cli = Cli::parse();
-    // let config = get_user_config();
-    // println!("{cli:?}, {config:?}");
+    let config: Config = toml::from_str(&Config::read_config_file().unwrap()).unwrap();
 
     init_logger();
-    cli.exec(Config::default());
+    cli.exec(config);
 
     // match cli.command {
     //     Command::ReadWiki(c) => update_wiki_files(&get_config(config, c)),

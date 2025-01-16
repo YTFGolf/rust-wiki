@@ -1,6 +1,14 @@
 //! Represents the command line interface.
 
 use crate::config2::config2::Config;
+use std::io::{self, Write};
+
+/// Syntax sugar for a function that works like Python's `input`.
+pub fn input(prompt: &str) -> String {
+    print!("{prompt}");
+    io::stdout().flush().unwrap();
+    io::stdin().lines().next().unwrap().unwrap()
+}
 
 /// Overwrite values of a [`Config`] object.
 pub trait ConfigMerge {
