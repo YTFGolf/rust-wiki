@@ -91,3 +91,14 @@ impl Config {
         }
     }
 }
+
+#[cfg(test)]
+fn get_config() -> Config {
+    let mut config: Config = toml::from_str(&Config::read_config_file().unwrap()).unwrap();
+    config.version.init_all();
+    config
+}
+
+/// Static variable representing the config, for use in tests.
+#[cfg(test)]
+pub static DEFAULT_CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config());
