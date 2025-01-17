@@ -53,7 +53,7 @@ This update finished the Encounters module.
 
 ## [0.2.1] - 2024-12-10
 
-This update was way too big for a minor version. A significant amount of the
+This update was way too big for a patch version. A significant amount of the
 entire repository was completely changed or overhauled. The final update was
 adding a prototype encounters. This summary is just a basic skim over the actual
 update since there's just too much to actually make sense of.
