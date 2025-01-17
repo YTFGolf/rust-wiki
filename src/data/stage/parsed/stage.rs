@@ -332,7 +332,7 @@ impl Stage {
     #[cfg(test)]
     pub fn new_current(selector: &str) -> Option<Self> {
         use crate::config::TEST_CONFIG;
-        Self::new(selector, &TEST_CONFIG.version.current_version())
+        Self::new(selector, TEST_CONFIG.version.current_version())
     }
 }
 
@@ -346,7 +346,7 @@ mod tests {
     #[test]
     #[ignore]
     fn get_all() {
-        for stage in get_stages(&TEST_CONFIG.version.current_version()) {
+        for stage in get_stages(TEST_CONFIG.version.current_version()) {
             let _stage: Stage = stage.into();
         }
     }
