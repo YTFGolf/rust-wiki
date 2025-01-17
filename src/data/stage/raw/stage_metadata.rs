@@ -307,7 +307,7 @@ impl StageMeta {
                     .iter()
                     .map(|num| num.parse::<u32>().unwrap())
                     .collect::<Vec<_>>();
-                Self::from_selector_main(&selector[0], &nums)
+                Self::from_selector_main(selector[0], &nums)
             }
             _ => {
                 // let chapter: u32 = stage_type.parse().unwrap();
@@ -343,7 +343,7 @@ impl StageMeta {
     }
 
     /// Parse file name if is main chapters but not eoc
-    pub fn from_file_other_main(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
+    fn from_file_other_main(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
         let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
         let mut chap_num = caps[2].parse::<u32>().unwrap();
         if &caps[1] == "Z" && chap_num <= 3 {
@@ -396,6 +396,7 @@ impl StageMeta {
         stage_num: u32,
     ) -> Result<StageMeta, StageMetaParseError> {
         Self::from_split(&stage_type.to_string(), map_num, stage_num)
+        // could potentially figure out stage type and use split_parsed
     }
 
     /// Get [StageMeta] from a selector split into variables.
@@ -459,16 +460,13 @@ impl StageMeta {
     }
 
     /// Formats:
-    /// - EoC: `["eoc", "0"]` = Korea
-    /// - ItF/W: `["itf", "1", "0"]` = Japan Ch. 1
-    /// - CotC/Space: `["cotc", "1", "0"]` = Earth Ch. 1
-    /// - Aku/DM: `["aku", "0"]` = Korea
-    /// - Filibuster: `["filibuster"]`
-    /// - Z: `["z", "1", "0"]` = Korea
-    pub fn from_selector_main(
-        selector: &str,
-        nums: &[u32],
-    ) -> Result<StageMeta, StageMetaParseError> {
+    /// - EoC: `("eoc", [0])` = Korea
+    /// - ItF/W: `("itf", [1, 0])` = Japan Ch. 1
+    /// - CotC/Space: `("cotc", [1, 0])` = Earth Ch. 1
+    /// - Aku/DM: `("aku", [0])` = Korea
+    /// - Filibuster: `("filibuster", [])`
+    /// - Z: `("z", [1, 0])` = Korea
+    fn from_selector_main(selector: &str, nums: &[u32]) -> Result<StageMeta, StageMetaParseError> {
         let Some(code) = get_selector_type(selector) else {
             return Err(StageMetaParseError::Invalid);
         };
