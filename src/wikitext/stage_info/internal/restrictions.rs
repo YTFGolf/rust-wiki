@@ -249,17 +249,14 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     const PARAM_NAME: &str = "restriction";
 
     let restrictions = get_restriction_list(stage);
-    let r = match restrictions {
-        Some(r) => r,
-        None => {
-            if stage.is_no_continues {
-                return Some(TemplateParameter::new(
-                    PARAM_NAME,
-                    "[[No Continues]]".to_string(),
-                ));
-            } else {
-                return None;
-            }
+    let Some(r) = restrictions else {
+        if stage.is_no_continues {
+            return Some(TemplateParameter::new(
+                PARAM_NAME,
+                "[[No Continues]]".to_string(),
+            ));
+        } else {
+            return None;
         }
     };
 

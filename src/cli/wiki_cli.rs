@@ -14,7 +14,7 @@ pub struct ReadWikiOptions {
 impl ConfigMerge for ReadWikiOptions {
     fn merge(&self, config: &mut Config) {
         if let Some(username) = &self.username {
-            config.wiki.username = username.clone();
+            config.wiki.username.clone_from(username);
         }
     }
 }

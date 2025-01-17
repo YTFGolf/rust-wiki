@@ -24,6 +24,8 @@ use std::{
   trait each subcommand option type could implement)
 */
 
+#[allow(clippy::trivially_copy_pass_by_ref)]
+// needs to take and &Level due to how serialize works
 /// Necessary to make [`Level`] serialise as lower case.
 fn serialize_log_level<S>(level: &Level, serializer: S) -> Result<S::Ok, S::Error>
 where
@@ -101,4 +103,4 @@ fn get_config() -> Config {
 
 /// Static variable representing the config, for use in tests.
 #[cfg(test)]
-pub static TEST_CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(|| get_config());
+pub static TEST_CONFIG: std::sync::LazyLock<Config> = std::sync::LazyLock::new(get_config);

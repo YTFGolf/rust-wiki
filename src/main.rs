@@ -13,7 +13,7 @@ fn temp() {
     // use serde::Serialize;
     use rust_wiki::config::Config;
     let def_config = Config::default();
-    println!("{:?}", def_config);
+    println!("{def_config:?}");
     println!("{}", toml::to_string(&def_config).unwrap());
     println!("{}", serde_json::to_string(&def_config).unwrap());
 
