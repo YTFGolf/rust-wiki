@@ -35,10 +35,6 @@ changes all over the place.
 - Changed the `Version` substantially: removed the version data's `RefCell` and
   `Pin`ned the contents of its vec.
 
-### Fixed
-
-### Changed
-
 ## [0.3.0] - 2024-12-25
 
 This update finished the Encounters module.
