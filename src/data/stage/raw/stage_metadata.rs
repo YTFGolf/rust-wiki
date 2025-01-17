@@ -303,7 +303,11 @@ impl StageMeta {
         use StageTypeEnum as T;
         match stage_type.type_enum {
             T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms => {
-                Self::from_selector_main(&selector)
+                let nums = selector[1..]
+                    .iter()
+                    .map(|num| num.parse::<u32>().unwrap())
+                    .collect::<Vec<_>>();
+                Self::from_selector_main(&selector[0], &nums)
             }
             _ => {
                 // let chapter: u32 = stage_type.parse().unwrap();
@@ -322,9 +326,13 @@ impl StageMeta {
     /// ```
     pub fn from_file(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
-            Self::from_selector_main(&["Filibuster"])
+            Self::from_selector_main("Filibuster", &[])
         } else if FILE_PATTERNS.eoc.is_match(file_name) {
-            Self::from_selector_main(&["eoc", &FILE_PATTERNS.eoc.replace(file_name, "$1")])
+            let chap_num = &FILE_PATTERNS.eoc.replace(file_name, "$1");
+            Self::from_selector_main(
+                "eoc",
+                &[chap_num.parse().unwrap()],
+            )
         } else if FILE_PATTERNS.other_main.is_match(file_name) {
             Self::from_file_other_main(file_name)
         } else if file_name.contains('_') {
@@ -355,7 +363,7 @@ impl StageMeta {
             _ => unreachable!(),
         };
 
-        Self::from_selector_main(&[&caps[1], &selector.0.to_string(), &selector.1.to_string()])
+        Self::from_selector_main(&caps[1], &[selector.0, selector.1])
     }
 
     /// Parse battle-cats.db reference into [StageMeta] object.
@@ -460,11 +468,11 @@ impl StageMeta {
     /// - Aku/DM: `["aku", "0"]` = Korea
     /// - Filibuster: `["filibuster"]`
     /// - Z: `["z", "1", "0"]` = Korea
-    // TODO change selector to be something else probably so you don't need to
-    // convert to string only to have numbers be parsed again. Or make new
-    // internal function for that (does this one even need to be public?).
-    pub fn from_selector_main(selector: &[&str]) -> Result<StageMeta, StageMetaParseError> {
-        let Some(code) = get_selector_type(selector[0]) else {
+    pub fn from_selector_main(
+        selector: &str,
+        nums: &[u32],
+    ) -> Result<StageMeta, StageMetaParseError> {
+        let Some(code) = get_selector_type(selector) else {
             return Err(StageMetaParseError::Invalid);
         };
 
@@ -474,9 +482,9 @@ impl StageMeta {
         let type_enum = code.type_enum;
 
         let (map_num, stage_num, map_file_name, stage_file_name) =
-            match selector[0].to_lowercase().as_str() {
+            match selector.to_lowercase().as_str() {
                 "eoc" => {
-                    let stage_num: u32 = selector[1].parse::<u32>().unwrap();
+                    let stage_num: u32 = nums[0];
                     (
                         0_u32,
                         stage_num,
@@ -485,9 +493,9 @@ impl StageMeta {
                     )
                 }
                 "itf" | "w" => {
-                    let map_num: u32 = selector[1].parse::<u32>().unwrap() + 2;
+                    let map_num: u32 = nums[0] + 2;
                     assert!((3..=5).contains(&map_num));
-                    let stage_num: u32 = selector[2].parse::<u32>().unwrap();
+                    let stage_num: u32 = nums[1];
 
                     let map_file = format!("stageNormal1_{}.csv", map_num - 3);
                     let stage_file = format!("stageW{:02}_{stage_num:02}.csv", map_num + 1);
@@ -495,9 +503,9 @@ impl StageMeta {
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "cotc" | "space" => {
-                    let map_num: u32 = selector[1].parse::<u32>().unwrap() + 5;
+                    let map_num: u32 = nums[0] + 5;
                     assert!((6..=8).contains(&map_num));
-                    let stage_num: u32 = selector[2].parse::<u32>().unwrap();
+                    let stage_num: u32 = nums[1];
 
                     let map_file = format!("stageNormal2_{}.csv", map_num - 6);
                     let stage_file = format!("stageSpace{:02}_{stage_num:02}.csv", map_num + 1);
@@ -505,7 +513,7 @@ impl StageMeta {
                     (map_num, stage_num, map_file, stage_file)
                 }
                 "aku" | "dm" => {
-                    let stage_num: u32 = selector[1].parse::<u32>().unwrap();
+                    let stage_num: u32 = nums[0];
                     (
                         0_u32,
                         stage_num,
@@ -520,12 +528,12 @@ impl StageMeta {
                     "stageSpace09_Invasion_00.csv".to_string(),
                 ),
                 "z" => {
-                    let mut chap_num: u32 = selector[1].parse().unwrap();
+                    let mut chap_num: u32 = nums[0];
                     assert!((1..=9).contains(&chap_num));
 
                     type_num = 20 + ((chap_num - 1) / 3);
                     let map_num = (chap_num - 1) % 3;
-                    let mut stage_num = selector[2].parse::<u32>().unwrap();
+                    let mut stage_num = nums[1];
 
                     let map_file = format!(
                         "stageNormal{}_{}_Z.csv",
