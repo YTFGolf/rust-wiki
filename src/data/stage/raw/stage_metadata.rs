@@ -1246,7 +1246,7 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<u32>() % 100;
             // EoC only supports 2 digits
-            let st = StageMeta::from_selector_main(&[selector, &stage.to_string()]).unwrap();
+            let st = StageMeta::from_selector_main(selector, &[stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1273,9 +1273,7 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
             // itf is 1-based so need +1
-            let st =
-                StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
-                    .unwrap();
+            let st = StageMeta::from_selector_main(selector, &[map, stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1307,9 +1305,7 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
             // cotc is 1-based so need +1
-            let st =
-                StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
-                    .unwrap();
+            let st = StageMeta::from_selector_main(selector, &[map, stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1340,7 +1336,7 @@ mod tests {
         let selector = "aku";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<u32>() % 1000;
-            let st = StageMeta::from_selector_main(&[selector, &stage.to_string()]).unwrap();
+            let st = StageMeta::from_selector_main(selector, &[stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
@@ -1368,9 +1364,7 @@ mod tests {
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 8 + 1, random::<u32>() % 1000);
             // Currently 8 chapters exist
-            let st =
-                StageMeta::from_selector_main(&[selector, &map.to_string(), &stage.to_string()])
-                    .unwrap();
+            let st = StageMeta::from_selector_main(selector, &[map, stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
