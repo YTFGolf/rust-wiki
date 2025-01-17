@@ -134,13 +134,12 @@ pub struct SpecialRule {
 impl From<RawRuleData> for SpecialRule {
     fn from(value: RawRuleData) -> Self {
         let contents_type = value.contents_type.into();
-        let rule_type = value
+        let mut rule_type = value
             .rule_type
             .into_iter()
             .map(RuleType::from)
             .collect::<Vec<_>>();
 
-        let mut rule_type = rule_type;
         rule_type.sort();
         Self {
             contents_type,

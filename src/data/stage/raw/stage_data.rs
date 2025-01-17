@@ -268,8 +268,7 @@ impl<'a> StageData<'_> {
 }
 
 /// If `record[index]` is a comment, then truncate record.
-fn remove_comment_ind(record: ByteRecord, index: usize) -> ByteRecord {
-    let mut record = record;
+fn remove_comment_ind(mut record: ByteRecord, index: usize) -> ByteRecord {
     if record[index].contains(&b'/') {
         record.truncate(index);
         record.push_field(b"");
