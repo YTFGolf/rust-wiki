@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Modified `StageMeta::from_selector_main` to take 2 args instead of 1.
+
 ### Removed
 
 ## [0.4.0] - 2025-01-16
