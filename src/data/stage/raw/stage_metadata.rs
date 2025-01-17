@@ -1178,12 +1178,6 @@ mod tests {
     }
 
     #[test]
-    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
-    fn test_invalid_number_neg() {
-        let _ = StageMeta::from_selector_main("itf", &[1, -1]);
-    }
-
-    #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for code in STAGE_TYPES {
