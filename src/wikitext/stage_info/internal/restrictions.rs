@@ -250,14 +250,9 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 
     let restrictions = get_restriction_list(stage);
     let Some(r) = restrictions else {
-        if stage.is_no_continues {
-            return Some(TemplateParameter::new(
-                PARAM_NAME,
-                "[[No Continues]]".to_string(),
-            ));
-        } else {
-            return None;
-        }
+        return stage
+            .is_no_continues
+            .then(|| TemplateParameter::new(PARAM_NAME, "[[No Continues]]".to_string()));
     };
 
     let mut buf = r.join("<br>\n");
@@ -286,7 +281,7 @@ pub fn restrictions_section(stage: &Stage) -> String {
         buf.write_str(&restriction).unwrap();
         buf.write_str("\n").unwrap();
     }
-    buf.truncate(buf.len() - 1);
+    buf.truncate(buf.len() - "\n".len());
     buf
 }
 
