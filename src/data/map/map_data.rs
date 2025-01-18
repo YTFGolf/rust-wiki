@@ -48,6 +48,9 @@ pub mod csv_types {
     /// using serde.
     pub struct StageInfoCSVFixed {
         /// Energy to challenge stage.
+        ///
+        /// If it is a Catamin stage then 0-999 is A, 1000-1999 is B, 2000-2999
+        /// is C.
         pub energy: u32,
         /// Base XP rewarded.
         pub xp: u32,

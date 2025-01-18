@@ -188,7 +188,7 @@ pub struct Stage {
     /// Rewards available.
     pub rewards: Option<StageRewards>,
 
-    /// Max map clears before stage disappears.
+    /// Max stage clears before map disappears.
     pub max_clears: Option<NonZeroU32>,
     /// Gauntlet cooldown.
     pub cooldown: Option<NonZeroU32>,
