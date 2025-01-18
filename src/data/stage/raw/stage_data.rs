@@ -219,46 +219,29 @@ impl<'a> StageData<'_> {
         }
     }
 
-    /// Get `map_id` to use in map_option and stage_option.
-    fn get_map_id(&self) -> u32 {
-        let m = &self.meta;
-        m.type_num * 1000 + m.map_num
-    }
-
     /// Get MapStageData data if it exists.
     pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
-        if self.meta.type_enum == StageTypeEnum::Labyrinth {
-            return None;
-        }
-        GameMap::get_stage_data(&self.meta, self.version)
+        GameMap::get_map_stage_data(&self.meta, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
-        let map_id = self.get_map_id();
-        let map_option = self.version.get_cached_file::<MapOption>();
-        map_option.get_map(map_id)
+        GameMap::get_map_option_data(&self.meta, self.version)
     }
 
     /// Get Stage_option data if it exists.
     pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
-        let map_id = self.get_map_id();
-        let stage_option = self.version.get_cached_file::<StageOption>();
-        stage_option.get_stage(map_id, self.meta.stage_num)
+        GameMap::get_stage_option_data(&self.meta, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_ex_option_data(&self) -> Option<u32> {
-        let map_id = self.get_map_id();
-        let ex_option = self.version.get_cached_file::<ExOption>();
-        ex_option.get_ex_map(map_id)
+        GameMap::get_ex_option_data(&self.meta, self.version)
     }
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
-        let map_id = self.get_map_id();
-        let special_rules = self.version.get_cached_file::<SpecialRules>();
-        special_rules.get_map(map_id)
+        GameMap::get_special_rules_data(&self.meta, self.version)
     }
 
     /// Get the data object's version.
