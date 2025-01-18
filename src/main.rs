@@ -2,7 +2,7 @@ use clap::Parser;
 use rust_wiki::{
     cli::commands::Cli,
     config::{Config, CONFIG_FILE},
-    logger::init_logger,
+    logger::{init_logger, set_log_level},
 };
 use std::process::exit;
 
@@ -36,5 +36,6 @@ fn main() {
         toml::from_str(&Config::read_config_file().unwrap_or_else(|| initialise_config())).unwrap();
 
     init_logger();
+    unsafe { set_log_level(config.log_level) };
     cli.exec(config);
 }
