@@ -234,7 +234,7 @@ mod tests {
 
     #[test]
     fn write_name_and_amount_normal() {
-        const CAT_FOOD: u32 = 22;
+        const CAT_FOOD: u32 = 13;
         let mut buf = String::new();
         write_name_and_amount(&mut buf, CAT_FOOD, 22_222);
         assert_eq!(buf, "[[Cat Food]] +22,222");
