@@ -56,14 +56,13 @@ impl log::Log for Logger {
                 blank = Color::Blank,
                 args = record.args()
             ),
-            // Level::Info => eprintln!(
-            //     "{blue}Info{blank}: {args}",
-            //     blue = Color::Blue,
-            //     blank = Color::Blank,
-            //     args = record.args()
-            // ),
             Level::Info => eprintln!("{}", record.args()),
-            Level::Debug => todo!(),
+            Level::Debug => eprintln!(
+                "{blue}Debug{blank}: {args}",
+                blue = Color::Blue,
+                blank = Color::Blank,
+                args = record.args()
+            ),
             Level::Trace => todo!(),
         }
     }
