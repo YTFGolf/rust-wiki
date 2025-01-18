@@ -2,7 +2,10 @@
 
 use crate::{
     data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::StageTypeEnum},
-    wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
+    wikitext::{
+        data_files::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
+        template_parameter::TemplateParameter,
+    },
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -50,20 +53,31 @@ pub fn stage_location(stage: &Stage) -> TemplateParameter {
     TemplateParameter::new("stage location", buf)
 }
 
+fn energy_catamin(cost: u32) -> TemplateParameter {
+    const CATAMIN_A_ID: u32 = 55;
+
+    // e.g. 2002 for Catamin C x2
+    let catamin_type = cost / 1000;
+    let amount = cost % 1000;
+    let name = TREASURE_DATA.get_treasure_name(CATAMIN_A_ID + catamin_type);
+
+    TemplateParameter::new("catamins", format!("{name} x{amount}"))
+}
+
 /// Get the `|energy` parameter.
 pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     let energy = stage.energy?;
-    let mut buf = String::new();
-    match stage.meta.type_enum {
-        StageTypeEnum::Catamin | StageTypeEnum::Extra => {
-            buf.write_str("N/A").unwrap();
-        }
+    let amount = match stage.meta.type_enum {
+        StageTypeEnum::Catamin => return Some(energy_catamin(energy)),
+        StageTypeEnum::Extra => "N/A".to_string(),
         _ => {
+            let mut buf = String::new();
             buf.write_formatted(&energy, &Locale::en).unwrap();
+            buf
         }
     };
 
-    Some(TemplateParameter::new("energy", buf))
+    Some(TemplateParameter::new("energy", amount))
 }
 
 /// Get the `|enemy castle hp` parameters.
@@ -274,7 +288,10 @@ mod tests {
         let facing_danger = Stage::new_current("b 5 0").unwrap();
         assert_eq!(
             energy(&facing_danger),
-            Some(TemplateParameter::new("energy", "N/A".to_string()))
+            Some(TemplateParameter::new(
+                "catamins",
+                "[[Catamin]] [C] x2".to_string()
+            ))
         );
     }
 
