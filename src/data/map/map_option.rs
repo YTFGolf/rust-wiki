@@ -28,10 +28,13 @@ pub struct MapOptionCSV {
 
     /// Type of stage? (E.g. Catfruit, XP).
     _ゲリラset: u32,
-    /// Reset type e.g. Facing Danger disappears after clearing once. Values are
-    /// unclear.
-    _reset_type: u32,
-    /// Maximum map clears before resets or something (unclear).
+    /// Reset type. See [`ResetType`][ResetType].
+    ///
+    /// [ResetType]: crate::data::stage::parsed::stage::ResetType
+    pub reset_type: u8,
+    /// Amount of stages that can be cleared before the map disappears. If
+    /// `cooldown` is set, the event goes into cooldown rather than
+    /// disappearing.
     pub max_clears: u32,
     /// Probably something to do with where it appears on the legend stages
     /// screen.
@@ -42,9 +45,8 @@ pub struct MapOptionCSV {
     _挑戦フラグ: u32,
     /// Binary representation of map's star difficulty.
     pub star_mask: u16,
-    /// "Hide after clearing".
-    // TODO figure out difference between this and max_clears
-    _クリア後非表示: u32,
+    /// Hide the map when it is cleared.
+    pub hidden_upon_clear: u8,
     /// Something to do with double xp ads?
     _xp2倍広告: u32,
     /// Don't trust this.
