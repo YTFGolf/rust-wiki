@@ -3,6 +3,7 @@
 use super::stage_enemy::StageEnemy;
 use crate::data::{
     map::{
+        map_option::MapOptionCSV,
         raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
         special_rules::SpecialRule,
     },
@@ -60,6 +61,29 @@ pub struct CrownData {
     pub crown_3: Option<NonZeroU32>,
     /// 4-crown magnification.
     pub crown_4: Option<NonZeroU32>,
+}
+impl From<&MapOptionCSV> for CrownData {
+    fn from(data: &MapOptionCSV) -> Self {
+        let difficulty = u8::from(data.max_difficulty);
+        CrownData {
+            max_difficulty: data.max_difficulty,
+            crown_2: if difficulty >= 2 {
+                NonZeroU32::new(data.crown_2)
+            } else {
+                None
+            },
+            crown_3: if difficulty >= 3 {
+                NonZeroU32::new(data.crown_3)
+            } else {
+                None
+            },
+            crown_4: if difficulty >= 4 {
+                NonZeroU32::new(data.crown_4)
+            } else {
+                None
+            },
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -276,26 +300,7 @@ impl From<StageData<'_>> for Stage {
             max_clears = NonZeroU32::new(data.max_clears);
             cooldown = NonZeroU32::new(data.cooldown);
             star_mask = Some(data.star_mask);
-
-            let difficulty = u8::from(data.max_difficulty);
-            crown_data = Some(CrownData {
-                max_difficulty: data.max_difficulty,
-                crown_2: if difficulty >= 2 {
-                    NonZeroU32::new(data.crown_2)
-                } else {
-                    None
-                },
-                crown_3: if difficulty >= 3 {
-                    NonZeroU32::new(data.crown_3)
-                } else {
-                    None
-                },
-                crown_4: if difficulty >= 4 {
-                    NonZeroU32::new(data.crown_4)
-                } else {
-                    None
-                },
-            });
+            crown_data = Some(CrownData::from(&data));
         } else {
             max_clears = None;
             cooldown = None;
