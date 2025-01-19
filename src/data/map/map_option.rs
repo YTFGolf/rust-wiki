@@ -38,7 +38,7 @@ pub struct MapOptionCSV {
     pub max_clears: u32,
     /// Probably something to do with where it appears on the legend stages
     /// screen.
-    _display_order: u32,
+    pub _display_order: u32,
     /// Gauntlet cooldown.
     pub cooldown: u32,
     /// "Challenge flag".

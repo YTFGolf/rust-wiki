@@ -179,3 +179,6 @@ impl CacheableVersionData for SpecialRules {
         data.into()
     }
 }
+
+// Don't need to test for no duplicates since the file is JSON, which means all
+// map ids will be unique.

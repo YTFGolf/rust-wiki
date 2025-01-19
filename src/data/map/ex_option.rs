@@ -6,7 +6,9 @@ use std::path::Path;
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the EX option CSV.
 pub struct ExOptionCSV {
+    /// Map that EX option applies to.
     map_id: u32,
+    /// EX map that all stages in map are invaded by.
     ex_map_id: u32,
 }
 
@@ -45,4 +47,20 @@ fn get_ex_option(path: &Path) -> Option<Vec<ExOptionCSV>> {
     }
 
     Some(options)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::TEST_CONFIG;
+    use std::collections::HashSet;
+
+    #[test]
+    fn assert_no_dupes() {
+        let mut seen = HashSet::new();
+        let data: &ExOption = TEST_CONFIG.version.current_version().get_cached_file();
+        for option in data.map.iter() {
+            assert!(seen.insert(option.map_id))
+        }
+    }
 }
