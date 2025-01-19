@@ -4,7 +4,7 @@ use crate::{
     data::{
         map::special_rules::{ContentsType, RuleType},
         stage::{
-            parsed::stage::{Restriction, RestrictionCrowns as Crowns, Stage},
+            parsed::stage::{Restriction, RestrictionCrowns as Crowns, RestrictionStages, Stage},
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
         },
     },
@@ -26,6 +26,7 @@ const fn non_zero_u8(value: u8) -> NonZero<u8> {
 }
 /// Specials and rares only and only applies to 4-crown.
 const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
+    stage: RestrictionStages::All,
     crowns_applied: Crowns::One(non_zero_u8(4)),
     rarity: NonZeroU8::new(0b00_0110),
     deploy_limit: None,

@@ -141,7 +141,7 @@ impl GameMap {
         m.type_num * 1000 + m.map_num
     }
 
-    /// Get MapStageData data if it exists.
+    /// Get MapStageData data for the stage if it exists.
     pub fn get_map_stage_data(meta: &StageMeta, version: &Version) -> Option<StageDataCSV> {
         if meta.type_enum == StageTypeEnum::Labyrinth {
             return None;
@@ -156,7 +156,7 @@ impl GameMap {
         map_option.get_map(map_id)
     }
 
-    /// Get Stage_option data if it exists.
+    /// Get Stage_option data for the stage (and whole map) if it exists.
     pub fn get_stage_option_data<'a>(
         meta: &StageMeta,
         version: &'a Version,

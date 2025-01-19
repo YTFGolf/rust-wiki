@@ -81,8 +81,27 @@ impl From<i8> for RestrictionCrowns {
 }
 
 #[derive(Debug, PartialEq)]
+/// Stages that restriction applies to.
+pub enum RestrictionStages {
+    /// Applies to all stages.
+    All,
+    /// Applies to only stage with this id.
+    One(u32),
+}
+impl From<i32> for RestrictionStages {
+    fn from(value: i32) -> Self {
+        match value {
+            -1 => Self::All,
+            x if x >= 0 => Self::One(value as u32),
+            _ => panic!("Negative restriction stages number that isn't -1."),
+        }
+    }
+}
+
+#[derive(Debug, PartialEq)]
 /// Stage's restriction. Multiple fields can be active at once.
 pub struct Restriction {
+    pub stage: RestrictionStages,
     /// Crown difficulties that the restrictions apply to.
     pub crowns_applied: RestrictionCrowns,
     /// Rarities allowed.
@@ -114,6 +133,7 @@ impl Restriction {
         // now this is enough.
 
         Self {
+            stage: value.stage_id.into(),
             crowns_applied: value.stars.into(),
             rarity: std::num::NonZeroU8::new(value.rarity),
             deploy_limit: NonZeroU32::new(value.deploy_limit),
