@@ -1,6 +1,8 @@
 //! Represents a map.
 
-use crate::data::{stage::raw::{stage_data::StageData, stage_metadata::StageMeta}, version::Version};
+use crate::data::{
+    map::map_data::GameMap, stage::raw::stage_metadata::StageMeta, version::Version,
+};
 
 /// What happens when event ends. Event can be ended by reaching max clears or
 /// by the timer running out.
@@ -34,12 +36,50 @@ impl From<u8> for ResetType {
     }
 }
 
-pub fn do_thing(version:&Version) {
-    let selector = "s 0";
-    let selector_0 = selector.to_owned() + " 0";
-    println!("{:?}", StageData::new(&selector_0, version))
-    // log::debug!("{map_stage_data:#?}");
-    // log::debug!("{map_option_data:#?}");
-    // log::debug!("{ex_invasion:#?}");
-    // log::debug!("{data:#?}");
+#[derive(Debug)]
+struct MapData {
+    // Map option
+    // Stage option
+    // EX option
+    ex_option_map: Option<u32>,
+    // Special rules
+}
+impl MapData {
+    fn new(mapid: u32, version: &Version) -> Self {
+        let type_id = mapid / 1000;
+        let map_id = mapid % 1000;
+        let m = StageMeta::from_numbers(type_id, map_id, 0).unwrap();
+        Self::from_meta(&m, version)
+    }
+
+    fn from_meta(m: &StageMeta, version: &Version) -> Self {
+        let ex_option_map = GameMap::get_ex_option_data(&m, version);
+        Self { ex_option_map }
+    }
+}
+
+pub fn do_thing(version: &Version) {
+    let mapids = vec![0, 1000, 1209, 1385];
+    for mapid in mapids {
+        let type_id = mapid / 1000;
+        let map_id = mapid % 1000;
+        let m = StageMeta::from_numbers(type_id, map_id, 0).unwrap();
+
+        log::debug!(
+            "GameMap::get_map_option_data: {data:#?}",
+            data = GameMap::get_map_option_data(&m, version)
+        );
+        log::debug!(
+            "GameMap::get_stage_option_data: {data:#?}",
+            data = GameMap::get_stage_option_data(&m, version)
+        );
+        log::debug!(
+            "GameMap::get_special_rules_data: {data:#?}",
+            data = GameMap::get_special_rules_data(&m, version)
+        );
+
+        log::debug!("{:#?}", MapData::from_meta(&m, version));
+    }
+
+    panic!("aaaah")
 }
