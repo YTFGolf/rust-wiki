@@ -18,27 +18,6 @@ use crate::data::{
 };
 use std::num::NonZeroU32;
 
-/// What happens when event ends. Event can be ended by reaching max clears or
-/// by the timer running out.
-pub enum ResetType {
-    /// Do nothing on reset.
-    None = 0,
-    /// Reset rewards. Used in events like B-Day Gifts, as well as XP Bonanza.
-    ResetRewards = 1,
-    /// Reset rewards and map clearance.
-    ///
-    /// Used in most Gauntlets, the Towers, and generally most limited events
-    /// (especially Collabs).
-    ResetRewardsAndClear = 2,
-    /// Reset only max clears.
-    ///
-    /// E.g. Behemoth Culling, Proving Grounds, Catamin stages.
-    ResetMaxClears = 3,
-    // reward1=Rewards are reset per appearance
-    // reward2=Clear status and rewards are reset per appearance
-    // reward3=Number of plays are reset per appearance
-}
-
 #[derive(Debug, PartialEq)]
 /// Rewards for the stage.
 pub struct StageRewards {
@@ -181,7 +160,6 @@ pub struct Stage {
     // Data related to maps and stage rewards. Almost always exists, except for
     // like Labyrinth.
     /// Energy cost of stage.
-    // TODO figure out catamin stuff.
     pub energy: Option<u32>,
     /// Base XP reward of stage.
     pub xp: Option<u32>,

@@ -1,4 +1,4 @@
-//! Types to deserialise csv files.
+//! Types to deserialise map csv files.
 
 // #[derive(Debug, serde::Deserialize)]
 // #[allow(dead_code, missing_docs)]

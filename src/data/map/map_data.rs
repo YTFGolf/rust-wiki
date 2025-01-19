@@ -19,7 +19,7 @@ use std::{
     io::{BufRead, BufReader, Cursor},
 };
 
-/// Currently does nothing.
+/// Currently stores nothing.
 pub struct GameMap {}
 
 // Stage-related.
