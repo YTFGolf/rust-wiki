@@ -285,6 +285,14 @@ impl StageMeta {
         None
     }
 
+    fn is_main_chaps(m: &StageTypeEnum) -> bool {
+        use StageTypeEnum as T;
+        match m {
+            T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms => true,
+            _ => false,
+        }
+    }
+
     /// Parse space-delimited selector into [StageMeta] object.
     /// ```
     /// # use rust_wiki::data::stage::raw::stage_metadata::{StageMeta, consts::StageTypeEnum::SoL};
@@ -300,9 +308,8 @@ impl StageMeta {
             return Err(StageMetaParseError::Invalid);
         };
 
-        use StageTypeEnum as T;
         match stage_type.type_enum {
-            T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms => {
+            x if Self::is_main_chaps(&x) => {
                 let nums = selector[1..]
                     .iter()
                     .map(|num| num.parse::<u32>().unwrap())
@@ -1179,10 +1186,7 @@ mod tests {
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for code in STAGE_TYPES {
-            if matches!(
-                code.type_enum,
-                T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms
-            ) {
+            if StageMeta::is_main_chaps(&code.type_enum) {
                 continue;
             }
 
