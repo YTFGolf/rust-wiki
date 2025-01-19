@@ -5,7 +5,7 @@ use std::{num::NonZeroU32, thread::panicking};
 use crate::data::{
     map::{map_data::GameMap, special_rules::SpecialRule},
     stage::{
-        parsed::stage::{CrownData, Restriction},
+        parsed::stage::{CrownData, Restriction, RestrictionStages},
         raw::stage_metadata::StageMeta,
     },
     version::Version,
@@ -103,7 +103,13 @@ impl MapData {
             restrictions = Some(
                 option_data
                     .into_iter()
-                    .map(|r| Restriction::from_option_csv(r, version))
+                    .filter_map(|r| {
+                        let r = Restriction::from_option_csv(r, version);
+                        match r.stage {
+                            RestrictionStages::All => Some(r),
+                            RestrictionStages::One(_) => None,
+                        }
+                    })
                     .collect(),
             );
         } else {
@@ -143,11 +149,6 @@ pub fn do_thing(version: &Version) {
         let type_id = mapid / 1000;
         let map_id = mapid % 1000;
         let m = StageMeta::from_numbers(type_id, map_id, 0).unwrap();
-
-        log::debug!(
-            "GameMap::get_stage_option_data: {data:#?}",
-            data = GameMap::get_stage_option_data(&m, version)
-        );
 
         log::debug!("{:#?}", MapData::from_meta(m, version));
         println!("");
