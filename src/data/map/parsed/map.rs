@@ -4,7 +4,10 @@ use std::{num::NonZeroU32, thread::panicking};
 
 use crate::data::{
     map::{map_data::GameMap, special_rules::SpecialRule},
-    stage::{parsed::stage::CrownData, raw::stage_metadata::StageMeta},
+    stage::{
+        parsed::stage::{CrownData, Restriction},
+        raw::stage_metadata::StageMeta,
+    },
     version::Version,
 };
 
@@ -53,10 +56,9 @@ struct MapData {
     cooldown: Option<NonZeroU32>,
     star_mask: Option<u16>,
     hidden_upon_clear: bool,
-    // Stage option
-    // EX option
+    //
+    restrictions: Option<Vec<Restriction>>,
     ex_option_map: Option<u32>,
-    // Special rules
     special_rule: Option<SpecialRule>,
 }
 impl MapData {
@@ -69,7 +71,6 @@ impl MapData {
 
     fn from_meta(m: StageMeta, version: &Version) -> Self {
         let map_option_data = GameMap::get_map_option_data(&m, version);
-        // log::debug!("{map_option_data:#?}");
 
         let crown_data: Option<CrownData>;
         let reset_type: ResetType;
@@ -97,6 +98,18 @@ impl MapData {
             hidden_upon_clear = false;
         }
 
+        let restrictions: Option<Vec<Restriction>>;
+        if let Some(option_data) = GameMap::get_stage_option_data(&m, version) {
+            restrictions = Some(
+                option_data
+                    .into_iter()
+                    .map(|r| Restriction::from_option_csv(r, version))
+                    .collect(),
+            );
+        } else {
+            restrictions = None;
+        }
+
         let ex_option_map = GameMap::get_ex_option_data(&m, version);
         let special_rule = GameMap::get_special_rules_data(&m, version).cloned();
         Self {
@@ -110,6 +123,7 @@ impl MapData {
             star_mask,
             hidden_upon_clear,
             //
+            restrictions,
             ex_option_map,
             special_rule,
         }
