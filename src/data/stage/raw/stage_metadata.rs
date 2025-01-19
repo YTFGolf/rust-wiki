@@ -308,21 +308,18 @@ impl StageMeta {
             return Err(StageMetaParseError::Invalid);
         };
 
-        match stage_type.type_enum {
-            x if Self::is_main_chaps(&x) => {
-                let nums = selector[1..]
-                    .iter()
-                    .map(|num| num.parse::<u32>().unwrap())
-                    .collect::<Vec<_>>();
-                Self::from_selector_main(selector[0], &nums)
-            }
-            _ => {
-                // let chapter: u32 = stage_type.parse().unwrap();
-                let submap: u32 = selector[1].parse().unwrap();
-                let stage: u32 = selector[2].parse::<u32>().unwrap();
-                Ok(Self::from_split_parsed(stage_type, submap, stage))
-            }
+        if Self::is_main_chaps(&stage_type.type_enum) {
+            let nums = selector[1..]
+                .iter()
+                .map(|num| num.parse::<u32>().unwrap())
+                .collect::<Vec<_>>();
+            return Self::from_selector_main(selector[0], &nums);
         }
+
+        // let chapter: u32 = stage_type.parse().unwrap();
+        let submap: u32 = selector[1].parse().unwrap();
+        let stage: u32 = selector[2].parse::<u32>().unwrap();
+        Ok(Self::from_split_parsed(stage_type, submap, stage))
     }
 
     /// Parse file name into [StageMeta] object.
@@ -413,14 +410,19 @@ impl StageMeta {
     /// assert_eq!(st.unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_split(
-        stage_type: &str,
+        type_str: &str,
         map_num: u32,
         stage_num: u32,
     ) -> Result<StageMeta, StageMetaParseError> {
-        let Some(stage_type) = get_selector_type(stage_type) else {
+        let Some(stage_type) = get_selector_type(type_str) else {
             return Err(StageMetaParseError::Invalid);
         };
-        Ok(Self::from_split_parsed(stage_type, map_num, stage_num))
+
+        if Self::is_main_chaps(&stage_type.type_enum) {
+            Self::from_selector_main(type_str, &[map_num, stage_num])
+        } else {
+            Ok(Self::from_split_parsed(stage_type, map_num, stage_num))
+        }
     }
 
     /// [STAGE_TYPES]: consts::STAGE_TYPES
