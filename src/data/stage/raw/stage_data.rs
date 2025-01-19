@@ -1,14 +1,9 @@
 //! Module that deals with getting information about stages.
-use super::{
-    stage_metadata::{consts::StageTypeEnum, StageMeta},
-    stage_option::{StageOption, StageOptionCSV},
-};
+use super::{stage_metadata::StageMeta, stage_option::StageOptionCSV};
 use crate::data::{
     map::{
-        ex_option::ExOption,
-        map_data::{csv_types::StageDataCSV, GameMap},
-        map_option::{MapOption, MapOptionCSV},
-        special_rules::{SpecialRule, SpecialRules},
+        map_data::GameMap, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
+        special_rules::SpecialRule,
     },
     version::Version,
 };
@@ -318,7 +313,7 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        data::map::map_data::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+        data::map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
     };
     use std::{io::Cursor, vec};
 

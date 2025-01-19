@@ -2,7 +2,7 @@
 
 use crate::{
     data::{
-        map::map_data::csv_types::{TreasureCSV, TreasureType as T},
+        map::raw::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
     wikitext::{data_files::rewards::TREASURE_DATA, template_parameter::TemplateParameter},
@@ -230,7 +230,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::map::map_data::csv_types::{TreasureCSV, TreasureType};
+    use crate::data::map::raw::csv_types::{TreasureCSV, TreasureType};
 
     #[test]
     fn write_name_and_amount_normal() {
