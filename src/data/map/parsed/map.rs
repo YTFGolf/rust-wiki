@@ -1,7 +1,5 @@
 //! Represents a map.
 
-use std::{num::NonZeroU32, thread::panicking};
-
 use crate::data::{
     map::{map_data::GameMap, special_rules::SpecialRule},
     stage::{
@@ -10,6 +8,7 @@ use crate::data::{
     },
     version::Version,
 };
+use std::num::NonZeroU32;
 
 #[derive(Debug)]
 /// What happens when event ends. Event can be ended by reaching max clears or
@@ -45,24 +44,35 @@ impl From<u8> for ResetType {
 }
 
 #[derive(Debug)]
-struct MapData {
+/// Full map struct.
+pub struct MapData {
     /// Easier to just reuse StageMeta.
     pub meta: StageMeta,
     // Map option
+    /// Map crown difficulties.
     pub crown_data: Option<CrownData>,
-    reset_type: ResetType,
-    max_clears: Option<NonZeroU32>,
+    /// Map reset type.
+    pub reset_type: ResetType,
+    /// Max clears of map.
+    pub max_clears: Option<NonZeroU32>,
     _display_order: Option<u32>,
-    cooldown: Option<NonZeroU32>,
-    star_mask: Option<u16>,
-    hidden_upon_clear: bool,
+    /// Cooldown in mins.
+    pub cooldown: Option<NonZeroU32>,
+    /// Binary mask of star difficulty.
+    pub star_mask: Option<u16>,
+    /// Hide map upon clearing.
+    pub hidden_upon_clear: bool,
     //
-    restrictions: Option<Vec<Restriction>>,
-    ex_option_map: Option<u32>,
-    special_rule: Option<SpecialRule>,
+    /// Map restrictions.
+    pub restrictions: Option<Vec<Restriction>>,
+    /// Map invasion.
+    pub ex_option_map: Option<u32>,
+    /// Map rules.
+    pub special_rule: Option<SpecialRule>,
 }
 impl MapData {
-    fn new(mapid: u32, version: &Version) -> Self {
+    /// Create new [`MapData`] object.
+    pub fn new(mapid: u32, version: &Version) -> Self {
         let type_id = mapid / 1000;
         let map_id = mapid % 1000;
         let m = StageMeta::from_numbers(type_id, map_id, 0).unwrap();
@@ -141,18 +151,4 @@ const fn u8_to_bool(u: u8) -> bool {
         1 => true,
         _ => panic!("Not a valid boolean value!"),
     }
-}
-
-pub fn do_thing(version: &Version) {
-    let mapids = vec![0, 1000, 1209, 1237, 1385, 36004, 24035];
-    for mapid in mapids {
-        let type_id = mapid / 1000;
-        let map_id = mapid % 1000;
-        let m = StageMeta::from_numbers(type_id, map_id, 0).unwrap();
-
-        log::debug!("{:#?}", MapData::from_meta(m, version));
-        println!("");
-    }
-
-    panic!("aaaah")
 }

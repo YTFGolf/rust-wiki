@@ -125,6 +125,7 @@ impl From<i32> for RestrictionStages {
 #[derive(Debug, PartialEq)]
 /// Stage's restriction. Multiple fields can be active at once.
 pub struct Restriction {
+    /// Which stages the restriction applies to.
     pub stage: RestrictionStages,
     /// Crown difficulties that the restrictions apply to.
     pub crowns_applied: RestrictionCrowns,
