@@ -520,3 +520,33 @@ Other things:
 - Removed
 - Extra
 */
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_always_appeared_at() {
+        let constant = "{{Collapsible}}
+        ===[[Collaboration Events|Collaboration Stages]]===
+        *This stage: this map (20%)
+
+        ===[[:Category:Removed Content|Removed Stages]]===
+        *This stage (Dessert): this map (20%)
+        *This stage: this map (20%)
+        </div>";
+        let correct = "{{Collapsible}}\n\
+        This enemy has always appeared at 20% strength magnification.
+        ===[[Collaboration Events|Collaboration Stages]]===
+        *This stage: this map
+
+        ===[[:Category:Removed Content|Removed Stages]]===
+        *This stage (Dessert): this map
+        *This stage: this map
+        </div>";
+
+        let f = &mut constant.to_string();
+        always_appeared_at(f);
+        assert_eq!(f, correct);
+    }
+}
