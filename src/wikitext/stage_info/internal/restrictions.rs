@@ -196,6 +196,8 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
 
     assert_all_restrictions_unique(&restriction_crowns);
 
+    const FOUR_CROWN_DEFAULT: &str =
+        "4-Crown: Rarity: Only [[:Category:Special Cats|Special]] and [[:Category:Rare Cats|Rare]]";
     restriction_crowns
         .into_iter()
         .map(|(r, crowns)| match crowns.len() {
@@ -207,6 +209,7 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
             // but that's way too long-winded for something that might not
             // happen
         })
+        .filter(|s| s != FOUR_CROWN_DEFAULT)
         .collect()
 }
 
@@ -217,9 +220,7 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
         return None;
     }
 
-    if restrictions.len() == 1
-    // || (restrictions.len() == 2 && restrictions[1] == FOUR_CROWN_DEFAULT_RESTRICTION)
-    {
+    if restrictions.len() == 1 {
         let restriction = &restrictions[0];
         if restriction.crowns_applied != Crowns::All
             && stage.crown_data.is_some()
