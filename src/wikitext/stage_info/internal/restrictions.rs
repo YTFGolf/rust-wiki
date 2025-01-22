@@ -324,6 +324,7 @@ pub fn rules(stage: &Stage) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::data::stage::parsed::stage::RestrictionCrowns;
 
     #[test]
     fn no_restrictions() {
@@ -600,6 +601,51 @@ mod tests {
         assert_eq!(
             restrictions_section(&vanguard_veteran),
             "Max # of Deployable Cats: 1"
+        );
+    }
+
+    fn dessert_witch_restriction(crowns: RestrictionCrowns) -> Restriction {
+        Restriction {
+            stage: RestrictionStages::All,
+            crowns_applied: crowns,
+            rarity: None,
+            deploy_limit: None,
+            rows: None,
+            min_cost: None,
+            max_cost: None,
+            charagroup: Some(CharaGroup {
+                group_type: CharaGroupType::CannotUse,
+                units: [440].to_vec(),
+            }),
+        }
+    }
+    #[test]
+    fn multiple_restrictions_with_4_crown() {
+        let afraid_nothing = Stage::new_current("c 221 3").unwrap();
+        assert_eq!(
+            afraid_nothing.restrictions.as_ref().unwrap(),
+            &[
+                dessert_witch_restriction(RestrictionCrowns::One(NonZero::new(1).unwrap())),
+                dessert_witch_restriction(RestrictionCrowns::One(NonZero::new(2).unwrap())),
+                dessert_witch_restriction(RestrictionCrowns::One(NonZero::new(3).unwrap())),
+                {
+                    let mut restriction =
+                        dessert_witch_restriction(RestrictionCrowns::One(NonZero::new(4).unwrap()));
+                    restriction.rarity = FOUR_CROWN_DEFAULT_RESTRICTION.rarity;
+                    restriction
+                },
+            ]
+        );
+        assert_eq!(
+            restrictions_info(&afraid_nothing),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Unit Restriction: Cannot use [[Bebe (Uber Rare Cat)|Bebe]]".to_string()
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&afraid_nothing),
+            "Unit Restriction: Cannot use [[Bebe (Uber Rare Cat)|Bebe]]"
         );
     }
 
