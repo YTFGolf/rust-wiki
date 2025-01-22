@@ -373,7 +373,7 @@ fn get_section_map<'a>(
 /// If enemy has always appeared at a certain mag, then remove mags after stage
 /// names and replace with single message at top.
 fn always_appeared_at(buf: &mut String) {
-    let percentage_pattern = r"\([\d,%\s]+%\)\n";
+    let percentage_pattern = r" \([\d,%\s]+%\)\n";
     let re = Regex::new(percentage_pattern).unwrap();
     // This should probably be done in the actual code but oh well
 
@@ -403,7 +403,7 @@ fn always_appeared_at(buf: &mut String) {
     }
 
     let mag = (*map.iter().next().unwrap()).to_string();
-    if mag.contains(' ') {
+    if mag[1..].contains(' ') {
         // if is like "(10%, 100%)"
         return;
     }
