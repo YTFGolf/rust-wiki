@@ -125,7 +125,11 @@ fn key(meta: &StageMeta) -> (usize, u32, u32) {
     let m = match meta.type_enum {
         T::Extra => match STAGE_WIKI_DATA.continue_id(meta.map_num) {
             None => meta,
-            Some((t, m)) => &StageMeta::from_numbers(t, m, 999).unwrap(),
+            Some((t, m)) => match t {
+                30 => &StageMeta::from_selector_main(&t.to_string(), &[999]).unwrap(),
+                _ => &StageMeta::from_numbers(t, m, 999).unwrap(),
+            },
+            // TODO put unit tests in for mount aku
         },
         // Obviously want extra stages to be in correct place if possible
         _ => meta,

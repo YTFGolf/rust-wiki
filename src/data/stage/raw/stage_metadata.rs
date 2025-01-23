@@ -475,7 +475,10 @@ impl StageMeta {
     /// - Aku/DM: `("aku", [0])` = Korea
     /// - Filibuster: `("filibuster", [])`
     /// - Z: `("z", [1, 0])` = Korea
-    fn from_selector_main(selector: &str, nums: &[u32]) -> Result<StageMeta, StageMetaParseError> {
+    pub fn from_selector_main(
+        selector: &str,
+        nums: &[u32],
+    ) -> Result<StageMeta, StageMetaParseError> {
         let Some(code) = get_selector_type(selector) else {
             return Err(StageMetaParseError::Invalid);
         };
@@ -516,7 +519,7 @@ impl StageMeta {
 
                     (map_num, stage_num, map_file, stage_file)
                 }
-                "aku" | "dm" => {
+                "aku" | "dm" | "30" => {
                     let stage_num: u32 = nums[0];
                     (
                         0_u32,
