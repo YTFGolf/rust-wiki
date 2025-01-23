@@ -14,6 +14,14 @@ use std::fmt::Write;
 fn is_unit_drop(id: u32) -> bool {
     (1_000..30_000).contains(&id)
 }
+/// Get the drop limit of the item.
+fn drop_limit(id: u32) -> &'static str {
+    if is_unit_drop(id) {
+        "1 time"
+    } else {
+        "unlimited"
+    }
+}
 
 /// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
 fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
@@ -53,11 +61,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
         let precision = if chance % 1.0 == 0.0 { 0 } else { 1 };
-        let limit = if is_unit_drop(item.item_id) {
-            "1 time"
-        } else {
-            "unlimited"
-        };
+        let limit = drop_limit(item.item_id);
         write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
     }
     buf
@@ -79,11 +83,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
         let precision = if chance % 1.0 == 0.0 { 0 } else { 1 };
-        let limit = if is_unit_drop(item.item_id) {
-            "1 time"
-        } else {
-            "unlimited"
-        };
+        let limit = drop_limit(item.item_id);
         write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
         buf.write_str("<br>\n").unwrap();
     }
@@ -107,7 +107,14 @@ fn single_raw(rewards: &StageRewards) -> String {
     let mut buf = String::new();
     buf.write_str("- ").unwrap();
     write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
-    write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
+
+    write!(
+        buf,
+        " ({chance}%, {limit})",
+        chance = t[0].item_chance,
+        limit = drop_limit(t[0].item_id)
+    )
+    .unwrap();
 
     buf
 }
