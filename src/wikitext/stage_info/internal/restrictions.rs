@@ -300,7 +300,7 @@ pub fn rules(stage: &Stage) -> String {
             "SpecialRuleName003" => "Cheap Labor",
             "SpecialRuleName004" => "Super Rare Sale",
             "SpecialRuleName005" => "Deploy Limit",
-            "SpecialRuleName006" => "超特売セール EX",
+            "SpecialRuleName006" => "Special Clearance",
             _ => panic!("Error: unknown label {name:?}"),
         };
 

@@ -508,7 +508,6 @@ tested any other way than empirically.
 - Copy to clipboard, message saying "copied to clipboard" in green
 
 Other things:
-- Some logging crate needed to log out which pages are skipped
 - Testing can be done easily for small parts but the overall thing can only be
   measured empirically
 */
