@@ -2,7 +2,9 @@
 
 use super::chapter::Chapter;
 use crate::{
-    data::stage::raw::stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+    data::stage::raw::stage_metadata::{
+        consts::StageTypeEnum as T, StageMeta, StageMetaParseError,
+    },
     wikitext::data_files::stage_wiki_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;
@@ -168,13 +170,21 @@ impl EncountersSection {
                     *buf += "*";
 
                     let meta = match stage.meta.type_enum {
-                        T::Extra => {
+                        T::Extra => &{
                             if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.meta.map_num) {
-                                &StageMeta::from_numbers(ids.0, ids.1, 999).unwrap()
+                                match StageMeta::from_numbers(ids.0, ids.1, 999) {
+                                    Ok(nm) => nm,
+                                    Err(StageMetaParseError::Rejected) => {
+                                        assert_eq!(ids.0, 30);
+                                        StageMeta::from_selector_main(&ids.0.to_string(), &[999])
+                                            .unwrap()
+                                    }
+                                    Err(_) => panic!("Matching meta failed or something."),
+                                }
                             } else {
                                 todo!()
                             }
-                        }
+                        },
                         _ => stage.meta,
                     };
                     // Get correct numbers for continue stages.

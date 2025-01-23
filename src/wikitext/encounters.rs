@@ -11,7 +11,7 @@ use crate::{
             parsed::stage_enemy::StageEnemy,
             raw::{
                 stage_data::StageData,
-                stage_metadata::{consts::StageTypeEnum as T, StageMeta},
+                stage_metadata::{consts::StageTypeEnum as T, StageMeta, StageMetaParseError},
             },
         },
     },
@@ -349,7 +349,14 @@ fn get_section_map<'a>(
 
         if raw == Ref::Extra {
             if let Some(ids) = STAGE_WIKI_DATA.continue_id(encounter.meta.map_num) {
-                let new_meta = StageMeta::from_numbers(ids.0, ids.1, 999).unwrap();
+                let new_meta = match StageMeta::from_numbers(ids.0, ids.1, 999) {
+                    Ok(nm) => nm,
+                    Err(StageMetaParseError::Rejected) => {
+                        assert_eq!(ids.0, 30);
+                        StageMeta::from_selector_main(&ids.0.to_string(), &[999]).unwrap()
+                    }
+                    Err(_) => panic!("Matching meta failed or something."),
+                };
                 raw = raw_section(&new_meta);
             }
             // Use continuestages to get proper section.

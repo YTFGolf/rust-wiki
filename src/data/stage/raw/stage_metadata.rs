@@ -419,7 +419,7 @@ impl StageMeta {
         };
 
         if Self::is_main_chaps(&stage_type.type_enum) {
-            Self::from_selector_main(type_str, &[map_num, stage_num])
+            Err(StageMetaParseError::Rejected)
         } else {
             Ok(Self::from_split_parsed(stage_type, map_num, stage_num))
         }
