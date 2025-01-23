@@ -520,4 +520,28 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn test_single_raw_unlimited() {
+        let incompetent_watchman = Stage::new_current("zl 16 0").unwrap();
+        assert_eq!(
+            incompetent_watchman.rewards,
+            Some(StageRewards {
+                treasure_type: TreasureType::UnclearMaybeRaw,
+                treasure_drop: vec![TreasureCSV {
+                    item_chance: 1,
+                    item_id: 5,
+                    item_amt: 1
+                }],
+                score_rewards: vec![]
+            })
+        );
+        assert_eq!(
+            treasure(&incompetent_watchman),
+            Some(TemplateParameter::new(
+                "treasure",
+                "- [[Battle Items#Sniper the Cat|Sniper the Cat]] +1 (1%, unlimited)".to_string()
+            ))
+        );
+    }
 }
