@@ -1,3 +1,6 @@
+//! Module for eoc zombie outbreak cleanup.
+
+/// Replace generated zombie outbreak encounters with manually applied ones.
 pub fn manual_zoutbreak_replace(buf: &mut String, abs_enemy_id: u32) {
     match abs_enemy_id {
         4 => {
