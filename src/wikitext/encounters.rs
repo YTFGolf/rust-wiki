@@ -2,6 +2,7 @@
 
 pub mod chapter;
 pub mod section;
+pub mod zoutbreak;
 use crate::{
     config::Config,
     data::{
@@ -26,6 +27,7 @@ use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use regex::Regex;
 use section::{DisplayType, SectionRef};
+use zoutbreak::manual_zoutbreak_replace;
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
 type Ref = SectionRef;
 
@@ -434,8 +436,9 @@ fn always_appeared_at(buf: &mut String) {
 }
 
 /// Post-process the buffer and apply some text transformations.
-fn cleanup(buf: &mut String) {
+fn cleanup(buf: &mut String, abs_enemy_id: u32) {
     always_appeared_at(buf);
+    manual_zoutbreak_replace(buf, abs_enemy_id);
 }
 
 /// Write the section text of an encounter group. Includes trailing newline.
@@ -499,7 +502,7 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
     }
     buf += "</div>";
 
-    cleanup(&mut buf);
+    cleanup(&mut buf, abs_enemy_id);
 
     println!("{buf}");
 
