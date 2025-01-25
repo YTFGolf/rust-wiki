@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [0.4.1]
+## [0.4.1] - 2025-01-25
 
 Alongside these specific updates, updated supported game version to 14.1.
 
