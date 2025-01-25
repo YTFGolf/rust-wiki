@@ -357,7 +357,9 @@ fn get_section_map<'a>(
                         assert_eq!(ids.0, 30);
                         StageMeta::from_selector_main(&ids.0.to_string(), &[999]).unwrap()
                     }
-                    Err(StageMetaParseError::Invalid) => panic!("Matching meta failed or something."),
+                    Err(StageMetaParseError::Invalid) => {
+                        panic!("Matching meta failed or something.")
+                    }
                 };
                 raw = raw_section(&new_meta);
             }
