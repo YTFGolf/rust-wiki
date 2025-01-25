@@ -116,7 +116,9 @@ impl From<i32> for RestrictionStages {
     fn from(value: i32) -> Self {
         match value {
             -1 => Self::All,
+            #[allow(clippy::cast_sign_loss)]
             x if x >= 0 => Self::One(value as u32),
+            // Can do this as checking >= 0 first
             _ => panic!("Negative restriction stages number that isn't -1."),
         }
     }
