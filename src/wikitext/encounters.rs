@@ -27,8 +27,8 @@ use num_format::{Locale, WriteFormatted};
 use order::enumerate_meta;
 use regex::Regex;
 use section::{DisplayType, SectionRef};
-use zoutbreak::manual_zoutbreak_replace;
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
+use zoutbreak::manual_zoutbreak_replace;
 type Ref = SectionRef;
 
 mod order {
