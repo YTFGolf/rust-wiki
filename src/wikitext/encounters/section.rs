@@ -179,7 +179,7 @@ impl EncountersSection {
                                         StageMeta::from_selector_main(&ids.0.to_string(), &[999])
                                             .unwrap()
                                     }
-                                    Err(_) => panic!("Matching meta failed or something."),
+                                    Err(StageMetaParseError::Invalid) => panic!("Matching meta failed or something."),
                                 }
                             } else {
                                 todo!()
