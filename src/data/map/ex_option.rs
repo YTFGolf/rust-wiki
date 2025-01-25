@@ -59,8 +59,8 @@ mod tests {
     fn assert_no_dupes() {
         let mut seen = HashSet::new();
         let data: &ExOption = TEST_CONFIG.version.current_version().get_cached_file();
-        for option in data.map.iter() {
-            assert!(seen.insert(option.map_id))
+        for option in &data.map {
+            assert!(seen.insert(option.map_id));
         }
     }
 }

@@ -285,12 +285,12 @@ impl StageMeta {
         None
     }
 
-    fn is_main_chaps(m: &StageTypeEnum) -> bool {
+    fn is_main_chaps(m: StageTypeEnum) -> bool {
         use StageTypeEnum as T;
-        match m {
-            T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms => true,
-            _ => false,
-        }
+        matches!(
+            m,
+            T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms
+        )
     }
 
     /// Parse space-delimited selector into [StageMeta] object.
@@ -308,7 +308,7 @@ impl StageMeta {
             return Err(StageMetaParseError::Invalid);
         };
 
-        if Self::is_main_chaps(&stage_type.type_enum) {
+        if Self::is_main_chaps(stage_type.type_enum) {
             let nums = selector[1..]
                 .iter()
                 .map(|num| num.parse::<u32>().unwrap())
@@ -418,7 +418,7 @@ impl StageMeta {
             return Err(StageMetaParseError::Invalid);
         };
 
-        if Self::is_main_chaps(&stage_type.type_enum) {
+        if Self::is_main_chaps(stage_type.type_enum) {
             Err(StageMetaParseError::Rejected)
         } else {
             Ok(Self::from_split_parsed(stage_type, map_num, stage_num))
@@ -1191,7 +1191,7 @@ mod tests {
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for code in STAGE_TYPES {
-            if StageMeta::is_main_chaps(&code.type_enum) {
+            if StageMeta::is_main_chaps(code.type_enum) {
                 continue;
             }
 

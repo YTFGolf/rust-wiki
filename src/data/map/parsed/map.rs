@@ -85,7 +85,7 @@ impl MapData {
         let crown_data: Option<CrownData>;
         let reset_type: ResetType;
         let max_clears: Option<NonZeroU32>;
-        let _display_order: Option<u32>;
+        let display_order: Option<u32>;
         let cooldown: Option<NonZeroU32>;
         let star_mask: Option<u16>;
         let hidden_upon_clear: bool;
@@ -94,7 +94,7 @@ impl MapData {
             crown_data = Some(CrownData::from(&data));
             reset_type = ResetType::from(data.reset_type);
             max_clears = NonZeroU32::new(data.max_clears);
-            _display_order = Some(data._display_order);
+            display_order = Some(data.display_order);
             cooldown = NonZeroU32::new(data.cooldown);
             star_mask = Some(data.star_mask);
             hidden_upon_clear = u8_to_bool(data.hidden_upon_clear);
@@ -102,7 +102,7 @@ impl MapData {
             crown_data = None;
             reset_type = ResetType::None;
             max_clears = None;
-            _display_order = None;
+            display_order = None;
             cooldown = None;
             star_mask = None;
             hidden_upon_clear = false;
@@ -134,7 +134,7 @@ impl MapData {
             crown_data,
             reset_type,
             max_clears,
-            _display_order,
+            _display_order: display_order,
             cooldown,
             star_mask,
             hidden_upon_clear,
