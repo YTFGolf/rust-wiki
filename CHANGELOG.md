@@ -9,9 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.4.1]
+
+Alongside these specific updates, updated supported game version to 14.1.
+
+### Added
+
 - Changelog + version tags.
+- Parsed map object.
+- Catamin cost for stages.
+- Manual EoC zombie outbreak formatter.
 
 ### Fixed
+
+- Mount Aku Invasion error in Encounters.
+- Four-crown default restriction showing up in restrictions list.
+- `UnclearMaybeRaw` drop amount being hardcoded as "1 time".
 
 ### Changed
 
@@ -82,7 +101,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.2...v0.2.1
