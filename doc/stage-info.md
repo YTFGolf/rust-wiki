@@ -9,7 +9,7 @@ Stage info uses "selectors" to work. For most stages, these will follow the form
 code mapnum stagenum
 ```
 
-For example, Earthshaker would be `sol 0 0`. Available selectors can be found in [stage_metadata](../src/data/stage/raw/stage_metadata.rs#L182) just below where it says `static STAGE_TYPE_MAP`, and are used in the `initialise_type_map` function. Each line uses pipe characters to separate them. For example,
+For example, Earthshaker would be `sol 0 0`. Available selectors can be found in [stage_metadata](../src/data/stage/raw/stage_metadata.rs#L178) just below where it says `static STAGE_TYPE_MAP`, and are used in the `initialise_type_map` function. Each line uses pipe characters to separate them. For example,
 ```rust
         initialise_type_map("SoL|0|N|RN",                               T::SoL),
 ```

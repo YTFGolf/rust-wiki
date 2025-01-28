@@ -12,6 +12,7 @@ You'll need to use the command line to run this program. If you really can't be 
 The easiest way to see the available programs is to just run `rust-wiki help`. This will always be up to date with the code and for most programs should be sufficient to explain how to use it. However, some programs will take up a lot of space to explain exactly how to use them and every edge case you need to be aware of.
 
 - `stage-info`: see [stage-info](./stage-info.md)
+- `map-info`: uses selectors of the same form as `stage-info` but without the stage number. Also allows a "map id", which is the same type found in battlecats-db and in the game files such as `Map_option.csv`.
 
 ## Running through Python
 Here's a simple Python program you can run. Assuming your files are structured like this:
