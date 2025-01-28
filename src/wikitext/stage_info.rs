@@ -1,4 +1,4 @@
-//! Prints information about a stage.
+//! Get information about a stage.
 
 use super::data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA};
 use super::format_parser::{parse_si_format, ParseType};

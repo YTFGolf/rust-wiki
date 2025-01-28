@@ -1,3 +1,5 @@
+//! Deals with stage info variables.
+
 use super::battlegrounds::battlegrounds;
 use super::beginning::{enemies_appearing, intro};
 use super::enemies_list::enemies_list;
@@ -9,6 +11,7 @@ use super::StageWikiData;
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 
+/// Default format for stage info.
 pub const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
 ${intro}
@@ -49,6 +52,8 @@ ${battlegrounds}
 *${reference}\
 ";
 
+/// Get the content of a format
+/// [`Variable`][super::super::format_parser::ParseType::Variable].
 pub fn get_stage_variable(
     variable_name: &str,
     stage: &Stage,

@@ -71,6 +71,7 @@ pub struct MapData {
     pub special_rule: Option<SpecialRule>,
 }
 impl MapData {
+    /// Get [`MapData`] from string.
     pub fn new_str(selector: String, version: &Version) -> Self {
         if let Ok(mapid) = selector.parse() {
             return MapData::new(mapid, version);
