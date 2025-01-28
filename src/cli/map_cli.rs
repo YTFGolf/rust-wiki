@@ -5,7 +5,10 @@ use super::{
     cli_util::{CommandExec, ConfigMerge},
     version_opt::VersionOptions,
 };
-use crate::{cli::cli_util::input, config::Config, data::map::parsed::map::MapData, wikitext::map_info::get_map_info};
+use crate::{
+    cli::cli_util::input, config::Config, data::map::parsed::map::MapData,
+    wikitext::map_info::get_map_info,
+};
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]

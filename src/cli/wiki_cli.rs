@@ -8,7 +8,7 @@ use crate::{config::Config, wiki_files::update_wiki_files};
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
-/// Encounters options.
+/// Read wiki options.
 pub struct ReadWikiOptions {
     /// Wiki username.
     pub username: Option<String>,
