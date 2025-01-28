@@ -1,8 +1,8 @@
 //! Contains all CLI commands.
 
 use super::{
-    cli_util::CliCommand, encounters_cli::EncountersOptions, stage_cli::StageInfoOptions,
-    wiki_cli::ReadWikiOptions,
+    cli_util::CliCommand, encounters_cli::EncountersOptions, map_cli::MapInfoOptions,
+    stage_cli::StageInfoOptions, wiki_cli::ReadWikiOptions,
 };
 use crate::config::Config;
 use clap::{Parser, Subcommand};
@@ -20,6 +20,10 @@ pub enum Command {
     #[command(visible_aliases(["wiki", "get"]))]
     /// Get data from the wiki.
     ReadWiki(ReadWikiOptions),
+
+    #[command(visible_aliases(["map"]))]
+    /// Get information about a map.
+    MapInfo(MapInfoOptions),
 }
 
 #[derive(Parser, Debug, PartialEq)]
@@ -38,6 +42,7 @@ impl Cli {
             Command::StageInfo(options) => options.run(config),
             Command::Encounters(options) => options.run(config),
             Command::ReadWiki(options) => options.run(config),
+            Command::MapInfo(options) => options.run(config),
         }
     }
 }
