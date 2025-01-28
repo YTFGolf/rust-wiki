@@ -116,7 +116,7 @@ fn get_ordinal(n: u32) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::wikitext::stage_info::internal::test_util::get_stage_wiki_data;
+    use super::super::test_util::get_stage_wiki_data;
 
     #[test]
     fn test_enemies_appearing() {
