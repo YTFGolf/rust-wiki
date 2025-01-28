@@ -35,7 +35,7 @@ where
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-/// Configuration for entire project.
+/// Stored user configuration.
 // TODO remove Serialise and replace with toml-edit.
 pub struct Config {
     #[serde(serialize_with = "serialize_log_level")]
