@@ -5,12 +5,15 @@ use super::{
     cli_util::{CommandExec, ConfigMerge},
     version_opt::VersionOptions,
 };
-use crate::config::Config;
+use crate::{cli::cli_util::input, config::Config, data::map::parsed::map::MapData, wikitext::map_info::get_map_info};
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
 /// Stage info options.
 pub struct MapInfoOptions {
+    /// Map selector.
+    pub selector: Vec<String>,
+
     #[command(flatten)]
     /// Global options.
     pub base: BaseOptions,
@@ -26,18 +29,14 @@ impl ConfigMerge for MapInfoOptions {
 }
 impl CommandExec for MapInfoOptions {
     fn exec(&self, config: &Config) {
-        todo!("{config:#?}")
-        // let selector = match self.selector.len() {
-        //     1 => &self.selector[0],
-        //     0 => &input("Input file selector: "),
-        //     _ => &self.selector.join(" "),
-        // };
-        // println!(
-        //     "{}",
-        //     get_stage_info(
-        //         &Stage::new(selector, config.version.current_version()).unwrap(),
-        //         config
-        //     )
-        // );
+        let selector = match self.selector.len() {
+            1 => self.selector[0].to_string(),
+            0 => input("Input selector: "),
+            _ => self.selector.join(" "),
+        };
+
+        let map = MapData::new_str(selector, config.version.current_version());
+        let info = get_map_info(&map, config);
+        println!("{info}");
     }
 }

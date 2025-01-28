@@ -71,6 +71,16 @@ pub struct MapData {
     pub special_rule: Option<SpecialRule>,
 }
 impl MapData {
+    pub fn new_str(selector: String, version: &Version) -> Self {
+        if let Ok(mapid) = selector.parse() {
+            return MapData::new(mapid, version);
+        }
+
+        let new_selector = selector.to_owned() + " 0";
+        let m = StageMeta::new(&new_selector).unwrap();
+        Self::from_meta(m, version)
+    }
+
     /// Create new [`MapData`] object.
     pub fn new(mapid: u32, version: &Version) -> Self {
         let type_id = mapid / 1000;
