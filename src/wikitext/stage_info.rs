@@ -5,10 +5,9 @@ use super::format_parser::{parse_si_format, ParseType};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
-use variables::{get_stage_variable, DEFAULT_FORMAT};
 use std::fmt::Write;
+use variables::{get_stage_variable, DEFAULT_FORMAT};
 mod battlegrounds;
-mod variables;
 mod beginning;
 mod enemies_list;
 mod information;
@@ -16,6 +15,7 @@ mod misc_information;
 mod restrictions;
 mod test_util;
 mod treasure;
+mod variables;
 
 struct StageWikiData {
     stage_map: &'static MapData,

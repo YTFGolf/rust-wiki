@@ -29,7 +29,7 @@ const fn get_preset(st: StageTypeEnum) -> Preset {
         T::Behemoth => unimplemented!(),
         // ???
         T::Challenge | T::Enigma => unimplemented!(),
-       // Single stage per
+        // Single stage per
         T::Extra | T::Catamin => unimplemented!(),
         // No point
     }

@@ -115,8 +115,8 @@ fn get_ordinal(n: u32) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use super::super::test_util::get_stage_wiki_data;
+    use super::*;
 
     #[test]
     fn test_enemies_appearing() {

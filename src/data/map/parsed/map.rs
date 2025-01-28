@@ -77,7 +77,7 @@ impl MapData {
             return MapData::new(mapid, version);
         }
 
-        let new_selector = selector.to_owned() + " 0";
+        let new_selector = selector + " 0";
         let m = StageMeta::new(&new_selector).unwrap();
         Self::from_meta(m, version)
     }

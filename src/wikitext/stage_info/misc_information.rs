@@ -185,8 +185,8 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> 
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use super::super::test_util::get_stage_wiki_data;
+    use super::*;
 
     #[test]
     fn test_single_stage() {
