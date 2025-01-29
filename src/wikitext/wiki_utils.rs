@@ -48,6 +48,31 @@ pub fn extract_name(name: &str) -> &str {
     }
 }
 
+/**
+Extracts the link from a formatted link:
+
+```
+# use rust_wiki::wikitext::wiki_utils::extract_link;
+assert_eq!(extract_link("[[link|name]]"), "link");
+assert_eq!(extract_link("[[link]]"),      "link");
+assert_eq!(extract_link("nothing"),       "nothing");
+
+const COTC: &str = "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]] 2";
+assert_eq!(extract_link(COTC),            COTC);
+```
+*/
+pub fn extract_link(link: &str) -> &str {
+    if link.starts_with("[[") && link.chars().filter(|c| *c == '[').count() <= 2 {
+        let end = link.find("]]").unwrap();
+        match link.find('|') {
+            Some(i) => &link[2..i],
+            None => &link[2..end],
+        }
+    } else {
+        link
+    }
+}
+
 /// Get the ordinal number corresponding to `n` (e.g. 1 = "first").
 pub fn get_ordinal(n: u32) -> String {
     assert!((1..1000).contains(&n));

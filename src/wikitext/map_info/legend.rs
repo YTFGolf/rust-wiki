@@ -5,13 +5,13 @@ use crate::{
             map_data::GameMap,
             parsed::map::{MapData, ResetType},
         },
-        stage::raw::stage_metadata::consts::StageTypeEnum,
+        stage::raw::stage_metadata::{consts::StageTypeEnum, StageMeta},
         version::Version,
     },
     wikitext::{
         data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
-        wiki_utils::{extract_name, get_ordinal},
+        wiki_utils::{extract_link, extract_name, get_ordinal},
     },
 };
 use num_format::{Locale, WriteFormatted};
@@ -123,12 +123,57 @@ fn difficulty(map: &MapData) -> String {
     buf
 }
 
+fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String {
+    let mapnum = map.meta.map_num;
+    let code = map.meta.type_code.to_lowercase();
+
+    let mut buf = format!(
+        "{{| class=\"article-table\"\n\
+        ! rowspan=\"2\" scope=\"row\" |\n\
+        ! rowspan=\"2\" scope=\"col\" | [[File:Mapname{mapnum:03} {code} en.png|200px]]\n\
+        ! rowspan=\"2\" scope=\"col\" | [[File:Mapname{mapnum:03} {code} ja.png|200px]]\n\
+        ! colspan=\"2\" scope=\"col\" style=\"text-align: center; min-width: 210px; \
+        line-height: 20px;\" |'''Difficulty'''<br>{{{{Stars|{star_mask}}}}}\n\
+        |-\n\
+        ! scope=\"col\" | Translation\n\
+        ! scope=\"col\" | Energy",
+        star_mask = map.star_mask.unwrap_or_default()
+    );
+
+    let mut i = 0;
+    while let Some(stage) = map_data.get(i) {
+        let meta = StageMeta::from_numbers(map.meta.type_num, map.meta.map_num, i).unwrap();
+        write!(
+            buf,
+            "\n|-\n\
+            ! scope=\"row\" | Stage {stagenum2}\n\
+            | [[File:Mapsn{mapnum:03} {stagenum:02} {code} en.png|200px|link={stagename}]]\n\
+            | [[File:Mapsn{mapnum:03} {stagenum:02} {code} ja.png|200px|?]]\n\
+            | ?\n\
+            | {energy} {{{{EnergyIcon}}}}",
+            stagenum = i,
+            stagenum2 = i + 1,
+            energy = GameMap::get_stage_data(&meta, version)
+                .unwrap()
+                .fixed_data
+                .energy,
+            stagename = extract_link(&stage.name)
+        )
+        .unwrap();
+
+        i += 1;
+    }
+    buf.write_str("\n|}").unwrap();
+
+    buf
+}
+
 fn reference(map: &MapData) -> String {
     let mapid = GameMap::get_map_id(&map.meta);
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
-fn nav(map: &MapData, map_data: &MapData2) -> String {
+fn nav(map: &MapData) -> String {
     const BEGINNING: &str = "<p style=\"text-align:center;\">";
     const PREV: &str = "&lt;&lt;";
     const NEXT: &str = "&gt;&gt;";
@@ -184,14 +229,15 @@ fn footer(map: &MapData) -> String {
 
 fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Config) -> String {
     // TODO rename MapData2
+    let version = &config.version.current_version();
     match name {
         "map_img" => map_img(map, config),
-        "intro" => intro(map, map_data, &config.version.current_version()),
+        "intro" => intro(map, map_data, version),
         "difficulty" => difficulty(map),
-        // "stage_table"=>stage_table(map),
+        "stage_table" => stage_table(map, map_data, version),
         // "materials"=>materials(map),
         "ref" => reference(map),
-        "nav" => nav(map, map_data),
+        "nav" => nav(map),
         "footer" => footer(map),
         _ => format!("${{{name}}}"),
     }
