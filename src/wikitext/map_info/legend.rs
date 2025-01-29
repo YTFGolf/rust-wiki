@@ -168,6 +168,62 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
     buf
 }
 
+fn materials(map: &MapData, version: &Version) -> String {
+    let drop_item = GameMap::get_drop_item(&map.meta, version).unwrap();
+    let normal = [
+        drop_item.bricks,
+        drop_item.feathers,
+        drop_item.coal,
+        drop_item.sprockets,
+        drop_item.gold,
+        drop_item.meteorite,
+        drop_item.beast_bones,
+        drop_item.ammonite,
+    ];
+
+    let mut buf = "{{Materials".to_string();
+    // TODO miss is definitely wrong
+    if drop_item.brick_z.is_none() {
+        let mut temp = String::new();
+        let mut total = 0;
+
+        for chance in normal {
+            write!(temp, "|{chance}").unwrap();
+            total += chance;
+        }
+        write!(buf, "|{miss}{temp}", miss = 100 - total).unwrap();
+        buf.write_str("}}").unwrap();
+        return buf;
+    }
+
+    for chance in normal {
+        assert_eq!(chance, 0);
+    }
+
+    let drops_z = [
+        drop_item.brick_z,
+        drop_item.feathers_z,
+        drop_item.coal_z,
+        drop_item.sprockets_z,
+        drop_item.gold_z,
+        drop_item.meteorite_z,
+        drop_item.beast_bones_z,
+        drop_item.ammonite_z,
+    ];
+
+    let mut temp = String::new();
+    let mut total = 0;
+    for chance in drops_z {
+        let chance = chance.unwrap();
+        write!(temp, "|{chance}").unwrap();
+        total += chance;
+    }
+    write!(buf, "|{miss}{temp}", miss = 100 - total).unwrap();
+    buf.write_str("|hidenormal=").unwrap();
+    buf.write_str("}}").unwrap();
+    return buf;
+}
+
 fn reference(map: &MapData) -> String {
     let mapid = GameMap::get_map_id(&map.meta);
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
@@ -235,7 +291,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
         "intro" => intro(map, map_data, version),
         "difficulty" => difficulty(map),
         "stage_table" => stage_table(map, map_data, version),
-        // "materials"=>materials(map),
+        "materials" => materials(map, version),
         "ref" => reference(map),
         "nav" => nav(map),
         "footer" => footer(map),

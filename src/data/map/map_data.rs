@@ -1,6 +1,7 @@
 //! Module that deals with getting information about stage maps.
 
 use super::{
+    drop_item::{DropItem, DropItemRaw},
     ex_option::ExOption,
     map_option::{MapOption, MapOptionCSV},
     raw::csv_types::{HeaderCSV, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
@@ -198,5 +199,12 @@ impl GameMap {
         let map_id = Self::get_map_id(meta);
         let special_rules = version.get_cached_file::<SpecialRules>();
         special_rules.get_map(map_id)
+    }
+
+    /// Get DropItem data if it exists.
+    pub fn get_drop_item<'a>(meta: &StageMeta, version: &'a Version) -> Option<&'a DropItemRaw> {
+        let map_id = Self::get_map_id(meta);
+        let drop_item = version.get_cached_file::<DropItem>();
+        drop_item.get_drop_item(map_id)
     }
 }
