@@ -1,9 +1,8 @@
 //! Config values related to the version of the game being used.
 
 use super::cli_util::ConfigMerge;
-use crate::config::{version_config::Lang, Config};
+use crate::config::Config;
 use clap::Args;
-use serde::Deserialize;
 
 #[derive(Debug, Default, Args, PartialEq)]
 /// Options that can apply to every submodule.

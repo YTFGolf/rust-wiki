@@ -16,7 +16,7 @@ use crate::data::{
 use csv::ByteRecord;
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Cursor, Read},
+    io::{BufRead, BufReader, Cursor},
 };
 
 /// Currently stores nothing.
@@ -153,7 +153,7 @@ impl GameMap {
 
 impl GameMap {
     /// Get `map_id` to use in map_option and stage_option.
-    fn get_map_id(meta: &StageMeta) -> u32 {
+    pub fn get_map_id(meta: &StageMeta) -> u32 {
         let m = meta;
         m.type_num * 1000 + m.map_num
     }

@@ -1,28 +1,27 @@
-use std::fmt::Write;
-
 use crate::{
-    config::{version_config::VersionConfig, Config},
+    config::Config,
     data::{
         map::{
-            map_data::{self, GameMap},
+            map_data::GameMap,
             parsed::map::{MapData, ResetType},
         },
         stage::raw::stage_metadata::consts::StageTypeEnum,
         version::Version,
     },
     wikitext::{
-        data_files::stage_wiki_data::{MapData as MapData2, TypeData, STAGE_WIKI_DATA},
+        data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
         wiki_utils::{extract_name, get_ordinal},
     },
 };
+use num_format::{Locale, WriteFormatted};
+use std::fmt::Write;
 
 const FORMAT: &str = "${map_img}
 ${intro}
 
 ==Difficulty==
-?
-${difficulties}
+${difficulty}
 
 ==List of Stages==
 ${stage_table}
@@ -30,7 +29,7 @@ ${stage_table}
 ${materials}
 
 ==Reference==
-${ref}
+*${ref}
 
 ----
 ${nav}
@@ -99,11 +98,66 @@ fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
     buf
 }
 
+fn difficulty(map: &MapData) -> String {
+    let data = map.crown_data.as_ref().unwrap();
+    if u8::from(data.max_difficulty) == 1 {
+        return String::new();
+    }
+
+    let mut buf = "{{LegendDiff".to_string();
+
+    if let Some(mag) = data.crown_2 {
+        buf.write_char('|').unwrap();
+        buf.write_formatted(&mag, &Locale::en).unwrap();
+    }
+    if let Some(mag) = data.crown_3 {
+        buf.write_char('|').unwrap();
+        buf.write_formatted(&mag, &Locale::en).unwrap();
+    }
+    if let Some(mag) = data.crown_4 {
+        buf.write_char('|').unwrap();
+        buf.write_formatted(&mag, &Locale::en).unwrap();
+    }
+
+    buf.write_str("}}").unwrap();
+    buf
+}
+
+fn reference(map: &MapData) -> String {
+    let mapid = GameMap::get_map_id(&map.meta);
+    format!("https://battlecats-db.com/stage/s{mapid:05}.html")
+}
+
+fn footer(map: &MapData) -> String {
+    match map.meta.type_enum {
+        StageTypeEnum::SoL => {
+            "{{LegendStages}}\n\
+            [[Category:Stories of Legend Chapters]]"
+        }
+        StageTypeEnum::UL => {
+            "{{UncannyLegendStages}}\n\
+            [[Category:Uncanny Legends Chapters]]"
+        }
+        StageTypeEnum::ZL => {
+            "{{ZeroLegendStages}}\n\
+            [[Category:Zero Legends Chapters]]"
+        }
+        _ => unreachable!(),
+    }
+    .to_string()
+}
+
 fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Config) -> String {
     // TODO rename MapData2
     match name {
         "map_img" => map_img(map, config),
         "intro" => intro(map, map_data, &config.version.current_version()),
+        "difficulty" => difficulty(map),
+        // "stage_table"=>stage_table(map),
+        // "materials"=>materials(map),
+        "ref" => reference(map),
+        // "nav"=>nav(map),
+        "footer" => footer(map),
         _ => format!("${{{name}}}"),
     }
 }
