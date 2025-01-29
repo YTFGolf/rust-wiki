@@ -169,6 +169,14 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 }
 
 fn materials(map: &MapData, version: &Version) -> String {
+    fn format_material(miss_chance: u8, chances: String) -> String {
+        let mut buf = "{{Materials".to_string();
+        write!(buf, "|{miss_chance}{chances}").unwrap();
+        buf.write_str("}}").unwrap();
+
+        return buf;
+    }
+
     let drop_item = GameMap::get_drop_item(&map.meta, version).unwrap();
     let normal = [
         drop_item.bricks,
@@ -181,23 +189,16 @@ fn materials(map: &MapData, version: &Version) -> String {
         drop_item.ammonite,
     ];
 
-    let mut buf = "{{Materials".to_string();
-    // TODO miss is definitely wrong
-    if drop_item.brick_z.is_none() {
-        let mut temp = String::new();
-        let mut total = 0;
-
-        for chance in normal {
-            write!(temp, "|{chance}").unwrap();
-            total += chance;
-        }
-        write!(buf, "|{miss}{temp}", miss = 100 - total).unwrap();
-        buf.write_str("}}").unwrap();
-        return buf;
-    }
+    let mut total = 0;
+    // TODO miss chance is definitely wrong
+    let mut buf = String::new();
 
     for chance in normal {
-        assert_eq!(chance, 0);
+        write!(buf, "|{chance}").unwrap();
+        total += chance;
+    }
+    if drop_item.brick_z.is_none() {
+        return format_material(100 - total, buf);
     }
 
     let drops_z = [
@@ -211,17 +212,14 @@ fn materials(map: &MapData, version: &Version) -> String {
         drop_item.ammonite_z,
     ];
 
-    let mut temp = String::new();
-    let mut total = 0;
     for chance in drops_z {
         let chance = chance.unwrap();
-        write!(temp, "|{chance}").unwrap();
+        write!(buf, "|{chance}").unwrap();
         total += chance;
     }
-    write!(buf, "|{miss}{temp}", miss = 100 - total).unwrap();
     buf.write_str("|hidenormal=").unwrap();
-    buf.write_str("}}").unwrap();
-    return buf;
+
+    return format_material(100 - total, buf);
 }
 
 fn reference(map: &MapData) -> String {
