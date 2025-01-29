@@ -1,4 +1,4 @@
-//! Parses the stage info format.
+//! Parses the page information format.
 
 #[derive(Debug, PartialEq)]
 /// Description of a [ParseNode].
@@ -19,7 +19,7 @@ pub struct ParseNode<'a> {
 }
 
 /// Parses the string format into a Vec of ParseNodes.
-pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
+pub fn parse_info_format(format: &str) -> Vec<ParseNode> {
     let mut parsed = vec![];
     let mut format = format;
     while let Some(mut n) = format.find("${") {
@@ -33,7 +33,7 @@ pub fn parse_si_format(format: &str) -> Vec<ParseNode> {
         }
         let n = n;
 
-        let end = format.find('}').expect("Invalid stage info format!");
+        let end = format.find('}').expect("Invalid page info format!");
         let var_name = &format[n + 2..end];
         parsed.push(ParseNode {
             content: var_name,

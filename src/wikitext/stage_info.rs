@@ -1,7 +1,7 @@
 //! Get information about a stage.
 
 use super::data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA};
-use super::format_parser::{parse_si_format, ParseType};
+use super::format_parser::{parse_info_format, ParseType};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
@@ -29,7 +29,7 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> String {
 
 /// Get stage info based on specified format.
 pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
-    let parsed = parse_si_format(format);
+    let parsed = parse_info_format(format);
 
     let mut buf = String::new();
 
