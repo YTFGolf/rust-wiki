@@ -128,6 +128,41 @@ fn reference(map: &MapData) -> String {
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
+fn nav(map: &MapData, map_data: &MapData2) -> String {
+    const BEGINNING: &str = "<p style=\"text-align:center;\">";
+    const PREV: &str = "&lt;&lt;";
+    const NEXT: &str = "&gt;&gt;";
+    let mut buf = BEGINNING.to_string();
+
+    let type_data = &STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap();
+    let chap = extract_name(&type_data.name);
+    write!(buf, "[[:Category:{chap} Chapters|{chap} Chapters]]").unwrap();
+    write!(buf, ":</p>\n\n{BEGINNING}'''").unwrap();
+
+    let prev = match map.meta.map_num {
+        0 => None,
+        n => type_data.get(n - 1),
+    };
+    match prev {
+        None => write!(buf, "{PREV} N/A").unwrap(),
+        Some(data) => {
+            let n = extract_name(&data.name);
+            write!(buf, "[[{n}|{PREV} {n}]]").unwrap();
+        }
+    }
+    buf.write_str(" | ").unwrap();
+    match type_data.get(map.meta.map_num + 1) {
+        None => write!(buf, "N/A {NEXT}").unwrap(),
+        Some(data) => {
+            let n = extract_name(&data.name);
+            write!(buf, "[[{n}|{n} {NEXT}]]").unwrap();
+        }
+    }
+    buf.write_str("'''</p>").unwrap();
+
+    buf
+}
+
 fn footer(map: &MapData) -> String {
     match map.meta.type_enum {
         StageTypeEnum::SoL => {
@@ -156,7 +191,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
         // "stage_table"=>stage_table(map),
         // "materials"=>materials(map),
         "ref" => reference(map),
-        // "nav"=>nav(map),
+        "nav" => nav(map, map_data),
         "footer" => footer(map),
         _ => format!("${{{name}}}"),
     }
