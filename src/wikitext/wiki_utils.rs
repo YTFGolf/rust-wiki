@@ -71,3 +71,51 @@ pub fn get_ordinal(n: u32) -> String {
         format!("{n}th")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::wikitext::wiki_utils::get_ordinal;
+
+    #[test]
+    #[should_panic = "assertion failed: (1..1000).contains(&n)"]
+    fn ordinal_0() {
+        let n = 0;
+        get_ordinal(n);
+    }
+
+    #[test]
+    fn ordinal_small() {
+        let n = 4;
+        assert_eq!(get_ordinal(n), "fourth")
+    }
+
+    #[test]
+    fn ordinal_12() {
+        let n = 12;
+        assert_eq!(get_ordinal(n), "12th")
+    }
+
+    #[test]
+    fn ordinal_large() {
+        let n = 42;
+        assert_eq!(get_ordinal(n), "42nd")
+    }
+
+    #[test]
+    fn ordinal_large_small() {
+        let n = 91;
+        assert_eq!(get_ordinal(n), "91st")
+    }
+
+    #[test]
+    fn ordinal_100() {
+        let n = 100;
+        assert_eq!(get_ordinal(n), "100th")
+    }
+
+    #[test]
+    fn ordinal_113() {
+        let n = 113;
+        assert_eq!(get_ordinal(n), "113th")
+    }
+}
