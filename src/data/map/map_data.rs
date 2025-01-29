@@ -45,7 +45,7 @@ impl GameMap {
     ///
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
     /// Labyrinth stages above 100.
-    pub fn get_stage_data(md: &StageMeta, v: &Version) -> Option<StageDataCSV> {
+    fn stage_data(md: &StageMeta, v: &Version) -> Option<StageDataCSV> {
         let map_file = v.get_file_path("DataLocal").join(&md.map_file_name);
         let line = BufReader::new(File::open(map_file).unwrap())
             .lines()
@@ -159,11 +159,11 @@ impl GameMap {
     }
 
     /// Get MapStageData data for the stage if it exists.
-    pub fn get_map_stage_data(meta: &StageMeta, version: &Version) -> Option<StageDataCSV> {
+    pub fn get_stage_data(meta: &StageMeta, version: &Version) -> Option<StageDataCSV> {
         if meta.type_enum == StageTypeEnum::Labyrinth {
             return None;
         }
-        GameMap::get_stage_data(meta, version)
+        GameMap::stage_data(meta, version)
     }
 
     /// Get Map_option data if it exists.

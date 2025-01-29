@@ -216,7 +216,7 @@ impl<'a> StageData<'_> {
 
     /// Get MapStageData data if it exists.
     pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
-        GameMap::get_map_stage_data(&self.meta, self.version)
+        GameMap::get_stage_data(&self.meta, self.version)
     }
 
     /// Get Map_option data if it exists.
