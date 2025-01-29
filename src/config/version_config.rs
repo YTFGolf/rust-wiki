@@ -87,7 +87,7 @@ impl VersionConfig {
         }
     }
     /// Set the version's `lang`.
-    fn _set_lang(&mut self, lang: Lang) {
+    pub fn set_lang(&mut self, lang: Lang) {
         self.lang = lang;
     }
 }
