@@ -75,22 +75,22 @@ fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
         x => panic!("Type not compatible with Legend Stages: {x:?}."),
     };
 
-    if map_offset == 0 {
-        buf += ". "
-    } else {
+    if map_offset != 0 {
         write!(
             buf,
-            ", and the {num} sub-chapter overall. ",
+            ", and the {num} sub-chapter overall",
             num = get_ordinal(map.meta.map_num + 1 + map_offset)
         )
         .unwrap();
     }
+    buf += ". ";
 
     let mut ver = version.number();
     if let Some(s) = ver.strip_suffix(".0") {
         ver = s
     }
     let ver = ver;
+    // TODO proper version
 
     write!(
         buf,
@@ -175,11 +175,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 
 fn materials(map: &MapData, version: &Version) -> String {
     fn format_material(miss_chance: u8, chances: String) -> String {
-        let mut buf = "{{Materials".to_string();
-        write!(buf, "|{miss_chance}{chances}").unwrap();
-        buf.write_str("}}").unwrap();
-
-        return buf;
+        format!("{{{{Materials|{miss_chance}{chances}}}}}")
     }
 
     let drop_item = GameMap::get_drop_item(&map.meta, version).unwrap();
@@ -216,7 +212,6 @@ fn materials(map: &MapData, version: &Version) -> String {
         drop_item.beast_bones_z,
         drop_item.ammonite_z,
     ];
-
     for chance in drops_z {
         let chance = chance.unwrap();
         write!(buf, "|{chance}").unwrap();
