@@ -293,7 +293,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
         "ref" => reference(map),
         "nav" => nav(map),
         "footer" => footer(map),
-        _ => format!("${{{name}}}"),
+        invalid => panic!("Variable {invalid:?} is not recognised!"),
     }
 }
 
