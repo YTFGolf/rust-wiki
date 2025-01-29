@@ -1,9 +1,11 @@
 //! Get info about a map.
 
+mod legend;
 use crate::{
     config::Config,
     data::{map::parsed::map::MapData, stage::raw::stage_metadata::consts::StageTypeEnum},
 };
+use legend::get_legend_map;
 
 /// Types of possible map.
 enum Preset {
@@ -36,7 +38,10 @@ const fn get_preset(st: StageTypeEnum) -> Preset {
 }
 
 /// Get full map info.
-pub fn get_map_info(map: &MapData, _config: &Config) -> String {
-    println!("{map:#?}");
-    todo!()
+pub fn get_map_info(map: &MapData, config: &Config) -> String {
+    let preset = get_preset(map.meta.type_enum);
+    match preset {
+        Preset::Legend => get_legend_map(map, config),
+        _ => todo!(),
+    }
 }
