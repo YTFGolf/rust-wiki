@@ -10,7 +10,7 @@ use crate::data::{
 };
 use std::num::NonZeroU32;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// What happens when event ends. Event can be ended by reaching max clears or
 /// by the timer running out.
 pub enum ResetType {

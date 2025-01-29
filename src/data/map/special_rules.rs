@@ -40,7 +40,7 @@ mod raw {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 /// Exact meaning is unclear.
 pub enum ContentsType {
     /// Only used in Colosseum stages.
@@ -121,7 +121,7 @@ impl RuleType {
 }
 
 /// Represents all special rules for an individual map.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SpecialRule {
     /// Unclear what the purpose is, other than war funds.
     pub contents_type: ContentsType,

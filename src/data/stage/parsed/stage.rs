@@ -50,7 +50,7 @@ impl ContinueStages {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 /// Crown difficulty data.
 pub struct CrownData {
     /// Max crown difficulty.
