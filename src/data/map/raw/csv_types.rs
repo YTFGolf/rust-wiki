@@ -1,26 +1,24 @@
 //! Types to deserialise map csv files.
 
-// #[derive(Debug, serde::Deserialize)]
-// #[allow(dead_code, missing_docs)]
-// /// No real clue.
-// // mapnum?,treasuredrop,scorerewards,?,?
-// pub struct HeaderCSV {
-//     map_file_num: i32,
-// // "itemsetting" according to clamchowder
-//     _unknown_1: i32,
-// // Something to do with score rewards
-//     _unknown_2: i32,
-// // next 2 are something to do with unlock conditions
-//     _unknown_3: i32,
-//     _unknown_4: i32,
+#[derive(Debug, serde::Deserialize)]
+#[allow(dead_code, missing_docs)]
+/// No real clue.
+// mapnum?,treasuredrop,scorerewards,?,?
+pub struct HeaderCSV {
+    pub map_file_num: i32,
+    // "itemsetting" according to clamchowder
+    _unknown_1: i32,
+    // Something to do with score rewards
+    _unknown_2: i32,
+    // next 2 are something to do with unlock conditions
+    _unknown_3: i32,
+    _unknown_4: i32,
+    // 9,-1,-1,137000,137000
+    // Means map 9, and must complete map 37000 to unlock
+    // mapcondition and stagecondition are the 137000s according to clamchowder
 
-// 9,-1,-1,137000,137000
-// Means map 9, and must complete map 37000 to unlock
-// mapcondition and stagecondition are the 137000s according to clamchowder
-
-// アイテム報酬型ステージ設定(-1:OFF),　スコア報酬型ステージ設定(-1:OFF)
-
-// }
+    // アイテム報酬型ステージ設定(-1:OFF),　スコア報酬型ステージ設定(-1:OFF)
+}
 
 // not important probably
 // #[derive(Debug, serde::Deserialize)]

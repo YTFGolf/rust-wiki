@@ -3,7 +3,7 @@
 use super::{
     ex_option::ExOption,
     map_option::{MapOption, MapOptionCSV},
-    raw::csv_types::{ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
+    raw::csv_types::{HeaderCSV, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
     special_rules::{SpecialRule, SpecialRules},
 };
 use crate::data::{
@@ -16,11 +16,28 @@ use crate::data::{
 use csv::ByteRecord;
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Cursor},
+    io::{BufRead, BufReader, Cursor, Read},
 };
 
 /// Currently stores nothing.
 pub struct GameMap {}
+
+impl GameMap {
+    // Temp for legend
+    pub fn new(md: &StageMeta, v: &Version) -> HeaderCSV {
+        let map_file = v.get_file_path("DataLocal").join(&md.map_file_name);
+        let lines = BufReader::new(File::open(map_file).unwrap());
+
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // .flexible(true)
+            .from_reader(lines);
+
+        let header = rdr.byte_records().next().unwrap().unwrap();
+
+        header.deserialize(None).unwrap()
+    }
+}
 
 // Stage-related.
 impl GameMap {

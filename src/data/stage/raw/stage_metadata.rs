@@ -234,6 +234,7 @@ static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
     default: Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap(),
 });
 
+// TODO split into type, map and stage
 #[derive(Debug, PartialEq)]
 /// Contains metadata about a given stage.
 pub struct StageMeta {
