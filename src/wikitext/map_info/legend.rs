@@ -14,7 +14,7 @@ use crate::{
         wiki_utils::{extract_link, extract_name, get_ordinal},
     },
 };
-use num_format::{Locale, WriteFormatted};
+use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
 
 const FORMAT: &str = "${map_img}
@@ -61,7 +61,7 @@ fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
     let mut buf = String::new();
     write!(
         buf,
-        "'''{name}''' (?, ''?'', '''?''') is the {num} sub-chapter of {chap}, ",
+        "'''{name}''' (?, ''?'', '''?''') is the {num} sub-chapter of {chap}",
         name = extract_name(&map_data.name),
         num = get_ordinal(map.meta.map_num + 1),
         chap = STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap().name,
@@ -75,12 +75,16 @@ fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
         x => panic!("Type not compatible with Legend Stages: {x:?}."),
     };
 
-    write!(
-        buf,
-        "and the {num} sub-chapter overall. ",
-        num = get_ordinal(map.meta.map_num + 1 + map_offset)
-    )
-    .unwrap();
+    if map_offset == 0 {
+        buf += ". "
+    } else {
+        write!(
+            buf,
+            ", and the {num} sub-chapter overall. ",
+            num = get_ordinal(map.meta.map_num + 1 + map_offset)
+        )
+        .unwrap();
+    }
 
     let mut ver = version.number();
     if let Some(s) = ver.strip_suffix(".0") {
@@ -156,7 +160,8 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
             energy = GameMap::get_stage_data(&meta, version)
                 .unwrap()
                 .fixed_data
-                .energy,
+                .energy
+                .to_formatted_string(&Locale::en),
             stagename = extract_link(&stage.name)
         )
         .unwrap();
