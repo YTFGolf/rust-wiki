@@ -47,3 +47,27 @@ pub fn extract_name(name: &str) -> &str {
         name
     }
 }
+
+/// Get the ordinal number corresponding to `n` (e.g. 1 = "first").
+pub fn get_ordinal(n: u32) -> String {
+    const SMALL_ORDS: [&str; 9] = [
+        "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
+    ];
+
+    if n as usize <= SMALL_ORDS.len() {
+        return SMALL_ORDS[n as usize - 1].to_string();
+    }
+
+    let n = n % 100;
+    if (11..=13).contains(&n) {
+        format!("{n}th")
+    } else if n % 10 == 1 {
+        format!("{n}st")
+    } else if n % 10 == 2 {
+        format!("{n}nd")
+    } else if n % 10 == 3 {
+        format!("{n}rd")
+    } else {
+        format!("{n}th")
+    }
+}

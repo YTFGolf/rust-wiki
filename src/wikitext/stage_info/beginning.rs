@@ -5,7 +5,7 @@ use crate::{
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         stage_info::StageWikiData,
-        wiki_utils::{extract_name, OLD_OR_REMOVED_SUB},
+        wiki_utils::{extract_name, get_ordinal, OLD_OR_REMOVED_SUB},
     },
 };
 use std::{collections::HashSet, fmt::Write};
@@ -87,30 +87,6 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
     }
 
     buf
-}
-
-/// Get the ordinal number corresponding to `n` (e.g. 1 = "first").
-fn get_ordinal(n: u32) -> String {
-    const SMALL_ORDS: [&str; 9] = [
-        "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
-    ];
-
-    if n as usize <= SMALL_ORDS.len() {
-        return SMALL_ORDS[n as usize - 1].to_string();
-    }
-
-    let n = n % 100;
-    if (11..=13).contains(&n) {
-        format!("{n}th")
-    } else if n % 10 == 1 {
-        format!("{n}st")
-    } else if n % 10 == 2 {
-        format!("{n}nd")
-    } else if n % 10 == 3 {
-        format!("{n}rd")
-    } else {
-        format!("{n}th")
-    }
 }
 
 #[cfg(test)]
