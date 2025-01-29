@@ -1,14 +1,19 @@
 use std::fmt::Write;
 
 use crate::{
-    config::Config,
-    data::map::{
-        map_data::{self, GameMap},
-        parsed::map::{MapData, ResetType},
+    config::{version_config::VersionConfig, Config},
+    data::{
+        map::{
+            map_data::{self, GameMap},
+            parsed::map::{MapData, ResetType},
+        },
+        stage::raw::stage_metadata::consts::StageTypeEnum,
+        version::Version,
     },
     wikitext::{
-        data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
+        data_files::stage_wiki_data::{MapData as MapData2, TypeData, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
+        wiki_utils::{extract_name, get_ordinal},
     },
 };
 
@@ -53,10 +58,52 @@ fn map_img(map: &MapData, _config: &Config) -> String {
     format!("[[File:Map{map_num:03}.png|center|350px]]")
 }
 
-fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, _config: &Config) -> String {
+fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
+    let mut buf = String::new();
+    write!(
+        buf,
+        "'''{name}''' (?, ''?'', '''?''') is the {num} sub-chapter of {chap}, ",
+        name = extract_name(&map_data.name),
+        num = get_ordinal(map.meta.map_num + 1),
+        chap = STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap().name,
+    )
+    .unwrap();
+
+    let map_offset = match map.meta.type_enum {
+        StageTypeEnum::SoL => 0,
+        StageTypeEnum::UL => 49,
+        StageTypeEnum::ZL => 98,
+        x => panic!("Type not compatible with Legend Stages: {x:?}."),
+    };
+
+    write!(
+        buf,
+        "and the {num} sub-chapter overall. ",
+        num = get_ordinal(map.meta.map_num + 1 + map_offset)
+    )
+    .unwrap();
+
+    let mut ver = version.number();
+    if let Some(s) = ver.strip_suffix(".0") {
+        ver = s
+    }
+    let ver = ver;
+
+    write!(
+        buf,
+        "It was introduced in [[Version {ver} Update|Version {ver}]] \
+        and is available up to {{{{{diff}c}}}} difficulty.",
+        diff = map.crown_data.as_ref().unwrap().max_difficulty
+    )
+    .unwrap();
+    buf
+}
+
+fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Config) -> String {
     // TODO rename MapData2
     match name {
-        "map_img" => map_img(map, _config),
+        "map_img" => map_img(map, config),
+        "intro" => intro(map, map_data, &config.version.current_version()),
         _ => format!("${{{name}}}"),
     }
 }

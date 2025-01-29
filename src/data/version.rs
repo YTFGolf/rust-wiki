@@ -88,10 +88,13 @@ impl Version {
     //     &self.language
     // }
 
-    // /// Get version's number.
-    // pub fn number(&self) -> &str {
-    //     &self.number
-    // }
+    /// Get version's number.
+    pub fn number(&self) -> &str {
+        let loc = self.location.to_str().unwrap();
+        loc.split_whitespace()
+            .find(|&part| part.chars().all(|c| c.is_ascii_digit() || c == '.'))
+            .unwrap()
+    }
 
     /// Get full absolute file path of the version's game directory.
     pub fn get_file_path<P: AsRef<Path>>(&self, path: P) -> PathBuf {
