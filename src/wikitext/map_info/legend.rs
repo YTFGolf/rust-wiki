@@ -108,7 +108,8 @@ fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
         write!(
             buf,
             "was introduced in [[Version {ver} Update|Version {ver}]] and "
-        ).unwrap();
+        )
+        .unwrap();
     }
     write!(
         buf,
@@ -403,6 +404,37 @@ mod tests {
         assert_eq!(
             get_legend_map(&leg_begins, &config),
             include_str!("leg_begins.txt").trim()
+        );
+    }
+
+    #[test]
+    fn test_version() {
+        let mut with_version = TEST_CONFIG.clone();
+        with_version.map_info.set_version(true);
+        with_version.version.init_all();
+
+        let leg_begins = MapData::new(0, with_version.version.current_version());
+        let map_data = get_map_data(&leg_begins.meta);
+
+        let mut ver = with_version.version.current_version().number();
+        if let Some(s) = ver.strip_suffix(".0") {
+            ver = s
+        }
+        let target = format!(
+            "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
+            [[Legend Stages#Stories of Legend|Stories of Legend]]. It \
+            was introduced in [[Version {ver} Update|Version {ver}]] and \
+            is available up to {{{{4c}}}} difficulty."
+        );
+        assert_eq!(intro(&leg_begins, map_data, &with_version), target);
+
+        let mut no_version = with_version;
+        no_version.map_info.set_version(false);
+        assert_eq!(
+            intro(&leg_begins, map_data, &no_version),
+            "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
+            [[Legend Stages#Stories of Legend|Stories of Legend]]. \
+            It is available up to {{4c}} difficulty."
         );
     }
 }
