@@ -140,6 +140,7 @@ impl<'a> StageData<'_> {
         Self::from_meta(meta, &version)
     }
 
+    /// Get stage data from meta object.
     pub fn from_meta(
         meta: StageMeta,
         version: &'a Version,

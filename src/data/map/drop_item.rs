@@ -55,10 +55,12 @@ pub struct DropItemRaw {
 
 type DropItemMap = HashMap<u32, DropItemRaw>;
 #[derive(Debug)]
+/// Container for DropItem data.
 pub struct DropItem {
     map: DropItemMap,
 }
 impl DropItem {
+    /// Get drop_item for specific map if it exists.
     pub fn get_drop_item(&self, mapid: u32) -> Option<&DropItemRaw> {
         self.map.get(&mapid)
     }
