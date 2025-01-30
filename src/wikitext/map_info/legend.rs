@@ -345,6 +345,16 @@ mod tests {
     use super::*;
     use crate::config::TEST_CONFIG;
 
+    fn nav_item(heading: &str, left: &str, right: &str) -> String {
+        const START: &str = "<p style=\"text-align:center;\">";
+        const END: &str = "</p>";
+
+        format!(
+            "{START}{heading}:{END}\n\n\
+            {START}'''{left} | {right}'''{END}"
+        )
+    }
+
     #[test]
     fn test_full() {
         let version = TEST_CONFIG.version.current_version();
@@ -369,10 +379,11 @@ mod tests {
         );
         assert_eq!(
             nav(&leg_begins),
-            "<p style=\"text-align:center;\">\
-            [[:Category:Stories of Legend Chapters|Stories of Legend Chapters]]:</p>\n\n\
-            <p style=\"text-align:center;\">\
-            '''&lt;&lt; N/A | [[Passion Land|Passion Land &gt;&gt;]]'''</p>"
+            nav_item(
+                "[[:Category:Stories of Legend Chapters|Stories of Legend Chapters]]",
+                "&lt;&lt; N/A",
+                "[[Passion Land|Passion Land &gt;&gt;]]"
+            )
         );
         assert_eq!(
             footer(&leg_begins),
