@@ -71,7 +71,7 @@ fn map_img(map: &MapData) -> String {
     format!("[[File:Map{:03}.png|center|350px]]", map.map_file_num)
 }
 
-fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
+fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
     let mut buf = String::new();
     write!(
         buf,
@@ -98,17 +98,21 @@ fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
     }
     buf += ". ";
 
-    let mut ver = version.number();
-    if let Some(s) = ver.strip_suffix(".0") {
-        ver = s
-    }
-    let ver = ver;
-    // TODO proper version
+    buf.write_str("It ").unwrap();
+    if config.map_info.version() {
+        let mut ver = config.version.current_version().number();
+        if let Some(s) = ver.strip_suffix(".0") {
+            ver = s
+        }
 
+        write!(
+            buf,
+            "was introduced in [[Version {ver} Update|Version {ver}]] and "
+        ).unwrap();
+    }
     write!(
         buf,
-        "It was introduced in [[Version {ver} Update|Version {ver}]] \
-        and is available up to {{{{{diff}c}}}} difficulty.",
+        "is available up to {{{{{diff}c}}}} difficulty.",
         diff = map.crown_data.as_ref().unwrap().max_difficulty
     )
     .unwrap();
@@ -310,7 +314,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
     let version = &config.version.current_version();
     match name {
         "map_img" => map_img(map),
-        "intro" => intro(map, map_data, version),
+        "intro" => intro(map, map_data, config),
         "difficulty" => difficulty(map),
         "stage_table" => stage_table(map, map_data, version),
         "materials" => materials(map, version),
@@ -364,7 +368,7 @@ mod tests {
         let map_data = get_map_data(&leg_begins.meta);
         assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
         assert_eq!(
-            intro(&leg_begins, map_data, version),
+            intro(&leg_begins, map_data, &TEST_CONFIG),
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
             [[Legend Stages#Stories of Legend|Stories of Legend]]. \
             It is available up to {{4c}} difficulty."
