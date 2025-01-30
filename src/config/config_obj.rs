@@ -104,13 +104,7 @@ impl Config {
 #[cfg(test)]
 fn get_config() -> Config {
     let mut config: Config = toml::from_str(&Config::read_config_file().unwrap()).unwrap();
-
-    // Set certain flags for test consistency
     config.version.init_all();
-    // Needs to be initialised lol
-    config.map_info.set_version(false);
-    // Map information
-
     config
 }
 

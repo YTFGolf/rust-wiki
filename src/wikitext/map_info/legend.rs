@@ -363,12 +363,16 @@ mod tests {
 
     #[test]
     fn test_full() {
-        let version = TEST_CONFIG.version.current_version();
+        let mut config = TEST_CONFIG.clone();
+        config.map_info.set_version(false);
+        config.version.init_all();
+
+        let version = config.version.current_version();
         let leg_begins = MapData::new(0, version);
         let map_data = get_map_data(&leg_begins.meta);
         assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
         assert_eq!(
-            intro(&leg_begins, map_data, &TEST_CONFIG),
+            intro(&leg_begins, map_data, &config),
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
             [[Legend Stages#Stories of Legend|Stories of Legend]]. \
             It is available up to {{4c}} difficulty."
@@ -397,7 +401,7 @@ mod tests {
         );
 
         assert_eq!(
-            get_legend_map(&leg_begins, &TEST_CONFIG),
+            get_legend_map(&leg_begins, &config),
             include_str!("leg_begins.txt").trim()
         );
     }
