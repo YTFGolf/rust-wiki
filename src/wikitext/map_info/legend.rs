@@ -250,33 +250,41 @@ fn nav_item(heading: &str, left: &str, right: &str) -> String {
     )
 }
 
+fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> String {
+    const PREV: &str = "&lt;&lt;";
+    const NEXT: &str = "&gt;&gt;";
+
+    let left = match left {
+        None => format!("{PREV} N/A"),
+        Some(name) => {
+            format!("[[{name}|{PREV} {name}]]")
+        }
+    };
+    let right = match right {
+        None => format!("N/A {NEXT}"),
+        Some(name) => {
+            format!("[[{name}|{name} {NEXT}]]")
+        }
+    };
+
+    nav_item(heading, &left, &right)
+}
+
 fn nav(map: &MapData) -> String {
     let type_data = &STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap();
     let chap = extract_name(&type_data.name);
     let heading = format!("[[:Category:{chap} Chapters|{chap} Chapters]]");
 
-    const PREV: &str = "&lt;&lt;";
-    const NEXT: &str = "&gt;&gt;";
     let prev = match map.meta.map_num {
         0 => None,
         n => type_data.get(n - 1),
     };
-    let left = match prev {
-        None => format!("{PREV} N/A"),
-        Some(data) => {
-            let name = extract_name(&data.name);
-            format!("[[{name}|{PREV} {name}]]")
-        }
-    };
-    let right = match type_data.get(map.meta.map_num + 1) {
-        None => format!("N/A {NEXT}"),
-        Some(data) => {
-            let name = extract_name(&data.name);
-            format!("[[{name}|{name} {NEXT}]]")
-        }
-    };
+    let left = prev.map(|data| extract_name(&data.name));
+    let right = type_data
+        .get(map.meta.map_num + 1)
+        .map(|data| extract_name(&data.name));
 
-    nav_item(&heading, &left, &right)
+    nav_item_opt(&heading, left, right)
 }
 
 fn footer(map: &MapData) -> String {
