@@ -1,0 +1,78 @@
+[[File:Map004.png|center|350px]]
+'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of [[Legend Stages#Stories of Legend|Stories of Legend]]. It was introduced in [[Version 2.0 Update|Version 2.0]] and is available up to {{4c}} difficulty.
+
+==Difficulty==
+{{LegendDiff|150|200|300}}
+
+==List of Stages==
+{| class="article-table"
+! rowspan="2" scope="row" |
+! rowspan="2" scope="col" | [[File:Mapname000 n en.png|200px]]
+! rowspan="2" scope="col" | [[File:Mapname000 n ja.png|200px]]
+! colspan="2" scope="col" style="text-align: center; min-width: 210px; line-height: 20px;" |'''Difficulty'''<br>{{Stars|7}}
+|-
+! scope="col" | Translation
+! scope="col" | Energy
+|-
+! scope="row" | Stage 1
+| [[File:Mapsn000 00 n en.png|200px|link=Earthshaker]]
+| [[File:Mapsn000 00 n ja.png|200px|?]]
+| ?
+| 50 {{EnergyIcon}}
+|-
+! scope="row" | Stage 2
+| [[File:Mapsn000 01 n en.png|200px|link=Return of Terror]]
+| [[File:Mapsn000 01 n ja.png|200px|?]]
+| ?
+| 50 {{EnergyIcon}}
+|-
+! scope="row" | Stage 3
+| [[File:Mapsn000 02 n en.png|200px|link=Sunset Blues]]
+| [[File:Mapsn000 02 n ja.png|200px|?]]
+| ?
+| 55 {{EnergyIcon}}
+|-
+! scope="row" | Stage 4
+| [[File:Mapsn000 03 n en.png|200px|link=Melancholy Damp]]
+| [[File:Mapsn000 03 n ja.png|200px|?]]
+| ?
+| 60 {{EnergyIcon}}
+|-
+! scope="row" | Stage 5
+| [[File:Mapsn000 04 n en.png|200px|link=Bouncy Park]]
+| [[File:Mapsn000 04 n ja.png|200px|?]]
+| ?
+| 60 {{EnergyIcon}}
+|-
+! scope="row" | Stage 6
+| [[File:Mapsn000 05 n en.png|200px|link=Gentle Smile]]
+| [[File:Mapsn000 05 n ja.png|200px|?]]
+| ?
+| 60 {{EnergyIcon}}
+|-
+! scope="row" | Stage 7
+| [[File:Mapsn000 06 n en.png|200px|link=Guardian of the Ranch]]
+| [[File:Mapsn000 06 n ja.png|200px|?]]
+| ?
+| 70 {{EnergyIcon}}
+|-
+! scope="row" | Stage 8
+| [[File:Mapsn000 07 n en.png|200px|link=Sleeping Lion]]
+| [[File:Mapsn000 07 n ja.png|200px|?]]
+| ?
+| 90 {{EnergyIcon}}
+|}
+
+{{Materials|61|13|0|13|13|0|0|0|0}}
+
+==Reference==
+*https://battlecats-db.com/stage/s00000.html
+
+----
+<p style="text-align:center;">[[:Category:Stories of Legend Chapters|Stories of Legend Chapters]]:</p>
+
+<p style="text-align:center;">'''&lt;&lt; N/A | [[Passion Land|Passion Land &gt;&gt;]]'''</p>
+----
+
+{{LegendStages}}
+[[Category:Stories of Legend Chapters]]

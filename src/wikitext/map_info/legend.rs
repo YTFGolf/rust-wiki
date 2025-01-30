@@ -309,18 +309,22 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
     }
 }
 
+pub fn get_map_data(meta: &StageMeta) -> &'static MapData2 {
+    STAGE_WIKI_DATA
+        .stage_map(meta.type_num, meta.map_num)
+        .unwrap_or_else(|| {
+            panic!(
+                "Couldn't find map name: {:03}-{:03}",
+                meta.type_num, meta.map_num
+            )
+        })
+}
+
 pub fn get_legend_map(map: &MapData, config: &Config) -> String {
     test_invariants(map);
 
     // println!("{map:#?}");
-    let map_data = STAGE_WIKI_DATA
-        .stage_map(map.meta.type_num, map.meta.map_num)
-        .unwrap_or_else(|| {
-            panic!(
-                "Couldn't find map name: {:03}-{:03}",
-                map.meta.type_num, map.meta.map_num
-            )
-        });
+    let map_data = get_map_data(&map.meta);
 
     let mut buf = String::new();
     for node in parse_info_format(FORMAT) {
@@ -334,4 +338,50 @@ pub fn get_legend_map(map: &MapData, config: &Config) -> String {
     }
 
     buf
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::TEST_CONFIG;
+
+    #[test]
+    fn test_full() {
+        let version = TEST_CONFIG.version.current_version();
+        let leg_begins = MapData::new(0, version);
+        let map_data = get_map_data(&leg_begins.meta);
+        assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
+        assert_eq!(
+            intro(&leg_begins, map_data, version),
+            "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
+            [[Legend Stages#Stories of Legend|Stories of Legend]]. It was introduced in \
+            [[Version 2.0 Update|Version 2.0]] and is available up to {{4c}} difficulty."
+        );
+        assert_eq!(difficulty(&leg_begins), "{{LegendDiff|150|200|300}}");
+        // assert_eq!(stage_table(&leg_begins, map_data, version), "");
+        assert_eq!(
+            materials(&leg_begins, version),
+            "{{Materials|61|13|0|13|13|0|0|0|0}}"
+        );
+        assert_eq!(
+            reference(&leg_begins),
+            "https://battlecats-db.com/stage/s00000.html"
+        );
+        assert_eq!(
+            nav(&leg_begins),
+            "<p style=\"text-align:center;\">\
+            [[:Category:Stories of Legend Chapters|Stories of Legend Chapters]]:</p>\n\n\
+            <p style=\"text-align:center;\">\
+            '''&lt;&lt; N/A | [[Passion Land|Passion Land &gt;&gt;]]'''</p>"
+        );
+        assert_eq!(
+            footer(&leg_begins),
+            "{{LegendStages}}\n[[Category:Stories of Legend Chapters]]"
+        );
+
+        assert_eq!(
+            get_legend_map(&leg_begins, &TEST_CONFIG),
+            include_str!("leg_begins.txt").trim()
+        );
+    }
 }
