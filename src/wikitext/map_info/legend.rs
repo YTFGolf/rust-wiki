@@ -37,6 +37,23 @@ ${nav}
 
 ${footer}";
 
+/// Subset of [`StageTypeEnum`] available in legend stages.
+enum LegendSubset {
+    SoL,
+    UL,
+    ZL,
+}
+impl From<StageTypeEnum> for LegendSubset {
+    fn from(value: StageTypeEnum) -> Self {
+        match value {
+            StageTypeEnum::SoL => Self::SoL,
+            StageTypeEnum::UL => Self::UL,
+            StageTypeEnum::ZL => Self::ZL,
+            x => panic!("Type not compatible with Legend Stages: {x:?}."),
+        }
+    }
+}
+
 /// Ensure that expected stage invariants are met.
 fn test_invariants(map: &MapData) {
     // assert_eq!(map.crown_data, None);
@@ -68,11 +85,10 @@ fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
     )
     .unwrap();
 
-    let map_offset = match map.meta.type_enum {
-        StageTypeEnum::SoL => 0,
-        StageTypeEnum::UL => 49,
-        StageTypeEnum::ZL => 98,
-        x => panic!("Type not compatible with Legend Stages: {x:?}."),
+    let map_offset = match map.meta.type_enum.into() {
+        LegendSubset::SoL => 0,
+        LegendSubset::UL => 49,
+        LegendSubset::ZL => 98,
     };
 
     if map_offset != 0 {
@@ -263,20 +279,19 @@ fn nav(map: &MapData) -> String {
 }
 
 fn footer(map: &MapData) -> String {
-    match map.meta.type_enum {
-        StageTypeEnum::SoL => {
+    match map.meta.type_enum.into() {
+        LegendSubset::SoL => {
             "{{LegendStages}}\n\
             [[Category:Stories of Legend Chapters]]"
         }
-        StageTypeEnum::UL => {
+        LegendSubset::UL => {
             "{{UncannyLegendStages}}\n\
             [[Category:Uncanny Legends Chapters]]"
         }
-        StageTypeEnum::ZL => {
+        LegendSubset::ZL => {
             "{{ZeroLegendStages}}\n\
             [[Category:Zero Legends Chapters]]"
         }
-        _ => unreachable!(),
     }
     .to_string()
 }
