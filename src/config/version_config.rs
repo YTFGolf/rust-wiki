@@ -38,6 +38,19 @@ pub struct VersionConfig {
     cur_index: usize,
 }
 
+impl Clone for VersionConfig {
+    fn clone(&self) -> Self {
+        Self {
+            lang: self.lang.clone(),
+            enpath: self.enpath.clone(),
+            jppath: self.jppath.clone(),
+
+            versions: Default::default(),
+            cur_index: Default::default(),
+        }
+    }
+}
+
 impl VersionConfig {
     fn expand_home(dir: &str) -> PathBuf {
         if dir == "~" || dir.is_empty() {
@@ -86,7 +99,8 @@ impl VersionConfig {
             Lang::JP => self.jppath = path,
         }
     }
-    /// Set the version's `lang`.
+    /// Set the version's `lang`. Must be called before
+    /// [`init_all`][VersionConfig::init_all] or it will do nothing.
     pub fn set_lang(&mut self, lang: Lang) {
         self.lang = lang;
     }

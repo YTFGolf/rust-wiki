@@ -38,7 +38,7 @@ where
     serializer.serialize_str(&level.as_str().to_lowercase())
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 /// Stored user configuration.
 // TODO remove Serialise and replace with toml-edit.
 pub struct Config {
