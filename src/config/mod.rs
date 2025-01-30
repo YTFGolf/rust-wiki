@@ -1,6 +1,7 @@
 //! Deals with user config.
 
 mod config_obj;
+pub mod map_config;
 pub mod stage_config;
 pub mod version_config;
 pub mod wiki_config;

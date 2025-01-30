@@ -1,6 +1,9 @@
 //! Represents the config.
 
-use super::{stage_config::StageConfig, version_config::VersionConfig, wiki_config::WikiConfig};
+use super::{
+    map_config::MapConfig, stage_config::StageConfig, version_config::VersionConfig,
+    wiki_config::WikiConfig,
+};
 use log::Level;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -23,6 +26,7 @@ use std::{
 - [ ] main/cmd will deal with combining user config and cmd config (maybe a
   trait each subcommand option type could implement)
 */
+// TODO FIX THIS
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
 // needs to take and &Level due to how serialize works
@@ -47,6 +51,8 @@ pub struct Config {
     pub version: VersionConfig,
     /// Config for `stage_info`.
     pub stage_info: StageConfig,
+    /// Config for `map_info`.
+    pub map_info: MapConfig,
 }
 
 impl Default for Config {
@@ -57,6 +63,7 @@ impl Default for Config {
             wiki: Default::default(),
             version: Default::default(),
             stage_info: Default::default(),
+            map_info: Default::default(),
         }
     }
 }
@@ -97,7 +104,13 @@ impl Config {
 #[cfg(test)]
 fn get_config() -> Config {
     let mut config: Config = toml::from_str(&Config::read_config_file().unwrap()).unwrap();
+
+    // Set certain flags for test consistency
     config.version.init_all();
+    // Needs to be initialised lol
+    config.map_info.set_version(false);
+    // Map information
+
     config
 }
 
