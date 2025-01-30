@@ -1,5 +1,5 @@
 [[File:Map004.png|center|350px]]
-'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of [[Legend Stages#Stories of Legend|Stories of Legend]]. It was introduced in [[Version 2.0 Update|Version 2.0]] and is available up to {{4c}} difficulty.
+'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of [[Legend Stages#Stories of Legend|Stories of Legend]]. It is available up to {{4c}} difficulty.
 
 ==Difficulty==
 {{LegendDiff|150|200|300}}

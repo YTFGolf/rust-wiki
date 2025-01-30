@@ -366,8 +366,8 @@ mod tests {
         assert_eq!(
             intro(&leg_begins, map_data, version),
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
-            [[Legend Stages#Stories of Legend|Stories of Legend]]. It was introduced in \
-            [[Version 2.0 Update|Version 2.0]] and is available up to {{4c}} difficulty."
+            [[Legend Stages#Stories of Legend|Stories of Legend]]. \
+            It is available up to {{4c}} difficulty."
         );
         assert_eq!(difficulty(&leg_begins), "{{LegendDiff|150|200|300}}");
         // assert_eq!(stage_table(&leg_begins, map_data, version), "");
