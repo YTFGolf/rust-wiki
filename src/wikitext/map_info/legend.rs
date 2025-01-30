@@ -240,39 +240,43 @@ fn reference(map: &MapData) -> String {
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
-fn nav(map: &MapData) -> String {
-    const BEGINNING: &str = "<p style=\"text-align:center;\">";
-    const PREV: &str = "&lt;&lt;";
-    const NEXT: &str = "&gt;&gt;";
-    let mut buf = BEGINNING.to_string();
+fn nav_item(heading: &str, left: &str, right: &str) -> String {
+    const START: &str = "<p style=\"text-align:center;\">";
+    const END: &str = "</p>";
 
+    format!(
+        "{START}{heading}:{END}\n\n\
+        {START}'''{left} | {right}'''{END}"
+    )
+}
+
+fn nav(map: &MapData) -> String {
     let type_data = &STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap();
     let chap = extract_name(&type_data.name);
-    write!(buf, "[[:Category:{chap} Chapters|{chap} Chapters]]").unwrap();
-    write!(buf, ":</p>\n\n{BEGINNING}'''").unwrap();
+    let heading = format!("[[:Category:{chap} Chapters|{chap} Chapters]]");
 
+    const PREV: &str = "&lt;&lt;";
+    const NEXT: &str = "&gt;&gt;";
     let prev = match map.meta.map_num {
         0 => None,
         n => type_data.get(n - 1),
     };
-    match prev {
-        None => write!(buf, "{PREV} N/A").unwrap(),
+    let left = match prev {
+        None => format!("{PREV} N/A"),
         Some(data) => {
-            let n = extract_name(&data.name);
-            write!(buf, "[[{n}|{PREV} {n}]]").unwrap();
+            let name = extract_name(&data.name);
+            format!("[[{name}|{PREV} {name}]]")
         }
-    }
-    buf.write_str(" | ").unwrap();
-    match type_data.get(map.meta.map_num + 1) {
-        None => write!(buf, "N/A {NEXT}").unwrap(),
+    };
+    let right = match type_data.get(map.meta.map_num + 1) {
+        None => format!("N/A {NEXT}"),
         Some(data) => {
-            let n = extract_name(&data.name);
-            write!(buf, "[[{n}|{n} {NEXT}]]").unwrap();
+            let name = extract_name(&data.name);
+            format!("[[{name}|{name} {NEXT}]]")
         }
-    }
-    buf.write_str("'''</p>").unwrap();
+    };
 
-    buf
+    nav_item(&heading, &left, &right)
 }
 
 fn footer(map: &MapData) -> String {
@@ -344,16 +348,6 @@ pub fn get_legend_map(map: &MapData, config: &Config) -> String {
 mod tests {
     use super::*;
     use crate::config::TEST_CONFIG;
-
-    fn nav_item(heading: &str, left: &str, right: &str) -> String {
-        const START: &str = "<p style=\"text-align:center;\">";
-        const END: &str = "</p>";
-
-        format!(
-            "{START}{heading}:{END}\n\n\
-            {START}'''{left} | {right}'''{END}"
-        )
-    }
 
     #[test]
     fn test_full() {
