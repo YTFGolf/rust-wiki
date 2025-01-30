@@ -20,12 +20,15 @@ use std::{
     io::{BufRead, BufReader, Cursor},
 };
 
-/// Currently stores nothing.
-pub struct GameMap {}
+/// Stage map.
+pub struct GameMap {
+    /// Background image of the map.
+    pub map_file_num: i32,
+}
 
 impl GameMap {
-    // Temp for legend
-    pub fn new(md: &StageMeta, v: &Version) -> HeaderCSV {
+    /// Create new [`GameMap`].
+    pub fn new(md: &StageMeta, v: &Version) -> Self {
         let map_file = v.get_file_path("DataLocal").join(&md.map_file_name);
         let lines = BufReader::new(File::open(map_file).unwrap());
 
@@ -36,7 +39,10 @@ impl GameMap {
 
         let header = rdr.byte_records().next().unwrap().unwrap();
 
-        header.deserialize(None).unwrap()
+        let header: HeaderCSV = header.deserialize(None).unwrap();
+        Self {
+            map_file_num: header.map_file_num,
+        }
     }
 }
 

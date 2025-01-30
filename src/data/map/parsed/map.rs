@@ -48,6 +48,9 @@ impl From<u8> for ResetType {
 pub struct MapData {
     /// Easier to just reuse StageMeta.
     pub meta: StageMeta,
+    // MapStageData
+    /// Background image of the map.
+    pub map_file_num: i32,
     // Map option
     /// Map crown difficulties.
     pub crown_data: Option<CrownData>,
@@ -91,6 +94,8 @@ impl MapData {
     }
 
     fn from_meta(m: StageMeta, version: &Version) -> Self {
+        let map_file_num = GameMap::new(&m, version).map_file_num;
+
         let map_option_data = GameMap::get_map_option_data(&m, version);
 
         let crown_data: Option<CrownData>;
@@ -141,6 +146,8 @@ impl MapData {
         let special_rule = GameMap::get_special_rules_data(&m, version).cloned();
         Self {
             meta: m,
+            //
+            map_file_num,
             //
             crown_data,
             reset_type,

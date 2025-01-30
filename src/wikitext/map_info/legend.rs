@@ -67,11 +67,8 @@ fn test_invariants(map: &MapData) {
     assert_eq!(map.special_rule, None);
 }
 
-fn map_img(map: &MapData, _config: &Config) -> String {
-    // TODO remove config
-    let data = GameMap::new(&map.meta, _config.version.current_version());
-    let map_num = data.map_file_num;
-    format!("[[File:Map{map_num:03}.png|center|350px]]")
+fn map_img(map: &MapData) -> String {
+    format!("[[File:Map{:03}.png|center|350px]]", map.map_file_num)
 }
 
 fn intro(map: &MapData, map_data: &MapData2, version: &Version) -> String {
@@ -300,7 +297,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
     // TODO rename MapData2
     let version = &config.version.current_version();
     match name {
-        "map_img" => map_img(map, config),
+        "map_img" => map_img(map),
         "intro" => intro(map, map_data, version),
         "difficulty" => difficulty(map),
         "stage_table" => stage_table(map, map_data, version),
