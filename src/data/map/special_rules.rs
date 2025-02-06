@@ -67,6 +67,7 @@ const AMT_RARITIES: usize = 6;
 type Single = [ParamSize; 1];
 /// Rule with parameters for each rarity.
 type Rarity = [ParamSize; AMT_RARITIES];
+type AwesomeCatSpawn = [ParamSize; 3];
 
 /// Type of special rule.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -91,6 +92,11 @@ pub enum RuleType {
     RestrictPriceOrCd2(Rarity),
     /// Param is max units that can be spawned in battle.
     DeployLimit(Single),
+    /// Speculative.
+    ///
+    /// Only used in the context of `[16, 1, 60]`. Based on what is known this
+    /// is probably `[bitmask, extra_spawned, delayf]`.
+    AwesomeCatSpawn(AwesomeCatSpawn),
 }
 /// Item in [RawRuleData::rule_type].
 type RawRuleItem = (RuleKeySize, RawRuleType);
@@ -106,7 +112,8 @@ impl From<RawRuleItem> for RuleType {
             5 => Self::RestrictPriceOrCd1(Self::to_arr(params)),
             6 => Self::RestrictPriceOrCd2(Self::to_arr(params)),
             7 => Self::DeployLimit(Self::to_arr(params)),
-            _ => unreachable!(),
+            8 => Self::AwesomeCatSpawn(Self::to_arr(params)),
+            id => panic!("Unknown rule id: {id}"),
         }
     }
 }
