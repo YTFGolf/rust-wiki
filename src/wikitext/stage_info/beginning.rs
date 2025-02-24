@@ -111,8 +111,9 @@ mod tests {
 
         let not_alone = Stage::new_current("c 176 4").unwrap();
         let buf = enemies_appearing(&not_alone);
-        assert_eq!(&buf, "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Charlotte (Snake)}}");
-        // charlotte
+        assert_eq!(&buf, "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Dessert Witch - Obsession}}");
+        // used to be charlotte but that changed in 14.1 so kinda pointless now
+        // but then again no reason to remove it
 
         let star_ocean = Stage::new_current("sol 15 7").unwrap();
         let buf = enemies_appearing(&star_ocean);

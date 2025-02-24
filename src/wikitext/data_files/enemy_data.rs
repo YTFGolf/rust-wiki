@@ -141,8 +141,7 @@ mod tests {
     #[test]
     fn test_num_equals_enemy() {
         const EMPTY_IDS: [u32; 4] = [0, 1, 21, 22];
-        const WRONG_NAME_IDS: [u32; 2] = [276, 277];
-        // Charlotte (Snake), Charlotte (Doll)
+        const WRONG_NAME_IDS: [u32; 0] = [];
         for enemy in ENEMY_DATA.names.iter() {
             if EMPTY_IDS.contains(&enemy._id) || WRONG_NAME_IDS.contains(&enemy._id) {
                 continue;
