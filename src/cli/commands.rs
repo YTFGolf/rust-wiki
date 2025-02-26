@@ -21,7 +21,8 @@ pub enum Command {
     /// Get data from the wiki.
     ReadWiki(ReadWikiOptions),
 
-    #[command(visible_aliases(["map"]))]
+    // hidden because it's in beta
+    #[command(visible_aliases(["map"]), hide=true)]
     /// Get information about a map.
     MapInfo(MapInfoOptions),
 }
