@@ -123,7 +123,7 @@ update since there's just too much to actually make sense of.
 Project started.
 
 [unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...HEAD
-[0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...v0.4.2
+[0.4.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.2.1...v0.3.0
