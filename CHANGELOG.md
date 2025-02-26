@@ -10,6 +10,19 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ## [Unreleased]
 
+The versions here were a little rushed because doing part of map info made me
+realise how badly I need to fix `StageMeta`.
+
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.4.2] - 2025-02-26
+
 Updated supported game version to 14.2.
 
 ### Added
@@ -18,14 +31,10 @@ Updated supported game version to 14.2.
 - GameMap stores map file number (i.e. the background in Legend Stages).
 - Drop items (Ototo materials).
 
-### Fixed
-
 ### Changed
 
 - Made `Config` clonable.
 - Removed "Internal" stage info folder, reorganised stage info.
-
-### Removed
 
 ## [0.4.1] - 2025-01-25
 
@@ -113,7 +122,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...HEAD
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...HEAD
+[0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.2.1...v0.3.0
