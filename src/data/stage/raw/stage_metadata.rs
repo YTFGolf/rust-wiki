@@ -253,9 +253,21 @@ pub struct StageMeta {
     pub stage_num: u32,
 
     /// DataLocal file that contains information about the map the stage is in.
-    pub map_file_name: String,
+    map_file_name: String,
     /// DataLocal file that contains information about the stage.
-    pub stage_file_name: String,
+    stage_file_name: String,
+}
+
+impl StageMeta {
+    /// Stage's map data file name.
+    pub fn map_file_name(&self) -> &str {
+        &self.map_file_name
+    }
+
+    /// Stage's data file name.
+    pub fn stage_file_name(&self) -> &str {
+        &self.stage_file_name
+    }
 }
 
 #[derive(Debug, PartialEq)]

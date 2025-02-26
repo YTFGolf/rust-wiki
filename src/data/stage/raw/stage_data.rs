@@ -145,7 +145,7 @@ impl<'a> StageData<'_> {
         meta: StageMeta,
         version: &'a Version,
     ) -> Result<StageData<'a>, StageDataError> {
-        let stage_file = PathBuf::from("DataLocal").join(&meta.stage_file_name);
+        let stage_file = PathBuf::from("DataLocal").join(meta.stage_file_name());
         let reader = BufReader::new(
             File::open(version.get_file_path(&stage_file)).map_err(StageDataError::IOError)?,
         );

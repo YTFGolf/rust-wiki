@@ -29,7 +29,7 @@ pub struct GameMap {
 impl GameMap {
     /// Create new [`GameMap`].
     pub fn new(md: &StageMeta, v: &Version) -> Self {
-        let map_file = v.get_file_path("DataLocal").join(&md.map_file_name);
+        let map_file = v.get_file_path("DataLocal").join(md.map_file_name());
         let lines = BufReader::new(File::open(map_file).unwrap());
 
         let mut rdr = csv::ReaderBuilder::new()
@@ -53,7 +53,7 @@ impl GameMap {
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
     /// Labyrinth stages above 100.
     fn stage_data(md: &StageMeta, v: &Version) -> Option<StageDataCSV> {
-        let map_file = v.get_file_path("DataLocal").join(&md.map_file_name);
+        let map_file = v.get_file_path("DataLocal").join(md.map_file_name());
         let line = BufReader::new(File::open(map_file).unwrap())
             .lines()
             .skip(2)
