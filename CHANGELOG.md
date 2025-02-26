@@ -2,16 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+This project DOES NOT adhere to Semantic Versioning. Reason being that I pretty
+much need to add an enum variant every single update, which is a breaking change
+in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ## [Unreleased]
 
+Updated supported game version to 14.2.
+
 ### Added
+
+- Beta map data feature (supports Legend Stages).
+- GameMap stores map file number (i.e. the background in Legend Stages).
+- Drop items (Ototo materials).
 
 ### Fixed
 
 ### Changed
+
+- Made `Config` clonable.
+- Removed "Internal" stage info folder, reorganised stage info.
 
 ### Removed
 
@@ -23,7 +35,7 @@ Alongside these specific updates, updated supported game version to 14.1.
 
 - Changelog + version tags.
 - Parsed map object.
-- Catamin cost for stages.
+- Catamin cost for Catamin stages.
 - Manual EoC zombie outbreak formatter.
 
 ### Fixed
