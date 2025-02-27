@@ -9,7 +9,7 @@ use crate::data::{
     },
     stage::raw::{
         stage_data::StageData,
-        stage_metadata::StageMeta,
+        stage_metadata::LegacyStageMeta,
         stage_option::{
             charagroups::{CharaGroup, CharaGroups},
             StageOptionCSV,
@@ -176,7 +176,7 @@ impl Restriction {
 /// Full stage struct.
 pub struct Stage {
     /// Stage's metadata.
-    pub meta: StageMeta,
+    pub meta: LegacyStageMeta,
 
     // Data that always exists.
     /// ID of enemy base (if [anim_base_id][Self::anim_base_id] exists then that

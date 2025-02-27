@@ -12,7 +12,7 @@ use crate::{
             parsed::stage_enemy::StageEnemy,
             raw::{
                 stage_data::StageData,
-                stage_metadata::{consts::StageTypeEnum as T, StageMeta, StageMetaParseError},
+                stage_metadata::{consts::LegacyStageVariant as T, LegacyStageMeta, StageMetaParseError},
             },
         },
     },
@@ -33,12 +33,12 @@ type Ref = SectionRef;
 
 mod order {
     use crate::data::stage::raw::stage_metadata::{
-        consts::{StageTypeEnum as T, STAGE_TYPES},
-        StageMeta,
+        consts::{LegacyStageVariant as T, LEGACY_STAGE_TYPES},
+        LegacyStageMeta,
     };
 
     /// Amount of individual [StageTypes][T] contained in [STAGE_TYPES].
-    const STYPE_AMT: usize = STAGE_TYPES.len();
+    const STYPE_AMT: usize = LEGACY_STAGE_TYPES.len();
 
     /// Order of the [StageTypes][T] in Encounters section.
     const TYPE_ORDER: [T; STYPE_AMT] = [
@@ -97,7 +97,7 @@ mod order {
     const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
 
     /// Enumerate a [StageMeta] object for use in comparisons.
-    pub const fn enumerate_meta(meta: &StageMeta) -> usize {
+    pub const fn enumerate_meta(meta: &LegacyStageMeta) -> usize {
         TYPE_ORDER_INDICES[meta.type_enum as usize]
     }
 
@@ -110,8 +110,8 @@ mod order {
         fn test_type_order() {
             // technically this could be converted to a const assert but why
             // bother.
-            assert_eq!(STAGE_TYPES.len(), TYPE_ORDER.len());
-            for stype in STAGE_TYPES {
+            assert_eq!(LEGACY_STAGE_TYPES.len(), TYPE_ORDER.len());
+            for stype in LEGACY_STAGE_TYPES {
                 assert!(
                     TYPE_ORDER.contains(&stype.type_enum),
                     "Type order array does not contain variant {:?}",
@@ -123,13 +123,13 @@ mod order {
 }
 
 /// For use in [sort_encounters].
-fn key(meta: &StageMeta) -> (usize, u32, u32) {
+fn key(meta: &LegacyStageMeta) -> (usize, u32, u32) {
     let m = match meta.type_enum {
         T::Extra => match STAGE_WIKI_DATA.continue_id(meta.map_num) {
             None => meta,
             Some((t, m)) => match t {
-                30 => &StageMeta::from_selector_main(&t.to_string(), &[999]).unwrap(),
-                _ => &StageMeta::from_numbers(t, m, 999).unwrap(),
+                30 => &LegacyStageMeta::from_selector_main(&t.to_string(), &[999]).unwrap(),
+                _ => &LegacyStageMeta::from_numbers(t, m, 999).unwrap(),
             },
             // TODO put unit tests in for mount aku
         },
@@ -153,7 +153,7 @@ fn sort_encounters(encounters: &mut [&StageData]) {
 /// Get the section that the stage refers to.
 ///
 /// Note: this does nothing about Removed Stages or any filtering based on type.
-fn raw_section(meta: &StageMeta) -> SectionRef {
+fn raw_section(meta: &LegacyStageMeta) -> SectionRef {
     match meta.type_enum {
         T::MainChapters => match meta.map_num {
             0..=2 => Ref::EoC,
@@ -351,11 +351,11 @@ fn get_section_map<'a>(
 
         if raw == Ref::Extra {
             if let Some(ids) = STAGE_WIKI_DATA.continue_id(encounter.meta.map_num) {
-                let new_meta = match StageMeta::from_numbers(ids.0, ids.1, 999) {
+                let new_meta = match LegacyStageMeta::from_numbers(ids.0, ids.1, 999) {
                     Ok(nm) => nm,
                     Err(StageMetaParseError::Rejected) => {
                         assert_eq!(ids.0, 30);
-                        StageMeta::from_selector_main(&ids.0.to_string(), &[999]).unwrap()
+                        LegacyStageMeta::from_selector_main(&ids.0.to_string(), &[999]).unwrap()
                     }
                     Err(StageMetaParseError::Invalid) => {
                         panic!("Matching meta failed or something.")

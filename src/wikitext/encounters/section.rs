@@ -3,7 +3,7 @@
 use super::chapter::Chapter;
 use crate::{
     data::stage::raw::stage_metadata::{
-        consts::StageTypeEnum as T, StageMeta, StageMetaParseError,
+        consts::LegacyStageVariant as T, LegacyStageMeta, StageMetaParseError,
     },
     wikitext::data_files::stage_wiki_data::STAGE_WIKI_DATA,
 };
@@ -48,7 +48,7 @@ impl EncountersSection {
         self.heading
     }
 
-    fn fmt_encounter_custom(buf: &mut String, meta: &StageMeta, name: &str) {
+    fn fmt_encounter_custom(buf: &mut String, meta: &LegacyStageMeta, name: &str) {
         // EoC
         if meta.type_enum == T::MainChapters && meta.map_num == 0 {
             if meta.stage_num <= 46 {
@@ -117,7 +117,7 @@ impl EncountersSection {
     }
 
     /// Write the non-asterisked part of an encounter.
-    pub fn fmt_encounter(&self, buf: &mut String, meta: &StageMeta, stage_name: &str, mags: &str) {
+    pub fn fmt_encounter(&self, buf: &mut String, meta: &LegacyStageMeta, stage_name: &str, mags: &str) {
         match self.display_type {
             D::Skip => unreachable!(),
             D::Warn | D::Normal | D::Flat => {
@@ -172,11 +172,11 @@ impl EncountersSection {
                     let meta = match stage.meta.type_enum {
                         T::Extra => &{
                             if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.meta.map_num) {
-                                match StageMeta::from_numbers(ids.0, ids.1, 999) {
+                                match LegacyStageMeta::from_numbers(ids.0, ids.1, 999) {
                                     Ok(nm) => nm,
                                     Err(StageMetaParseError::Rejected) => {
                                         assert_eq!(ids.0, 30);
-                                        StageMeta::from_selector_main(&ids.0.to_string(), &[999])
+                                        LegacyStageMeta::from_selector_main(&ids.0.to_string(), &[999])
                                             .unwrap()
                                     }
                                     Err(StageMetaParseError::Invalid) => {
@@ -354,7 +354,7 @@ mod tests {
 
     fn stringify(
         section: &EncountersSection,
-        meta: &StageMeta,
+        meta: &LegacyStageMeta,
         stage_name: &str,
         mags: &str,
     ) -> String {
@@ -365,7 +365,7 @@ mod tests {
 
     #[test]
     fn single_eoc_format() {
-        let korea = StageMeta::new("eoc 0").unwrap();
+        let korea = LegacyStageMeta::new("eoc 0").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&korea).unwrap().name;
         const MAGS: &str = "";
 
@@ -378,7 +378,7 @@ mod tests {
 
     #[test]
     fn single_eoc_moon() {
-        let moon_ch2 = StageMeta::new("eoc 49").unwrap();
+        let moon_ch2 = LegacyStageMeta::new("eoc 49").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&moon_ch2).unwrap().name;
         const MAGS: &str = "";
 
@@ -391,7 +391,7 @@ mod tests {
 
     #[test]
     fn single_itf_format() {
-        let great_abyss = StageMeta::new("itf 1 23").unwrap();
+        let great_abyss = LegacyStageMeta::new("itf 1 23").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&great_abyss).unwrap().name;
         const MAGS: &str = "(150%)";
 
@@ -404,7 +404,7 @@ mod tests {
 
     #[test]
     fn single_cotc_format() {
-        let sighter_star = StageMeta::new("cotc 2 24").unwrap();
+        let sighter_star = LegacyStageMeta::new("cotc 2 24").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&sighter_star).unwrap().name;
         const MAGS: &str = "(150%)";
 
@@ -417,7 +417,7 @@ mod tests {
 
     #[test]
     fn single_filibuster_format() {
-        let mut filibuster = StageMeta::new("filibuster").unwrap();
+        let mut filibuster = LegacyStageMeta::new("filibuster").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&filibuster).unwrap().name;
         filibuster.map_num = 8;
         filibuster.stage_num = 999;
@@ -434,7 +434,7 @@ mod tests {
 
     #[test]
     fn single_aku_realms() {
-        let korea = StageMeta::new("aku 0").unwrap();
+        let korea = LegacyStageMeta::new("aku 0").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&korea).unwrap().name;
         const MAGS: &str = "(100%)";
 
@@ -447,7 +447,7 @@ mod tests {
 
     #[test]
     fn single_story_format() {
-        let torture_room = StageMeta::new("sol 21 3").unwrap();
+        let torture_room = LegacyStageMeta::new("sol 21 3").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&torture_room).unwrap().name;
         const MAGS: &str = "(400%)";
 
@@ -460,7 +460,7 @@ mod tests {
 
     #[test]
     fn single_normal_format() {
-        let xp_hard = StageMeta::new("event 28 2").unwrap();
+        let xp_hard = LegacyStageMeta::new("event 28 2").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "(400%)";
 
@@ -473,7 +473,7 @@ mod tests {
 
     #[test]
     fn single_z_outbreak() {
-        let zoutbreak = StageMeta::new("z 3 43").unwrap();
+        let zoutbreak = LegacyStageMeta::new("z 3 43").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
 
@@ -487,7 +487,7 @@ mod tests {
     #[test]
     fn single_aku_invasion() {
         let name = &STAGE_WIKI_DATA.stage(4, 42, 0).unwrap().name;
-        let mount_aku_repr = StageMeta::new("aku 999").unwrap();
+        let mount_aku_repr = LegacyStageMeta::new("aku 999").unwrap();
 
         const MAGS: &str = "(400%)";
 
@@ -501,7 +501,7 @@ mod tests {
     #[test]
     fn single_doron_invasion() {
         let name = &STAGE_WIKI_DATA.stage(4, 68, 0).unwrap().name;
-        let idi_invasion_repr = StageMeta::new("sol 35 999").unwrap();
+        let idi_invasion_repr = LegacyStageMeta::new("sol 35 999").unwrap();
 
         const MAGS: &str = "(400%)";
 
@@ -514,7 +514,7 @@ mod tests {
 
     #[test]
     fn single_always_appeared_at() {
-        let xp_hard = StageMeta::new("event 28 2").unwrap();
+        let xp_hard = LegacyStageMeta::new("event 28 2").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&xp_hard).unwrap().name;
         const MAGS: &str = "";
 
@@ -537,17 +537,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &StageMeta::new("event 0 0").unwrap(),
+                        &LegacyStageMeta::new("event 0 0").unwrap(),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &StageMeta::new("event 0 1").unwrap(),
+                        &LegacyStageMeta::new("event 0 1").unwrap(),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &StageMeta::new("event 0 2").unwrap(),
+                        &LegacyStageMeta::new("event 0 2").unwrap(),
                     ),
                 ],
             ),
@@ -574,13 +574,13 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &StageMeta::new("l 0 0").unwrap(),
+                        &LegacyStageMeta::new("l 0 0").unwrap(),
                     ),
-                    Stage::new("Stage 2", String::new(), &StageMeta::new("l 0 1").unwrap()),
+                    Stage::new("Stage 2", String::new(), &LegacyStageMeta::new("l 0 1").unwrap()),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &StageMeta::new("l 0 2").unwrap(),
+                        &LegacyStageMeta::new("l 0 2").unwrap(),
                     ),
                 ],
             ),
@@ -606,17 +606,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &StageMeta::new("sol 0 0").unwrap(),
+                        &LegacyStageMeta::new("sol 0 0").unwrap(),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &StageMeta::new("sol 0 1").unwrap(),
+                        &LegacyStageMeta::new("sol 0 1").unwrap(),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &StageMeta::new("sol 0 2").unwrap(),
+                        &LegacyStageMeta::new("sol 0 2").unwrap(),
                     ),
                 ],
             ),

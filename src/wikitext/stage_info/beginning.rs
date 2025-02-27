@@ -1,7 +1,7 @@
 //! Beginning of stage info i.e. EnemiesAppearing and intro.
 
 use crate::{
-    data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::StageTypeEnum},
+    data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::LegacyStageVariant},
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         stage_info::StageWikiData,
@@ -31,7 +31,7 @@ pub fn enemies_appearing(stage: &Stage) -> String {
 
 /// Get the "{stage} is the nth stage in {map}." line.
 pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
-    if stage.meta.type_enum == StageTypeEnum::RankingDojo {
+    if stage.meta.type_enum == LegacyStageVariant::RankingDojo {
         return format!(
             "'''{extracted_name}''' is the {num} [[Arena of Honor]] of the [[Catclaw Dojo]].",
             extracted_name = extract_name(&data.stage_name.name),
@@ -71,7 +71,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
         buf,
         " {stage_in} {map_name}{punct}",
         stage_in = match stage.meta.type_enum {
-            StageTypeEnum::Tower => "floor of",
+            LegacyStageVariant::Tower => "floor of",
             _ => "stage in",
         },
         map_name = OLD_OR_REMOVED_SUB.replace(&data.stage_map.name, "$1"),

@@ -1,7 +1,7 @@
 //! Module that gets information about stage names and continue stages.
 
 use crate::{
-    data::stage::raw::stage_metadata::{consts::STAGE_TYPES, StageMeta},
+    data::stage::raw::stage_metadata::{consts::LEGACY_STAGE_TYPES, LegacyStageMeta},
     file_handler::{get_file_location, FileLocation},
 };
 use serde::Deserialize;
@@ -49,7 +49,7 @@ pub struct StageData {
     _num: u32,
 }
 
-const MAX_TYPE_ID: usize = STAGE_TYPES[STAGE_TYPES.len() - 1].number as usize;
+const MAX_TYPE_ID: usize = LEGACY_STAGE_TYPES[LEGACY_STAGE_TYPES.len() - 1].number as usize;
 type StageNameMap = [Option<TypeData>; MAX_TYPE_ID + 1];
 type ContinueStagesMap = Vec<Option<(u32, u32)>>;
 type StageDifficultyMap = HashMap<String, u8>;
@@ -74,7 +74,7 @@ impl StageWikiData {
         self.stage_map(type_id, map_id)?.get(stage_id)
     }
     /// Get stage from meta object.
-    pub fn from_meta(&self, meta: &StageMeta) -> Option<&StageData> {
+    pub fn from_meta(&self, meta: &LegacyStageMeta) -> Option<&StageData> {
         self.stage(meta.type_num, meta.map_num, meta.stage_num)
     }
 

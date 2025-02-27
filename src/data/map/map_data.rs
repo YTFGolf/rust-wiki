@@ -9,7 +9,7 @@ use super::{
 };
 use crate::data::{
     stage::raw::{
-        stage_metadata::{consts::StageTypeEnum, StageMeta},
+        stage_metadata::{consts::LegacyStageVariant, LegacyStageMeta},
         stage_option::{StageOption, StageOptionCSV},
     },
     version::Version,
@@ -28,7 +28,7 @@ pub struct GameMap {
 
 impl GameMap {
     /// Create new [`GameMap`].
-    pub fn new(md: &StageMeta, v: &Version) -> Self {
+    pub fn new(md: &LegacyStageMeta, v: &Version) -> Self {
         let map_file = v.get_file_path("DataLocal").join(md.map_file_name());
         let lines = BufReader::new(File::open(map_file).unwrap());
 
@@ -52,7 +52,7 @@ impl GameMap {
     ///
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
     /// Labyrinth stages above 100.
-    fn stage_data(md: &StageMeta, v: &Version) -> Option<StageDataCSV> {
+    fn stage_data(md: &LegacyStageMeta, v: &Version) -> Option<StageDataCSV> {
         let map_file = v.get_file_path("DataLocal").join(md.map_file_name());
         let line = BufReader::new(File::open(map_file).unwrap())
             .lines()
@@ -160,21 +160,21 @@ impl GameMap {
 
 impl GameMap {
     /// Get `map_id` to use in map_option and stage_option.
-    pub fn get_map_id(meta: &StageMeta) -> u32 {
+    pub fn get_map_id(meta: &LegacyStageMeta) -> u32 {
         let m = meta;
         m.type_num * 1000 + m.map_num
     }
 
     /// Get MapStageData data for the stage if it exists.
-    pub fn get_stage_data(meta: &StageMeta, version: &Version) -> Option<StageDataCSV> {
-        if meta.type_enum == StageTypeEnum::Labyrinth {
+    pub fn get_stage_data(meta: &LegacyStageMeta, version: &Version) -> Option<StageDataCSV> {
+        if meta.type_enum == LegacyStageVariant::Labyrinth {
             return None;
         }
         GameMap::stage_data(meta, version)
     }
 
     /// Get Map_option data if it exists.
-    pub fn get_map_option_data(meta: &StageMeta, version: &Version) -> Option<MapOptionCSV> {
+    pub fn get_map_option_data(meta: &LegacyStageMeta, version: &Version) -> Option<MapOptionCSV> {
         let map_id = Self::get_map_id(meta);
         let map_option = version.get_cached_file::<MapOption>();
         map_option.get_map(map_id)
@@ -182,7 +182,7 @@ impl GameMap {
 
     /// Get Stage_option data for the stage (and whole map) if it exists.
     pub fn get_stage_option_data<'a>(
-        meta: &StageMeta,
+        meta: &LegacyStageMeta,
         version: &'a Version,
     ) -> Option<Vec<&'a StageOptionCSV>> {
         let map_id = Self::get_map_id(meta);
@@ -191,7 +191,7 @@ impl GameMap {
     }
 
     /// Get Map_option data if it exists.
-    pub fn get_ex_option_data(meta: &StageMeta, version: &Version) -> Option<u32> {
+    pub fn get_ex_option_data(meta: &LegacyStageMeta, version: &Version) -> Option<u32> {
         let map_id = Self::get_map_id(meta);
         let ex_option = version.get_cached_file::<ExOption>();
         ex_option.get_ex_map(map_id)
@@ -199,7 +199,7 @@ impl GameMap {
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data<'a>(
-        meta: &StageMeta,
+        meta: &LegacyStageMeta,
         version: &'a Version,
     ) -> Option<&'a SpecialRule> {
         let map_id = Self::get_map_id(meta);
@@ -208,7 +208,7 @@ impl GameMap {
     }
 
     /// Get DropItem data if it exists.
-    pub fn get_drop_item<'a>(meta: &StageMeta, version: &'a Version) -> Option<&'a DropItemRaw> {
+    pub fn get_drop_item<'a>(meta: &LegacyStageMeta, version: &'a Version) -> Option<&'a DropItemRaw> {
         let map_id = Self::get_map_id(meta);
         let drop_item = version.get_cached_file::<DropItem>();
         drop_item.get_drop_item(map_id)

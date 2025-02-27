@@ -4,7 +4,7 @@ use crate::data::{
     map::{map_data::GameMap, special_rules::SpecialRule},
     stage::{
         parsed::stage::{CrownData, Restriction, RestrictionStages},
-        raw::stage_metadata::StageMeta,
+        raw::stage_metadata::LegacyStageMeta,
     },
     version::Version,
 };
@@ -47,7 +47,7 @@ impl From<u8> for ResetType {
 /// Full map struct.
 pub struct MapData {
     /// Easier to just reuse StageMeta.
-    pub meta: StageMeta,
+    pub meta: LegacyStageMeta,
     // MapStageData
     /// Background image of the map.
     pub map_file_num: i32,
@@ -81,7 +81,7 @@ impl MapData {
         }
 
         let new_selector = selector + " 0";
-        let m = StageMeta::new(&new_selector).unwrap();
+        let m = LegacyStageMeta::new(&new_selector).unwrap();
         Self::from_meta(m, version)
     }
 
@@ -89,11 +89,11 @@ impl MapData {
     pub fn new(mapid: u32, version: &Version) -> Self {
         let type_id = mapid / 1000;
         let map_id = mapid % 1000;
-        let m = StageMeta::from_numbers(type_id, map_id, 0).unwrap();
+        let m = LegacyStageMeta::from_numbers(type_id, map_id, 0).unwrap();
         Self::from_meta(m, version)
     }
 
-    fn from_meta(m: StageMeta, version: &Version) -> Self {
+    fn from_meta(m: LegacyStageMeta, version: &Version) -> Self {
         let map_file_num = GameMap::new(&m, version).map_file_num;
 
         let map_option_data = GameMap::get_map_option_data(&m, version);

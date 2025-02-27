@@ -1,7 +1,7 @@
 //! Deals with basic stage information in the infobox.
 
 use crate::{
-    data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::StageTypeEnum},
+    data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::LegacyStageVariant},
     wikitext::{
         data_files::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
         template_parameter::TemplateParameter,
@@ -68,8 +68,8 @@ fn energy_catamin(cost: u32) -> TemplateParameter {
 pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
     let energy = stage.energy?;
     let amount = match stage.meta.type_enum {
-        StageTypeEnum::Catamin => return Some(energy_catamin(energy)),
-        StageTypeEnum::Extra => "N/A".to_string(),
+        LegacyStageVariant::Catamin => return Some(energy_catamin(energy)),
+        LegacyStageVariant::Extra => "N/A".to_string(),
         _ => {
             let mut buf = String::new();
             buf.write_formatted(&energy, &Locale::en).unwrap();
@@ -165,7 +165,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
 /// Get the xp drop of a stage.
 pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
     let xp = stage.xp?;
-    if matches!(stage.meta.type_enum, StageTypeEnum::RankingDojo) && xp == 0 {
+    if matches!(stage.meta.type_enum, LegacyStageVariant::RankingDojo) && xp == 0 {
         return None;
     }
     let mut buf = String::new();

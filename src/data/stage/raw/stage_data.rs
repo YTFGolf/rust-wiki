@@ -1,5 +1,5 @@
 //! Module that deals with getting information about stages.
-use super::{stage_metadata::StageMeta, stage_option::StageOptionCSV};
+use super::{stage_metadata::LegacyStageMeta, stage_option::StageOptionCSV};
 use crate::data::{
     map::{
         map_data::GameMap, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
@@ -115,7 +115,7 @@ pub mod csv_types {
 #[derive(Debug)]
 pub struct StageData<'a> {
     /// Stage's metadata.
-    pub meta: StageMeta,
+    pub meta: LegacyStageMeta,
     /// Data stored in the stage's CSV file.
     pub stage_csv_data: RawCSVData,
 
@@ -134,7 +134,7 @@ pub enum StageDataError {
 impl<'a> StageData<'_> {
     /// Create new StageData object.
     pub fn new(selector: &str, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
-        let Some(meta) = StageMeta::new(selector) else {
+        let Some(meta) = LegacyStageMeta::new(selector) else {
             panic!("Invalid selector: {selector:?}")
         };
         Self::from_meta(meta, version)
@@ -142,7 +142,7 @@ impl<'a> StageData<'_> {
 
     /// Get stage data from meta object.
     pub fn from_meta(
-        meta: StageMeta,
+        meta: LegacyStageMeta,
         version: &'a Version,
     ) -> Result<StageData<'a>, StageDataError> {
         let stage_file = PathBuf::from("DataLocal").join(meta.stage_file_name());

@@ -5,7 +5,7 @@ use crate::{
             map_data::GameMap,
             parsed::map::{MapData, ResetType},
         },
-        stage::raw::stage_metadata::{consts::StageTypeEnum, StageMeta},
+        stage::raw::stage_metadata::{consts::LegacyStageVariant, LegacyStageMeta},
         version::Version,
     },
     wikitext::{
@@ -43,12 +43,12 @@ enum LegendSubset {
     UL,
     ZL,
 }
-impl From<StageTypeEnum> for LegendSubset {
-    fn from(value: StageTypeEnum) -> Self {
+impl From<LegacyStageVariant> for LegendSubset {
+    fn from(value: LegacyStageVariant) -> Self {
         match value {
-            StageTypeEnum::SoL => Self::SoL,
-            StageTypeEnum::UL => Self::UL,
-            StageTypeEnum::ZL => Self::ZL,
+            LegacyStageVariant::SoL => Self::SoL,
+            LegacyStageVariant::UL => Self::UL,
+            LegacyStageVariant::ZL => Self::ZL,
             x => panic!("Type not compatible with Legend Stages: {x:?}."),
         }
     }
@@ -164,7 +164,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 
     let mut i = 0;
     while let Some(stage) = map_data.get(i) {
-        let meta = StageMeta::from_numbers(map.meta.type_num, map.meta.map_num, i).unwrap();
+        let meta = LegacyStageMeta::from_numbers(map.meta.type_num, map.meta.map_num, i).unwrap();
         write!(
             buf,
             "\n|-\n\
@@ -326,7 +326,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
     }
 }
 
-pub fn get_map_data(meta: &StageMeta) -> &'static MapData2 {
+pub fn get_map_data(meta: &LegacyStageMeta) -> &'static MapData2 {
     STAGE_WIKI_DATA
         .stage_map(meta.type_num, meta.map_num)
         .unwrap_or_else(|| {

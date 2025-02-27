@@ -6,7 +6,7 @@ use crate::{
             stage::Stage,
             stage_enemy::{BossType, StageEnemy},
         },
-        raw::stage_metadata::consts::StageTypeEnum as S,
+        raw::stage_metadata::consts::LegacyStageVariant as S,
     },
     wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
 };

@@ -3,7 +3,7 @@
 mod legend;
 use crate::{
     config::Config,
-    data::{map::parsed::map::MapData, stage::raw::stage_metadata::consts::StageTypeEnum},
+    data::{map::parsed::map::MapData, stage::raw::stage_metadata::consts::LegacyStageVariant},
 };
 use legend::get_legend_map;
 
@@ -16,8 +16,8 @@ enum Preset {
     Colosseum,
 }
 
-const fn get_preset(st: StageTypeEnum) -> Preset {
-    type T = StageTypeEnum;
+const fn get_preset(st: LegacyStageVariant) -> Preset {
+    type T = LegacyStageVariant;
     match st {
         T::SoL | T::UL | T::ZL => Preset::Legend,
         T::Event | T::Collab => Preset::Event,

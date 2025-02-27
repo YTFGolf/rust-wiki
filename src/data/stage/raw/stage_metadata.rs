@@ -7,7 +7,7 @@ pub mod consts {
 
     #[derive(Debug, PartialEq)]
     /// Struct that contains information about each stage type.
-    pub struct StageType {
+    pub struct LegacyStageType {
         /// E.g. `"Stories of Legend"`.
         pub name: &'static str,
         /// Numerical value of stage type.
@@ -22,7 +22,7 @@ pub mod consts {
         /// `stage{code}`?
         pub has_r_prefix: bool,
         /// Enum variant of the stage type.
-        pub type_enum: StageTypeEnum,
+        pub type_enum: LegacyStageVariant,
     }
 
     const fn initialise_stage_type(
@@ -30,9 +30,9 @@ pub mod consts {
         number: u32,
         code: &'static str,
         has_r_prefix: bool,
-        type_enum: StageTypeEnum,
-    ) -> StageType {
-        StageType {
+        type_enum: LegacyStageVariant,
+    ) -> LegacyStageType {
+        LegacyStageType {
             name,
             number,
             code,
@@ -43,20 +43,20 @@ pub mod consts {
 
     #[derive(Debug)]
     /// Maps a [Regex] to a code from [STAGE_TYPES].
-    pub struct StageTypeMap {
+    pub struct LegacyStageTypeMap {
         /// Regex matching any valid pattern for the stage type.
         pub matcher: Regex,
         /// Code as in [STAGE_TYPES].
-        pub stage_type: StageType,
+        pub stage_type: LegacyStageType,
     }
 
-    fn initialise_type_map(pattern: &'static str, stage_type: StageTypeEnum) -> StageTypeMap {
+    fn initialise_type_map(pattern: &'static str, stage_type: LegacyStageVariant) -> LegacyStageTypeMap {
         let re = format!("^({pattern})$");
         let matcher = RegexBuilder::new(&re)
             .case_insensitive(true)
             .build()
             .unwrap();
-        StageTypeMap {
+        LegacyStageTypeMap {
             matcher,
             stage_type: get_stage_type_code(stage_type),
         }
@@ -64,8 +64,8 @@ pub mod consts {
 
     /// Get the [StageType] that `stage_type` corresponds to from
     /// [STAGE_TYPES].
-    fn get_stage_type_code(stage_type: StageTypeEnum) -> StageType {
-        for code in STAGE_TYPES {
+    fn get_stage_type_code(stage_type: LegacyStageVariant) -> LegacyStageType {
+        for code in LEGACY_STAGE_TYPES {
             if stage_type == code.type_enum {
                 return code;
             }
@@ -75,7 +75,7 @@ pub mod consts {
     }
 
     /// Get [StageType] that `selector_type` refers to.
-    pub fn get_selector_type(selector_type: &str) -> Option<&StageType> {
+    pub fn get_selector_type(selector_type: &str) -> Option<&LegacyStageType> {
         for selector_map in STAGE_TYPE_MAP.iter() {
             if selector_map.matcher.is_match(selector_type) {
                 return Some(&selector_map.stage_type);
@@ -98,14 +98,14 @@ pub mod consts {
 
         #[test]
         fn test_get_stage_type_code() {
-            assert_eq!(get_stage_type_code(T::MainChapters), STAGE_TYPES[3]);
+            assert_eq!(get_stage_type_code(T::MainChapters), LEGACY_STAGE_TYPES[3]);
         }
     }
 
     /// All possible types of stage.
     #[allow(missing_docs)]
     #[derive(Debug, PartialEq, Clone, Copy)]
-    pub enum StageTypeEnum {
+    pub enum LegacyStageVariant {
         SoL,
         Event,
         Collab,
@@ -134,12 +134,12 @@ pub mod consts {
         Colosseum,
         Championships,
     }
-    use StageTypeEnum as T;
+    use LegacyStageVariant as T;
 
     #[rustfmt::skip]
     #[allow(clippy::zero_prefixed_literal)]
     /// Collection of [StageTypes][StageType] covering all chapters in the game.
-    pub const STAGE_TYPES: [StageType; 22] = [
+    pub const LEGACY_STAGE_TYPES: [LegacyStageType; 22] = [
         initialise_stage_type("Stories of Legend",            000, "N",     true,  T::SoL),
         initialise_stage_type("Event Stages",                 001, "S",     true,  T::Event),
         initialise_stage_type("Collaboration Stages",         002, "C",     true,  T::Collab),
@@ -175,7 +175,7 @@ pub mod consts {
     ///
     /// Includes common name for type, type number, type prefix and type prefix
     /// with R if applicable.
-    static STAGE_TYPE_MAP: LazyLock<[StageTypeMap; 22]> = LazyLock::new(|| {[
+    static STAGE_TYPE_MAP: LazyLock<[LegacyStageTypeMap; 22]> = LazyLock::new(|| {[
         initialise_type_map("SoL|0|N|RN",               T::SoL),
         initialise_type_map("Event|Special|1|S|RS",     T::Event),
         initialise_type_map("Collab|2|C|RC",            T::Collab),
@@ -204,7 +204,7 @@ pub mod consts {
     ]});
     // There should probably be something that prints off these strings for users.
 }
-use consts::{get_selector_type, StageType, StageTypeEnum};
+use consts::{get_selector_type, LegacyStageType, LegacyStageVariant};
 use regex::Regex;
 use std::sync::LazyLock;
 
@@ -237,7 +237,7 @@ static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
 // TODO split into type, map and stage
 #[derive(Debug, PartialEq)]
 /// Contains metadata about a given stage.
-pub struct StageMeta {
+pub struct LegacyStageMeta {
     /// Long-form name of the stage type.
     pub type_name: &'static str,
     /// [STAGE_TYPES]: consts::STAGE_TYPES
@@ -246,7 +246,7 @@ pub struct StageMeta {
     /// Numerical value of the [StageType].
     pub type_num: u32,
     /// Enum variant of stage type.
-    pub type_enum: StageTypeEnum,
+    pub type_enum: LegacyStageVariant,
     /// Map number of the stage.
     pub map_num: u32,
     /// Stage number of the stage.
@@ -258,7 +258,7 @@ pub struct StageMeta {
     stage_file_name: String,
 }
 
-impl StageMeta {
+impl LegacyStageMeta {
     /// Stage's map data file name.
     pub fn map_file_name(&self) -> &str {
         &self.map_file_name
@@ -279,9 +279,9 @@ pub enum StageMetaParseError {
     Invalid,
 }
 
-impl StageMeta {
+impl LegacyStageMeta {
     /// Catch-all method for parsing a selector.
-    pub fn new(selector: &str) -> Option<StageMeta> {
+    pub fn new(selector: &str) -> Option<LegacyStageMeta> {
         // TODO optimise by checking selectors before running functions
         // TODO check the type: if rejected go to next function, if invalid
         // then return None.
@@ -298,8 +298,8 @@ impl StageMeta {
         None
     }
 
-    fn is_main_chaps(m: StageTypeEnum) -> bool {
-        use StageTypeEnum as T;
+    fn is_main_chaps(m: LegacyStageVariant) -> bool {
+        use LegacyStageVariant as T;
         matches!(
             m,
             T::MainChapters | T::Outbreaks | T::Filibuster | T::AkuRealms
@@ -312,7 +312,7 @@ impl StageMeta {
     /// let selector = "N 0 0";
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
-    pub fn from_selector(selector: &str) -> Result<StageMeta, StageMetaParseError> {
+    pub fn from_selector(selector: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
         let selector: Vec<&str> = selector.split(' ').collect();
 
         let Some(stage_type) =
@@ -341,7 +341,7 @@ impl StageMeta {
     /// let file_name = "stageRN000_00.csv";
     /// assert_eq!(file_name, StageMeta::from_file(file_name).unwrap().stage_file_name);
     /// ```
-    pub fn from_file(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
+    pub fn from_file(file_name: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
         if file_name == "stageSpace09_Invasion_00.csv" {
             Self::from_selector_main("Filibuster", &[])
         } else if FILE_PATTERNS.eoc.is_match(file_name) {
@@ -360,7 +360,7 @@ impl StageMeta {
     }
 
     /// Parse file name if is main chapters but not eoc
-    fn from_file_other_main(file_name: &str) -> Result<StageMeta, StageMetaParseError> {
+    fn from_file_other_main(file_name: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
         let caps = FILE_PATTERNS.default.captures(file_name).unwrap();
         let mut chap_num = caps[2].parse::<u32>().unwrap();
         if &caps[1] == "Z" && chap_num <= 3 {
@@ -390,7 +390,7 @@ impl StageMeta {
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta::from_ref("s00000-01").unwrap());
     /// ```
-    pub fn from_ref(selector: &str) -> Result<StageMeta, StageMetaParseError> {
+    pub fn from_ref(selector: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
         let reference = DB_REFERENCE_FULL.replace(selector, "$1");
 
         match DB_REFERENCE_STAGE.captures(&reference) {
@@ -411,7 +411,7 @@ impl StageMeta {
         stage_type: u32,
         map_num: u32,
         stage_num: u32,
-    ) -> Result<StageMeta, StageMetaParseError> {
+    ) -> Result<LegacyStageMeta, StageMetaParseError> {
         Self::from_split(&stage_type.to_string(), map_num, stage_num)
         // could potentially figure out stage type and use split_parsed
     }
@@ -426,7 +426,7 @@ impl StageMeta {
         type_str: &str,
         map_num: u32,
         stage_num: u32,
-    ) -> Result<StageMeta, StageMetaParseError> {
+    ) -> Result<LegacyStageMeta, StageMetaParseError> {
         let Some(stage_type) = get_selector_type(type_str) else {
             return Err(StageMetaParseError::Invalid);
         };
@@ -441,7 +441,7 @@ impl StageMeta {
     /// [STAGE_TYPES]: consts::STAGE_TYPES
     /// [from_split][StageMeta::from_split] but with `stage_type` being a code
     /// from [STAGE_TYPES].
-    fn from_split_parsed(stage_type: &StageType, map_num: u32, stage_num: u32) -> StageMeta {
+    fn from_split_parsed(stage_type: &LegacyStageType, map_num: u32, stage_num: u32) -> LegacyStageMeta {
         let type_name = stage_type.name;
         let type_num = stage_type.number;
         let type_enum = stage_type.type_enum;
@@ -469,7 +469,7 @@ impl StageMeta {
         }
         // let type_code = code.code
 
-        StageMeta {
+        LegacyStageMeta {
             type_name,
             type_code,
             type_num,
@@ -491,7 +491,7 @@ impl StageMeta {
     pub fn from_selector_main(
         selector: &str,
         nums: &[u32],
-    ) -> Result<StageMeta, StageMetaParseError> {
+    ) -> Result<LegacyStageMeta, StageMetaParseError> {
         let Some(code) = get_selector_type(selector) else {
             return Err(StageMetaParseError::Invalid);
         };
@@ -576,7 +576,7 @@ impl StageMeta {
                 _ => return Err(StageMetaParseError::Invalid),
             };
 
-        Ok(StageMeta {
+        Ok(LegacyStageMeta {
             type_name,
             type_code,
             type_num,
@@ -592,13 +592,13 @@ impl StageMeta {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use consts::STAGE_TYPES;
+    use consts::LEGACY_STAGE_TYPES;
     use rand::random;
-    use StageTypeEnum as T;
+    use LegacyStageVariant as T;
 
     #[test]
     fn test_from_split_sol() {
-        let answer = StageMeta {
+        let answer = LegacyStageMeta {
             type_name: "Stories of Legend",
             type_code: "N",
             type_num: 0,
@@ -609,19 +609,19 @@ mod tests {
             stage_file_name: "stageRN000_00.csv".to_string(),
         };
 
-        let st = StageMeta::from_split("SoL", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("SoL", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("sol", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("sol", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("n", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("n", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("rn", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("rn", 0, 0).unwrap();
         assert_eq!(st, answer);
     }
 
     #[test]
     fn test_from_split_ex() {
-        let answer = StageMeta {
+        let answer = LegacyStageMeta {
             type_name: "Extra Stages",
             type_code: "EX",
             type_num: 4,
@@ -632,24 +632,24 @@ mod tests {
             stage_file_name: "stageEX000_00.csv".to_string(),
         };
 
-        let st = StageMeta::from_split("eXTRA", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("eXTRA", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("extra", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("extra", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("4", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("4", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("RE", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("RE", 0, 0).unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_split("EX", 0, 0).unwrap();
+        let st = LegacyStageMeta::from_split("EX", 0, 0).unwrap();
         assert_eq!(st, answer);
     }
 
     #[test]
     fn test_from_selector_main() {
-        let st = StageMeta::from_selector_main("eoc", &[0]).unwrap();
+        let st = LegacyStageMeta::from_selector_main("eoc", &[0]).unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -661,10 +661,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main("itf", &[1, 0]).unwrap();
+        let st = LegacyStageMeta::from_selector_main("itf", &[1, 0]).unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -676,10 +676,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main("cotc", &[1, 0]).unwrap();
+        let st = LegacyStageMeta::from_selector_main("cotc", &[1, 0]).unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -691,10 +691,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main("aku", &[0]).unwrap();
+        let st = LegacyStageMeta::from_selector_main("aku", &[0]).unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Aku Realms",
                 type_code: "DM",
                 type_num: 30,
@@ -706,10 +706,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main("filibuster", &[]).unwrap();
+        let st = LegacyStageMeta::from_selector_main("filibuster", &[]).unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Filibuster Invasion",
                 type_code: "",
                 type_num: 23,
@@ -721,10 +721,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector_main("z", &[7, 0]).unwrap();
+        let st = LegacyStageMeta::from_selector_main("z", &[7, 0]).unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Outbreaks",
                 type_code: "main",
                 type_num: 22,
@@ -739,16 +739,16 @@ mod tests {
 
     #[test]
     fn test_from_split_fail() {
-        let st = StageMeta::from_split("doesn't exist", 0, 0);
+        let st = LegacyStageMeta::from_split("doesn't exist", 0, 0);
         assert_eq!(st, Err(StageMetaParseError::Invalid));
     }
 
     #[test]
     fn test_from_selector() {
-        let st = StageMeta::from_selector("N 0 0").unwrap();
+        let st = LegacyStageMeta::from_selector("N 0 0").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -760,10 +760,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector("sol 0 0").unwrap();
+        let st = LegacyStageMeta::from_selector("sol 0 0").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -775,10 +775,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector("T 0 0").unwrap();
+        let st = LegacyStageMeta::from_selector("T 0 0").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Catclaw Dojo",
                 type_code: "T",
                 type_num: 6,
@@ -790,10 +790,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector("EX 0 0").unwrap();
+        let st = LegacyStageMeta::from_selector("EX 0 0").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Extra Stages",
                 type_code: "EX",
                 type_num: 4,
@@ -805,10 +805,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_selector("COTC 1 0").unwrap();
+        let st = LegacyStageMeta::from_selector("COTC 1 0").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -823,10 +823,10 @@ mod tests {
 
     #[test]
     fn test_from_file() {
-        let st = StageMeta::from_file("stageRN000_00.csv").unwrap();
+        let st = LegacyStageMeta::from_file("stageRN000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -838,10 +838,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_file("stageRT000_00.csv").unwrap();
+        let st = LegacyStageMeta::from_file("stageRT000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Catclaw Dojo",
                 type_code: "T",
                 type_num: 6,
@@ -853,10 +853,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_file("stageL000_00.csv").unwrap();
+        let st = LegacyStageMeta::from_file("stageL000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Labyrinth",
                 type_code: "L",
                 type_num: 33,
@@ -868,10 +868,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_file("stageEX000_00.csv").unwrap();
+        let st = LegacyStageMeta::from_file("stageEX000_00.csv").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Extra Stages",
                 type_code: "EX",
                 type_num: 4,
@@ -886,10 +886,10 @@ mod tests {
 
     #[test]
     fn test_from_file_main() {
-        let st = StageMeta::from_file("stageSpace07_00.csv").unwrap();
+        let st = LegacyStageMeta::from_file("stageSpace07_00.csv").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -901,10 +901,10 @@ mod tests {
             }
         );
 
-        let st = StageMeta::from_file("stageZ00_00.csv").unwrap();
+        let st = LegacyStageMeta::from_file("stageZ00_00.csv").unwrap();
         assert_eq!(
             st,
-            StageMeta {
+            LegacyStageMeta {
                 type_name: "Outbreaks",
                 type_code: "main",
                 type_num: 20,
@@ -919,7 +919,7 @@ mod tests {
 
     #[test]
     fn test_from_ref() {
-        let answer = StageMeta {
+        let answer = LegacyStageMeta {
             type_name: "Stories of Legend",
             type_code: "N",
             type_num: 0,
@@ -930,11 +930,11 @@ mod tests {
             stage_file_name: "stageRN000_00.csv".to_string(),
         };
 
-        let st = StageMeta::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        let st = LegacyStageMeta::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        let st = LegacyStageMeta::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
-        let st = StageMeta::from_ref("s00000-01").unwrap();
+        let st = LegacyStageMeta::from_ref("s00000-01").unwrap();
         assert_eq!(st, answer);
     }
 
@@ -942,12 +942,12 @@ mod tests {
     fn test_new() {
         let selector = "*https://battlecats-db.com/stage/s01382-03.html";
         assert_eq!(
-            StageMeta::from_ref(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_ref(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::new(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::new(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Event Stages",
                 type_code: "S",
                 type_num: 1,
@@ -961,12 +961,12 @@ mod tests {
 
         let selector = "ItF 1 48";
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -980,12 +980,12 @@ mod tests {
 
         let selector = "DM 0";
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Aku Realms",
                 type_code: "DM",
                 type_num: 30,
@@ -999,12 +999,12 @@ mod tests {
 
         let selector = "Filibuster";
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Filibuster Invasion",
                 type_code: "",
                 type_num: 23,
@@ -1018,12 +1018,12 @@ mod tests {
 
         let selector = "z 5 0";
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_selector(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_selector(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Outbreaks",
                 type_code: "main",
                 type_num: 21,
@@ -1037,12 +1037,12 @@ mod tests {
 
         let selector = "stageRN013_05.csv";
         assert_eq!(
-            StageMeta::from_file(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_file(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_file(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_file(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -1056,12 +1056,12 @@ mod tests {
 
         let selector = "stageRN000_00.csv";
         assert_eq!(
-            StageMeta::from_file(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_file(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_file(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_file(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Stories of Legend",
                 type_code: "N",
                 type_num: 0,
@@ -1075,12 +1075,12 @@ mod tests {
 
         let selector = "stageW04_05.csv";
         assert_eq!(
-            StageMeta::from_file(selector).unwrap(),
-            StageMeta::new(selector).unwrap()
+            LegacyStageMeta::from_file(selector).unwrap(),
+            LegacyStageMeta::new(selector).unwrap()
         );
         assert_eq!(
-            StageMeta::from_file(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::from_file(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -1094,12 +1094,12 @@ mod tests {
 
         let selector = "stageW04_05.csv";
         assert_eq!(
-            StageMeta::new(&String::from(selector)),
-            StageMeta::new(selector)
+            LegacyStageMeta::new(&String::from(selector)),
+            LegacyStageMeta::new(selector)
         );
         assert_eq!(
-            StageMeta::new(&String::from(selector)).unwrap(),
-            StageMeta {
+            LegacyStageMeta::new(&String::from(selector)).unwrap(),
+            LegacyStageMeta {
                 type_name: "Main Chapters",
                 type_code: "main",
                 type_num: 3,
@@ -1117,8 +1117,8 @@ mod tests {
         let selector = "z 2 49";
         // EoC Moon 2
         assert_eq!(
-            StageMeta::new(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::new(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Outbreaks",
                 type_code: "main",
                 type_num: 20,
@@ -1133,8 +1133,8 @@ mod tests {
         let selector = "z 4 49";
         // check that doesn't do the same thing for itf/cotc
         assert_eq!(
-            StageMeta::new(selector).unwrap(),
-            StageMeta {
+            LegacyStageMeta::new(selector).unwrap(),
+            LegacyStageMeta {
                 type_name: "Outbreaks",
                 type_code: "main",
                 type_num: 21,
@@ -1149,17 +1149,17 @@ mod tests {
 
     #[test]
     fn test_stage_type_error() {
-        assert_eq!(StageMeta::new("unknown 0"), None);
+        assert_eq!(LegacyStageMeta::new("unknown 0"), None);
         assert_eq!(
-            StageMeta::from_file("file no exist"),
+            LegacyStageMeta::from_file("file no exist"),
             Err(StageMetaParseError::Rejected)
         );
         assert_eq!(
-            StageMeta::from_ref("not a reference"),
+            LegacyStageMeta::from_ref("not a reference"),
             Err(StageMetaParseError::Rejected)
         );
         assert_eq!(
-            StageMeta::from_selector_main("none", &[]),
+            LegacyStageMeta::from_selector_main("none", &[]),
             Err(StageMetaParseError::Invalid)
         );
     }
@@ -1167,54 +1167,54 @@ mod tests {
     #[test]
     #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_negative_selector() {
-        let _ = StageMeta::from_selector("Q 2 -1");
+        let _ = LegacyStageMeta::from_selector("Q 2 -1");
     }
 
     #[test]
     #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_non_numeric_selector() {
-        let _ = StageMeta::from_selector("Labyrinth two three");
+        let _ = LegacyStageMeta::from_selector("Labyrinth two three");
     }
 
     #[test]
     #[should_panic = "index out of bounds"]
     fn test_not_enough_args() {
-        let _ = StageMeta::from_selector_main("itf", &[]);
+        let _ = LegacyStageMeta::from_selector_main("itf", &[]);
     }
 
     #[test]
     #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
     fn test_invalid_number_low_itf() {
-        let _ = StageMeta::from_selector_main("itf", &[0, 0]);
+        let _ = LegacyStageMeta::from_selector_main("itf", &[0, 0]);
     }
 
     #[test]
     #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
     fn test_invalid_number_low_cotc() {
-        let _ = StageMeta::from_selector_main("cotc", &[0, 0]);
+        let _ = LegacyStageMeta::from_selector_main("cotc", &[0, 0]);
     }
 
     #[test]
     #[should_panic = "assertion failed: (1..=9).contains(&chap_num)"]
     fn test_invalid_number_high() {
-        let _ = StageMeta::from_selector_main("z", &[10, 0]);
+        let _ = LegacyStageMeta::from_selector_main("z", &[10, 0]);
     }
 
     #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
-        for code in STAGE_TYPES {
-            if StageMeta::is_main_chaps(code.type_enum) {
+        for code in LEGACY_STAGE_TYPES {
+            if LegacyStageMeta::is_main_chaps(code.type_enum) {
                 continue;
             }
 
             for _ in 0..NUM_ITERATIONS {
                 let (map, stage) = (random::<u32>() % 1000, random::<u32>() % 1000);
-                let st = StageMeta::from_split_parsed(&code, map, stage);
+                let st = LegacyStageMeta::from_split_parsed(&code, map, stage);
                 let file_name = &st.stage_file_name;
                 assert_eq!(
                     file_name,
-                    &StageMeta::from_file(file_name).unwrap().stage_file_name
+                    &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
                 );
                 let type_code = {
                     if code.code == "RE|EX" {
@@ -1225,7 +1225,7 @@ mod tests {
                 };
                 assert_eq!(
                     st,
-                    StageMeta {
+                    LegacyStageMeta {
                         type_name: code.name,
                         type_code,
                         type_num: code.number,
@@ -1240,11 +1240,11 @@ mod tests {
                 );
                 assert_eq!(
                     st,
-                    StageMeta::new(&format!("{} {map} {stage}", code.number)).unwrap()
+                    LegacyStageMeta::new(&format!("{} {map} {stage}", code.number)).unwrap()
                 );
                 assert_eq!(
                     st,
-                    StageMeta::new(&format!("s{:02}{:03}-{:02}", code.number, map, stage + 1))
+                    LegacyStageMeta::new(&format!("s{:02}{:03}-{:02}", code.number, map, stage + 1))
                         .unwrap()
                 );
             }
@@ -1255,20 +1255,20 @@ mod tests {
     fn test_random_properties_main() {
         const NUM_ITERATIONS: usize = 20;
 
-        let code: &StageType = &STAGE_TYPES[3];
+        let code: &LegacyStageType = &LEGACY_STAGE_TYPES[3];
         let selector = "eoc";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<u32>() % 100;
             // EoC only supports 2 digits
-            let st = StageMeta::from_selector_main(selector, &[stage]).unwrap();
+            let st = LegacyStageMeta::from_selector_main(selector, &[stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageMeta {
+                LegacyStageMeta {
                     type_name: code.name,
                     type_code: code.code,
                     type_num: code.number,
@@ -1279,23 +1279,23 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
+            assert_eq!(st, LegacyStageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
-        let code: &StageType = &STAGE_TYPES[3];
+        let code: &LegacyStageType = &LEGACY_STAGE_TYPES[3];
         let selector = "itf";
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
             // itf is 1-based so need +1
-            let st = StageMeta::from_selector_main(selector, &[map, stage]).unwrap();
+            let st = LegacyStageMeta::from_selector_main(selector, &[map, stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageMeta {
+                LegacyStageMeta {
                     type_name: code.name,
                     type_code: code.code,
                     type_num: code.number,
@@ -1310,24 +1310,24 @@ mod tests {
             );
             assert_eq!(
                 st,
-                StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
+                LegacyStageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
             );
         }
 
-        let code: &StageType = &STAGE_TYPES[3];
+        let code: &LegacyStageType = &LEGACY_STAGE_TYPES[3];
         let selector = "cotc";
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 3 + 1, random::<u32>() % 1000);
             // cotc is 1-based so need +1
-            let st = StageMeta::from_selector_main(selector, &[map, stage]).unwrap();
+            let st = LegacyStageMeta::from_selector_main(selector, &[map, stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageMeta {
+                LegacyStageMeta {
                     type_name: code.name,
                     type_code: code.code,
                     type_num: code.number,
@@ -1342,23 +1342,23 @@ mod tests {
             );
             assert_eq!(
                 st,
-                StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
+                LegacyStageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
             );
         }
 
-        let code: &StageType = &STAGE_TYPES[16];
+        let code: &LegacyStageType = &LEGACY_STAGE_TYPES[16];
         let selector = "aku";
         for _ in 0..NUM_ITERATIONS {
             let stage = random::<u32>() % 1000;
-            let st = StageMeta::from_selector_main(selector, &[stage]).unwrap();
+            let st = LegacyStageMeta::from_selector_main(selector, &[stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
             );
             assert_eq!(
                 st,
-                StageMeta {
+                LegacyStageMeta {
                     type_name: code.name,
                     type_code: code.code,
                     type_num: code.number,
@@ -1370,19 +1370,19 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            assert_eq!(st, StageMeta::new(&format!("{selector} {stage}")).unwrap());
+            assert_eq!(st, LegacyStageMeta::new(&format!("{selector} {stage}")).unwrap());
         }
 
-        let code: &StageType = &STAGE_TYPES[11];
+        let code: &LegacyStageType = &LEGACY_STAGE_TYPES[11];
         let selector = "Z";
         for _ in 0..NUM_ITERATIONS {
             let (map, stage) = (random::<u32>() % 8 + 1, random::<u32>() % 1000);
             // Currently 8 chapters exist
-            let st = StageMeta::from_selector_main(selector, &[map, stage]).unwrap();
+            let st = LegacyStageMeta::from_selector_main(selector, &[map, stage]).unwrap();
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &StageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
             );
 
             let mapind = map - 1;
@@ -1396,7 +1396,7 @@ mod tests {
 
             assert_eq!(
                 st,
-                StageMeta {
+                LegacyStageMeta {
                     type_name: code.name,
                     type_code: code.code,
                     type_num,
@@ -1410,15 +1410,15 @@ mod tests {
             );
             assert_eq!(
                 st,
-                StageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
+                LegacyStageMeta::new(&format!("{selector} {map} {stage}")).unwrap()
             );
         }
     }
 
     #[test]
     fn test_selector_numbers() {
-        for t in STAGE_TYPES {
-            let Ok(m) = StageMeta::from_numbers(t.number, 0, 0) else {
+        for t in LEGACY_STAGE_TYPES {
+            let Ok(m) = LegacyStageMeta::from_numbers(t.number, 0, 0) else {
                 continue;
             };
 
