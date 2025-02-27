@@ -137,7 +137,7 @@ impl<'a> StageData<'_> {
         let Some(meta) = StageMeta::new(selector) else {
             panic!("Invalid selector: {selector:?}")
         };
-        Self::from_meta(meta, &version)
+        Self::from_meta(meta, version)
     }
 
     /// Get stage data from meta object.

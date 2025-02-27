@@ -61,7 +61,7 @@ fn test_invariants(map: &MapData) {
     assert_eq!(map.max_clears, None);
     assert_eq!(map.cooldown, None);
     // assert_eq!(map.star_mask, None);
-    assert_eq!(map.hidden_upon_clear, false);
+    assert!(!map.hidden_upon_clear);
     // assert_eq!(map.restrictions, None);
     assert_eq!(map.ex_option_map, None);
     assert_eq!(map.special_rule, None);
@@ -102,7 +102,7 @@ fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
     if config.map_info.version() {
         let mut ver = config.version.current_version().number();
         if let Some(s) = ver.strip_suffix(".0") {
-            ver = s
+            ver = s;
         }
 
         write!(
@@ -192,7 +192,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 }
 
 fn materials(map: &MapData, version: &Version) -> String {
-    fn format_material(miss_chance: u8, chances: String) -> String {
+    fn format_material(miss_chance: u8, chances: &str) -> String {
         format!("{{{{Materials|{miss_chance}{chances}}}}}")
     }
 
@@ -217,7 +217,7 @@ fn materials(map: &MapData, version: &Version) -> String {
         total += chance;
     }
     if drop_item.brick_z.is_none() {
-        return format_material(100 - total, buf);
+        return format_material(100 - total, &buf);
     }
 
     let drops_z = [
@@ -237,7 +237,7 @@ fn materials(map: &MapData, version: &Version) -> String {
     }
     buf.write_str("|hidenormal=").unwrap();
 
-    return format_material(100 - total, buf);
+    format_material(100 - total, &buf)
 }
 
 fn reference(map: &MapData) -> String {
@@ -418,7 +418,7 @@ mod tests {
 
         let mut ver = with_version.version.current_version().number();
         if let Some(s) = ver.strip_suffix(".0") {
-            ver = s
+            ver = s;
         }
         let target = format!(
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
