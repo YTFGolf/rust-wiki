@@ -27,6 +27,7 @@ struct StageType<'a> {
     pub uses_r_prefix: bool,
     pub matcher_str: &'a str,
 }
-const MAX_VARIANT_NUMBER: usize = 37;
+// actually this could probably be calculated at compile time
+// const MAX_VARIANT_NUMBER: usize = 37;
 // store the data, store the map
 // static STAGE_TYPES : [Option<StageType<'static>>; MAX_VARIANT_NUMBER];
