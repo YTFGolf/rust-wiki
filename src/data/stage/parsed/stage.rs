@@ -366,15 +366,16 @@ impl Stage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, data::stage::get_stages};
+    use crate::{config::TEST_CONFIG, data::stage::get_stage_files};
 
     // test none values, esp. with crown data
 
     #[test]
     #[ignore]
     fn get_all() {
-        for stage in get_stages(TEST_CONFIG.version.current_version()) {
-            let _stage: Stage = stage.into();
+        for stage_name in get_stage_files(TEST_CONFIG.version.current_version()) {
+            let stage = Stage::new_current(&stage_name).unwrap();
+            assert_eq!(stage.meta.stage_file_name(), stage_name);
         }
     }
 
