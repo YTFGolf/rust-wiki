@@ -1,15 +1,9 @@
-//! Deals with transforming pure values into usable data.
-
-/*
-Plan:
-- Does the equivalent of STAGE_TYPES: contains data about stages.
-- This or a sibling module deals with parsing selectors. This or a sibling
-  module deals with turning this information into real-world data (e.g. file
-  names like `MapStageDataA_000.csv`).
-*/
+//! Defines information that can be used to obtain or transform pure data from
+//! or into usable formats.
 
 #![allow(dead_code)]
-type StageVariantID = u32;
+
+use super::variant::StageVariantID;
 type Regex = u32;
 
 /// Constant reference to a stage type.
@@ -27,7 +21,44 @@ struct StageType<'a> {
     pub uses_r_prefix: bool,
     pub matcher_str: &'a str,
 }
-// actually this could probably be calculated at compile time
-// const MAX_VARIANT_NUMBER: usize = 37;
+const MAX_VARIANT_NUMBER: usize = 37;
 // store the data, store the map
-// static STAGE_TYPES : [Option<StageType<'static>>; MAX_VARIANT_NUMBER];
+const STAGE_TYPES: [Option<StageType<'static>>; MAX_VARIANT_NUMBER] =
+    [const { None }; MAX_VARIANT_NUMBER];
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn test_variants() {
+        // assert that array has all variants and numbers don't exceed
+        // [`MAX_VARIANT_NUMBER`].
+        for variant in StageVariantID::iter() {
+            let is_in_map = STAGE_TYPES
+                .iter()
+                .flat_map(|x| x)
+                .any(|st| st.variant_id == variant);
+            assert!(is_in_map, "Variant {variant:?} not found in STAGE_TYPES.");
+
+            let variant_num = usize::try_from(variant.num())
+                .expect("Error when converting from stage variant number to usize.");
+            assert!(
+                variant_num <= MAX_VARIANT_NUMBER,
+                "Variant {variant:?} has a value higher than {MAX_VARIANT_NUMBER}."
+            )
+        }
+    }
+}
+
+/*
+Plan:
+- Does the equivalent of STAGE_TYPES: contains data about stages.
+- Below applies to two separate sibling modules. All tests from LegacyStageMeta
+  also get moved over to here. Siblings can use file names to implement a
+  temporary from parser for LegacyStageMeta.
+- This or a sibling module deals with parsing selectors. This or a sibling
+  module deals with turning this information into real-world data (e.g. file
+  names like `MapStageDataA_000.csv`).
+*/
