@@ -2,29 +2,71 @@
 //! or into usable formats.
 
 #![allow(dead_code)]
+// I don't want this to be too spaghetti-y so might become its own entire
+// module.
 
 use super::variant::StageVariantID;
 type Regex = u32;
 
-/// Constant reference to a stage type.
-struct StageType<'a> {
-    /// Custom enum sort of like StageTypeEnum, but also doubles as number and
-    /// can index [`STAGE_TYPES`].
-    pub variant_id: StageVariantID,
-    /// Long name of thing
-    pub name: &'a str,
-    /// Used in MapStageData. If None then needs to be custom.
-    pub map_code: Option<&'a str>,
-    /// Used in stage data files, if not predictable.
-    pub stage_code: Option<&'a str>,
-    /// Overrides `stage_code`
-    pub uses_r_prefix: bool,
-    pub matcher_str: &'a str,
+/// Type of stage code used.
+pub enum StageCodeType<T> {
+    /// Code is the same as map (Aku Realms, Labyrinth, Championships e.g.).
+    Map,
+    /// Code is map with an R at the start (most stages).
+    RPrefix,
+    /// Code is completely different (EX), map name images use this different
+    /// code rather than map code.
+    Other(T),
+    /// Requires custom logic to deal with the stage code.
+    Custom,
 }
+
+/// Constant reference to a stage type.
+pub struct StageType<T> {
+    /// Variant ID of the stage type.
+    variant_id: StageVariantID,
+    /// Full readable name of the stage type.
+    name: T,
+    /// Code used in map data files. None means that it will need to be figured
+    /// out manually.
+    map_code: Option<T>,
+    /// Code used in stage data files.
+    stage_code: StageCodeType<T>,
+    /// Regex matcher for the stage type.
+    matcher_str: T,
+}
+/*
+Functions to:
+- Get map code (str)
+- Get stage code (str)
+- Get identifier (map,rprefix=map,other=other,custom=unimplemented)
+// note that names may be changed and need to update whole file first
+
+also fun fact legend quest has prefix D
+*/
+
 const MAX_VARIANT_NUMBER: usize = 37;
 // store the data, store the map
-const STAGE_TYPES: [Option<StageType<'static>>; MAX_VARIANT_NUMBER] =
+const STAGE_TYPES: [Option<StageType<&'static str>>; MAX_VARIANT_NUMBER] =
     [const { None }; MAX_VARIANT_NUMBER];
+
+const fn variant_to_index(variant: StageVariantID) -> usize {
+    variant.num() as usize
+}
+
+/// Get variant's stage type.
+pub const fn get_stage_type(variant: StageVariantID) -> &'static StageType<&'static str> {
+    let i = variant_to_index(variant);
+    match &STAGE_TYPES[i] {
+        Some(v) => v,
+        None => panic!("Variant is not initialised properly!"),
+    }
+}
+
+// function to get the regex matching done properly.
+// "z 1|z 2|z 3" e.g.
+// All will get their map codes, stage codes and numbers added automatically
+// if begins with z then there is a special case, maybe this could tell that
 
 #[cfg(test)]
 mod tests {
@@ -38,17 +80,31 @@ mod tests {
         for variant in StageVariantID::iter() {
             let is_in_map = STAGE_TYPES
                 .iter()
-                .flat_map(|x| x)
-                .any(|st| st.variant_id == variant);
-            assert!(is_in_map, "Variant {variant:?} not found in STAGE_TYPES.");
+                .flatten()
+                .filter(|st| st.variant_id == variant)
+                .collect::<Vec<_>>();
+            let len = is_in_map.len();
+            assert_eq!(len, 1, "{variant:?} should appear exactly once.");
 
             let variant_num = usize::try_from(variant.num())
                 .expect("Error when converting from stage variant number to usize.");
             assert!(
                 variant_num <= MAX_VARIANT_NUMBER,
                 "Variant {variant:?} has a value higher than {MAX_VARIANT_NUMBER}."
-            )
+            );
         }
+    }
+
+    #[test]
+    fn test_has_valid_map_and_stage_codes() {
+        todo!()
+        // check that all functions return a value (except custom on identifier)
+    }
+
+    #[test]
+    fn assert_matchers_are_unique(){
+        todo!()
+        // check that no duplicate match possibilities exist
     }
 }
 
