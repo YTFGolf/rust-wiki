@@ -50,7 +50,10 @@ pub mod consts {
         pub stage_type: LegacyStageType,
     }
 
-    fn initialise_type_map(pattern: &'static str, stage_type: LegacyStageVariant) -> LegacyStageTypeMap {
+    fn initialise_type_map(
+        pattern: &'static str,
+        stage_type: LegacyStageVariant,
+    ) -> LegacyStageTypeMap {
         let re = format!("^({pattern})$");
         let matcher = RegexBuilder::new(&re)
             .case_insensitive(true)
@@ -441,7 +444,11 @@ impl LegacyStageMeta {
     /// [STAGE_TYPES]: consts::STAGE_TYPES
     /// [from_split][StageMeta::from_split] but with `stage_type` being a code
     /// from [STAGE_TYPES].
-    fn from_split_parsed(stage_type: &LegacyStageType, map_num: u32, stage_num: u32) -> LegacyStageMeta {
+    fn from_split_parsed(
+        stage_type: &LegacyStageType,
+        map_num: u32,
+        stage_num: u32,
+    ) -> LegacyStageMeta {
         let type_name = stage_type.name;
         let type_num = stage_type.number;
         let type_enum = stage_type.type_enum;
@@ -930,9 +937,11 @@ mod tests {
             stage_file_name: "stageRN000_00.csv".to_string(),
         };
 
-        let st = LegacyStageMeta::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        let st =
+            LegacyStageMeta::from_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
-        let st = LegacyStageMeta::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        let st =
+            LegacyStageMeta::from_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
         assert_eq!(st, answer);
         let st = LegacyStageMeta::from_ref("s00000-01").unwrap();
         assert_eq!(st, answer);
@@ -1214,7 +1223,9 @@ mod tests {
                 let file_name = &st.stage_file_name;
                 assert_eq!(
                     file_name,
-                    &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
+                    &LegacyStageMeta::from_file(file_name)
+                        .unwrap()
+                        .stage_file_name
                 );
                 let type_code = {
                     if code.code == "RE|EX" {
@@ -1244,8 +1255,13 @@ mod tests {
                 );
                 assert_eq!(
                     st,
-                    LegacyStageMeta::new(&format!("s{:02}{:03}-{:02}", code.number, map, stage + 1))
-                        .unwrap()
+                    LegacyStageMeta::new(&format!(
+                        "s{:02}{:03}-{:02}",
+                        code.number,
+                        map,
+                        stage + 1
+                    ))
+                    .unwrap()
                 );
             }
         }
@@ -1264,7 +1280,9 @@ mod tests {
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name)
+                    .unwrap()
+                    .stage_file_name
             );
             assert_eq!(
                 st,
@@ -1279,7 +1297,10 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            assert_eq!(st, LegacyStageMeta::new(&format!("{selector} {stage}")).unwrap());
+            assert_eq!(
+                st,
+                LegacyStageMeta::new(&format!("{selector} {stage}")).unwrap()
+            );
         }
 
         let code: &LegacyStageType = &LEGACY_STAGE_TYPES[3];
@@ -1291,7 +1312,9 @@ mod tests {
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name)
+                    .unwrap()
+                    .stage_file_name
             );
             assert_eq!(
                 st,
@@ -1323,7 +1346,9 @@ mod tests {
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name)
+                    .unwrap()
+                    .stage_file_name
             );
             assert_eq!(
                 st,
@@ -1354,7 +1379,9 @@ mod tests {
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name)
+                    .unwrap()
+                    .stage_file_name
             );
             assert_eq!(
                 st,
@@ -1370,7 +1397,10 @@ mod tests {
                     stage_file_name: st.stage_file_name.to_string(),
                 }
             );
-            assert_eq!(st, LegacyStageMeta::new(&format!("{selector} {stage}")).unwrap());
+            assert_eq!(
+                st,
+                LegacyStageMeta::new(&format!("{selector} {stage}")).unwrap()
+            );
         }
 
         let code: &LegacyStageType = &LEGACY_STAGE_TYPES[11];
@@ -1382,7 +1412,9 @@ mod tests {
             let file_name = &st.stage_file_name;
             assert_eq!(
                 file_name,
-                &LegacyStageMeta::from_file(file_name).unwrap().stage_file_name
+                &LegacyStageMeta::from_file(file_name)
+                    .unwrap()
+                    .stage_file_name
             );
 
             let mapind = map - 1;

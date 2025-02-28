@@ -117,7 +117,13 @@ impl EncountersSection {
     }
 
     /// Write the non-asterisked part of an encounter.
-    pub fn fmt_encounter(&self, buf: &mut String, meta: &LegacyStageMeta, stage_name: &str, mags: &str) {
+    pub fn fmt_encounter(
+        &self,
+        buf: &mut String,
+        meta: &LegacyStageMeta,
+        stage_name: &str,
+        mags: &str,
+    ) {
         match self.display_type {
             D::Skip => unreachable!(),
             D::Warn | D::Normal | D::Flat => {
@@ -176,8 +182,11 @@ impl EncountersSection {
                                     Ok(nm) => nm,
                                     Err(StageMetaParseError::Rejected) => {
                                         assert_eq!(ids.0, 30);
-                                        LegacyStageMeta::from_selector_main(&ids.0.to_string(), &[999])
-                                            .unwrap()
+                                        LegacyStageMeta::from_selector_main(
+                                            &ids.0.to_string(),
+                                            &[999],
+                                        )
+                                        .unwrap()
                                     }
                                     Err(StageMetaParseError::Invalid) => {
                                         panic!("Matching meta failed or something.")
@@ -576,7 +585,11 @@ mod tests {
                         "(100%)".to_string(),
                         &LegacyStageMeta::new("l 0 0").unwrap(),
                     ),
-                    Stage::new("Stage 2", String::new(), &LegacyStageMeta::new("l 0 1").unwrap()),
+                    Stage::new(
+                        "Stage 2",
+                        String::new(),
+                        &LegacyStageMeta::new("l 0 1").unwrap(),
+                    ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),

@@ -208,7 +208,10 @@ impl GameMap {
     }
 
     /// Get DropItem data if it exists.
-    pub fn get_drop_item<'a>(meta: &LegacyStageMeta, version: &'a Version) -> Option<&'a DropItemRaw> {
+    pub fn get_drop_item<'a>(
+        meta: &LegacyStageMeta,
+        version: &'a Version,
+    ) -> Option<&'a DropItemRaw> {
         let map_id = Self::get_map_id(meta);
         let drop_item = version.get_cached_file::<DropItem>();
         drop_item.get_drop_item(map_id)

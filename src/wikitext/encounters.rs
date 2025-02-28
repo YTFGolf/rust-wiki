@@ -12,7 +12,9 @@ use crate::{
             parsed::stage_enemy::StageEnemy,
             raw::{
                 stage_data::StageData,
-                stage_metadata::{consts::LegacyStageVariant as T, LegacyStageMeta, StageMetaParseError},
+                stage_metadata::{
+                    consts::LegacyStageVariant as T, LegacyStageMeta, StageMetaParseError,
+                },
             },
         },
     },
