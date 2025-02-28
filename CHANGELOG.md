@@ -19,6 +19,8 @@ realise how badly I need to fix `StageMeta`.
 
 ### Changed
 
+- Split `get_stages` function into `get_stage_files` and the initialiser.
+
 ### Removed
 
 ## [0.4.2] - 2025-02-26
