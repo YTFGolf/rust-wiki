@@ -1,5 +1,7 @@
 //! The variant (e.g. SoL, main chapters etc.) of the stage.
 
+use strum::{EnumIter, FromRepr};
+
 const _: () = assert!(std::mem::size_of::<StageVariant>() == std::mem::size_of::<VariantSize>());
 
 /// Size of variant.
@@ -7,7 +9,7 @@ type VariantSize = u32;
 
 #[allow(missing_docs)]
 #[repr(u32)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, FromRepr, EnumIter, PartialEq)]
 /// The variant (e.g. SoL, main chapters etc.) of the stage.
 pub enum StageVariant {
     // TrueFormUnlocks = 28,
@@ -56,6 +58,12 @@ pub enum StageVariant {
     Championships = 37,
 }
 
+impl From<VariantSize> for StageVariant {
+    fn from(value: VariantSize) -> Self {
+        Self::from_repr(value).unwrap_or_else(|| panic!("Unexpected stage number: {value}!"))
+    }
+}
+
 // Simple methods on self.
 impl StageVariant {
     /// Get variant number.
@@ -99,3 +107,19 @@ impl StageVariant {
 
 // Conversions.
 impl StageVariant {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    /// Make sure that all variants are converted properly.
+    fn test_variants() {
+        for variant in StageVariant::iter() {
+            println!("{variant:?}, {}", variant.num());
+            assert_eq!(variant, variant.num().into());
+        }
+        // panic!()
+    }
+}
