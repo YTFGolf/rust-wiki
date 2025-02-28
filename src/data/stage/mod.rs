@@ -6,21 +6,26 @@ use super::version::Version;
 use raw::stage_data::StageData;
 use regex::Regex;
 
-/// Get an iterator over all stages in the version.
-pub fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
+/// Get a list of all stage data files in the game.
+pub fn get_stage_files(version: &Version) -> impl Iterator<Item = String> {
     let stage_file_re = Regex::new(r"^stage.*?\d{2}\.csv$").unwrap();
     let dir = &version.get_file_path("DataLocal");
 
     let files = std::fs::read_dir(dir).unwrap();
     let stages = files.filter_map(move |f| {
         let file_name = f.unwrap().file_name().into_string().unwrap();
-        if !stage_file_re.is_match(&file_name) {
-            return None;
-        };
 
-        let stage = StageData::new(&file_name, version).unwrap();
-        Some(stage)
+        if stage_file_re.is_match(&file_name) {
+            Some(file_name)
+        } else {
+            None
+        }
     });
 
     stages
+}
+
+/// Get an iterator over all stages in the version.
+pub fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
+    get_stage_files(version).map(|file_name| StageData::new(&file_name, version).unwrap())
 }
