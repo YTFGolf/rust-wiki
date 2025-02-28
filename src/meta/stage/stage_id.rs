@@ -2,7 +2,7 @@
 
 use super::{
     map_id::{MapID, MapSize},
-    variant::{StageVariant, VariantSize},
+    variant::{StageVariantID, VariantSize},
 };
 
 pub(super) type StageSize = u32;
@@ -15,22 +15,22 @@ pub struct StageID {
 // Simple methods on self.
 impl StageID {
     /// Get stage type variant.
-    pub fn variant(&self) -> StageVariant {
+    pub const fn variant(&self) -> StageVariantID {
         self.map.variant()
     }
 
     /// Get stage map ID object.
-    pub fn map(&self) -> &MapID {
+    pub const fn map(&self) -> &MapID {
         &self.map
     }
 
     /// Get map id used in game files.
-    pub fn mapid(&self) -> u32 {
+    pub const fn mapid(&self) -> u32 {
         self.map.mapid()
     }
 
     /// Get stage number.
-    pub fn num(&self) -> StageSize {
+    pub const fn num(&self) -> StageSize {
         self.num
     }
 }
@@ -38,7 +38,7 @@ impl StageID {
 // Initialisation.
 impl StageID {
     /// Create new stage from components.
-    pub fn from_components(variant: StageVariant, map: MapSize, num: StageSize) -> Self {
+    pub fn from_components(variant: StageVariantID, map: MapSize, num: StageSize) -> Self {
         Self::from_map(MapID::from_components(variant, map), num)
     }
 

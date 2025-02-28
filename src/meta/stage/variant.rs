@@ -2,7 +2,7 @@
 
 use strum::{EnumIter, FromRepr};
 
-const _: () = assert!(std::mem::size_of::<StageVariant>() == std::mem::size_of::<VariantSize>());
+const _: () = assert!(std::mem::size_of::<StageVariantID>() == std::mem::size_of::<VariantSize>());
 
 /// Size of variant.
 pub(super) type VariantSize = u32;
@@ -11,7 +11,7 @@ pub(super) type VariantSize = u32;
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, FromRepr, EnumIter, PartialEq)]
 /// The variant (e.g. SoL, main chapters etc.) of the stage.
-pub enum StageVariant {
+pub enum StageVariantID {
     // TrueFormUnlocks = 28,
     // TapjoyPopups = 29,
     // cargo fmt works weirdly with comments so leaving these 2 up here
@@ -58,21 +58,21 @@ pub enum StageVariant {
     Championships = 37,
 }
 
-impl From<VariantSize> for StageVariant {
+impl From<VariantSize> for StageVariantID {
     fn from(value: VariantSize) -> Self {
         Self::from_repr(value).unwrap_or_else(|| panic!("Unexpected stage number: {value}!"))
     }
 }
 
 // Simple methods on self.
-impl StageVariant {
+impl StageVariantID {
     /// Get variant number.
     pub const fn num(&self) -> VariantSize {
         *self as VariantSize
     }
 
     /// Is variant a main chapter?
-    pub fn is_main(&self) -> bool {
+    pub const fn is_main(&self) -> bool {
         matches!(
             self,
             Self::MainChapters | Self::Filibuster | Self::AkuRealms
@@ -80,7 +80,7 @@ impl StageVariant {
     }
 
     /// Is variant a Zombie Outbreak?
-    pub fn is_outbreak(&self) -> bool {
+    pub const fn is_outbreak(&self) -> bool {
         matches!(
             self,
             Self::EocOutbreak | Self::ItfOutbreak | Self::CotcOutbreak
@@ -88,17 +88,17 @@ impl StageVariant {
     }
 
     /// Is variant a Legend Stage?
-    pub fn is_legend_stage(&self) -> bool {
+    pub const fn is_legend_stage(&self) -> bool {
         matches!(self, Self::SoL | Self::UL | Self::ZL)
     }
 
     /// Is variant a collab?
-    pub fn is_collab(&self) -> bool {
+    pub const fn is_collab(&self) -> bool {
         matches!(self, Self::Collab | Self::CollabGauntlet)
     }
 
     /// Is variant a gauntlet?
-    pub fn is_gauntlet(&self) -> bool {
+    pub const fn is_gauntlet(&self) -> bool {
         matches!(self, Self::Gauntlet | Self::CollabGauntlet)
     }
 
@@ -113,8 +113,8 @@ mod tests {
     #[test]
     /// Make sure that all variants are converted properly.
     fn test_variants() {
-        for variant in StageVariant::iter() {
-            println!("{variant:?}, {}", variant.num());
+        for variant in StageVariantID::iter() {
+            // println!("{variant:?}, {}", variant.num());
             assert_eq!(variant, variant.num().into());
         }
         // panic!()

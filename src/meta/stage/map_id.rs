@@ -1,6 +1,6 @@
 //! ID for a stage map.
 
-use super::variant::{StageVariant, VariantSize};
+use super::variant::{StageVariantID, VariantSize};
 
 /// Type of main chapter.
 #[allow(missing_docs)]
@@ -14,7 +14,7 @@ pub(super) type MapSize = u32;
 /// Identifies a map.
 pub struct MapID {
     /// Stage type variant.
-    variant: StageVariant,
+    variant: StageVariantID,
     /// Number of map.
     num: MapSize,
 }
@@ -22,22 +22,22 @@ pub struct MapID {
 // Simple methods on self.
 impl MapID {
     /// Get stage type variant.
-    pub fn variant(&self) -> StageVariant {
+    pub const fn variant(&self) -> StageVariantID {
         self.variant
     }
 
     /// Get map number.
-    pub fn num(&self) -> MapSize {
+    pub const fn num(&self) -> MapSize {
         self.num
     }
 
     /// Get map ID used in game files.
-    pub fn mapid(&self) -> u32 {
+    pub const fn mapid(&self) -> u32 {
         self.variant.num() * 1000 + self.num
     }
 
     /// If map is main chapters then get which one if applicable.
-    pub fn main_type(&self) -> Option<MainType> {
+    pub const fn main_type(&self) -> Option<MainType> {
         match self.num {
             (0..=2) => Some(MainType::EoC),
             (3..=5) => Some(MainType::ItF),
@@ -50,7 +50,7 @@ impl MapID {
 // Initialisation.
 impl MapID {
     /// Create new MapID from components.
-    pub fn from_components(variant: StageVariant, num: MapSize) -> Self {
+    pub fn from_components(variant: StageVariantID, num: MapSize) -> Self {
         Self { variant, num }
     }
 
