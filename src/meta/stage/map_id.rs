@@ -1,6 +1,6 @@
 //! ID for a stage map.
 
-use super::variant::StageVariant;
+use super::variant::{StageVariant, VariantSize};
 
 /// Type of main chapter.
 #[allow(missing_docs)]
@@ -10,7 +10,7 @@ pub enum MainType {
     CotC,
 }
 
-type MapSize = u32;
+pub(super) type MapSize = u32;
 /// Identifies a map.
 pub struct MapID {
     /// Stage type variant.
@@ -19,6 +19,7 @@ pub struct MapID {
     num: MapSize,
 }
 
+// Simple methods on self.
 impl MapID {
     /// Get stage type variant.
     pub fn variant(&self) -> StageVariant {
@@ -35,17 +36,33 @@ impl MapID {
         self.variant.num() * 1000 + self.num
     }
 
-    /// If map is main chapters then get which one.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if map number is not between 0 and 8.
-    pub fn main_type_unchecked(&self) -> MainType {
+    /// If map is main chapters then get which one if applicable.
+    pub fn main_type(&self) -> Option<MainType> {
         match self.num {
-            (0..=2) => MainType::EoC,
-            (3..=5) => MainType::ItF,
-            (6..=8) => MainType::CotC,
-            _ => panic!("Map num is not between 0 and 8."),
+            (0..=2) => Some(MainType::EoC),
+            (3..=5) => Some(MainType::ItF),
+            (6..=8) => Some(MainType::CotC),
+            _ => None,
         }
+    }
+}
+
+// Initialisation.
+impl MapID {
+    /// Create new MapID from components.
+    pub fn from_components(variant: StageVariant, num: MapSize) -> Self {
+        Self { variant, num }
+    }
+
+    /// Create new MapID from numbers.
+    pub fn from_numbers(variant: VariantSize, num: MapSize) -> Self {
+        Self::from_components(variant.into(), num)
+    }
+
+    /// Create new MapID from mapid.
+    pub fn from_mapid(mapid: u32) -> Self {
+        let type_id = mapid / 1000;
+        let map_id = mapid % 1000;
+        Self::from_numbers(type_id, map_id)
     }
 }

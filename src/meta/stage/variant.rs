@@ -5,7 +5,7 @@ use strum::{EnumIter, FromRepr};
 const _: () = assert!(std::mem::size_of::<StageVariant>() == std::mem::size_of::<VariantSize>());
 
 /// Size of variant.
-type VariantSize = u32;
+pub(super) type VariantSize = u32;
 
 #[allow(missing_docs)]
 #[repr(u32)]
@@ -104,9 +104,6 @@ impl StageVariant {
 
     // no dojo because championships are ambiguous
 }
-
-// Conversions.
-impl StageVariant {}
 
 #[cfg(test)]
 mod tests {
