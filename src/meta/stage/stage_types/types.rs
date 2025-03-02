@@ -5,7 +5,7 @@
 // I don't want this to be too spaghetti-y so might become its own entire
 // module.
 
-use super::variant::StageVariantID;
+use super::super::variant::StageVariantID;
 
 /// Type of stage code used.
 pub enum StageCodeType {
@@ -34,15 +34,31 @@ pub struct StageType {
     /// Regex matcher for the stage type.
     matcher_str: &'static str,
 }
+
+// impl StageType {
+//     /// Code used in map files.
+//     fn map_code(&self) -> Option<&'static str> {
+//         self.map_code
+//     }
+
+//     /// Code used in stage files.
+//     fn stage_code(&self) -> &StageCodeType {
+//         &self.stage_code
+//     }
+
+//     // Get identifier (map,rprefix=map,other=other,custom=unimplemented)
+//     // fn stage_ident(&self) -> &'static str {
+//     //     todo!()
+//     // }
+// }
 /*
-Functions to:
-- Get map code (str)
-- Get stage code (str)
-- Get identifier (map,rprefix=map,other=other,custom=unimplemented)
 // note that names may be changed and need to update whole file first
 
 also fun fact legend quest has prefix D
 */
+
+const MAX_RAW_TYPES: usize = 0;
+const RAW_STAGE_TYPES: [StageType; MAX_RAW_TYPES] = [];
 
 const MAX_VARIANT_NUMBER: usize = 37;
 // store the data, store the map
