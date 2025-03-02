@@ -60,8 +60,8 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
     init("Catamin Stages",               Some("B"),  C::RPrefix,     T::Catamin,        "Catamin"),
     // init("Legend Quest",                 Some("D"),  C::Map,         T::LegendQuest,    "Haha"),
     init("Empire of Cats Outbreaks",     None,       C::Custom,      T::EocOutbreak,    "Z 1|Z 2|Z 3"),
-    init("Into the Future Outbreaks",    None,       C::Custom,      T::EocOutbreak,    "Z 4|Z 5|Z 6"),
-    init("Cats of the Cosmos Outbreaks", None,       C::Custom,      T::EocOutbreak,    "Z 7|Z 8|Z 9"),
+    init("Into the Future Outbreaks",    None,       C::Custom,      T::ItfOutbreak,    "Z 4|Z 5|Z 6"),
+    init("Cats of the Cosmos Outbreaks", None,       C::Custom,      T::CotcOutbreak,   "Z 7|Z 8|Z 9"),
     init("Filibuster Invasion",          None,       C::Custom,      T::Filibuster,     "Filibuster"),
     init("Gauntlets",                    Some("A"),  C::RPrefix,     T::Gauntlet,       "Gauntlet|Baron"),
     init("Enigma Stages",                Some("H"),  C::RPrefix,     T::Enigma,         "Enigma"),
@@ -75,10 +75,19 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
     init("Catclaw Championships",        Some("G"),  C::Map,         T::Championships,  "Championships"),
 ];
 
-const MAX_VARIANT_NUMBER: usize = 37;
+const MAX_VARIANT_NUMBER: u32 = 37;
+const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
 // store the data, store the map
-const STAGE_TYPES: [Option<StageType>; MAX_VARIANT_NUMBER] = {
-    let a = [const { None }; MAX_VARIANT_NUMBER];
+const STAGE_TYPES: [Option<&'static StageType>; MAX_VARIANT_INDEX] = {
+    let mut a = [const { None }; MAX_VARIANT_INDEX];
+
+    let mut i = 0;
+    while i < RAW_STAGE_TYPES.len() {
+        let raw = &RAW_STAGE_TYPES[i];
+        a[variant_to_index(raw.variant_id)] = Some(raw);
+        i += 1;
+    }
+
     a
 };
 
@@ -118,10 +127,8 @@ mod tests {
             let len = is_in_map.len();
             assert_eq!(len, 1, "{variant:?} should appear exactly once.");
 
-            let variant_num = usize::try_from(variant.num())
-                .expect("Error when converting from stage variant number to usize.");
             assert!(
-                variant_num <= MAX_VARIANT_NUMBER,
+                variant.num() <= MAX_VARIANT_NUMBER,
                 "Variant {variant:?} has a value higher than {MAX_VARIANT_NUMBER}."
             );
         }
