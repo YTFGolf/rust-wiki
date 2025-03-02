@@ -1,9 +1,13 @@
+//! Contains data about all different stage types.
+
 use super::types::{StageCodeType, StageType};
 use crate::meta::stage::variant::{StageVariantID, VariantSize};
 use regex::{Regex, RegexBuilder};
 use std::sync::LazyLock;
 
+/// Type.
 type T = StageVariantID;
+/// Code.
 type C = StageCodeType;
 
 /// Initialise raw stage type.
@@ -23,9 +27,11 @@ const fn init(
     }
 }
 
-// raw data for stage types
 #[rustfmt::skip]
+/// Stage types container.
 const RAW_STAGE_TYPES: [StageType; 24] = [
+    // Matcher is possible common names for the stage type, separated by a pipe
+    // character.
     init("Stories of Legend",            Some("N"),  C::RPrefix,     T::SoL,            "SoL"),
     init("Event Stages",                 Some("S"),  C::RPrefix,     T::Event,          "Event|Special"),
     init("Collaboration Stages",         Some("C"),  C::RPrefix,     T::Collab,         "Collab"),
@@ -58,25 +64,36 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
 // -----------------------------------------------------------------------------
 
 #[derive(Debug)]
+/// Struct containing a [`Regex`] matcher of possible aliases for the
+/// [`StageType`].
 pub struct DataMatcher {
+    /// List of all possible aliases.
     arr: Vec<String>,
+    /// Regex matcher of these aliases.
     re: Regex,
 }
 #[derive(Debug)]
-/// Monolith struct for internal use.
+/// Monolith of data about a stage type.
 pub struct StageTypeDataContainer {
+    /// [`StageType`] information about the stage type.
     data: &'static StageType,
+    /// Regex matcher information about the stage type.
     matcher: DataMatcher,
 }
 
+/// Max numeric value of any variant.
 const MAX_VARIANT_NUMBER: VariantSize = 37;
+/// [`MAX_VARIANT_NUMBER`], usable as an array index.
 const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
+/// Type for the inner data of [`STAGE_TYPES`].
 type StageTypesConstType = [Option<StageTypeDataContainer>; MAX_VARIANT_INDEX];
 
+/// Convert stage variant ID to [`STAGE_TYPES`] index.
 const fn variant_to_index(variant: StageVariantID) -> usize {
     variant.num() as usize
 }
 
+/// Get [`None`]-padded array of relevant stage type data.
 fn get_stage_types() -> StageTypesConstType {
     let mut a = [const { None }; MAX_VARIANT_INDEX];
 
@@ -91,6 +108,7 @@ fn get_stage_types() -> StageTypesConstType {
     a
 }
 
+/// Get the [`StageType`]'s appropriate [`DataMatcher`].
 fn get_data_matcher(stype: &StageType) -> DataMatcher {
     let mut arr: Vec<String> = stype
         .common_name_match_str
@@ -126,6 +144,7 @@ fn get_data_matcher(stype: &StageType) -> DataMatcher {
 
 // -----------------------------------------------------------------------------
 
+/// Container for all stage types.
 static STAGE_TYPES: LazyLock<StageTypesConstType> = LazyLock::new(get_stage_types);
 
 /// Get variant's stage type.
@@ -180,6 +199,12 @@ mod tests {
     // assert all others work the conventional way
     // assert no duplicates appear in raw types
     // assert all codes are upper case
+    // Test (in another module) every available alias
+
+    // all variants are in exactly once
+    // Map is None iff stage is custom
+    // all nums are unique
+    // matchers are all non-escaped
 }
 
 /*
