@@ -1,27 +1,7 @@
-// impl StageType {
-//     /// Code used in map files.
-//     fn map_code(&self) -> Option<&'static str> {
-//         self.map_code
-//     }
-
-//     /// Code used in stage files.
-//     fn stage_code(&self) -> &StageCodeType {
-//         &self.stage_code
-//     }
-
-//     // Get identifier (map,rprefix=map,other=other,custom=unimplemented)
-//     // fn stage_ident(&self) -> &'static str {
-//     //     todo!()
-//     // }
-// }
-/*
-// note that names may be changed and need to update whole file first
-
-also fun fact legend quest has prefix D
-*/
+use std::fmt::Write;
 
 use super::types::{StageCodeType, StageType};
-use crate::meta::stage::variant::StageVariantID;
+use crate::meta::stage::variant::{StageVariantID, VariantSize};
 
 type T = StageVariantID;
 type C = StageCodeType;
@@ -41,23 +21,6 @@ const fn init(
         variant_id,
         common_name_match_str,
     }
-}
-
-const fn clone(t: &StageType) -> StageType {
-    let stage_code = match t.stage_code {
-        C::Map => C::Map,
-        C::RPrefix => C::RPrefix,
-        C::Other(x) => C::Other(x),
-        C::Custom => C::Custom,
-    };
-
-    init(
-        t.name,
-        t.map_code,
-        stage_code,
-        t.variant_id,
-        t.common_name_match_str,
-    )
 }
 
 // raw data for stage types
@@ -92,7 +55,27 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
     init("Catclaw Championships",        Some("G"),  C::Map,         T::Championships,  "Championships"),
 ];
 
-const MAX_VARIANT_NUMBER: u32 = 37;
+// -----------------------------------------------------------------------------
+
+/// Clone item of [`RAW_STAGE_TYPES`] at compile time.
+const fn clone(t: &StageType) -> StageType {
+    let stage_code = match t.stage_code {
+        C::Map => C::Map,
+        C::RPrefix => C::RPrefix,
+        C::Other(x) => C::Other(x),
+        C::Custom => C::Custom,
+    };
+
+    init(
+        t.name,
+        t.map_code,
+        stage_code,
+        t.variant_id,
+        t.common_name_match_str,
+    )
+}
+
+const MAX_VARIANT_NUMBER: VariantSize = 37;
 const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
 // store the data, store the map
 const STAGE_TYPES: [Option<StageType>; MAX_VARIANT_INDEX] = {
@@ -114,12 +97,38 @@ const fn variant_to_index(variant: StageVariantID) -> usize {
 }
 
 /// Get variant's stage type.
-pub fn get_stage_type(variant: StageVariantID) -> &'static StageType {
+pub const fn get_stage_type(variant: StageVariantID) -> &'static StageType {
     let i = variant_to_index(variant);
     match &STAGE_TYPES[i] {
         Some(v) => v,
         None => panic!("Variant is not initialised properly!"),
     }
+}
+
+pub fn get_all_matchers() -> [String; RAW_STAGE_TYPES.len()] {
+    fn a(st: &StageType) -> String {
+        let mut a = st.common_name_match_str.to_string();
+        if !a.is_empty() {
+            a += "|"
+        }
+        write!(a, "{}", st.variant_id.num()).unwrap();
+        if let Some(code) = st.map_code {
+            write!(a, "|{code}").unwrap();
+        }
+        match st.stage_code {
+            C::Map | C::Custom => (),
+            C::RPrefix => write!(a, "|R{map}", map = st.map_code.unwrap()).unwrap(),
+            C::Other(ex) => write!(a, "|{ex}").unwrap(),
+        }
+        a
+    }
+
+    RAW_STAGE_TYPES
+        .iter()
+        .map(a)
+        .collect::<Vec<_>>()
+        .try_into()
+        .expect("Couldn't convert vec to array.")
 }
 
 // function to get the regex matching done properly.
@@ -149,6 +158,8 @@ mod tests {
                 variant.num() <= MAX_VARIANT_NUMBER,
                 "Variant {variant:?} has a value higher than {MAX_VARIANT_NUMBER}."
             );
+            // this is probably unnecessary due to how STAGE_TYPES is
+            // calculated, as that would report an error at compile time
         }
     }
 
@@ -160,13 +171,14 @@ mod tests {
 
     #[test]
     fn assert_matchers_are_unique() {
-        todo!()
+        todo!("{:?}", get_all_matchers())
         // check that no duplicate match possibilities exist
     }
 
     // assert that none always matches with custom
     // assert all others work the conventional way
     // assert no duplicates appear in raw types
+    // assert all codes are upper case
 }
 
 /*
@@ -179,3 +191,20 @@ Plan:
   module deals with turning this information into real-world data (e.g. file
   names like `MapStageDataA_000.csv`).
 */
+
+// impl StageType {
+//     /// Code used in map files.
+//     fn map_code(&self) -> Option<&'static str> {
+//         self.map_code
+//     }
+
+//     /// Code used in stage files.
+//     fn stage_code(&self) -> &StageCodeType {
+//         &self.stage_code
+//     }
+
+//     // Get identifier (map,rprefix=map,other=other,custom=unimplemented)
+//     // fn stage_ident(&self) -> &'static str {
+//     //     todo!()
+//     // }
+// }
