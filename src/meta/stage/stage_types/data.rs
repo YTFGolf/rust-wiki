@@ -1,7 +1,7 @@
 use super::types::{StageCodeType, StageType};
 use crate::meta::stage::variant::{StageVariantID, VariantSize};
-use regex::Regex;
-use std::{fmt::Write, sync::LazyLock};
+use regex::{Regex, RegexBuilder};
+use std::sync::LazyLock;
 
 type T = StageVariantID;
 type C = StageCodeType;
@@ -57,11 +57,12 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
 
 // -----------------------------------------------------------------------------
 
-// pub struct DataMatcher {
-//     arr: Vec<String>,
-//     re: Regex,
-// }
-type DataMatcher = u32;
+#[derive(Debug)]
+pub struct DataMatcher {
+    arr: Vec<String>,
+    re: Regex,
+}
+#[derive(Debug)]
 /// Monolith struct for internal use.
 pub struct StageTypeDataContainer {
     data: &'static StageType,
@@ -70,8 +71,11 @@ pub struct StageTypeDataContainer {
 
 const MAX_VARIANT_NUMBER: VariantSize = 37;
 const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
-// store the data, store the map
 type StageTypesConstType = [Option<StageTypeDataContainer>; MAX_VARIANT_INDEX];
+
+const fn variant_to_index(variant: StageVariantID) -> usize {
+    variant.num() as usize
+}
 
 fn get_stage_types() -> StageTypesConstType {
     let mut a = [const { None }; MAX_VARIANT_INDEX];
@@ -79,7 +83,7 @@ fn get_stage_types() -> StageTypesConstType {
     for raw in RAW_STAGE_TYPES.iter() {
         let cont = StageTypeDataContainer {
             data: raw,
-            matcher: 0,
+            matcher: get_data_matcher(raw),
         };
         a[variant_to_index(raw.variant_id)] = Some(cont);
     }
@@ -87,49 +91,47 @@ fn get_stage_types() -> StageTypesConstType {
     a
 }
 
-fn get_all_matchers() -> [String; RAW_STAGE_TYPES.len()] {
-    fn a(st: &StageType) -> String {
-        let mut a = st.common_name_match_str.to_string();
-        if !a.is_empty() {
-            a += "|"
-        }
-        write!(a, "{}", st.variant_id.num()).unwrap();
-        if let Some(code) = st.map_code {
-            write!(a, "|{code}").unwrap();
-        }
-        match st.stage_code {
-            C::Map | C::Custom => (),
-            C::RPrefix => write!(a, "|R{map}", map = st.map_code.unwrap()).unwrap(),
-            C::Other(ex) => write!(a, "|{ex}").unwrap(),
-        }
-        a
+fn get_data_matcher(stype: &StageType) -> DataMatcher {
+    let mut arr: Vec<String> = stype
+        .common_name_match_str
+        .split('|')
+        .filter_map(|p| {
+            if p.is_empty() {
+                None
+            } else {
+                Some(p.to_string())
+            }
+        })
+        .collect();
+
+    arr.push(stype.variant_id.num().to_string());
+
+    if let Some(code) = stype.map_code {
+        arr.push(code.to_string());
+    }
+    match stype.stage_code {
+        C::Map | C::Custom => (),
+        C::RPrefix => arr.push(format!("R{map}", map = stype.map_code.unwrap())),
+        C::Other(ex) => arr.push(ex.to_string()),
     }
 
-    RAW_STAGE_TYPES
-        .iter()
-        .map(a)
-        .collect::<Vec<_>>()
-        .try_into()
-        .expect("Couldn't convert vec to array.")
-}
+    let pattern = format!("^({pattern})$", pattern = arr.join("|"));
+    let re = RegexBuilder::new(&pattern)
+        .case_insensitive(true)
+        .build()
+        .unwrap();
 
-// function to get the regex matching done properly.
-// "z 1|z 2|z 3" e.g.
-// All will get their map codes, stage codes and numbers added automatically
-// if begins with z then there is a special case, maybe this could tell that
+    DataMatcher { arr, re }
+}
 
 // -----------------------------------------------------------------------------
 
 static STAGE_TYPES: LazyLock<StageTypesConstType> = LazyLock::new(get_stage_types);
 
-const fn variant_to_index(variant: StageVariantID) -> usize {
-    variant.num() as usize
-}
-
 /// Get variant's stage type.
 pub fn get_stage_type(variant: StageVariantID) -> &'static StageTypeDataContainer {
     let i = variant_to_index(variant);
-    &STAGE_TYPES[i]
+    STAGE_TYPES[i]
         .as_ref()
         .unwrap_or_else(|| panic!("Variant {variant:?} is not initialised properly!"))
 }
@@ -169,7 +171,8 @@ mod tests {
 
     #[test]
     fn assert_matchers_are_unique() {
-        todo!("{:?}", get_all_matchers())
+        let _ = &STAGE_TYPES[0];
+        todo!("{STAGE_TYPES:#?}")
         // check that no duplicate match possibilities exist
     }
 
@@ -206,3 +209,8 @@ Plan:
 //     //     todo!()
 //     // }
 // }
+
+// function to get the regex matching done properly.
+// "z 1|z 2|z 3" e.g.
+// All will get their map codes, stage codes and numbers added automatically
+// if begins with z then there is a special case, maybe this could tell that
