@@ -1,7 +1,7 @@
-use std::fmt::Write;
-
 use super::types::{StageCodeType, StageType};
 use crate::meta::stage::variant::{StageVariantID, VariantSize};
+use regex::Regex;
+use std::{fmt::Write, sync::LazyLock};
 
 type T = StageVariantID;
 type C = StageCodeType;
@@ -57,55 +57,37 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
 
 // -----------------------------------------------------------------------------
 
-/// Clone item of [`RAW_STAGE_TYPES`] at compile time.
-const fn clone(t: &StageType) -> StageType {
-    let stage_code = match t.stage_code {
-        C::Map => C::Map,
-        C::RPrefix => C::RPrefix,
-        C::Other(x) => C::Other(x),
-        C::Custom => C::Custom,
-    };
-
-    init(
-        t.name,
-        t.map_code,
-        stage_code,
-        t.variant_id,
-        t.common_name_match_str,
-    )
+// pub struct DataMatcher {
+//     arr: Vec<String>,
+//     re: Regex,
+// }
+type DataMatcher = u32;
+/// Monolith struct for internal use.
+pub struct StageTypeDataContainer {
+    data: &'static StageType,
+    matcher: DataMatcher,
 }
 
 const MAX_VARIANT_NUMBER: VariantSize = 37;
 const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
 // store the data, store the map
-const STAGE_TYPES: [Option<StageType>; MAX_VARIANT_INDEX] = {
+type StageTypesConstType = [Option<StageTypeDataContainer>; MAX_VARIANT_INDEX];
+
+fn get_stage_types() -> StageTypesConstType {
     let mut a = [const { None }; MAX_VARIANT_INDEX];
 
-    let mut i = 0;
-    while i < RAW_STAGE_TYPES.len() {
-        let raw = &RAW_STAGE_TYPES[i];
-        let cloned = clone(raw);
-        a[variant_to_index(raw.variant_id)] = Some(cloned);
-        i += 1;
+    for raw in RAW_STAGE_TYPES.iter() {
+        let cont = StageTypeDataContainer {
+            data: raw,
+            matcher: 0,
+        };
+        a[variant_to_index(raw.variant_id)] = Some(cont);
     }
 
     a
-};
-
-const fn variant_to_index(variant: StageVariantID) -> usize {
-    variant.num() as usize
 }
 
-/// Get variant's stage type.
-pub const fn get_stage_type(variant: StageVariantID) -> &'static StageType {
-    let i = variant_to_index(variant);
-    match &STAGE_TYPES[i] {
-        Some(v) => v,
-        None => panic!("Variant is not initialised properly!"),
-    }
-}
-
-pub fn get_all_matchers() -> [String; RAW_STAGE_TYPES.len()] {
+fn get_all_matchers() -> [String; RAW_STAGE_TYPES.len()] {
     fn a(st: &StageType) -> String {
         let mut a = st.common_name_match_str.to_string();
         if !a.is_empty() {
@@ -136,6 +118,22 @@ pub fn get_all_matchers() -> [String; RAW_STAGE_TYPES.len()] {
 // All will get their map codes, stage codes and numbers added automatically
 // if begins with z then there is a special case, maybe this could tell that
 
+// -----------------------------------------------------------------------------
+
+static STAGE_TYPES: LazyLock<StageTypesConstType> = LazyLock::new(get_stage_types);
+
+const fn variant_to_index(variant: StageVariantID) -> usize {
+    variant.num() as usize
+}
+
+/// Get variant's stage type.
+pub fn get_stage_type(variant: StageVariantID) -> &'static StageTypeDataContainer {
+    let i = variant_to_index(variant);
+    &STAGE_TYPES[i]
+        .as_ref()
+        .unwrap_or_else(|| panic!("Variant {variant:?} is not initialised properly!"))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -149,7 +147,7 @@ mod tests {
             let is_in_map = STAGE_TYPES
                 .iter()
                 .flatten()
-                .filter(|st| st.variant_id == variant)
+                .filter(|st| st.data.variant_id == variant)
                 .collect::<Vec<_>>();
             let len = is_in_map.len();
             assert_eq!(len, 1, "{variant:?} should appear exactly once.");

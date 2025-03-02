@@ -2,6 +2,7 @@
 
 use super::super::variant::StageVariantID;
 
+#[derive(Debug)]
 /// Type of stage code used.
 pub enum StageCodeType {
     /// Code is the same as map (Aku Realms, Labyrinth, Championships e.g.).
@@ -15,6 +16,7 @@ pub enum StageCodeType {
     Custom,
 }
 
+#[derive(Debug)]
 /// Constant reference to a stage type.
 pub struct StageType {
     /// Variant ID of the stage type.
