@@ -6,34 +6,33 @@
 // module.
 
 use super::variant::StageVariantID;
-type Regex = u32;
 
 /// Type of stage code used.
-pub enum StageCodeType<T> {
+pub enum StageCodeType {
     /// Code is the same as map (Aku Realms, Labyrinth, Championships e.g.).
     Map,
     /// Code is map with an R at the start (most stages).
     RPrefix,
     /// Code is completely different (EX), map name images use this different
     /// code rather than map code.
-    Other(T),
+    Other(&'static str),
     /// Requires custom logic to deal with the stage code.
     Custom,
 }
 
 /// Constant reference to a stage type.
-pub struct StageType<T> {
+pub struct StageType {
     /// Variant ID of the stage type.
     variant_id: StageVariantID,
     /// Full readable name of the stage type.
-    name: T,
+    name: &'static str,
     /// Code used in map data files. None means that it will need to be figured
     /// out manually.
-    map_code: Option<T>,
+    map_code: Option<&'static str>,
     /// Code used in stage data files.
-    stage_code: StageCodeType<T>,
+    stage_code: StageCodeType,
     /// Regex matcher for the stage type.
-    matcher_str: T,
+    matcher_str: &'static str,
 }
 /*
 Functions to:
@@ -47,15 +46,14 @@ also fun fact legend quest has prefix D
 
 const MAX_VARIANT_NUMBER: usize = 37;
 // store the data, store the map
-const STAGE_TYPES: [Option<StageType<&'static str>>; MAX_VARIANT_NUMBER] =
-    [const { None }; MAX_VARIANT_NUMBER];
+const STAGE_TYPES: [Option<StageType>; MAX_VARIANT_NUMBER] = [const { None }; MAX_VARIANT_NUMBER];
 
 const fn variant_to_index(variant: StageVariantID) -> usize {
     variant.num() as usize
 }
 
 /// Get variant's stage type.
-pub const fn get_stage_type(variant: StageVariantID) -> &'static StageType<&'static str> {
+pub fn get_stage_type(variant: StageVariantID) -> &'static StageType {
     let i = variant_to_index(variant);
     match &STAGE_TYPES[i] {
         Some(v) => v,
@@ -102,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    fn assert_matchers_are_unique(){
+    fn assert_matchers_are_unique() {
         todo!()
         // check that no duplicate match possibilities exist
     }
