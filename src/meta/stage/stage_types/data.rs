@@ -22,17 +22,31 @@ also fun fact legend quest has prefix D
 
 use super::types::{StageCodeType, StageType};
 use crate::meta::stage::variant::StageVariantID;
+
 type T = StageVariantID;
 type C = StageCodeType;
 
+const fn init(
+    name: &'static str,
+    map_code: Option<&'static str>,
+    stage_code: StageCodeType,
+    variant_id: StageVariantID,
+    common_name_match_str: &'static str,
+) -> StageType {
+    StageType {
+        name,
+        map_code,
+        stage_code,
+        variant_id,
+        common_name_match_str,
+    }
+}
+
 const MAX_RAW_TYPES: usize = 1;
-const RAW_STAGE_TYPES: [StageType; MAX_RAW_TYPES] = [StageType::new(
-    T::SoL,
-    "Stories of Legend",
-    Some("N"),
-    C::RPrefix,
-    "SoL",
-)];
+#[rustfmt::skip]
+const RAW_STAGE_TYPES: [StageType; MAX_RAW_TYPES] = [
+    init("Stories of Legend", Some("N"), C::RPrefix, T::SoL, "SoL"),
+];
 // pub const LEGACY_STAGE_TYPES: [LegacyStageType; 22] = [
 //     initialise_stage_type("Stories of Legend",            000, "N",     true,  T::SoL),
 //     initialise_stage_type("Event Stages",                 001, "S",     true,  T::Event),

@@ -26,25 +26,6 @@ pub struct StageType {
     pub map_code: Option<&'static str>,
     /// Code used in stage data files.
     pub stage_code: StageCodeType,
-    /// Regex matcher for the stage type.
-    pub matcher_str: &'static str,
-}
-
-impl StageType {
-    /// Create new [`StageType`] object.
-    pub const fn new(
-        variant_id: StageVariantID,
-        name: &'static str,
-        map_code: Option<&'static str>,
-        stage_code: StageCodeType,
-        matcher_str: &'static str,
-    ) -> Self {
-        Self {
-            variant_id,
-            name,
-            map_code,
-            stage_code,
-            matcher_str,
-        }
-    }
+    /// Regex matcher for the stage type's common name.
+    pub common_name_match_str: &'static str,
 }
