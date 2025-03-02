@@ -43,6 +43,23 @@ const fn init(
     }
 }
 
+const fn clone(t: &StageType) -> StageType {
+    let stage_code = match t.stage_code {
+        C::Map => C::Map,
+        C::RPrefix => C::RPrefix,
+        C::Other(x) => C::Other(x),
+        C::Custom => C::Custom,
+    };
+
+    init(
+        t.name,
+        t.map_code,
+        stage_code,
+        t.variant_id,
+        t.common_name_match_str,
+    )
+}
+
 // raw data for stage types
 #[rustfmt::skip]
 const RAW_STAGE_TYPES: [StageType; 24] = [
@@ -78,13 +95,14 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
 const MAX_VARIANT_NUMBER: u32 = 37;
 const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
 // store the data, store the map
-const STAGE_TYPES: [Option<&'static StageType>; MAX_VARIANT_INDEX] = {
+const STAGE_TYPES: [Option<StageType>; MAX_VARIANT_INDEX] = {
     let mut a = [const { None }; MAX_VARIANT_INDEX];
 
     let mut i = 0;
     while i < RAW_STAGE_TYPES.len() {
         let raw = &RAW_STAGE_TYPES[i];
-        a[variant_to_index(raw.variant_id)] = Some(raw);
+        let cloned = clone(raw);
+        a[variant_to_index(raw.variant_id)] = Some(cloned);
         i += 1;
     }
 
