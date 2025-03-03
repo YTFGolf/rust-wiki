@@ -1,28 +1,35 @@
 //! Parse ID from various formats.
 
-#![allow(unused_variables)]
-
-use strum::IntoEnumIterator;
+#![allow(unused_variables, missing_docs)]
 
 use crate::meta::stage::{
-    map_id::MapID,
+    map_id::{MapID, MapSize},
     stage_id::StageID,
     stage_types::data::{get_stage_type, SELECTOR_SEPARATOR},
     variant::StageVariantID,
 };
+use strum::IntoEnumIterator;
 
 #[derive(Debug, PartialEq)]
 /// Error when parsing the stage type.
 pub enum StageTypeParseError {
-    /// The stage type selector given was invalid.
-    Invalid,
+    UnknownMatcher,
+    NoMapNumber,
+    InvalidNumber,
 }
 
 // stages
 
 fn parse_general_stage_id(selector: &str) -> StageID {
     todo!()
+    // from_file;
+    // from_selector;
+    // from_ref;
 }
+
+// fn parse_stage_file(file_name:&str)->StageID
+
+// fn parse_selector(selector: &str)->StageID{}
 
 // -----------------------------------------------------------------------------
 
@@ -63,7 +70,7 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
         .expect("I literally have no clue how this would fail.");
 
     let variant = match get_variant_from_code(compare) {
-        None => return Err(StageTypeParseError::Invalid),
+        None => return Err(StageTypeParseError::UnknownMatcher),
         Some(v) => v,
     };
 
@@ -72,15 +79,31 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
         return Ok(MapID::from_components(variant, 0));
     };
 
+    let Some(map_num) = iter.next() else {
+        return Err(StageTypeParseError::NoMapNumber);
+    };
+    let Ok(map_num) = map_num.parse::<MapSize>() else {
+        return Err(StageTypeParseError::InvalidNumber);
+    };
+
     if variant == StageVariantID::MainChapters {
         // has to have separate logic depending on what you put as your selector
 
         // THIS IS HARDCODED, DO NOT UPDATE THIS WITHOUT UPDATING
         // `assert_main_selector`
-        todo!()
+        match compare.to_lowercase().as_str() {
+            "eoc" => return Ok(MapID::from_components(variant, 0)),
+            // eoc has 1 chapter that is number 0
+            "itf" | "w" => return Ok(MapID::from_components(variant, map_num + 2)),
+            // itf 1 = "itf 1" = "main 3"
+            "cotc" | "space" => return Ok(MapID::from_components(variant, map_num + 5)),
+            // cotc 1 = "cotc 1" = "main 6"
+            _ => (),
+            // if you put main or 3 then I assume you know what you're doing
+        }
     }
 
-    todo!()
+    Ok(MapID::from_components(variant, map_num))
 }
 
 #[cfg(test)]
@@ -102,6 +125,7 @@ Test:
 // assert all non-custom work the conventional way
 // Test (in another module) every available alias
 // check case-insensitivity
+// check failed cases to ensure failure is graceful
  */
 
 /*

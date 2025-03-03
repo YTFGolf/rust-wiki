@@ -69,17 +69,17 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
 /// [`StageType`].
 pub struct DataMatcher {
     /// List of all possible aliases.
-    arr: Vec<String>,
+    pub arr: Vec<String>,
     /// Case-insensitive regex matcher of these aliases.
-    re: Regex,
+    pub re: Regex,
 }
 #[derive(Debug)]
 /// Monolith of data about a stage type.
 pub struct StageTypeDataContainer {
     /// [`StageType`] information about the stage type.
-    data: &'static StageType,
+    pub data: &'static StageType,
     /// Regex matcher information about the stage type.
-    matcher: DataMatcher,
+    pub matcher: DataMatcher,
 }
 
 /// Max numeric value of any variant.
