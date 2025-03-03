@@ -6,5 +6,5 @@
 // depends on itself and the ID types in super, and provides an interface that
 // just works from the outside.
 
-pub(self) mod data;
-pub(self) mod types;
+mod data;
+mod types;

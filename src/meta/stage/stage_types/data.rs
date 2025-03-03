@@ -19,10 +19,10 @@ const fn init(
     common_name_match_str: &'static str,
 ) -> StageType {
     StageType {
+        variant_id,
         name,
         map_code,
         stage_code,
-        variant_id,
         common_name_match_str,
     }
 }
@@ -97,7 +97,7 @@ const fn variant_to_index(variant: StageVariantID) -> usize {
 fn get_stage_types() -> StageTypesConstType {
     let mut a = [const { None }; MAX_VARIANT_INDEX];
 
-    for raw in RAW_STAGE_TYPES.iter() {
+    for raw in &RAW_STAGE_TYPES {
         let cont = StageTypeDataContainer {
             data: raw,
             matcher: get_data_matcher(raw),
@@ -200,7 +200,7 @@ mod tests {
                 parsed.data, &raw,
                 "Mismatch between parsed and raw stage types statics. \
                 Did you order raw incorrectly?",
-            )
+            );
         }
 
         assert_eq!(counter, RAW_STAGE_TYPES.len());
@@ -234,7 +234,7 @@ mod tests {
                     seen.insert(pattern),
                     "Duplicated matcher pattern {pattern:?} found for stage type {:?}",
                     cont.data.variant_id
-                )
+                );
             }
         }
     }
@@ -249,10 +249,10 @@ mod tests {
         }
 
         for raw in RAW_STAGE_TYPES {
-            match raw.map_code {
-                Some(s) => assert!(is_upper(s)),
-                None => (),
+            if let Some(s) = raw.map_code {
+                assert!(is_upper(s));
             }
+
             match raw.stage_code {
                 C::Other(s) => assert!(is_upper(s)),
                 C::Map | C::RPrefix | C::Custom => (),
@@ -273,7 +273,7 @@ mod tests {
                     &escape(pattern),
                     "Pattern on {:?} contains special Regex characters.",
                     cont.data.variant_id
-                )
+                );
             }
         }
     }

@@ -12,7 +12,8 @@ pub fn get_stage_files(version: &Version) -> impl Iterator<Item = String> {
     let dir = &version.get_file_path("DataLocal");
 
     let files = std::fs::read_dir(dir).unwrap();
-    let stages = files.filter_map(move |f| {
+
+    files.filter_map(move |f| {
         let file_name = f.unwrap().file_name().into_string().unwrap();
 
         if stage_file_re.is_match(&file_name) {
@@ -20,9 +21,7 @@ pub fn get_stage_files(version: &Version) -> impl Iterator<Item = String> {
         } else {
             None
         }
-    });
-
-    stages
+    })
 }
 
 /// Get an iterator over all stages in the version.
