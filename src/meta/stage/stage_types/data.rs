@@ -27,6 +27,7 @@ const fn init(
     }
 }
 
+pub const SELECTOR_SEPARATOR: char = ' ';
 #[rustfmt::skip]
 /// Stage types container.
 const RAW_STAGE_TYPES: [StageType; 24] = [
@@ -45,9 +46,9 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
     init("Uncanny Legends",              Some("NA"), C::RPrefix,     T::UL,             "UL"),
     init("Catamin Stages",               Some("B"),  C::RPrefix,     T::Catamin,        "Catamin"),
     // init("Legend Quest",                 Some("D"),  C::Map,         T::LegendQuest,    "Haha"),
-    init("Empire of Cats Outbreaks",     None,       C::Custom,      T::EocOutbreak,    "Z 1|Z 2|Z 3"),
-    init("Into the Future Outbreaks",    None,       C::Custom,      T::ItfOutbreak,    "Z 4|Z 5|Z 6"),
-    init("Cats of the Cosmos Outbreaks", None,       C::Custom,      T::CotcOutbreak,   "Z 7|Z 8|Z 9"),
+    init("Empire of Cats Outbreaks",     None,       C::Custom,      T::EocOutbreak,    "eocZ"),
+    init("Into the Future Outbreaks",    None,       C::Custom,      T::ItfOutbreak,    "itfZ"),
+    init("Cats of the Cosmos Outbreaks", None,       C::Custom,      T::CotcOutbreak,   "cotcZ"),
     init("Filibuster Invasion",          None,       C::Custom,      T::Filibuster,     "Filibuster"),
     init("Gauntlets",                    Some("A"),  C::RPrefix,     T::Gauntlet,       "Gauntlet|Baron"),
     init("Enigma Stages",                Some("H"),  C::RPrefix,     T::Enigma,         "Enigma"),
@@ -225,11 +226,23 @@ mod tests {
     }
 
     #[test]
-    fn assert_matchers_are_unique() {
-        // check that no duplicate match possibilities exist
+    fn assert_matchers_are_unique_and_valid() {
+        // check that no duplicate match possibilities exist and each matcher
+        // doesn't contain invalid characters
+        // invalid character check is necessary because it makes other functions
+        // so much simpler
         let mut seen = HashSet::new();
         for cont in STAGE_TYPES.iter().flatten() {
             for pattern in &cont.matcher.arr {
+                assert!(
+                    !pattern.contains(SELECTOR_SEPARATOR),
+                    "Stage type pattern {pat:?} in variant {var:?} \
+                    contains invalid character {c:?}",
+                    pat = pattern,
+                    var = cont.data.variant_id,
+                    c = SELECTOR_SEPARATOR
+                );
+
                 assert!(
                     seen.insert(pattern),
                     "Duplicated matcher pattern {pattern:?} found for stage type {:?}",
