@@ -2,7 +2,21 @@
 
 #![allow(unused_variables)]
 
-use crate::meta::stage::{map_id::MapID, stage_id::StageID};
+use strum::IntoEnumIterator;
+
+use crate::meta::stage::{
+    map_id::MapID,
+    stage_id::StageID,
+    stage_types::data::{get_stage_type, SELECTOR_SEPARATOR},
+    variant::StageVariantID,
+};
+
+#[derive(Debug, PartialEq)]
+/// Error when parsing the stage type.
+pub enum StageTypeParseError {
+    /// The stage type selector given was invalid.
+    Invalid,
+}
 
 // stages
 
@@ -14,8 +28,72 @@ fn parse_general_stage_id(selector: &str) -> StageID {
 
 // maps
 
-fn parse_general_map_id(selector: &str)->MapID{
+pub fn parse_general_map_id(selector: &str) -> MapID {
     todo!()
+}
+
+fn get_variant_from_code(compare: &str) -> Option<StageVariantID> {
+    for variant in StageVariantID::iter() {
+        let stype = get_stage_type(variant);
+        if stype.matcher.re.is_match(compare) {
+            return Some(stype.data.variant_id);
+        }
+        // I think regex is probably faster than arr.contains
+    }
+
+    None
+}
+
+/// Variant only has a single stage.
+fn is_single_stage(v: StageVariantID) -> bool {
+    type T = StageVariantID;
+    matches!(v, T::Challenge | T::Filibuster)
+}
+
+/// Variant only has a single map but multiple stages.
+fn is_single_map(v: StageVariantID) -> bool {
+    type T = StageVariantID;
+    matches!(v, T::AkuRealms | T::Labyrinth)
+}
+
+pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> {
+    let mut iter = selector.split(SELECTOR_SEPARATOR);
+    let compare = iter
+        .next()
+        .expect("I literally have no clue how this would fail.");
+
+    let variant = match get_variant_from_code(compare) {
+        None => return Err(StageTypeParseError::Invalid),
+        Some(v) => v,
+    };
+
+    if is_single_stage(variant) || is_single_map(variant) {
+        // if type only has 1 stage/map then map num will always be 0
+        return Ok(MapID::from_components(variant, 0));
+    };
+
+    if variant == StageVariantID::MainChapters {
+        // has to have separate logic depending on what you put as your selector
+
+        // THIS IS HARDCODED, DO NOT UPDATE THIS WITHOUT UPDATING
+        // `assert_main_selector`
+        todo!()
+    }
+
+    todo!()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn assert_main_selector() {
+        // DO NOT CHANGE THIS TEST WITHOUT UPDATING `parse_map_selector`
+        let desired: Vec<&str> = "main|EoC|ItF|W|CotC|Space|3".split('|').collect();
+        let main = get_stage_type(StageVariantID::MainChapters);
+        assert_eq!(desired, main.matcher.arr);
+    }
 }
 
 /*
