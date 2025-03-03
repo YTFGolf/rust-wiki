@@ -69,7 +69,7 @@ const RAW_STAGE_TYPES: [StageType; 24] = [
 pub struct DataMatcher {
     /// List of all possible aliases.
     arr: Vec<String>,
-    /// Regex matcher of these aliases.
+    /// Case-insensitive regex matcher of these aliases.
     re: Regex,
 }
 #[derive(Debug)]
@@ -158,6 +158,8 @@ pub fn get_stage_type(variant: StageVariantID) -> &'static StageTypeDataContaine
 #[cfg(test)]
 mod tests {
     use super::*;
+    use regex::escape;
+    use std::{collections::HashSet, iter::zip};
     use strum::IntoEnumIterator;
 
     #[test]
@@ -177,35 +179,113 @@ mod tests {
                 variant.num() <= MAX_VARIANT_NUMBER,
                 "Variant {variant:?} has a value higher than {MAX_VARIANT_NUMBER}."
             );
-            // this is probably unnecessary due to how STAGE_TYPES is
-            // calculated, as that would report an error at compile time
         }
     }
 
     #[test]
-    fn test_has_valid_map_and_stage_codes() {
-        todo!()
-        // check that all functions return a value (except custom on identifier)
+    // REQUIRED to ensure that following functions have correct behaviour.
+    fn assert_iter_correct() {
+        // assert that properly `iter`ed STAGE_TYPES is same as RAW_STAGE_TYPES
+
+        // allows other tests here to fearlessly iterate through raw types
+        // also in doing so asserts that no duplicates appear in raw types and
+        // all variants are in raw exactly once, although this is only due to
+        // architecture
+
+        let mut counter = 0;
+        // make sure that it is definitely going through each element of both
+        for (parsed, raw) in zip(STAGE_TYPES.iter().flatten(), RAW_STAGE_TYPES) {
+            counter += 1;
+            assert_eq!(
+                parsed.data, &raw,
+                "Mismatch between parsed and raw stage types statics. \
+                Did you order raw incorrectly?",
+            )
+        }
+
+        assert_eq!(counter, RAW_STAGE_TYPES.len());
+        assert_eq!(
+            counter,
+            STAGE_TYPES.iter().flatten().collect::<Vec<_>>().len()
+        );
+    }
+
+    #[test]
+    fn has_valid_map_and_stage_codes() {
+        for raw in RAW_STAGE_TYPES {
+            // assert that map: None always matches with stage: Custom
+            if raw.map_code.is_none() || raw.stage_code == C::Custom {
+                assert!(
+                    raw.map_code.is_none() && raw.stage_code == C::Custom,
+                    "{t:?} has undefined behaviour with stage and map codes.",
+                    t = raw.variant_id
+                );
+            }
+        }
     }
 
     #[test]
     fn assert_matchers_are_unique() {
-        let _ = &STAGE_TYPES[0];
-        todo!("{STAGE_TYPES:#?}")
         // check that no duplicate match possibilities exist
+        let mut seen = HashSet::new();
+        for cont in STAGE_TYPES.iter().flatten() {
+            for pattern in &cont.matcher.arr {
+                assert!(
+                    seen.insert(pattern),
+                    "Duplicated matcher pattern {pattern:?} found for stage type {:?}",
+                    cont.data.variant_id
+                )
+            }
+        }
     }
 
-    // assert that none always matches with custom
-    // assert all others work the conventional way
-    // assert no duplicates appear in raw types
-    // assert all codes are upper case
-    // Test (in another module) every available alias
+    #[test]
+    fn assert_upper_codes() {
+        // this is based on current data, it's entirely possible this test may
+        // need to be removed in future
+        // assert all map codes (and ex stage code) are upper case
+        fn is_upper(s: &str) -> bool {
+            s.chars().all(|c| c.is_ascii_uppercase())
+        }
 
-    // all variants are in exactly once
-    // Map is None iff stage is custom
-    // all nums are unique
-    // matchers are all non-escaped
+        for raw in RAW_STAGE_TYPES {
+            match raw.map_code {
+                Some(s) => assert!(is_upper(s)),
+                None => (),
+            }
+            match raw.stage_code {
+                C::Other(s) => assert!(is_upper(s)),
+                C::Map | C::RPrefix | C::Custom => (),
+            }
+        }
+    }
+
+    #[test]
+    fn test_escaped_matchers() {
+        // ensure matchers do not need to be escaped
+        // This is only done so that I don't need to escape matchers at runtime
+        // If this absolutely needs to be changed, then change the
+        // initialisation of matcher and remove this test
+        for cont in STAGE_TYPES.iter().flatten() {
+            for pattern in &cont.matcher.arr {
+                assert_eq!(
+                    pattern,
+                    &escape(pattern),
+                    "Pattern on {:?} contains special Regex characters.",
+                    cont.data.variant_id
+                )
+            }
+        }
+    }
 }
+
+/*
+Test:
+// check that all functions return a value (except custom on identifier)
+// assert all non-custom work the conventional way
+// Test (in another module) every available alias
+// check case-insensitivity
+ */
 
 /*
 Plan:
