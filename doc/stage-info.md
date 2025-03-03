@@ -1,3 +1,13 @@
+# New
+
+- Note that `l 0 0 0 0 0 0` works same as `l 0` and `l 0 0`, as does Aku Realms and EoC.
+- Challenge Battle and Filibuster completely ignore the numbers.
+- Available selectors can be printed off with a command so no need for that bit. Still mention the `CommonName|...` though.
+- Remove Z selector.
+- Still mention ItF and CotC, as well as EoC Moon. If you do `main` or `3` it'll be as you'd expect.
+
+# Old
+
 Stage info generates stage info.
 
 ## Input
