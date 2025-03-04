@@ -158,6 +158,8 @@ pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseErr
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rand::random;
+    use strum::IntoEnumIterator;
     use StageTypeParseError as E;
     use StageVariantID as T;
 
@@ -462,4 +464,41 @@ mod tests {
         assert_eq!(e, Err(E::NoMapNumber));
     }
 
+    #[test]
+    fn test_random_properties() {
+        const NUM_ITERATIONS: usize = 20;
+        for code in StageVariantID::iter() {
+            if code == T::MainChapters {
+                // main will need to be a bit more delicate
+                continue;
+            }
+
+            for _ in 0..NUM_ITERATIONS {
+                let (map, stage) = (random::<u32>() % 1000, random::<u32>() % 1000);
+                let st = StageID::from_components(code, map, stage);
+                let file_name = todo!("Need to be able to get file names from stage types first.");
+                // assert_eq!(
+                //     file_name,
+                //     &parseblahblahblah(file_name)
+                //         .unwrap()
+                //         .stage_file_name
+                // );
+                // this will need to take into account the `is_` functions
+                assert_eq!(
+                    st,
+                    parse_stage_selector(&format!("{} {map} {stage}", code.num())).unwrap()
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_ref(&format!("s{:02}{:03}-{:02}", code.num(), map, stage + 1))
+                        .unwrap()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_random_properties_main() {
+        todo!()
+    }
 }
