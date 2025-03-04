@@ -33,7 +33,9 @@ static GENERAL_STAGE_PAT: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap());
 fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError> {
     const FILE_BEGIN: &str = "stage";
-    if !(file_name.starts_with(FILE_BEGIN) || file_name.ends_with(".csv")) {
+    const FILE_END: &str = ".csv";
+
+    if !(file_name.starts_with(FILE_BEGIN) && file_name.ends_with(FILE_END)) {
         return Err(StageTypeParseError::InvalidFormat);
     } else if file_name == "stageSpace09_Invasion_00.csv" {
         return Ok(StageID::from_components(T::Filibuster, 0, 0));
