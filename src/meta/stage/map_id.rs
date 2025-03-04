@@ -11,6 +11,7 @@ pub enum MainType {
 }
 
 pub(super) type MapSize = u32;
+#[derive(Debug, PartialEq)]
 /// Identifies a map.
 pub struct MapID {
     /// Stage type variant.
@@ -50,7 +51,7 @@ impl MapID {
 // Initialisation.
 impl MapID {
     /// Create new MapID from components.
-    pub fn from_components(variant: StageVariantID, num: MapSize) -> Self {
+    pub const fn from_components(variant: StageVariantID, num: MapSize) -> Self {
         Self { variant, num }
     }
 

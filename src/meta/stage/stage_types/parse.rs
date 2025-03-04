@@ -4,7 +4,7 @@
 
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
-    stage_id::StageID,
+    stage_id::{StageID, StageSize},
     stage_types::data::{get_stage_type, SELECTOR_SEPARATOR},
     variant::StageVariantID,
 };
@@ -15,6 +15,7 @@ use strum::IntoEnumIterator;
 pub enum StageTypeParseError {
     UnknownMatcher,
     NoMapNumber,
+    NoStageNumber,
     InvalidNumber,
 }
 
@@ -29,7 +30,37 @@ fn parse_general_stage_id(selector: &str) -> StageID {
 
 // fn parse_stage_file(file_name:&str)->StageID
 
-// fn parse_selector(selector: &str)->StageID{}
+fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
+    let map = parse_map_selector(selector)?;
+
+    if is_single_stage(map.variant()) {
+        return Ok(StageID::from_map(map, 0));
+    }
+
+    if is_single_map(map.variant())
+        || map == MapID::from_components(StageVariantID::MainChapters, 0)
+    {
+        // if single map (inc. EoC) then just need last number
+        if !selector.contains(SELECTOR_SEPARATOR) {
+            return Err(StageTypeParseError::NoStageNumber);
+        }
+
+        let last_num = selector.rsplit(SELECTOR_SEPARATOR).next().unwrap();
+        let last_num = last_num
+            .parse::<StageSize>()
+            .map_err(|_| StageTypeParseError::InvalidNumber)?;
+
+        return Ok(StageID::from_map(map, last_num));
+    }
+
+    let mut iter = selector.split(SELECTOR_SEPARATOR);
+    let stage_num = iter.nth(2).ok_or(StageTypeParseError::NoStageNumber)?;
+    let stage_num = stage_num
+        .parse::<StageSize>()
+        .map_err(|_| StageTypeParseError::InvalidNumber)?;
+
+    return Ok(StageID::from_map(map, stage_num));
+}
 
 // -----------------------------------------------------------------------------
 

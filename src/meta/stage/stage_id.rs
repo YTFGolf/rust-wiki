@@ -6,6 +6,7 @@ use super::{
 };
 
 pub(super) type StageSize = u32;
+#[derive(Debug, PartialEq)]
 /// Identifies a map.
 pub struct StageID {
     map: MapID,
@@ -38,7 +39,7 @@ impl StageID {
 // Initialisation.
 impl StageID {
     /// Create new stage from components.
-    pub fn from_components(variant: StageVariantID, map: MapSize, num: StageSize) -> Self {
+    pub const fn from_components(variant: StageVariantID, map: MapSize, num: StageSize) -> Self {
         Self::from_map(MapID::from_components(variant, map), num)
     }
 
@@ -48,7 +49,7 @@ impl StageID {
     }
 
     /// Create new stage from map.
-    pub fn from_map(map: MapID, num: StageSize) -> Self {
+    pub const fn from_map(map: MapID, num: StageSize) -> Self {
         Self { map, num }
     }
 
