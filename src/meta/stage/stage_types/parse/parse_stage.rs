@@ -158,6 +158,7 @@ pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseErr
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::meta::stage::stage_types::transform::stage_data_file;
     use rand::random;
     use strum::IntoEnumIterator;
     use StageTypeParseError as E;
@@ -467,30 +468,35 @@ mod tests {
     #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
-        for code in StageVariantID::iter() {
-            if code == T::MainChapters {
-                // main will need to be a bit more delicate
+        for var in StageVariantID::iter() {
+            if var == T::MainChapters || var.is_outbreak() {
+                // main and outbreaks will need to be a bit more delicate
                 continue;
             }
 
             for _ in 0..NUM_ITERATIONS {
-                let (map, stage) = (random::<u32>() % 1000, random::<u32>() % 1000);
-                let st = StageID::from_components(code, map, stage);
-                let file_name = todo!("Need to be able to get file names from stage types first.");
-                // assert_eq!(
-                //     file_name,
-                //     &parseblahblahblah(file_name)
-                //         .unwrap()
-                //         .stage_file_name
-                // );
+                let (map, stage) = if is_single_stage(var) {
+                    (0, 0)
+                } else if is_single_map(var) {
+                    (0, random::<u32>() % 1000)
+                } else {
+                    (random::<u32>() % 1000, random::<u32>() % 1000)
+                };
+
+                let st = StageID::from_components(var, map, stage);
+                let file_name = stage_data_file(&st);
+                assert_eq!(
+                    file_name,
+                    stage_data_file(&parse_stage_file(&file_name).unwrap())
+                );
                 // this will need to take into account the `is_` functions
                 assert_eq!(
                     st,
-                    parse_stage_selector(&format!("{} {map} {stage}", code.num())).unwrap()
+                    parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
                 );
                 assert_eq!(
                     st,
-                    parse_stage_ref(&format!("s{:02}{:03}-{:02}", code.num(), map, stage + 1))
+                    parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1))
                         .unwrap()
                 );
             }

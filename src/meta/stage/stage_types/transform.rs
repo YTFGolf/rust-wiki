@@ -10,7 +10,7 @@ use crate::meta::stage::{
 // stages
 
 type T = StageVariantID;
-fn custom_stage_data_file(stage_id: StageID) -> String {
+fn custom_stage_data_file(stage_id: &StageID) -> String {
     // assert!(matches!(
     //     stage_id.variant(),
     //     T::MainChapters | T::EocOutbreak | T::ItfOutbreak | T::CotcOutbreak | T::Filibuster
@@ -55,7 +55,7 @@ fn custom_stage_data_file(stage_id: StageID) -> String {
     }
 }
 
-fn stage_data_file(stage_id: StageID) -> String {
+pub fn stage_data_file(stage_id: &StageID) -> String {
     type C = StageCodeType;
     let stype = get_stage_type(stage_id.variant()).data;
 
