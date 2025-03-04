@@ -211,35 +211,74 @@ mod tests_stage {
 
     #[test]
     fn parse_selector_main() {
+        let eoc1 = StageID::from_components(T::MainChapters, 0, 0);
         let st = parse_stage_selector("eoc 0").unwrap();
-        assert_eq!(st, StageID::from_components(T::MainChapters, 0, 0));
+        assert_eq!(st, eoc1);
+        let st = parse_stage_selector("main 0 0").unwrap();
+        assert_eq!(st, eoc1);
+        let st = parse_stage_selector("3 0 0").unwrap();
+        assert_eq!(st, eoc1);
 
+        let itf1 = StageID::from_components(T::MainChapters, 3, 0);
         let st = parse_stage_selector("itf 1 0").unwrap();
-        assert_eq!(st, StageID::from_components(T::MainChapters, 3, 0));
+        assert_eq!(st, itf1);
+        let st = parse_stage_selector("main 3 0").unwrap();
+        assert_eq!(st, itf1);
+        let st = parse_stage_selector("3 3 0").unwrap();
+        assert_eq!(st, itf1);
 
+        let cotc1 = StageID::from_components(T::MainChapters, 6, 0);
         let st = parse_stage_selector("cotc 1 0").unwrap();
-        assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0));
-
-        // let st = parse_stage_selector("aku 0").unwrap();
-        // assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 0));
-
-        // let st = parse_stage_selector("filibuster").unwrap();
-        // assert_eq!(st, StageID::from_components(T::Filibuster, 0, 0));
-
-        // let st = parse_stage_selector("z 7 0").unwrap();
-        // assert_eq!(st, StageID::from_components(T::Outbreaks, 0, 0));
-
-        todo!("Still need to do main and 3")
+        assert_eq!(st, cotc1);
+        let st = parse_stage_selector("main 6 0").unwrap();
+        assert_eq!(st, cotc1);
+        let st = parse_stage_selector("3 6 0").unwrap();
+        assert_eq!(st, cotc1);
     }
 
     #[test]
     fn parse_single_stage() {
-        todo!()
+        let filibuster = StageID::from_components(T::Filibuster, 0, 0);
+        let st = parse_stage_selector("filibuster").unwrap();
+        assert_eq!(st, filibuster);
+        let st = parse_stage_selector("filibuster 30 12").unwrap();
+        assert_eq!(st, filibuster);
+
+        let challenge = StageID::from_components(T::Challenge, 0, 0);
+        let st = parse_stage_selector("challenge").unwrap();
+        assert_eq!(st, challenge);
+        let st = parse_stage_selector("challenge 30 12").unwrap();
+        assert_eq!(st, challenge);
     }
 
     #[test]
     fn parse_single_map() {
-        todo!()
+        let st = parse_stage_selector("aku 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 0));
+        let st = parse_stage_selector("aku 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 1));
+        let st = parse_stage_selector("aku 0 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 1));
+        let st = parse_stage_selector("aku 0 0 0 0 0 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 1));
+
+        let st = parse_stage_selector("labyrinth 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 0));
+        let st = parse_stage_selector("labyrinth 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 1));
+        let st = parse_stage_selector("labyrinth 0 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 1));
+        let st = parse_stage_selector("labyrinth 0 0 0 0 0 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 1));
+
+        let st = parse_stage_selector("eoc 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 0, 0));
+        let st = parse_stage_selector("eoc 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 0, 1));
+        let st = parse_stage_selector("eoc 0 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 0, 1));
+        let st = parse_stage_selector("eoc 0 0 0 0 0 1").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 0, 1));
     }
 
     #[test]
@@ -285,26 +324,3 @@ Plan:
 //     //     todo!()
 //     // }
 // }
-
-// function to get the regex matching done properly.
-// "z 1|z 2|z 3" e.g.
-// All will get their map codes, stage codes and numbers added automatically
-// if begins with z then there is a special case, maybe this could tell that
-
-/*
-    mod tests {
-        use super::*;
-
-        #[test]
-        fn test_get_selector_type() {
-            assert_eq!(get_selector_type("ITF").unwrap().type_enum, T::MainChapters);
-            assert_eq!(get_selector_type("itf").unwrap().type_enum, T::MainChapters);
-            assert_eq!(get_selector_type("itf2"), None);
-        }
-
-        #[test]
-        fn test_get_stage_type_code() {
-            assert_eq!(get_stage_type_code(T::MainChapters), LEGACY_STAGE_TYPES[3]);
-        }
-    }
-*/
