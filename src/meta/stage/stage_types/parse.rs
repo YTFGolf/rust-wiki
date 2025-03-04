@@ -237,6 +237,14 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
     Ok(MapID::from_components(variant, map_num))
 }
 
+// fn parse_map_from_iterator<'a, T>()
+// where
+//     T: Iterator<Item = &'a str>,
+// {
+//     todo!()
+// }
+// I'm okay with this being a monolith for now.
+
 #[cfg(test)]
 mod tests_general {
     use super::*;
@@ -256,7 +264,7 @@ mod tests_stage {
     use StageVariantID as T;
 
     #[test]
-    fn parse_selector_sol() {
+    fn test_parse_selector_sol() {
         let answer = StageID::from_components(T::SoL, 0, 0);
 
         let st = parse_stage_selector("SoL 0 0").unwrap();
@@ -270,7 +278,7 @@ mod tests_stage {
     }
 
     #[test]
-    fn parse_selector_ex() {
+    fn test_parse_selector_ex() {
         let answer = StageID::from_components(T::Extra, 0, 0);
 
         let st = parse_stage_selector("eXTRA 0 0").unwrap();
@@ -286,7 +294,7 @@ mod tests_stage {
     }
 
     #[test]
-    fn parse_selector_main() {
+    fn test_parse_selector_main() {
         let eoc1 = StageID::from_components(T::MainChapters, 0, 0);
         let st = parse_stage_selector("eoc 0").unwrap();
         assert_eq!(st, eoc1);
@@ -313,7 +321,7 @@ mod tests_stage {
     }
 
     #[test]
-    fn parse_single_stage() {
+    fn test_parse_single_stage() {
         let filibuster = StageID::from_components(T::Filibuster, 0, 0);
         let st = parse_stage_selector("filibuster").unwrap();
         assert_eq!(st, filibuster);
@@ -328,7 +336,7 @@ mod tests_stage {
     }
 
     #[test]
-    fn parse_single_map() {
+    fn test_parse_single_map() {
         let st = parse_stage_selector("aku 0").unwrap();
         assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 0));
         let st = parse_stage_selector("aku 1").unwrap();
@@ -358,7 +366,7 @@ mod tests_stage {
     }
 
     #[test]
-    fn parse_selector_fail() {
+    fn test_parse_selector_fail() {
         let st = parse_stage_selector("invalid_selector 0 0");
         assert_eq!(st, Err(StageTypeParseError::UnknownMatcher));
     }
@@ -379,6 +387,30 @@ mod tests_stage {
 
         let st = parse_stage_selector("COTC 1 0").unwrap();
         assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0));
+    }
+
+    #[test]
+    fn test_from_file() {
+        let st = parse_stage_file("stageRN000_00.csv").unwrap();
+        assert_eq!(st, StageID::from_components(T::SoL, 0, 0,));
+
+        let st = parse_stage_file("stageRT000_00.csv").unwrap();
+        assert_eq!(st, StageID::from_components(T::Dojo, 0, 0,));
+
+        let st = parse_stage_file("stageL000_00.csv").unwrap();
+        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 0,));
+
+        let st = parse_stage_file("stageEX000_00.csv").unwrap();
+        assert_eq!(st, StageID::from_components(T::Extra, 0, 0,));
+    }
+
+    #[test]
+    fn test_from_file_main() {
+        let st = parse_stage_file("stageSpace07_00.csv").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0,));
+
+        let st = parse_stage_file("stageZ00_00.csv").unwrap();
+        assert_eq!(st, StageID::from_components(T::EocOutbreak, 0, 0,));
     }
 }
 
