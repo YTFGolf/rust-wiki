@@ -158,6 +158,7 @@ pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseErr
 #[cfg(test)]
 mod tests {
     use super::*;
+    use StageTypeParseError as E;
     use StageVariantID as T;
 
     #[test]
@@ -265,7 +266,7 @@ mod tests {
     #[test]
     fn test_parse_selector_fail() {
         let st = parse_stage_selector("invalid_selector 0 0");
-        assert_eq!(st, Err(StageTypeParseError::UnknownMatcher));
+        assert_eq!(st, Err(E::UnknownMatcher));
     }
 
     #[test]
@@ -435,14 +436,8 @@ mod tests {
     #[test]
     fn test_stage_type_error() {
         assert_eq!(parse_general_stage_id("unknown 0"), None);
-        assert_eq!(
-            parse_stage_file("file no exist"),
-            Err(StageTypeParseError::InvalidFormat)
-        );
-        assert_eq!(
-            parse_stage_ref("not a reference"),
-            Err(StageTypeParseError::InvalidFormat)
-        );
+        assert_eq!(parse_stage_file("file no exist"), Err(E::InvalidFormat));
+        assert_eq!(parse_stage_ref("not a reference"), Err(E::InvalidFormat));
         // assert_eq!(
         //     parse_stage_file("none "),
         //     Err(StageMetaParseError::Invalid)
@@ -450,38 +445,21 @@ mod tests {
     }
 
     #[test]
-    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_negative_selector() {
-        let _ = parse_stage_file("Q 2 -1");
+        let e = parse_stage_selector("Q 2 -1");
+        assert_eq!(e, Err(E::InvalidNumber));
     }
 
     #[test]
-    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
     fn test_non_numeric_selector() {
-        let _ = parse_stage_file("Labyrinth two three");
+        let e = parse_stage_selector("Labyrinth two three");
+        assert_eq!(e, Err(E::InvalidNumber));
     }
 
     #[test]
-    #[should_panic = "index out of bounds"]
     fn test_not_enough_args() {
-        let _ = parse_stage_file("itf");
+        let e = parse_stage_selector("itf");
+        assert_eq!(e, Err(E::NoMapNumber));
     }
 
-    #[test]
-    #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
-    fn test_invalid_number_low_itf() {
-        let _ = parse_stage_file("itf 0, 0");
-    }
-
-    #[test]
-    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
-    fn test_invalid_number_low_cotc() {
-        let _ = parse_stage_file("cotc 0, 0");
-    }
-
-    #[test]
-    #[should_panic = "assertion failed: (1..=9).contains(&chap_num)"]
-    fn test_invalid_number_high() {
-        let _ = parse_stage_file("z 10, 0");
-    }
 }

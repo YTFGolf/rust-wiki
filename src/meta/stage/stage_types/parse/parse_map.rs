@@ -40,10 +40,18 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
         match compare.to_lowercase().as_str() {
             "eoc" => return Ok(MapID::from_components(variant, 0)),
             // eoc has 1 chapter that is number 0
-            "itf" | "w" => return Ok(MapID::from_components(variant, map_num + 2)),
-            // itf 1 = "itf 1" = "main 3"
-            "cotc" | "space" => return Ok(MapID::from_components(variant, map_num + 5)),
-            // cotc 1 = "cotc 1" = "main 6"
+            "itf" | "w" => {
+                let map_num = map_num + 2;
+                // itf 1 = "itf 1" = "main 3"
+                assert!((3..=5).contains(&map_num));
+                return Ok(MapID::from_components(variant, map_num));
+            }
+            "cotc" | "space" => {
+                let map_num = map_num + 5;
+                // cotc 1 = "cotc 1" = "main 6"
+                assert!((6..=8).contains(&map_num));
+                return Ok(MapID::from_components(variant, map_num));
+            }
             _ => (),
             // if you put main or 3 then I assume you know what you're doing
         }
@@ -71,5 +79,23 @@ mod tests {
         let desired: Vec<&str> = "main|EoC|ItF|W|CotC|Space|3".split('|').collect();
         let main = get_stage_type(StageVariantID::MainChapters);
         assert_eq!(desired, main.matcher.arr);
+    }
+
+    #[test]
+    #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
+    fn test_invalid_number_low_itf() {
+        let _ = parse_map_selector("itf 0");
+    }
+
+    #[test]
+    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
+    fn test_invalid_number_low_cotc() {
+        let _ = parse_map_selector("cotc 0");
+    }
+
+    #[test]
+    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
+    fn test_invalid_number_high() {
+        let _ = parse_map_selector("cotc 4");
     }
 }
