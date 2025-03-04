@@ -226,7 +226,13 @@ static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
 
 use crate::meta::stage::{
     stage_id::StageID,
-    stage_types::{parse::parse_stage::parse_stage_selector, transform::stage_data_file},
+    stage_types::{
+        parse::{
+            parse_stage::{parse_general_stage_id, parse_stage_ref, parse_stage_selector},
+            StageTypeParseError,
+        },
+        transform::stage_data_file,
+    },
 };
 
 impl From<StageID> for LegacyStageMeta {
@@ -285,20 +291,7 @@ pub enum StageMetaParseError {
 impl LegacyStageMeta {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Option<LegacyStageMeta> {
-        // TODO optimise by checking selectors before running functions
-        // TODO check the type: if rejected go to next function, if invalid
-        // then return None.
-        if let Ok(st) = Self::from_file(selector) {
-            return Some(st);
-        };
-        if let Ok(st) = Self::from_selector(selector) {
-            return Some(st);
-        };
-        if let Ok(st) = Self::from_ref(selector) {
-            return Some(st);
-        };
-
-        None
+        parse_general_stage_id(selector).map(|id| id.into())
     }
 
     fn is_main_chaps(m: LegacyStageVariant) -> bool {
@@ -315,8 +308,8 @@ impl LegacyStageMeta {
     /// let selector = "N 0 0";
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
-    pub fn from_selector(selector: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
-        Ok(parse_stage_selector(selector).unwrap().into())
+    pub fn from_selector(selector: &str) -> Result<LegacyStageMeta, StageTypeParseError> {
+        parse_stage_selector(selector).map(|id| id.into())
     }
 
     /// Parse file name into [StageMeta] object.
@@ -374,20 +367,8 @@ impl LegacyStageMeta {
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta::from_ref("s00000-01").unwrap());
     /// ```
-    pub fn from_ref(selector: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
-        let reference = DB_REFERENCE_FULL.replace(selector, "$1");
-
-        match DB_REFERENCE_STAGE.captures(&reference) {
-            Some(caps) => {
-                let chapter: u32 = caps[1].parse().unwrap();
-                // necessary since can contain leading 0s
-                // TODO probably easier to just remove leading 0s
-                let submap: u32 = caps[2].parse().unwrap();
-                let stage: u32 = caps[3].parse::<u32>().unwrap() - 1;
-                Self::from_numbers(chapter, submap, stage)
-            }
-            None => Err(StageMetaParseError::Rejected),
-        }
+    pub fn from_ref(selector: &str) -> Result<LegacyStageMeta, StageTypeParseError> {
+        parse_stage_ref(selector).map(|id| id.into())
     }
 
     /// Get meta from numbers.

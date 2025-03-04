@@ -96,7 +96,7 @@ static DB_REFERENCE_FULL: LazyLock<Regex> =
 static DB_REFERENCE_STAGE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
 // could possibly factor out the \d{2}\d{3} to be mapid
-fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
+pub fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
     let reference = DB_REFERENCE_FULL.replace(reference, "$1");
 
     match DB_REFERENCE_STAGE.captures(&reference) {
