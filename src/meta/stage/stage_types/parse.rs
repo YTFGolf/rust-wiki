@@ -410,25 +410,130 @@ mod tests_stage {
     #[test]
     fn test_from_file() {
         let st = parse_stage_file("stageRN000_00.csv").unwrap();
-        assert_eq!(st, StageID::from_components(T::SoL, 0, 0,));
+        assert_eq!(st, StageID::from_components(T::SoL, 0, 0));
 
         let st = parse_stage_file("stageRT000_00.csv").unwrap();
-        assert_eq!(st, StageID::from_components(T::Dojo, 0, 0,));
+        assert_eq!(st, StageID::from_components(T::Dojo, 0, 0));
 
         let st = parse_stage_file("stageL000_00.csv").unwrap();
-        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 0,));
+        assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 0));
 
         let st = parse_stage_file("stageEX000_00.csv").unwrap();
-        assert_eq!(st, StageID::from_components(T::Extra, 0, 0,));
+        assert_eq!(st, StageID::from_components(T::Extra, 0, 0));
     }
 
     #[test]
     fn test_from_file_main() {
         let st = parse_stage_file("stageSpace07_00.csv").unwrap();
-        assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0,));
+        assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0));
 
         let st = parse_stage_file("stageZ00_00.csv").unwrap();
-        assert_eq!(st, StageID::from_components(T::EocOutbreak, 0, 0,));
+        assert_eq!(st, StageID::from_components(T::EocOutbreak, 0, 0));
+    }
+
+    #[test]
+    fn test_from_ref() {
+        let answer = StageID::from_components(T::SoL, 0, 0);
+
+        let st = parse_stage_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_ref("s00000-01").unwrap();
+        assert_eq!(st, answer);
+    }
+
+    #[test]
+    fn test_new() {
+        let selector = "*https://battlecats-db.com/stage/s01382-03.html";
+        assert_eq!(
+            parse_stage_ref(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_general_stage_id(selector).unwrap(),
+            StageID::from_components(T::Event, 382, 2)
+        );
+
+        let selector = "ItF 1 48";
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            StageID::from_components(T::MainChapters, 3, 48)
+        );
+
+        let selector = "DM 0";
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            StageID::from_components(T::AkuRealms, 0, 0)
+        );
+
+        let selector = "Filibuster";
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            StageID::from_components(T::Filibuster, 0, 0)
+        );
+
+        let selector = "itfz 1 0";
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_selector(selector).unwrap(),
+            StageID::from_components(T::ItfOutbreak, 1, 0)
+        );
+
+        let selector = "stageRN013_05.csv";
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            StageID::from_components(T::SoL, 13, 5)
+        );
+
+        let selector = "stageRN000_00.csv";
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            StageID::from_components(T::SoL, 0, 0)
+        );
+
+        let selector = "stageW04_05.csv";
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            parse_general_stage_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            StageID::from_components(T::MainChapters, 3, 5)
+        );
+
+        let selector = "stageW04_05.csv";
+        assert_eq!(
+            parse_general_stage_id(&String::from(selector)),
+            parse_general_stage_id(selector)
+        );
+        assert_eq!(
+            parse_general_stage_id(&String::from(selector)).unwrap(),
+            StageID::from_components(T::MainChapters, 3, 5)
+        );
     }
 }
 
