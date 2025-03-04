@@ -205,13 +205,6 @@ struct FilePatterns {
     /// number (e.g. `["RND", "106", "702"]` in `"stageRND106_702.csv"`).
     default: Regex,
 }
-/// Captures `"s00000-01"` in
-/// `"*https://battlecats-db.com/stage/s00000-01.html"`.
-static DB_REFERENCE_FULL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap());
-/// Captures `["01", "001", "999"]` in `"s01001-999"`.
-static DB_REFERENCE_STAGE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
 
 /// Static container for file-related regexes.
 static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
