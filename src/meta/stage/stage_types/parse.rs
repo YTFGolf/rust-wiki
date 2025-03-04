@@ -14,22 +14,24 @@ selectors are updated then the docs also need to be updated.
 #[derive(Debug, PartialEq)]
 /// Error when parsing the stage type.
 pub enum StageTypeParseError {
-    /// Invalid stage type variant "matcher".
+    /// Invalid "matcher" (variant code, e.g. `"main"`).
     UnknownMatcher,
     /// No map number provided when necessary.
     NoMapNumber,
     /// No stage number provided when necessary.
     NoStageNumber,
-    /// Map or stage number is invalid.
+    /// Map or stage number is invalid (e.g. negative, contains letters).
     InvalidNumber,
-    /// Selector is not in a valid format for the given function.
+    /// Selector is not in a valid format for the given function (e.g. is a file
+    /// name when the function is db refs).
     InvalidFormat,
 }
 
-fn get_variant_from_code(compare: &str) -> Option<StageVariantID> {
+/// Get the [`StageVariantID`] the code corresponds to.
+fn get_variant_from_code(code: &str) -> Option<StageVariantID> {
     for variant in StageVariantID::iter() {
         let stype = get_stage_type(variant);
-        if stype.matcher.re.is_match(compare) {
+        if stype.matcher.re.is_match(code) {
             return Some(stype.data.variant_id);
         }
         // I think regex is probably faster than arr.contains

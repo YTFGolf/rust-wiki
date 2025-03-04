@@ -1,3 +1,5 @@
+//! Parse [`MapID`] from various formats.
+
 use super::{get_variant_from_code, is_single_map, is_single_stage, StageTypeParseError};
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
@@ -5,10 +7,11 @@ use crate::meta::stage::{
     variant::StageVariantID,
 };
 
-pub fn parse_general_map_id(selector: &str) -> MapID {
+fn _parse_general_map_id(_selector: &str) -> MapID {
     todo!()
 }
 
+/// Parse map selector to [`MapID`].
 pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> {
     let mut iter = selector.split(SELECTOR_SEPARATOR);
     let compare = iter
@@ -25,12 +28,11 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
         return Ok(MapID::from_components(variant, 0));
     };
 
-    let Some(map_num) = iter.next() else {
-        return Err(StageTypeParseError::NoMapNumber);
-    };
-    let Ok(map_num) = map_num.parse::<MapSize>() else {
-        return Err(StageTypeParseError::InvalidNumber);
-    };
+    let map_num = iter
+        .next()
+        .ok_or(StageTypeParseError::NoMapNumber)?
+        .parse::<MapSize>()
+        .map_err(|_| StageTypeParseError::InvalidNumber)?;
 
     if variant == StageVariantID::MainChapters {
         // has to have separate logic depending on what you put as your selector
@@ -76,6 +78,11 @@ mod tests {
     #[test]
     fn assert_main_selector() {
         // DO NOT CHANGE THIS TEST WITHOUT UPDATING `parse_map_selector`
+
+        // Basically just checks that the hardcoded match values are accurate.
+        // It should always be the below values in lowercase, excluding main and
+        // 3 because those will use consistent map numbers.
+
         let desired: Vec<&str> = "main|EoC|ItF|W|CotC|Space|3".split('|').collect();
         let main = get_stage_type(StageVariantID::MainChapters);
         assert_eq!(desired, main.matcher.arr);
