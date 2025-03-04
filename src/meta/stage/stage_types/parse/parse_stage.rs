@@ -469,8 +469,8 @@ mod tests {
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for var in StageVariantID::iter() {
-            if var == T::MainChapters || var.is_outbreak() {
-                // main and outbreaks will need to be a bit more delicate
+            if var == T::MainChapters {
+                // main will need to be a bit more delicate
                 continue;
             }
 
@@ -479,6 +479,8 @@ mod tests {
                     (0, 0)
                 } else if is_single_map(var) {
                     (0, random::<u32>() % 1000)
+                } else if var.is_outbreak() {
+                    (random::<u32>() % 3, random::<u32>() % 1000)
                 } else {
                     (random::<u32>() % 1000, random::<u32>() % 1000)
                 };
@@ -568,5 +570,4 @@ mod tests {
             );
         }
     }
-
 }
