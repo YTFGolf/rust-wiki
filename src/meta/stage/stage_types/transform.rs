@@ -88,8 +88,24 @@ fn map_data_file(map_id: MapID) -> String {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::meta::stage::variant::StageVariantID;
+    use strum::IntoEnumIterator;
+
     #[test]
     fn test_custom_stypes() {
-        todo!()
+        for var in StageVariantID::iter() {
+            let stype = get_stage_type(var).data;
+            if stype.map_code == None || stype.stage_code == StageCodeType::Custom {
+                assert!(matches!(
+                    var,
+                    T::MainChapters
+                        | T::EocOutbreak
+                        | T::ItfOutbreak
+                        | T::CotcOutbreak
+                        | T::Filibuster
+                ));
+            }
+        }
     }
 }
