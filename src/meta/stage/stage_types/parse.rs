@@ -51,7 +51,10 @@ fn parse_general_stage_id(selector: &str) -> StageID {
     // from_ref;
 }
 
-// fn parse_stage_file(file_name:&str)->StageID
+fn parse_stage_file(file_name:&str)->StageID{
+    todo!()
+}
+
 // fn parse_stage_ref(ref:&str)->StageID
 
 pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
@@ -285,6 +288,24 @@ mod tests_stage {
     fn parse_selector_fail() {
         let st = parse_stage_selector("invalid_selector 0 0");
         assert_eq!(st, Err(StageTypeParseError::UnknownMatcher));
+    }
+
+    #[test]
+    fn test_from_selector() {
+        let st = parse_stage_selector("N 0 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::SoL, 0, 0));
+
+        let st = parse_stage_selector("sol 0 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::SoL, 0, 0));
+
+        let st = parse_stage_selector("T 0 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::Dojo, 0, 0));
+
+        let st = parse_stage_selector("EX 0 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::Extra, 0, 0));
+
+        let st = parse_stage_selector("COTC 1 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0));
     }
 }
 
