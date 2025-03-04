@@ -489,7 +489,6 @@ mod tests {
                     file_name,
                     stage_data_file(&parse_stage_file(&file_name).unwrap())
                 );
-                // this will need to take into account the `is_` functions
                 assert_eq!(
                     st,
                     parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
@@ -505,6 +504,69 @@ mod tests {
 
     #[test]
     fn test_random_properties_main() {
-        todo!()
+        const NUM_ITERATIONS: usize = 20;
+        let var = T::MainChapters;
+
+        // eoc
+        for _ in 0..NUM_ITERATIONS {
+            let (map, stage) = (0, random::<u32>() % 100);
+            // can only have 2 digits
+
+            let st = StageID::from_components(var, map, stage);
+            let file_name = stage_data_file(&st);
+            assert_eq!(
+                file_name,
+                stage_data_file(&parse_stage_file(&file_name).unwrap())
+            );
+            assert_eq!(
+                st,
+                parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+            );
+            assert_eq!(
+                st,
+                parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1)).unwrap()
+            );
+        }
+
+        // itf
+        for _ in 0..NUM_ITERATIONS {
+            let (map, stage) = (random::<u32>() % 3 + 3, random::<u32>() % 1000);
+
+            let st = StageID::from_components(var, map, stage);
+            let file_name = stage_data_file(&st);
+            assert_eq!(
+                file_name,
+                stage_data_file(&parse_stage_file(&file_name).unwrap())
+            );
+            assert_eq!(
+                st,
+                parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+            );
+            assert_eq!(
+                st,
+                parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1)).unwrap()
+            );
+        }
+
+        // cotc
+        for _ in 0..NUM_ITERATIONS {
+            let (map, stage) = (random::<u32>() % 3 + 6, random::<u32>() % 1000);
+
+            let st = StageID::from_components(var, map, stage);
+            let file_name = stage_data_file(&st);
+            assert_eq!(
+                file_name,
+                stage_data_file(&parse_stage_file(&file_name).unwrap())
+            );
+            assert_eq!(
+                st,
+                parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+            );
+            assert_eq!(
+                st,
+                parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1)).unwrap()
+            );
+        }
     }
+
 }
