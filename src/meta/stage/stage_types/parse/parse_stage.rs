@@ -1,10 +1,5 @@
 // Temporary implementation for refactoring.
 
-/*
-Important note: selectors in this module are custom behaviour, so any time that
-selectors are updated then the docs also need to be updated.
-*/
-
 use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
 
 impl From<StageID> for LegacyStageMeta {
@@ -418,5 +413,75 @@ mod tests {
             parse_general_stage_id(&String::from(selector)).unwrap(),
             StageID::from_components(T::MainChapters, 3, 5)
         );
+    }
+
+    // #[test]
+    // fn test_outbreak_number_coercion() {
+    //     let selector = "z 2 49";
+    //     // EoC Moon 2
+    //     assert_eq!(
+    //         parse_stage_selector(selector).unwrap(),
+    //         StageID::from_components(T::Outbreaks, 1, 47)
+    //     );
+
+    //     let selector = "z 4 49";
+    //     // check that doesn't do the same thing for itf/cotc
+    //     assert_eq!(
+    //         parse_stage_selector(selector).unwrap(),
+    //         StageID::from_components(T::Outbreaks, 0, 49)
+    //     );
+    // }
+
+    #[test]
+    fn test_stage_type_error() {
+        assert_eq!(parse_general_stage_id("unknown 0"), None);
+        assert_eq!(
+            parse_stage_file("file no exist"),
+            Err(StageTypeParseError::InvalidFormat)
+        );
+        assert_eq!(
+            parse_stage_ref("not a reference"),
+            Err(StageTypeParseError::InvalidFormat)
+        );
+        // assert_eq!(
+        //     parse_stage_file("none "),
+        //     Err(StageMetaParseError::Invalid)
+        // );
+    }
+
+    #[test]
+    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
+    fn test_negative_selector() {
+        let _ = parse_stage_file("Q 2 -1");
+    }
+
+    #[test]
+    #[should_panic = "ParseIntError { kind: InvalidDigit }"]
+    fn test_non_numeric_selector() {
+        let _ = parse_stage_file("Labyrinth two three");
+    }
+
+    #[test]
+    #[should_panic = "index out of bounds"]
+    fn test_not_enough_args() {
+        let _ = parse_stage_file("itf");
+    }
+
+    #[test]
+    #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
+    fn test_invalid_number_low_itf() {
+        let _ = parse_stage_file("itf 0, 0");
+    }
+
+    #[test]
+    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
+    fn test_invalid_number_low_cotc() {
+        let _ = parse_stage_file("cotc 0, 0");
+    }
+
+    #[test]
+    #[should_panic = "assertion failed: (1..=9).contains(&chap_num)"]
+    fn test_invalid_number_high() {
+        let _ = parse_stage_file("z 10, 0");
     }
 }
