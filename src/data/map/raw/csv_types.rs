@@ -1,10 +1,10 @@
 //! Types to deserialise map csv files.
 
 #[derive(Debug, serde::Deserialize)]
-#[allow(dead_code, missing_docs)]
 /// No real clue.
 // mapnum?,treasuredrop,scorerewards,?,?
 pub struct HeaderCSV {
+    /// Number of the map's background file.
     pub map_file_num: i32,
     // "itemsetting" according to clamchowder
     _unknown_1: i32,

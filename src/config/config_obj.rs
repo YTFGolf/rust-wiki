@@ -29,7 +29,7 @@ use std::{
 // TODO FIX THIS
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
-// needs to take and &Level due to how serialize works
+// needs to take an &Level due to how serialize works
 /// Necessary to make [`Level`] serialise as lower case.
 fn serialize_log_level<S>(level: &Level, serializer: S) -> Result<S::Ok, S::Error>
 where

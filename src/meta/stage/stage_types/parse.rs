@@ -1,7 +1,5 @@
 //! Parse ID from various formats.
 
-#![allow(unused_variables, missing_docs)]
-
 use crate::meta::stage::{stage_types::data::get_stage_type, variant::StageVariantID};
 use strum::IntoEnumIterator;
 

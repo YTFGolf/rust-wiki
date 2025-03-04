@@ -3,7 +3,6 @@
 use log::{Level, Metadata, Record};
 use std::{fmt::Display, ptr::addr_of};
 
-#[allow(dead_code)]
 enum Color {
     Red,
     Yellow,

@@ -1,7 +1,5 @@
 //! Transform ID data into various formats.
 
-#![allow(unused_variables)]
-
 use super::data::get_stage_type;
 use crate::meta::stage::{
     map_id::MapID, stage_id::StageID, stage_types::types::StageCodeType, variant::StageVariantID,
