@@ -2,10 +2,7 @@
 
 #![allow(unused_variables, missing_docs)]
 
-use crate::meta::stage::{
-    stage_types::data::get_stage_type,
-    variant::StageVariantID,
-};
+use crate::meta::stage::{stage_types::data::get_stage_type, variant::StageVariantID};
 use strum::IntoEnumIterator;
 
 pub mod parse_map;
@@ -54,7 +51,6 @@ fn is_single_map(v: StageVariantID) -> bool {
     type T = StageVariantID;
     matches!(v, T::AkuRealms | T::Labyrinth)
 }
-
 
 /*
 Test:

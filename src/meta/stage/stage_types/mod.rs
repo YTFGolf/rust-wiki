@@ -7,6 +7,6 @@
 // just works from the outside.
 
 mod data;
-mod types;
 pub mod parse;
 pub mod transform;
+mod types;

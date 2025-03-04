@@ -15,6 +15,8 @@ impl From<StageID> for LegacyStageMeta {
 
 // -----------------------------------------------------------------------------
 
+use super::parse_map::parse_map_selector;
+use super::{is_single_map, is_single_stage, StageTypeParseError};
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
     stage_id::{StageID, StageSize},
@@ -23,9 +25,6 @@ use crate::meta::stage::{
 };
 use regex::Regex;
 use std::sync::LazyLock;
-
-use super::parse_map::parse_map_selector;
-use super::{is_single_map, is_single_stage, StageTypeParseError};
 
 // stages
 

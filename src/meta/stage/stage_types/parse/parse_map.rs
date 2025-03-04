@@ -1,10 +1,9 @@
+use super::{get_variant_from_code, is_single_map, is_single_stage, StageTypeParseError};
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
     stage_types::data::SELECTOR_SEPARATOR,
     variant::StageVariantID,
 };
-
-use super::{get_variant_from_code, is_single_map, is_single_stage, StageTypeParseError};
 
 pub fn parse_general_map_id(selector: &str) -> MapID {
     todo!()
