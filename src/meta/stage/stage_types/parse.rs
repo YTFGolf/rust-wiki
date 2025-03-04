@@ -48,11 +48,20 @@ pub enum StageTypeParseError {
 
 // stages
 
-fn parse_general_stage_id(selector: &str) -> StageID {
-    todo!()
-    // from_file;
-    // from_selector;
-    // from_ref;
+pub fn parse_general_stage_id(selector: &str) -> Option<StageID> {
+    // Could check selectors before functions but this only really gets done on
+    // a mass scale from files.
+    if let Ok(st) = parse_stage_file(selector) {
+        return Some(st);
+    };
+    if let Ok(st) = parse_stage_selector(selector) {
+        return Some(st);
+    };
+    if let Ok(st) = parse_stage_ref(selector) {
+        return Some(st);
+    };
+
+    None
 }
 
 type T = StageVariantID;
@@ -119,15 +128,24 @@ fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError> {
     }
 }
 
+static DB_REFERENCE_FULL: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap());
+/// Captures `["01", "001", "999"]` in `"s01001-999"`.
+static DB_REFERENCE_STAGE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
+// could possibly factor out the \d{2}\d{3} to be mapid
 fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
-    todo!()
-    /*
-        static DB_REFERENCE_FULL: LazyLock<Regex> =
-            LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap());
-        /// Captures `["01", "001", "999"]` in `"s01001-999"`.
-        static DB_REFERENCE_STAGE: LazyLock<Regex> =
-            LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
-    */
+    let reference = DB_REFERENCE_FULL.replace(reference, "$1");
+
+    match DB_REFERENCE_STAGE.captures(&reference) {
+        Some(caps) => {
+            let chapter: u32 = caps[1].parse().unwrap();
+            let submap: u32 = caps[2].parse().unwrap();
+            let stage: u32 = caps[3].parse::<u32>().unwrap() - 1;
+            Ok(StageID::from_numbers(chapter, submap, stage))
+        }
+        None => Err(StageTypeParseError::InvalidFormat),
+    }
 }
 
 pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
