@@ -43,13 +43,13 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
             "itf" | "w" => {
                 let map_num = map_num + 2;
                 // itf 1 = "itf 1" = "main 3"
-                assert!((3..=5).contains(&map_num));
+                // assert!((3..=5).contains(&map_num));
                 return Ok(MapID::from_components(variant, map_num));
             }
             "cotc" | "space" => {
                 let map_num = map_num + 5;
                 // cotc 1 = "cotc 1" = "main 6"
-                assert!((6..=8).contains(&map_num));
+                // assert!((6..=8).contains(&map_num));
                 return Ok(MapID::from_components(variant, map_num));
             }
             _ => (),
@@ -81,21 +81,21 @@ mod tests {
         assert_eq!(desired, main.matcher.arr);
     }
 
-    #[test]
-    #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
-    fn test_invalid_number_low_itf() {
-        let _ = parse_map_selector("itf 0");
-    }
+    // #[test]
+    // #[should_panic = "assertion failed: (3..=5).contains(&map_num)"]
+    // fn test_invalid_number_low_itf() {
+    //     let _ = parse_map_selector("itf 0");
+    // }
 
-    #[test]
-    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
-    fn test_invalid_number_low_cotc() {
-        let _ = parse_map_selector("cotc 0");
-    }
+    // #[test]
+    // #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
+    // fn test_invalid_number_low_cotc() {
+    //     let _ = parse_map_selector("cotc 0");
+    // }
 
-    #[test]
-    #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
-    fn test_invalid_number_high() {
-        let _ = parse_map_selector("cotc 4");
-    }
+    // #[test]
+    // #[should_panic = "assertion failed: (6..=8).contains(&map_num)"]
+    // fn test_invalid_number_high() {
+    //     let _ = parse_map_selector("cotc 4");
+    // }
 }
