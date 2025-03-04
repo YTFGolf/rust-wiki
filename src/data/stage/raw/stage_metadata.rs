@@ -220,6 +220,23 @@ static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
     default: Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap(),
 });
 
+// -----------------------------------------------------------------------------
+
+// Temporary implementation for refactoring.
+
+use crate::meta::stage::{
+    stage_id::StageID,
+    stage_types::{parse::parse_stage::parse_stage_selector, transform::stage_data_file},
+};
+
+impl From<StageID> for LegacyStageMeta {
+    fn from(value: StageID) -> Self {
+        LegacyStageMeta::from_file(&stage_data_file(&value)).unwrap()
+    }
+}
+
+// -----------------------------------------------------------------------------
+
 // TODO split into type, map and stage
 #[derive(Debug, PartialEq)]
 /// Contains metadata about a given stage.
@@ -299,26 +316,7 @@ impl LegacyStageMeta {
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_selector(selector: &str) -> Result<LegacyStageMeta, StageMetaParseError> {
-        let selector: Vec<&str> = selector.split(' ').collect();
-
-        let Some(stage_type) =
-            get_selector_type(selector.first().expect("Selector should have content!"))
-        else {
-            return Err(StageMetaParseError::Invalid);
-        };
-
-        if Self::is_main_chaps(stage_type.type_enum) {
-            let nums = selector[1..]
-                .iter()
-                .map(|num| num.parse::<u32>().unwrap())
-                .collect::<Vec<_>>();
-            return Self::from_selector_main(selector[0], &nums);
-        }
-
-        // let chapter: u32 = stage_type.parse().unwrap();
-        let submap: u32 = selector[1].parse().unwrap();
-        let stage: u32 = selector[2].parse::<u32>().unwrap();
-        Ok(Self::from_split_parsed(stage_type, submap, stage))
+        Ok(parse_stage_selector(selector).unwrap().into())
     }
 
     /// Parse file name into [StageMeta] object.

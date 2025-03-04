@@ -1,15 +1,3 @@
-// Temporary implementation for refactoring.
-
-use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
-
-impl From<StageID> for LegacyStageMeta {
-    fn from(value: StageID) -> Self {
-        todo!()
-    }
-}
-
-// -----------------------------------------------------------------------------
-
 use super::parse_map::parse_map_selector;
 use super::{is_single_map, is_single_stage, StageTypeParseError};
 use crate::meta::stage::{
