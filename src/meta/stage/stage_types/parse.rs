@@ -27,6 +27,8 @@ use crate::meta::stage::{
     stage_types::data::{get_stage_type, SELECTOR_SEPARATOR},
     variant::StageVariantID,
 };
+use regex::Regex;
+use std::sync::LazyLock;
 use strum::IntoEnumIterator;
 
 #[derive(Debug, PartialEq)]
@@ -40,6 +42,8 @@ pub enum StageTypeParseError {
     NoStageNumber,
     /// Map or stage number is invalid.
     InvalidNumber,
+    /// Selector is not in a valid format for the given function.
+    InvalidFormat,
 }
 
 // stages
@@ -51,11 +55,80 @@ fn parse_general_stage_id(selector: &str) -> StageID {
     // from_ref;
 }
 
-fn parse_stage_file(file_name:&str)->StageID{
-    todo!()
+type T = StageVariantID;
+
+static GENERAL_STAGE_PAT: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap());
+fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError> {
+    const FILE_BEGIN: &str = "stage";
+    if !(file_name.starts_with(FILE_BEGIN) || file_name.ends_with(".csv")) {
+        return Err(StageTypeParseError::InvalidFormat);
+    } else if file_name == "stageSpace09_Invasion_00.csv" {
+        return Ok(StageID::from_components(T::Filibuster, 0, 0));
+    }
+
+    // Remaining formats:
+    // - eoc: "stagexx.csv" -> (Main, 0, xx)
+    // - other: "stage{code}{map}_{stage}.csv"
+
+    let remaining_chars = &file_name[FILE_BEGIN.len()..];
+    let bytes = remaining_chars.as_bytes();
+
+    if bytes[0].is_ascii_digit() {
+        // must be eoc if next is digit
+        let num = remaining_chars[0..=1]
+            .parse::<StageSize>()
+            .map_err(|_| StageTypeParseError::InvalidNumber)?;
+        return Ok(StageID::from_components(T::MainChapters, 0, num));
+    }
+
+    // Now all things must follow the format of `GENERAL_STAGE_PAT`.
+    let (_, caps): (&str, [&str; 3]) = GENERAL_STAGE_PAT.captures(file_name).unwrap().extract();
+    // I don't know how to do this idiomatically or efficiently so it's Regex
+    // time.
+    // let [var, map, stage] = caps;
+    match caps[0] {
+        "W" => {
+            let [_, map, stage] = caps;
+            let map = map.parse::<MapSize>().unwrap() - 1;
+            // W04 = ItF 1 = main 3
+            let stage = stage.parse().unwrap();
+            Ok(StageID::from_components(T::MainChapters, map, stage))
+        }
+        "Space" => {
+            let [_, map, stage] = caps;
+            let map = map.parse::<MapSize>().unwrap() - 1;
+            // Space07 = CotC 1 = main 6
+            let stage = stage.parse().unwrap();
+            Ok(StageID::from_components(T::MainChapters, map, stage))
+        }
+        "Z" => {
+            let [_, map, stage] = caps;
+            let map = map.parse().unwrap();
+            let stage = stage.parse().unwrap();
+
+            match map {
+                (0..=2) => Ok(StageID::from_components(T::EocOutbreak, map, stage)),
+                (4..=6) => Ok(StageID::from_components(T::ItfOutbreak, map - 4, stage)),
+                (7..=8) => Ok(StageID::from_components(T::CotcOutbreak, map - 7, stage)),
+                // 8 in current version
+                x => panic!("Map number {map:?} found in file name parser."),
+            }
+        }
+        _ => parse_stage_selector(&caps.join(&SELECTOR_SEPARATOR.to_string())),
+    }
 }
 
-// fn parse_stage_ref(ref:&str)->StageID
+fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
+    todo!()
+    /*
+        static DB_REFERENCE_FULL: LazyLock<Regex> =
+            LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap());
+        /// Captures `["01", "001", "999"]` in `"s01001-999"`.
+        static DB_REFERENCE_STAGE: LazyLock<Regex> =
+            LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
+    */
+}
 
 pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
     let map = parse_map_selector(selector)?;
