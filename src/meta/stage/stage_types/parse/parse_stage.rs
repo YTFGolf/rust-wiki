@@ -94,9 +94,8 @@ fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError> {
             match map {
                 (0..=2) => Ok(StageID::from_components(T::EocOutbreak, map, stage)),
                 (4..=6) => Ok(StageID::from_components(T::ItfOutbreak, map - 4, stage)),
-                (7..=8) => Ok(StageID::from_components(T::CotcOutbreak, map - 7, stage)),
-                // 8 in current version
-                x => panic!("Map number {map:?} found in file name parser."),
+                (7..=9) => Ok(StageID::from_components(T::CotcOutbreak, map - 7, stage)),
+                x => panic!("Zombie Outbreak map number {map:?} found in file name parser."),
             }
         }
         _ => parse_stage_selector(&caps.join(&SELECTOR_SEPARATOR.to_string())),

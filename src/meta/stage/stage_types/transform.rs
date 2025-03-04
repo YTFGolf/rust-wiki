@@ -41,7 +41,7 @@ fn custom_stage_data_file(stage_id: &StageID) -> String {
                     stage = stage_id.num()
                 )
             }
-            6..8 => {
+            6..=8 => {
                 format!(
                     "stageSpace{map:02}_{stage:02}.csv",
                     map = stage_id.map().num() + 1,
