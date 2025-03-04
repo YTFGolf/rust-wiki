@@ -482,7 +482,7 @@ mod tests {
 
     #[test]
     fn single_z_outbreak() {
-        let zoutbreak = LegacyStageMeta::new("z 3 43").unwrap();
+        let zoutbreak = LegacyStageMeta::new("eocz 2 43").unwrap();
         let name = &STAGE_WIKI_DATA.from_meta(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
 
