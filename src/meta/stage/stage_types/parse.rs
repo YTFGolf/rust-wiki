@@ -2,6 +2,25 @@
 
 #![allow(unused_variables, missing_docs)]
 
+/*
+Important note: selectors in this file are custom behaviour, so any time that
+selectors are updated then the docs also need to be updated.
+*/
+
+// -----------------------------------------------------------------------------
+
+// Temporary implementation for refactoring.
+
+use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
+
+impl From<StageID> for LegacyStageMeta {
+    fn from(value: StageID) -> Self {
+        todo!()
+    }
+}
+
+// -----------------------------------------------------------------------------
+
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
     stage_id::{StageID, StageSize},
@@ -13,9 +32,13 @@ use strum::IntoEnumIterator;
 #[derive(Debug, PartialEq)]
 /// Error when parsing the stage type.
 pub enum StageTypeParseError {
+    /// Invalid stage type variant "matcher".
     UnknownMatcher,
+    /// No map number provided when necessary.
     NoMapNumber,
+    /// No stage number provided when necessary.
     NoStageNumber,
+    /// Map or stage number is invalid.
     InvalidNumber,
 }
 
@@ -29,8 +52,9 @@ fn parse_general_stage_id(selector: &str) -> StageID {
 }
 
 // fn parse_stage_file(file_name:&str)->StageID
+// fn parse_stage_ref(ref:&str)->StageID
 
-fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
+pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
     let map = parse_map_selector(selector)?;
 
     if is_single_stage(map.variant()) {
@@ -138,7 +162,7 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_general {
     use super::*;
 
     #[test]
@@ -147,6 +171,81 @@ mod tests {
         let desired: Vec<&str> = "main|EoC|ItF|W|CotC|Space|3".split('|').collect();
         let main = get_stage_type(StageVariantID::MainChapters);
         assert_eq!(desired, main.matcher.arr);
+    }
+}
+
+#[cfg(test)]
+mod tests_stage {
+    use super::*;
+    use StageVariantID as T;
+
+    #[test]
+    fn parse_selector_sol() {
+        let answer = StageID::from_components(T::SoL, 0, 0);
+
+        let st = parse_stage_selector("SoL 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("sol 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("n 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("rn 0 0").unwrap();
+        assert_eq!(st, answer);
+    }
+
+    #[test]
+    fn parse_selector_ex() {
+        let answer = StageID::from_components(T::Extra, 0, 0);
+
+        let st = parse_stage_selector("eXTRA 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("extra 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("4 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("RE 0 0").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_stage_selector("EX 0 0").unwrap();
+        assert_eq!(st, answer);
+    }
+
+    #[test]
+    fn parse_selector_main() {
+        let st = parse_stage_selector("eoc 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 0, 0));
+
+        let st = parse_stage_selector("itf 1 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 3, 0));
+
+        let st = parse_stage_selector("cotc 1 0").unwrap();
+        assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0));
+
+        // let st = parse_stage_selector("aku 0").unwrap();
+        // assert_eq!(st, StageID::from_components(T::AkuRealms, 0, 0));
+
+        // let st = parse_stage_selector("filibuster").unwrap();
+        // assert_eq!(st, StageID::from_components(T::Filibuster, 0, 0));
+
+        // let st = parse_stage_selector("z 7 0").unwrap();
+        // assert_eq!(st, StageID::from_components(T::Outbreaks, 0, 0));
+
+        todo!("Still need to do main and 3")
+    }
+
+    #[test]
+    fn parse_single_stage() {
+        todo!()
+    }
+
+    #[test]
+    fn parse_single_map() {
+        todo!()
+    }
+
+    #[test]
+    fn parse_selector_fail() {
+        let st = parse_stage_selector("invalid_selector 0 0");
+        assert_eq!(st, Err(StageTypeParseError::UnknownMatcher));
     }
 }
 
