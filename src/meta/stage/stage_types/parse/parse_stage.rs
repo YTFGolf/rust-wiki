@@ -24,7 +24,8 @@ use crate::meta::stage::{
 use regex::Regex;
 use std::sync::LazyLock;
 
-use super::{is_single_map, is_single_stage, parse_map_selector, StageTypeParseError};
+use super::parse_map::parse_map_selector;
+use super::{is_single_map, is_single_stage, StageTypeParseError};
 
 // stages
 
@@ -159,7 +160,6 @@ pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseErr
 
     return Ok(StageID::from_map(map, stage_num));
 }
-
 
 #[cfg(test)]
 mod tests {
