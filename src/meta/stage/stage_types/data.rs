@@ -157,6 +157,11 @@ pub fn get_stage_type(variant: StageVariantID) -> &'static StageTypeDataContaine
         .unwrap_or_else(|| panic!("Variant {variant:?} is not initialised properly!"))
 }
 
+/// Iterate over all stage types.
+pub fn iter_stage_types() -> impl Iterator<Item = &'static StageTypeDataContainer> {
+    STAGE_TYPES.iter().flatten()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

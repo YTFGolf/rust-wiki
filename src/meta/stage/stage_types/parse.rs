@@ -1,7 +1,7 @@
 //! Parse ID from various formats.
 
-use crate::meta::stage::{stage_types::data::get_stage_type, variant::StageVariantID};
-use strum::IntoEnumIterator;
+use super::iter_stage_types;
+use crate::meta::stage::variant::StageVariantID;
 
 pub mod parse_map;
 pub mod parse_stage;
@@ -29,8 +29,7 @@ pub enum StageTypeParseError {
 
 /// Get the [`StageVariantID`] the code corresponds to.
 fn get_variant_from_code(code: &str) -> Option<StageVariantID> {
-    for variant in StageVariantID::iter() {
-        let stype = get_stage_type(variant);
+    for stype in iter_stage_types() {
         if stype.matcher.re.is_match(code) {
             return Some(stype.data.variant_id);
         }
