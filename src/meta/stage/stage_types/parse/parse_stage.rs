@@ -2,6 +2,7 @@
 
 use super::parse_map::parse_map_selector;
 use super::{is_single_map, is_single_stage, StageTypeParseError};
+use crate::meta::stage::variant::VariantSize;
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
     stage_id::{StageID, StageSize},
@@ -123,9 +124,9 @@ pub fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> 
 
     match DB_REFERENCE_STAGE.captures(&reference) {
         Some(caps) => {
-            let chapter: u32 = caps[1].parse().unwrap();
-            let submap: u32 = caps[2].parse().unwrap();
-            let stage: u32 = caps[3].parse::<u32>().unwrap() - 1;
+            let chapter: VariantSize = caps[1].parse().unwrap();
+            let submap: MapSize = caps[2].parse().unwrap();
+            let stage: StageSize = caps[3].parse::<StageSize>().unwrap() - 1;
             // stage num is 1-based on db for whatever reason
             Ok(StageID::from_numbers(chapter, submap, stage))
         }
@@ -494,11 +495,11 @@ mod tests {
                 let (map, stage) = if is_single_stage(var) {
                     (0, 0)
                 } else if is_single_map(var) {
-                    (0, random::<u32>() % 1000)
+                    (0, random::<StageSize>() % 1000)
                 } else if var.is_outbreak() {
-                    (random::<u32>() % 3, random::<u32>() % 1000)
+                    (random::<MapSize>() % 3, random::<StageSize>() % 1000)
                 } else {
-                    (random::<u32>() % 1000, random::<u32>() % 1000)
+                    (random::<MapSize>() % 1000, random::<StageSize>() % 1000)
                 };
 
                 // assert all parse functions get the same result and the stage
@@ -529,7 +530,7 @@ mod tests {
 
         // eoc
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (0, random::<u32>() % 100);
+            let (map, stage) = (0, random::<StageSize>() % 100);
             // can only have 2 digits
 
             let st = StageID::from_components(var, map, stage);
@@ -550,7 +551,7 @@ mod tests {
 
         // itf
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<u32>() % 3 + 3, random::<u32>() % 1000);
+            let (map, stage) = (random::<MapSize>() % 3 + 3, random::<StageSize>() % 1000);
 
             let st = StageID::from_components(var, map, stage);
             let file_name = stage_data_file(&st);
@@ -570,7 +571,7 @@ mod tests {
 
         // cotc
         for _ in 0..NUM_ITERATIONS {
-            let (map, stage) = (random::<u32>() % 3 + 6, random::<u32>() % 1000);
+            let (map, stage) = (random::<MapSize>() % 3 + 6, random::<StageSize>() % 1000);
 
             let st = StageID::from_components(var, map, stage);
             let file_name = stage_data_file(&st);

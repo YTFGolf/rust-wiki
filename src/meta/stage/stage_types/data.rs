@@ -27,6 +27,7 @@ const fn init(
     }
 }
 
+/// What is used as a separator in the selectors.
 pub const SELECTOR_SEPARATOR: char = ' ';
 #[rustfmt::skip]
 /// Stage types container.
