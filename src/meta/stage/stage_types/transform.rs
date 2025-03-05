@@ -2,12 +2,13 @@
 
 use super::data::get_stage_type;
 use crate::meta::stage::{
-    map_id::MapID, stage_id::StageID, stage_types::types::StageCodeType, variant::StageVariantID,
+    map_id::MapID, stage_id::StageID, stage_types::types::StageCodeType,
+    variant::StageVariantID as T,
 };
 
 // stages
 
-type T = StageVariantID;
+/// Get stage's data file name when stype is custom.
 fn custom_stage_data_file(stage_id: &StageID) -> String {
     // assert!(matches!(
     //     stage_id.variant(),
@@ -53,6 +54,7 @@ fn custom_stage_data_file(stage_id: &StageID) -> String {
     }
 }
 
+/// Get stage's data file name.
 pub fn stage_data_file(stage_id: &StageID) -> String {
     type C = StageCodeType;
     let stype = get_stage_type(stage_id.variant()).data;
@@ -76,13 +78,11 @@ pub fn stage_data_file(stage_id: &StageID) -> String {
 
 // maps
 
-fn map_data_file(map_id: MapID) -> String {
+fn _map_data_file(_map_id: MapID) -> String {
     todo!()
 }
 
 // -----------------------------------------------------------------------------
-
-// general
 
 #[cfg(test)]
 mod tests {
