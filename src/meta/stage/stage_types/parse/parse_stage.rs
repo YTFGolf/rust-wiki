@@ -475,6 +475,13 @@ mod tests {
     }
 
     #[test]
+    #[should_panic = "Zombie Outbreak map number 10 found in file name parser \
+                     (should be between 0 and 9)."]
+    fn test_invalid_number_high() {
+        let _ = parse_stage_file("stageZ10_36.csv");
+    }
+
+    #[test]
     fn test_random_properties() {
         const NUM_ITERATIONS: usize = 20;
         for var in StageVariantID::iter() {
