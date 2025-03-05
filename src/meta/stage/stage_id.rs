@@ -5,9 +5,10 @@ use super::{
     variant::{StageVariantID, VariantSize},
 };
 
-pub(super) type StageSize = u32;
+/// Size of stage number.
+pub type StageSize = u32;
 #[derive(Debug, PartialEq)]
-/// Identifies a map.
+/// Identifies a stage.
 pub struct StageID {
     map: MapID,
     num: StageSize,

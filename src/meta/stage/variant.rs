@@ -5,7 +5,7 @@ use strum::{EnumIter, FromRepr};
 const _: () = assert!(std::mem::size_of::<StageVariantID>() == std::mem::size_of::<VariantSize>());
 
 /// Size of variant.
-pub(super) type VariantSize = u32;
+pub type VariantSize = u32;
 
 #[allow(missing_docs)]
 #[repr(u32)]

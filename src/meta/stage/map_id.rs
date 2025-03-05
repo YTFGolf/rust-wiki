@@ -10,7 +10,8 @@ pub enum MainType {
     CotC,
 }
 
-pub(super) type MapSize = u32;
+/// Size of map number.
+pub type MapSize = u32;
 #[derive(Debug, PartialEq)]
 /// Identifies a map.
 pub struct MapID {
