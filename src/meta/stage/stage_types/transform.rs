@@ -94,7 +94,7 @@ mod tests {
     fn test_custom_stypes() {
         for var in StageVariantID::iter() {
             let stype = get_stage_type(var).data;
-            if stype.map_code == None || stype.stage_code == StageCodeType::Custom {
+            if stype.map_code.is_none() || stype.stage_code == StageCodeType::Custom {
                 assert!(matches!(
                     var,
                     T::MainChapters

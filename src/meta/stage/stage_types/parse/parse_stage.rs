@@ -161,7 +161,7 @@ pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseErr
         .parse::<StageSize>()
         .map_err(|_| StageTypeParseError::InvalidNumber)?;
 
-    return Ok(StageID::from_map(map, stage_num));
+    Ok(StageID::from_map(map, stage_num))
 }
 
 #[cfg(test)]

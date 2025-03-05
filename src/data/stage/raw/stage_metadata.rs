@@ -284,7 +284,7 @@ pub enum StageMetaParseError {
 impl LegacyStageMeta {
     /// Catch-all method for parsing a selector.
     pub fn new(selector: &str) -> Option<LegacyStageMeta> {
-        parse_general_stage_id(selector).map(|id| id.into())
+        parse_general_stage_id(selector).map(Into::into)
     }
 
     fn is_main_chaps(m: LegacyStageVariant) -> bool {
@@ -302,7 +302,7 @@ impl LegacyStageMeta {
     /// assert_eq!(StageMeta::from_selector(selector).unwrap(), StageMeta { type_name: "Stories of Legend", type_code: "N", type_num: 0, type_enum: SoL, map_num: 0, stage_num: 0, map_file_name: "MapStageDataN_000.csv".to_string(), stage_file_name: "stageRN000_00.csv".to_string() });
     /// ```
     pub fn from_selector(selector: &str) -> Result<LegacyStageMeta, StageTypeParseError> {
-        parse_stage_selector(selector).map(|id| id.into())
+        parse_stage_selector(selector).map(Into::into)
     }
 
     /// Parse file name into [StageMeta] object.
@@ -361,7 +361,7 @@ impl LegacyStageMeta {
     /// assert_eq!(StageMeta::from_ref(reference).unwrap(), StageMeta::from_ref("s00000-01").unwrap());
     /// ```
     pub fn from_ref(selector: &str) -> Result<LegacyStageMeta, StageTypeParseError> {
-        parse_stage_ref(selector).map(|id| id.into())
+        parse_stage_ref(selector).map(Into::into)
     }
 
     /// Get meta from numbers.
