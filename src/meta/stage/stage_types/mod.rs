@@ -9,3 +9,5 @@ mod data;
 pub mod parse;
 pub mod transform;
 mod types;
+
+pub use data::{get_stage_type, iter_stage_types};
