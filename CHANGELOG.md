@@ -10,10 +10,26 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ## [Unreleased]
 
-The versions here were a little rushed because doing part of map info made me
-realise how badly I need to fix `StageMeta`.
+This update's main goal was to deprecate `StageMeta`.
+
+After attempting to make a map data module in [0.4.2], I realised how badly
+`StageMeta` needed to be fixed. It was a monolith that did way too many things,
+which only really started causing problems when I tried implementing map data
+and realised that it was so much easier to reuse `StageMeta` than it was to
+properly implement an object for map metadata.
+
+`StageMeta` has not been removed, nor has it been officially marked as
+deprecated in the source code, although it has been renamed to
+`LegacyStageMeta`.
 
 ### Added
+
+- `StageVariantID` &ndash; replaces `StageTypeEnum`.
+- `MapID` &ndash; details a map.
+- `StageID` &ndash; details a stage; replaces `StageMeta`.
+- Command-line option to show all selector values.
+- Dedicated modules for parsing strings into map and stage IDs.
+- Dedicated modules for parsing IDs into data such as file names.
 
 ### Fixed
 
