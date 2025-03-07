@@ -6,6 +6,7 @@ pub mod transform_map;
 pub mod transform_stage;
 
 /// Every [`StageVariantID`] that has a custom [`StageCodeType`].
+#[derive(Debug, PartialEq)]
 enum CustomVariantID {
     MainChapters,
     EocOutbreak,

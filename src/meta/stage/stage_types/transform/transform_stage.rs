@@ -1,21 +1,18 @@
 //! Transform [`StageID`] data into various formats.
 
+use super::CustomVariantID as T;
 use crate::meta::stage::{
-    stage_id::StageID, stage_types::{get_stage_type, types::StageCodeType}, variant::StageVariantID as T,
+    stage_id::StageID,
+    stage_types::{get_stage_type, types::StageCodeType},
 };
 
 /// Get stage's data file name when stype is custom.
 fn custom_stage_data_file(stage_id: &StageID) -> String {
-    // assert!(matches!(
-    //     stage_id.variant(),
-    //     T::MainChapters | T::EocOutbreak | T::ItfOutbreak | T::CotcOutbreak | T::Filibuster
-    // ));
-    // main, zombie, filibuster
-    // test to assure this are in `test_custom_stypes`
-    match stage_id.variant() {
+    let variant: T = stage_id.variant().into();
+    match variant {
         T::Filibuster => "stageSpace09_Invasion_00.csv".to_string(),
         T::EocOutbreak | T::ItfOutbreak | T::CotcOutbreak => {
-            let map = match stage_id.variant() {
+            let map = match variant {
                 T::EocOutbreak => stage_id.map().num(),
                 T::ItfOutbreak => stage_id.map().num() + 4,
                 // Z04 = outbreak 1
@@ -25,7 +22,7 @@ fn custom_stage_data_file(stage_id: &StageID) -> String {
             };
 
             let mut stage = stage_id.num();
-            if stage_id.variant() == T::EocOutbreak {
+            if variant == T::EocOutbreak {
                 stage = match (map, stage) {
                     (1, 47) => 49,
                     (2, 47) => 50,
@@ -59,7 +56,6 @@ fn custom_stage_data_file(stage_id: &StageID) -> String {
             }
             n => panic!("Main chapter {n} out of bounds!"),
         },
-        _ => unreachable!(),
     }
 }
 
@@ -86,10 +82,13 @@ pub fn stage_data_file(stage_id: &StageID) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_types::parse::parse_stage::parse_stage_file;
+    use crate::meta::stage::{
+        stage_types::parse::parse_stage::parse_stage_file, variant::StageVariantID,
+    };
 
     #[test]
     fn test_outbreak_coercion() {
+        type T = StageVariantID;
         // Note: it is extremely important to test this alongside the parse
         // module.
         let stage = StageID::from_components(T::EocOutbreak, 1, 47);
