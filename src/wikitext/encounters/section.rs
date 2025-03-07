@@ -2,9 +2,7 @@
 
 use super::chapter::Chapter;
 use crate::{
-    data::stage::raw::stage_metadata::{
-        consts::LegacyStageVariant as T, LegacyStageMeta, StageMetaParseError,
-    },
+    meta::stage::{stage_id::StageID, variant::StageVariantID as T},
     wikitext::data_files::stage_wiki_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;
@@ -48,11 +46,11 @@ impl EncountersSection {
         self.heading
     }
 
-    fn fmt_encounter_custom(buf: &mut String, meta: &LegacyStageMeta, name: &str) {
+    fn fmt_encounter_custom(buf: &mut String, id: &StageID, name: &str) {
         // EoC
-        if meta.type_enum == T::MainChapters && meta.map_num == 0 {
-            if meta.stage_num <= 46 {
-                write!(buf, "Stage {stage}: {name}", stage = meta.stage_num + 1).unwrap();
+        if id.variant() == T::MainChapters && id.map().num() == 0 {
+            if id.num() <= 46 {
+                write!(buf, "Stage {stage}: {name}", stage = id.num() + 1).unwrap();
             } else {
                 // can just use the chapter given in StageNames.csv
                 let pos = name.len() - 2;
@@ -65,29 +63,29 @@ impl EncountersSection {
             return;
         }
 
-        if meta.type_enum == T::MainChapters {
+        if id.variant() == T::MainChapters {
             write!(
                 buf,
                 "Stage {chap}-{stage}: {name}",
-                chap = meta.map_num % 3 + 1,
-                stage = meta.stage_num + 1,
+                chap = id.map().num() % 3 + 1,
+                stage = id.num() + 1,
                 name = &name[..name.len() - " (N1)".len()]
             )
             .unwrap();
             return;
         }
 
-        if meta.type_enum == T::Filibuster {
+        if id.variant() == T::Filibuster {
             write!(buf, "Stage 3-IN: {name}",).unwrap();
             return;
         }
 
-        if meta.type_enum == T::AkuRealms {
+        if id.variant() == T::AkuRealms {
             *buf += "Stage ";
-            if meta.stage_num == 999 {
+            if id.num() == 999 {
                 *buf += "30-IN";
             } else {
-                write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
+                write!(buf, "{stage}", stage = id.num() + 1).unwrap();
             }
 
             write!(buf, ": {name}").unwrap();
@@ -95,52 +93,41 @@ impl EncountersSection {
             return;
         }
 
-        assert_eq!(
-            meta.type_enum,
-            T::Outbreaks,
+        assert!(
+            id.variant().is_outbreak(),
             "Type should be Outbreaks, not {:?}",
-            meta.type_enum
+            id.variant()
         );
-
-        // TODO something to do with the stage numbers and formatting if has
-        // loads of stages in eoc outbreaks. probably works if map num is set to
-        // 999.
 
         write!(
             buf,
             "Stage {chap}-{stage}: {name}",
-            chap = meta.map_num + 1,
-            stage = meta.stage_num + 1,
+            chap = id.map().num() + 1,
+            stage = id.num() + 1,
             name = &name[..name.len() - " (Z3)".len()]
         )
         .unwrap();
     }
 
     /// Write the non-asterisked part of an encounter.
-    pub fn fmt_encounter(
-        &self,
-        buf: &mut String,
-        meta: &LegacyStageMeta,
-        stage_name: &str,
-        mags: &str,
-    ) {
+    pub fn fmt_encounter(&self, buf: &mut String, id: &StageID, stage_name: &str, mags: &str) {
         match self.display_type {
             D::Skip => unreachable!(),
             D::Warn | D::Normal | D::Flat => {
                 write!(buf, "{stage_name}").unwrap();
             }
             D::Story => {
-                write!(buf, "Stage {chap}-", chap = meta.map_num + 1).unwrap();
+                write!(buf, "Stage {chap}-", chap = id.map().num() + 1).unwrap();
 
-                if meta.stage_num == 999 {
+                if id.num() == 999 {
                     *buf += "IN";
                 } else {
-                    write!(buf, "{stage}", stage = meta.stage_num + 1).unwrap();
+                    write!(buf, "{stage}", stage = id.num() + 1).unwrap();
                 }
 
                 write!(buf, ": {stage_name}").unwrap();
             }
-            D::Custom => Self::fmt_encounter_custom(buf, meta, stage_name),
+            D::Custom => Self::fmt_encounter_custom(buf, id, stage_name),
         }
 
         if !(mags.is_empty()) {
@@ -158,7 +145,7 @@ impl EncountersSection {
                 if chapter.stages.len() == 1 {
                     write!(buf, "*{chap}: ", chap = chapter.chapter_name).unwrap();
                     let stage = &chapter.stages[0];
-                    self.fmt_encounter(buf, stage.meta, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, &stage.meta.into(), stage.stage_name, &stage.mags);
 
                     return;
                 }
@@ -166,7 +153,7 @@ impl EncountersSection {
                 write!(buf, "*{chap}:", chap = chapter.chapter_name).unwrap();
                 for stage in chapter.stages {
                     *buf += "\n**";
-                    self.fmt_encounter(buf, stage.meta, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, &stage.meta.into(), stage.stage_name, &stage.mags);
                 }
             }
             D::Story | D::Flat | D::Custom => {
@@ -175,32 +162,20 @@ impl EncountersSection {
                 for stage in chapter.stages {
                     *buf += "*";
 
-                    let meta = match stage.meta.type_enum {
-                        T::Extra => &{
-                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.meta.map_num) {
-                                match LegacyStageMeta::from_numbers(ids.0, ids.1, 999) {
-                                    Ok(nm) => nm,
-                                    Err(StageMetaParseError::Rejected) => {
-                                        assert_eq!(ids.0, 30);
-                                        LegacyStageMeta::from_selector_main(
-                                            &ids.0.to_string(),
-                                            &[999],
-                                        )
-                                        .unwrap()
-                                    }
-                                    Err(StageMetaParseError::Invalid) => {
-                                        panic!("Matching meta failed or something.")
-                                    }
-                                }
+                    let id: StageID = stage.meta.into();
+                    let id = match id.variant() {
+                        T::Extra => {
+                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(id.map().num()) {
+                                StageID::from_numbers(ids.0, ids.1, 999)
                             } else {
                                 todo!()
                             }
-                        },
-                        _ => stage.meta,
+                        }
+                        _ => id,
                     };
                     // Get correct numbers for continue stages.
 
-                    self.fmt_encounter(buf, meta, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, &id, stage.stage_name, &stage.mags);
                     *buf += "\n";
                 }
                 buf.pop();
