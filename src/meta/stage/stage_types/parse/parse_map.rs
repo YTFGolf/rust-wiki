@@ -48,7 +48,7 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
         // just whack a regex on and call it a day.
         let (_, [stype, map]): (&str, [&str; 2]) =
             MAP_STAGE_DATA_PAT.captures(file_name).unwrap().extract();
-        return parse_map_selector(&(stype.to_string() + map));
+        return parse_map_selector(&format!("{stype} {map}"));
     }
 
     /*
