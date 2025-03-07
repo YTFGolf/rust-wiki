@@ -5,6 +5,7 @@ use crate::{
         parsed::stage::{ContinueStages, Stage},
         raw::stage_metadata::consts::LegacyStageVariant as T,
     },
+    meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{
         data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA},
         stage_info::StageWikiData,
@@ -71,11 +72,8 @@ pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
 
 /// Get star difficulty of stage.
 pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
-    let difficulty = STAGE_WIKI_DATA.difficulty(
-        stage.meta.type_num,
-        stage.meta.map_num,
-        stage.meta.stage_num,
-    )?;
+    let stage_id: StageID = (&stage.meta).into();
+    let difficulty = STAGE_WIKI_DATA.difficulty_stage_id_replaceme(&stage_id)?;
 
     Some(TemplateParameter::new(
         "difficulty",
@@ -104,8 +102,9 @@ fn get_single_nav(location: Option<&StageData>) -> String {
 
 /// Get all continuation stages possible from current stage.
 fn get_continuation_stages(data: &ContinueStages) -> String {
+    let map_id: MapID = MapID::from_numbers(4, data.map_id);
     let map = STAGE_WIKI_DATA
-        .stage_map(4, data.map_id)
+        .from_map_id_replaceme(&map_id)
         .unwrap_or_else(|| panic!("Extra stages map with id {} was not found!", data.map_id));
     let stage_names = (data.stage_ids.0..=data.stage_ids.1).map(|id| {
         let stage = &map.get(id).unwrap().name;
@@ -130,6 +129,8 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
 
 /// Get the prev and next stage nav items.
 fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
+    // let stage_id :StageID= (&stage.meta).into();
+
     let prev;
     let next;
     if [T::Extra].contains(&stage.meta.type_enum) {
@@ -156,7 +157,11 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
 
     if let Some(ex_map_id) = stage.ex_invasion {
         let stage = &STAGE_WIKI_DATA
-            .stage(4, ex_map_id % 1000, stage.meta.stage_num)
+            .from_stage_id_replaceme(&StageID::from_numbers(
+                4,
+                ex_map_id % 1000,
+                stage.meta.stage_num,
+            ))
             .unwrap()
             .name;
         let invaded = format!("{stage} (''Invasion Stage'')");

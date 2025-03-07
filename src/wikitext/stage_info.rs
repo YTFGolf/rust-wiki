@@ -4,6 +4,7 @@ use super::data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA};
 use super::format_parser::{parse_info_format, ParseType};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
+use crate::meta::stage::stage_id::StageID;
 use regex::Regex;
 use std::fmt::Write;
 use variables::{get_stage_variable, DEFAULT_FORMAT};
@@ -32,19 +33,23 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
     let parsed = parse_info_format(format);
 
     let mut buf = String::new();
+    let stage_id: StageID = (&stage.meta).into();
 
     let stage_map = STAGE_WIKI_DATA
-        .stage_map(stage.meta.type_num, stage.meta.map_num)
+        .from_map_id_replaceme(stage_id.map())
         .unwrap_or_else(|| {
             panic!(
                 "Couldn't find map name: {:03}-{:03}",
-                stage.meta.type_num, stage.meta.map_num
+                stage_id.variant().num(),
+                stage_id.map().num()
             )
         });
-    let stage_name = stage_map.get(stage.meta.stage_num).unwrap_or_else(|| {
+    let stage_name = stage_map.get(stage_id.num()).unwrap_or_else(|| {
         panic!(
             "Couldn't find stage name: {:03}-{:03}-{:03}",
-            stage.meta.type_num, stage.meta.map_num, stage.meta.stage_num
+            stage_id.variant().num(),
+            stage_id.map().num(),
+            stage_id.num()
         )
     });
 

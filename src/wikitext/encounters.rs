@@ -18,6 +18,7 @@ use crate::{
             },
         },
     },
+    meta::stage::stage_id::StageID,
     wikitext::{
         data_files::stage_wiki_data::STAGE_WIKI_DATA,
         wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
@@ -267,9 +268,8 @@ fn get_group<'a: 'b, 'b>(
     let mut group = Group::new(sec_ref, vec![]);
     let group_chapters = &mut group.chapters;
     for stage in &section_map.1 {
-        let stage_map = STAGE_WIKI_DATA
-            .stage_map(stage.meta.type_num, stage.meta.map_num)
-            .unwrap();
+        let stage_id: StageID = (&stage.meta).into();
+        let stage_map = STAGE_WIKI_DATA.from_map_id_replaceme(stage_id.map()).unwrap();
 
         if add_to_removed && OLD_OR_REMOVED_DETECT.is_match(&stage_map.name) {
             removed_vec.push(stage);
