@@ -54,34 +54,10 @@ fn is_single_map(v: StageVariantID) -> bool {
 /*
 Test:
 // check that all functions return a value (except custom on identifier)
-// assert all non-custom work the conventional way
 // Test (in another module) every available alias
-// check case-insensitivity
-// check failed cases to ensure failure is graceful
  */
 
-/*
-Plan:
-- Does the equivalent of STAGE_TYPES: contains data about stages.
-- Below applies to two separate sibling modules. All tests from LegacyStageMeta
-  also get moved over to here. Siblings can use file names to implement a
-  temporary from parser for LegacyStageMeta.
-- This or a sibling module deals with parsing selectors. This or a sibling
-  module deals with turning this information into real-world data (e.g. file
-  names like `MapStageDataA_000.csv`).
-*/
-
 // impl StageType {
-//     /// Code used in map files.
-//     fn map_code(&self) -> Option<&'static str> {
-//         self.map_code
-//     }
-
-//     /// Code used in stage files.
-//     fn stage_code(&self) -> &StageCodeType {
-//         &self.stage_code
-//     }
-
 //     // Get identifier (map,rprefix=map,other=other,custom=unimplemented)
 //     // fn stage_ident(&self) -> &'static str {
 //     //     todo!()
