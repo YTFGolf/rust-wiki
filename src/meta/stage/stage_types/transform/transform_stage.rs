@@ -79,7 +79,7 @@ pub fn stage_data_file(stage_id: &StageID) -> String {
     // to avoid tostringing I could use buffers but idc
 
     format!(
-        "stage{code}{map:03}_{stage:03}.csv",
+        "stage{code}{map:03}_{stage:02}.csv",
         map = stage_id.map().num(),
         stage = stage_id.num()
     )
@@ -89,12 +89,17 @@ pub fn stage_data_file(stage_id: &StageID) -> String {
 mod tests {
     use super::*;
     use crate::meta::stage::{
-        stage_types::parse::parse_stage::parse_stage_file, variant::StageVariantID,
+        stage_types::parse::parse_stage::parse_stage_file, variant::StageVariantID as T,
     };
 
     #[test]
+    fn test_general_case() {
+        let earthshaker = StageID::from_components(T::SoL, 0, 0);
+        assert_eq!(stage_data_file(&earthshaker), "stageRN000_00.csv");
+    }
+
+    #[test]
     fn test_outbreak_coercion() {
-        type T = StageVariantID;
         // Note: it is extremely important to test this alongside the parse
         // module.
         let stage = StageID::from_components(T::EocOutbreak, 1, 47);
