@@ -1,10 +1,13 @@
 //! Parse [`MapID`] from various formats.
 
 use super::{get_variant_from_code, is_single_map, is_single_stage, StageTypeParseError};
-use crate::meta::stage::{
-    map_id::{MapID, MapSize},
-    stage_types::data::SELECTOR_SEPARATOR,
-    variant::StageVariantID,
+use crate::{
+    data::map,
+    meta::stage::{
+        map_id::{MapID, MapSize},
+        stage_types::data::SELECTOR_SEPARATOR,
+        variant::StageVariantID as T,
+    },
 };
 use regex::Regex;
 use std::sync::LazyLock;
@@ -38,8 +41,15 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
     - stageNormal
     - MapStageData
     */
+    const MAP_STAGE_DATA: &str = "MapStageData";
+    const STAGE_NORMAL: &str = "stageNormal";
+
+    if !(file_name.starts_with(STAGE_NORMAL) || file_name.starts_with(MAP_STAGE_DATA)) {
+        return Err(StageTypeParseError::InvalidFormat);
+    }
+
     // MapStageData is simpler so we do that first
-    if file_name.starts_with("MapStageData") {
+    if file_name.starts_with(MAP_STAGE_DATA) {
         // I could do some really neat and efficient low-level stuff or I could
         // just whack a regex on and call it a day.
         let (_, [stype, map]): (&str, [&str; 2]) =
@@ -55,11 +65,51 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
     - stageNormal{type}_{map}_Z.csv = outbreak
     - stageNormal2_2_Invasion.csv = filibuster
     */
-    todo!()
+
+    let mut remaining_chars = file_name[STAGE_NORMAL.len()..].chars();
+    let chap_num = remaining_chars.next().unwrap().to_digit(10).unwrap();
+
+    match remaining_chars.next().unwrap() {
+        '.' => return Ok(MapID::from_components(T::MainChapters, 0)),
+        // must be EoC, return
+        '_' => (),
+        // any other stage, do nothing
+        _ => return Err(StageTypeParseError::InvalidFormat),
+    }
+
+    // - stageNormal1_{num}.csv = itf
+    // - stageNormal2_{num}.csv = cotc
+    // - stageNormal{type}_{map}_Z.csv = outbreak
+    // - stageNormal2_2_Invasion.csv = filibuster
+    // cursor is around 2_|2
+
+    let map_num = remaining_chars.next().unwrap().to_digit(10).unwrap();
+
+    match remaining_chars.next().unwrap() {
+        '.' => {
+            return Ok(MapID::from_components(
+                T::MainChapters,
+                chap_num * 3 + map_num,
+            ))
+        }
+        '_' => (),
+        _ => return Err(StageTypeParseError::InvalidFormat),
+    }
+
+    // - stageNormal{type}_{map}_Z.csv = outbreak
+    // - stageNormal2_2_Invasion.csv = filibuster
+    // cursor is around 2_|I
+
+    match remaining_chars.next().unwrap() {
+        'Z' => Ok(MapID::from_numbers(chap_num + 20, map_num)),
+        'I' => Ok(MapID::from_components(T::Filibuster, 0)),
+        // I for Invasion
+        _ => Err(StageTypeParseError::InvalidFormat),
+    }
 }
 
 /// Parse battle-cats.db reference into [`MapID`].
-pub fn parse_map_ref(selector: &str) -> Result<MapID, StageTypeParseError> {
+pub fn parse_map_ref(_selector: &str) -> Result<MapID, StageTypeParseError> {
     todo!()
 }
 
@@ -86,7 +136,7 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
         .parse::<MapSize>()
         .map_err(|_| StageTypeParseError::InvalidNumber)?;
 
-    if variant == StageVariantID::MainChapters {
+    if variant == T::MainChapters {
         // has to have separate logic depending on what you put as your selector
 
         // THIS IS HARDCODED, DO NOT UPDATE THIS WITHOUT UPDATING
@@ -116,8 +166,9 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
     use crate::meta::stage::stage_types::data::get_stage_type;
+    use crate::meta::stage::variant::StageVariantID;
 
     #[test]
     fn assert_main_selector() {
