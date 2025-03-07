@@ -73,7 +73,7 @@ pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
 /// Get star difficulty of stage.
 pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
     let stage_id: StageID = (&stage.meta).into();
-    let difficulty = STAGE_WIKI_DATA.difficulty_stage_id_replaceme(&stage_id)?;
+    let difficulty = STAGE_WIKI_DATA.difficulty(&stage_id)?;
 
     Some(TemplateParameter::new(
         "difficulty",

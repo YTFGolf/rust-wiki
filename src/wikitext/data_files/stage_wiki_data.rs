@@ -89,12 +89,8 @@ impl StageWikiData {
         self.stage_map(&MapID::from_numbers(t, m)).unwrap()
     }
 
-    #[deprecated]
-    pub fn difficulty(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&u8> {
-        self.difficulty_str(&format!("{type_id:03}-{map_id:03}-{stage_id:03}"))
-    }
     /// Get stage difficulty.
-    pub fn difficulty_stage_id_replaceme(&self, id: &StageID) -> Option<&u8> {
+    pub fn difficulty(&self, id: &StageID) -> Option<&u8> {
         self.difficulty_str(&format!(
             "{var:03}-{map:03}-{stage:03}",
             var = id.variant().num(),
