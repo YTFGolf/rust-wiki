@@ -6,6 +6,8 @@ use crate::meta::stage::{
     stage_types::data::SELECTOR_SEPARATOR,
     variant::StageVariantID,
 };
+use regex::Regex;
+use std::sync::LazyLock;
 
 fn _parse_general_map_id(_selector: &str) -> MapID {
     todo!()
@@ -25,8 +27,34 @@ pub fn parse_general_map_id(selector: &str) -> Option<MapID> {
     None
 }
 
+/// Captures `["A", "000"]` from `"MapStageDataA_000.csv"`.
+static MAP_STAGE_DATA_PAT: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^MapStageData([^_]*)_(\d*).csv$").unwrap());
+
 /// Parse map file name into a [`MapID`].
 pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
+    /*
+    Formats:
+    - stageNormal
+    - MapStageData
+    */
+    // MapStageData is simpler so we do that first
+    if file_name.starts_with("MapStageData") {
+        // I could do some really neat and efficient low-level stuff or I could
+        // just whack a regex on and call it a day.
+        let (_, [stype, map]): (&str, [&str; 2]) =
+            MAP_STAGE_DATA_PAT.captures(file_name).unwrap().extract();
+        return parse_map_selector(&(stype.to_string() + map));
+    }
+
+    /*
+    Formats:
+    - stageNormal0.csv = eoc
+    - stageNormal1_{num}.csv = itf
+    - stageNormal2_{num}.csv = cotc
+    - stageNormal{type}_{map}_Z.csv = outbreak
+    - stageNormal2_2_Invasion.csv = filibuster
+    */
     todo!()
 }
 
