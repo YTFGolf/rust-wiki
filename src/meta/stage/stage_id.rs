@@ -7,7 +7,7 @@ use super::{
 
 /// Size of stage number.
 pub type StageSize = u32;
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 /// Identifies a stage.
 pub struct StageID {
     map: MapID,

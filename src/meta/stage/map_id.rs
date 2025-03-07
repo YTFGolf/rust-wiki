@@ -12,7 +12,7 @@ pub enum MainType {
 
 /// Size of map number.
 pub type MapSize = u32;
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 /// Identifies a map.
 pub struct MapID {
     /// Stage type variant.
