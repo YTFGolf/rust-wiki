@@ -197,6 +197,9 @@ mod tests {
         assert_eq!(desired, main.matcher.arr);
     }
 
+    // Don't need every test from stage since most of it is just selectors,
+    // which use this file under the hood.
+
     #[test]
     fn test_from_file() {
         let st = parse_map_file("MapStageDataN_000.csv").unwrap();
@@ -242,7 +245,7 @@ mod tests {
 
     #[test]
     fn test_general_parse() {
-        let selector = "*https://battlecats-db.com/stage/s01382-03.html";
+        let selector = "*https://battlecats-db.com/stage/s01382.html";
         assert_eq!(
             parse_map_ref(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -252,7 +255,7 @@ mod tests {
             MapID::from_components(T::Event, 382)
         );
 
-        let selector = "ItF 1 48";
+        let selector = "ItF 1";
         assert_eq!(
             parse_map_selector(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -262,7 +265,7 @@ mod tests {
             MapID::from_components(T::MainChapters, 3)
         );
 
-        let selector = "DM 0";
+        let selector = "DM";
         assert_eq!(
             parse_map_selector(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -282,7 +285,7 @@ mod tests {
             MapID::from_components(T::Filibuster, 0)
         );
 
-        let selector = "itfz 1 0";
+        let selector = "itfz 1";
         assert_eq!(
             parse_map_selector(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -292,7 +295,7 @@ mod tests {
             MapID::from_components(T::ItfOutbreak, 1)
         );
 
-        let selector = "stageRN013_05.csv";
+        let selector = "MapStageDataN_013.csv";
         assert_eq!(
             parse_map_file(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -302,7 +305,7 @@ mod tests {
             MapID::from_components(T::SoL, 13)
         );
 
-        let selector = "stageRN000_00.csv";
+        let selector = "MapStageDataN_000.csv";
         assert_eq!(
             parse_map_file(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -312,7 +315,7 @@ mod tests {
             MapID::from_components(T::SoL, 0)
         );
 
-        let selector = "stageW04_05.csv";
+        let selector = "stageNormal1_0.csv";
         assert_eq!(
             parse_map_file(selector).unwrap(),
             parse_general_map_id(selector).unwrap()
@@ -322,7 +325,7 @@ mod tests {
             MapID::from_components(T::MainChapters, 3)
         );
 
-        let selector = "stageW04_05.csv";
+        let selector = "stageNormal1_0.csv";
         assert_eq!(
             parse_general_map_id(&String::from(selector)),
             parse_general_map_id(selector)
@@ -378,7 +381,7 @@ mod tests {
 
         // eoc
         for _ in 0..1 {
-            let (map) = (0);
+            let map = 0;
             // can only have 2 digits
 
             let st = MapID::from_components(var, map);
@@ -399,7 +402,7 @@ mod tests {
 
         // itf
         for _ in 0..NUM_ITERATIONS {
-            let (map) = (random::<MapSize>() % 3 + 3);
+            let map = random::<MapSize>() % 3 + 3;
 
             let st = MapID::from_components(var, map);
             let file_name = map_data_file(&st);
@@ -419,7 +422,7 @@ mod tests {
 
         // cotc
         for _ in 0..NUM_ITERATIONS {
-            let (map) = (random::<MapSize>() % 3 + 6);
+            let map = random::<MapSize>() % 3 + 6;
 
             let st = MapID::from_components(var, map);
             let file_name = map_data_file(&st);
