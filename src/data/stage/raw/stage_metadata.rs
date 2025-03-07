@@ -221,7 +221,9 @@ use crate::meta::stage::{
     stage_id::StageID,
     stage_types::{
         parse::{
-            parse_stage::{parse_general_stage_id, parse_stage_ref, parse_stage_selector},
+            parse_stage::{
+                parse_general_stage_id, parse_stage_file, parse_stage_ref, parse_stage_selector,
+            },
             StageTypeParseError,
         },
         transform::transform_stage::stage_data_file,
@@ -234,11 +236,17 @@ impl From<StageID> for LegacyStageMeta {
     }
 }
 
+impl From<LegacyStageMeta> for StageID {
+    fn from(value: LegacyStageMeta) -> Self {
+        parse_stage_file(&value.stage_file_name).unwrap()
+    }
+}
+
 // -----------------------------------------------------------------------------
 
 // TODO split into type, map and stage
 #[derive(Debug, PartialEq)]
-// #[deprecated]
+#[deprecated]
 /// Contains metadata about a given stage.
 pub struct LegacyStageMeta {
     /// Long-form name of the stage type.
