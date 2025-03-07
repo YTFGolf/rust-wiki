@@ -68,3 +68,11 @@ impl MapID {
         Self::from_numbers(type_id, map_id)
     }
 }
+
+// Mutation.
+impl MapID {
+    /// Set map ID number.
+    pub fn set_num(&mut self, num: MapSize) {
+        self.num = num;
+    }
+}

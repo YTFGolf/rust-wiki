@@ -59,3 +59,16 @@ impl StageID {
         Self::from_map(MapID::from_mapid(mapid), num)
     }
 }
+
+// Mutation.
+impl StageID {
+    /// Set map ID number.
+    pub fn set_map(&mut self, map: StageSize) {
+        self.map.set_num(map);
+    }
+
+    /// Set stage ID number.
+    pub fn set_num(&mut self, num: StageSize) {
+        self.num = num;
+    }
+}
