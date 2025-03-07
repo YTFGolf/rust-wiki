@@ -7,7 +7,7 @@ use crate::meta::stage::{
 };
 
 /// Get map's data file name.
-pub fn map_data_file(map_id: MapID) -> String {
+pub fn map_data_file(map_id: &MapID) -> String {
     let stype = get_stage_type(map_id.variant()).data;
     if let Some(code) = stype.map_code {
         return format!("MapStageData{code}_{num:03}.csv", num = map_id.num());
