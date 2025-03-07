@@ -93,7 +93,17 @@ pub fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError>
             let stage = stage.parse().unwrap();
 
             match map {
-                (0..=2) => Ok(StageID::from_components(T::EocOutbreak, map, stage)),
+                (0..=2) => {
+                    let stage = match (map, stage) {
+                        (1, 49) => 47,
+                        (2, 50) => 47,
+                        _ => stage,
+                    };
+                    // Chapter 2 Moon = `stageZ01_49.csv`
+                    // Chapter 3 Moon = `stageZ02_50.csv`
+                    // Need to transform these
+                    Ok(StageID::from_components(T::EocOutbreak, map, stage))
+                }
                 (4..=6) => Ok(StageID::from_components(T::ItfOutbreak, map - 4, stage)),
                 (7..=9) => Ok(StageID::from_components(T::CotcOutbreak, map - 7, stage)),
                 _ => panic!(
