@@ -26,7 +26,7 @@ pub fn parse_general_map_id(selector: &str) -> Option<MapID> {
 
 /// Captures `["A", "000"]` from `"MapStageDataA_000.csv"`.
 static MAP_STAGE_DATA_PAT: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^MapStageData([^_]*)_(\d*).csv$").unwrap());
+    LazyLock::new(|| Regex::new(r"^MapStageData([^_]*)_(\d*)\.csv$").unwrap());
 
 /// Parse map file name into a [`MapID`].
 pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
@@ -105,7 +105,7 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
 /// Captures `["s01001"]` from
 /// `"*https://battlecats-db.com/stage/s01001-999.html"`.
 static DB_REFERENCE_FULL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*.html").unwrap());
+    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*\.html").unwrap());
 /// Captures `["01001"]` in `"s01001-999"`.
 static DB_REFERENCE_MAP: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^s(\d{5})[\-\d]*").unwrap());
@@ -205,7 +205,7 @@ mod tests {
         let st = parse_map_file("MapStageDataL_000.csv").unwrap();
         assert_eq!(st, MapID::from_components(T::Labyrinth, 0));
 
-        let st = parse_map_file("MapStageDataEX_000.csv").unwrap();
+        let st = parse_map_file("MapStageDataRE_000.csv").unwrap();
         assert_eq!(st, MapID::from_components(T::Extra, 0));
     }
 
