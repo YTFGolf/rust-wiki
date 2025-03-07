@@ -1,16 +1,7 @@
 //! Transform ID data into various formats.
 
-use crate::meta::stage::map_id::MapID;
+pub mod transform_map;
 pub mod transform_stage;
-
-// maps
-
-fn _map_data_file(map_id: MapID) -> String {
-    // if let Some(code) = map_id {
-
-    // }
-    todo!()
-}
 
 #[cfg(test)]
 mod tests {
