@@ -8,6 +8,7 @@ use crate::{
         stage::raw::stage_metadata::{consts::LegacyStageVariant, LegacyStageMeta},
         version::Version,
     },
+    meta::stage::map_id::MapID,
     wikitext::{
         data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
@@ -73,12 +74,16 @@ fn map_img(map: &MapData) -> String {
 
 fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
     let mut buf = String::new();
+    let map_id: MapID = (&map.meta).into();
     write!(
         buf,
         "'''{name}''' (?, ''?'', '''?''') is the {num} sub-chapter of {chap}",
         name = extract_name(&map_data.name),
         num = get_ordinal(map.meta.map_num + 1),
-        chap = STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap().name,
+        chap = STAGE_WIKI_DATA
+            .from_variant_id_replaceme(map_id.variant())
+            .unwrap()
+            .name,
     )
     .unwrap();
 
@@ -276,17 +281,20 @@ fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> Strin
 }
 
 fn nav(map: &MapData) -> String {
-    let type_data = &STAGE_WIKI_DATA.stage_type(map.meta.type_num).unwrap();
+    let map_id: MapID = (&map.meta).into();
+    let type_data = &STAGE_WIKI_DATA
+        .from_variant_id_replaceme(map_id.variant())
+        .unwrap();
     let chap = extract_name(&type_data.name);
     let heading = format!("[[:Category:{chap} Chapters|{chap} Chapters]]");
 
-    let prev = match map.meta.map_num {
+    let prev = match map_id.num() {
         0 => None,
         n => type_data.get(n - 1),
     };
     let left = prev.map(|data| extract_name(&data.name));
     let right = type_data
-        .get(map.meta.map_num + 1)
+        .get(map_id.num() + 1)
         .map(|data| extract_name(&data.name));
 
     nav_item_opt(&heading, left, right)
@@ -326,13 +334,14 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
     }
 }
 
-pub fn get_map_data(meta: &LegacyStageMeta) -> &'static MapData2 {
+pub fn get_map_data(map: &MapID) -> &'static MapData2 {
     STAGE_WIKI_DATA
-        .stage_map(meta.type_num, meta.map_num)
+        .from_map_id_replaceme(map)
         .unwrap_or_else(|| {
             panic!(
                 "Couldn't find map name: {:03}-{:03}",
-                meta.type_num, meta.map_num
+                map.variant().num(),
+                map.num()
             )
         })
 }
@@ -341,7 +350,7 @@ pub fn get_legend_map(map: &MapData, config: &Config) -> String {
     test_invariants(map);
 
     // println!("{map:#?}");
-    let map_data = get_map_data(&map.meta);
+    let map_data = get_map_data(&MapID::from(&map.meta));
 
     let mut buf = String::new();
     for node in parse_info_format(FORMAT) {
@@ -370,7 +379,7 @@ mod tests {
 
         let version = config.version.current_version();
         let leg_begins = MapData::new(0, version);
-        let map_data = get_map_data(&leg_begins.meta);
+        let map_data = get_map_data(&(&leg_begins.meta).into());
         assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
         assert_eq!(
             intro(&leg_begins, map_data, &config),
@@ -414,7 +423,7 @@ mod tests {
         with_version.version.init_all();
 
         let leg_begins = MapData::new(0, with_version.version.current_version());
-        let map_data = get_map_data(&leg_begins.meta);
+        let map_data = get_map_data(&(&leg_begins.meta).into());
 
         let mut ver = with_version.version.current_version().number();
         if let Some(s) = ver.strip_suffix(".0") {
