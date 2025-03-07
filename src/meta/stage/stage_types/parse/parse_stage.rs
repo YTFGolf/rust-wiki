@@ -429,22 +429,24 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn test_outbreak_number_coercion() {
-    //     let selector = "z 2 49";
-    //     // EoC Moon 2
-    //     assert_eq!(
-    //         parse_stage_selector(selector).unwrap(),
-    //         StageID::from_components(T::Outbreaks, 1, 47)
-    //     );
+    #[test]
+    fn test_outbreak_number_coercion() {
+        // Note: it is extremely important to test this alongside the transform
+        // module.
+        let selector = "stageZ01_49.csv";
+        // EoC Moon 2
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            StageID::from_components(T::EocOutbreak, 1, 47)
+        );
 
-    //     let selector = "z 4 49";
-    //     // check that doesn't do the same thing for itf/cotc
-    //     assert_eq!(
-    //         parse_stage_selector(selector).unwrap(),
-    //         StageID::from_components(T::Outbreaks, 0, 49)
-    //     );
-    // }
+        let selector = "stageZ04_49.csv";
+        // check that doesn't do the same thing for itf/cotc
+        assert_eq!(
+            parse_stage_file(selector).unwrap(),
+            StageID::from_components(T::ItfOutbreak, 0, 49)
+        );
+    }
 
     #[test]
     fn test_stage_type_error() {
