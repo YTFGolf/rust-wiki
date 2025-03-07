@@ -88,9 +88,9 @@ impl CommandExec for StageInfoOptions {
         println!(
             "{}",
             get_stage_info(
-                &Stage::new(selector, config.version.current_version()).unwrap_or_else(|| panic!(
-                    "Selector {selector:?} doesn't correspond to a real stage."
-                )),
+                &Stage::from_selector(selector, config.version.current_version()).unwrap_or_else(
+                    || panic!("Selector {selector:?} doesn't correspond to a real stage.")
+                ),
                 config
             )
         );

@@ -246,7 +246,7 @@ impl From<LegacyStageMeta> for StageID {
 
 // TODO split into type, map and stage
 #[derive(Debug, PartialEq)]
-#[deprecated]
+// #[deprecated]
 /// Contains metadata about a given stage.
 pub struct LegacyStageMeta {
     /// Long-form name of the stage type.

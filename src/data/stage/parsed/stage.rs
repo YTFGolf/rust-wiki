@@ -351,7 +351,7 @@ fn u8_to_bool(n: u8) -> bool {
 
 impl Stage {
     /// Create a new stage object from `selector`.
-    pub fn new(selector: &str, version: &Version) -> Option<Self> {
+    pub fn from_selector(selector: &str, version: &Version) -> Option<Self> {
         Some(StageData::new(selector, version).ok()?.into())
     }
 
@@ -359,7 +359,7 @@ impl Stage {
     #[cfg(test)]
     pub fn new_current(selector: &str) -> Option<Self> {
         use crate::config::TEST_CONFIG;
-        Self::new(selector, TEST_CONFIG.version.current_version())
+        Self::from_selector(selector, TEST_CONFIG.version.current_version())
     }
 }
 
