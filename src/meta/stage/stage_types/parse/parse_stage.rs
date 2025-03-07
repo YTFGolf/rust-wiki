@@ -521,6 +521,7 @@ mod tests {
                 // file stuff is bidirectional
                 let st = StageID::from_components(var, map, stage);
                 let file_name = stage_data_file(&st);
+                assert_eq!(st, parse_stage_file(&file_name).unwrap());
                 assert_eq!(
                     file_name,
                     stage_data_file(&parse_stage_file(&file_name).unwrap())
@@ -550,6 +551,7 @@ mod tests {
 
             let st = StageID::from_components(var, map, stage);
             let file_name = stage_data_file(&st);
+            assert_eq!(st, parse_stage_file(&file_name).unwrap());
             assert_eq!(
                 file_name,
                 stage_data_file(&parse_stage_file(&file_name).unwrap())
@@ -570,6 +572,7 @@ mod tests {
 
             let st = StageID::from_components(var, map, stage);
             let file_name = stage_data_file(&st);
+            assert_eq!(st, parse_stage_file(&file_name).unwrap());
             assert_eq!(
                 file_name,
                 stage_data_file(&parse_stage_file(&file_name).unwrap())
@@ -590,6 +593,7 @@ mod tests {
 
             let st = StageID::from_components(var, map, stage);
             let file_name = stage_data_file(&st);
+            assert_eq!(st, parse_stage_file(&file_name).unwrap());
             assert_eq!(
                 file_name,
                 stage_data_file(&parse_stage_file(&file_name).unwrap())
