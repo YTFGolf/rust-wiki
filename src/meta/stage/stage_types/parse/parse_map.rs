@@ -10,6 +10,30 @@ use crate::meta::stage::{
 fn _parse_general_map_id(_selector: &str) -> MapID {
     todo!()
 }
+/// Parse string of unknown format into a [`MapID`].
+pub fn parse_general_map_id(selector: &str) -> Option<MapID> {
+    if let Ok(st) = parse_map_file(selector) {
+        return Some(st);
+    };
+    if let Ok(st) = parse_map_selector(selector) {
+        return Some(st);
+    };
+    if let Ok(st) = parse_map_ref(selector) {
+        return Some(st);
+    };
+
+    None
+}
+
+/// Parse map file name into a [`MapID`].
+pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
+    todo!()
+}
+
+/// Parse battle-cats.db reference into [`MapID`].
+pub fn parse_map_ref(selector: &str) -> Result<MapID, StageTypeParseError> {
+    todo!()
+}
 
 /// Parse map selector to [`MapID`].
 pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> {
@@ -62,14 +86,6 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
     Ok(MapID::from_components(variant, map_num))
 }
 
-// fn parse_map_from_iterator<'a, T>()
-// where
-//     T: Iterator<Item = &'a str>,
-// {
-//     todo!()
-// }
-// I'm okay with this being a monolith for now.
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -105,4 +121,243 @@ mod tests {
     // fn test_invalid_number_high() {
     //     let _ = parse_map_selector("cotc 4");
     // }
+    /*
+        #[test]
+        fn test_from_file() {
+            let st = parse_stage_file("stageRN000_00.csv").unwrap();
+            assert_eq!(st, StageID::from_components(T::SoL, 0, 0));
+
+            let st = parse_stage_file("stageRT000_00.csv").unwrap();
+            assert_eq!(st, StageID::from_components(T::Dojo, 0, 0));
+
+            let st = parse_stage_file("stageL000_00.csv").unwrap();
+            assert_eq!(st, StageID::from_components(T::Labyrinth, 0, 0));
+
+            let st = parse_stage_file("stageEX000_00.csv").unwrap();
+            assert_eq!(st, StageID::from_components(T::Extra, 0, 0));
+        }
+
+        #[test]
+        fn test_from_file_main() {
+            let st = parse_stage_file("stageSpace07_00.csv").unwrap();
+            assert_eq!(st, StageID::from_components(T::MainChapters, 6, 0));
+
+            let st = parse_stage_file("stageZ00_00.csv").unwrap();
+            assert_eq!(st, StageID::from_components(T::EocOutbreak, 0, 0));
+        }
+
+
+        #[test]
+        fn test_from_ref() {
+            let answer = StageID::from_components(T::SoL, 0, 0);
+
+            let st = parse_stage_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+            assert_eq!(st, answer);
+            let st = parse_stage_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+            assert_eq!(st, answer);
+            let st = parse_stage_ref("s00000-01").unwrap();
+            assert_eq!(st, answer);
+        }
+
+        #[test]
+        fn test_general_parse() {
+            let selector = "*https://battlecats-db.com/stage/s01382-03.html";
+            assert_eq!(
+                parse_stage_ref(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_general_stage_id(selector).unwrap(),
+                StageID::from_components(T::Event, 382, 2)
+            );
+
+            let selector = "ItF 1 48";
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                StageID::from_components(T::MainChapters, 3, 48)
+            );
+
+            let selector = "DM 0";
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                StageID::from_components(T::AkuRealms, 0, 0)
+            );
+
+            let selector = "Filibuster";
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                StageID::from_components(T::Filibuster, 0, 0)
+            );
+
+            let selector = "itfz 1 0";
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_selector(selector).unwrap(),
+                StageID::from_components(T::ItfOutbreak, 1, 0)
+            );
+
+            let selector = "stageRN013_05.csv";
+            assert_eq!(
+                parse_stage_file(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_file(selector).unwrap(),
+                StageID::from_components(T::SoL, 13, 5)
+            );
+
+            let selector = "stageRN000_00.csv";
+            assert_eq!(
+                parse_stage_file(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_file(selector).unwrap(),
+                StageID::from_components(T::SoL, 0, 0)
+            );
+
+            let selector = "stageW04_05.csv";
+            assert_eq!(
+                parse_stage_file(selector).unwrap(),
+                parse_general_stage_id(selector).unwrap()
+            );
+            assert_eq!(
+                parse_stage_file(selector).unwrap(),
+                StageID::from_components(T::MainChapters, 3, 5)
+            );
+
+            let selector = "stageW04_05.csv";
+            assert_eq!(
+                parse_general_stage_id(&String::from(selector)),
+                parse_general_stage_id(selector)
+            );
+            assert_eq!(
+                parse_general_stage_id(&String::from(selector)).unwrap(),
+                StageID::from_components(T::MainChapters, 3, 5)
+            );
+        }
+
+        #[test]
+        fn test_random_properties() {
+            const NUM_ITERATIONS: usize = 20;
+            for var in StageVariantID::iter() {
+                if var == T::MainChapters {
+                    // main will need to be a bit more delicate
+                    continue;
+                }
+
+                for _ in 0..NUM_ITERATIONS {
+                    let (map, stage) = if is_single_stage(var) {
+                        (0, 0)
+                    } else if is_single_map(var) {
+                        (0, random::<StageSize>() % 1000)
+                    } else if var.is_outbreak() {
+                        (random::<MapSize>() % 3, random::<StageSize>() % 1000)
+                    } else {
+                        (random::<MapSize>() % 1000, random::<StageSize>() % 1000)
+                    };
+
+                    // assert all parse functions get the same result and the stage
+                    // file stuff is bidirectional
+                    let st = StageID::from_components(var, map, stage);
+                    let file_name = stage_data_file(&st);
+                    assert_eq!(
+                        file_name,
+                        stage_data_file(&parse_stage_file(&file_name).unwrap())
+                    );
+                    assert_eq!(
+                        st,
+                        parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+                    );
+                    assert_eq!(
+                        st,
+                        parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1))
+                            .unwrap()
+                    );
+                }
+            }
+        }
+
+        #[test]
+        fn test_random_properties_main() {
+            const NUM_ITERATIONS: usize = 20;
+            let var = T::MainChapters;
+
+            // eoc
+            for _ in 0..NUM_ITERATIONS {
+                let (map, stage) = (0, random::<StageSize>() % 100);
+                // can only have 2 digits
+
+                let st = StageID::from_components(var, map, stage);
+                let file_name = stage_data_file(&st);
+                assert_eq!(
+                    file_name,
+                    stage_data_file(&parse_stage_file(&file_name).unwrap())
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1)).unwrap()
+                );
+            }
+
+            // itf
+            for _ in 0..NUM_ITERATIONS {
+                let (map, stage) = (random::<MapSize>() % 3 + 3, random::<StageSize>() % 1000);
+
+                let st = StageID::from_components(var, map, stage);
+                let file_name = stage_data_file(&st);
+                assert_eq!(
+                    file_name,
+                    stage_data_file(&parse_stage_file(&file_name).unwrap())
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1)).unwrap()
+                );
+            }
+
+            // cotc
+            for _ in 0..NUM_ITERATIONS {
+                let (map, stage) = (random::<MapSize>() % 3 + 6, random::<StageSize>() % 1000);
+
+                let st = StageID::from_components(var, map, stage);
+                let file_name = stage_data_file(&st);
+                assert_eq!(
+                    file_name,
+                    stage_data_file(&parse_stage_file(&file_name).unwrap())
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_selector(&format!("{} {map} {stage}", var.num())).unwrap()
+                );
+                assert_eq!(
+                    st,
+                    parse_stage_ref(&format!("s{:02}{:03}-{:02}", var.num(), map, stage + 1)).unwrap()
+                );
+            }
+        }
+    */
 }
