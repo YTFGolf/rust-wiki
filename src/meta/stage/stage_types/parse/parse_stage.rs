@@ -178,7 +178,7 @@ pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseErr
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_types::transform::stage_data_file;
+    use crate::meta::stage::stage_types::transform::transform_stage::stage_data_file;
     use crate::meta::stage::variant::StageVariantID;
     use rand::random;
     use strum::IntoEnumIterator;
