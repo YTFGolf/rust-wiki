@@ -2,6 +2,7 @@
 
 use super::CustomVariantID as T;
 use crate::meta::stage::{
+    map_id::MainType,
     stage_id::StageID,
     stage_types::{get_stage_type, types::StageCodeType},
 };
@@ -36,26 +37,31 @@ fn custom_stage_data_file(stage_id: &StageID) -> String {
 
             format!("stageZ{map:02}_{stage:02}.csv")
         }
-        T::MainChapters => match stage_id.map().num() {
-            0 => format!("stage{stage:02}.csv", stage = stage_id.num()),
-            3..=5 => {
-                format!(
-                    "stageW{map:02}_{stage:02}.csv",
-                    map = stage_id.map().num() + 1,
-                    // main 3 = W04
-                    stage = stage_id.num()
-                )
+        T::MainChapters => {
+            let main = stage_id.map().main_type().unwrap_or_else(|| {
+                panic!("Main chapter {n} out of bounds!", n = stage_id.map().num())
+            });
+
+            match main {
+                MainType::EoC => format!("stage{stage:02}.csv", stage = stage_id.num()),
+                MainType::ItF => {
+                    format!(
+                        "stageW{map:02}_{stage:02}.csv",
+                        map = stage_id.map().num() + 1,
+                        // main 3 = W04
+                        stage = stage_id.num()
+                    )
+                }
+                MainType::CotC => {
+                    format!(
+                        "stageSpace{map:02}_{stage:02}.csv",
+                        map = stage_id.map().num() + 1,
+                        // main 6 = Space07
+                        stage = stage_id.num()
+                    )
+                }
             }
-            6..=8 => {
-                format!(
-                    "stageSpace{map:02}_{stage:02}.csv",
-                    map = stage_id.map().num() + 1,
-                    // main 6 = Space07
-                    stage = stage_id.num()
-                )
-            }
-            n => panic!("Main chapter {n} out of bounds!"),
-        },
+        }
     }
 }
 
