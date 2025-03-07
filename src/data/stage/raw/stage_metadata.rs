@@ -218,6 +218,7 @@ static FILE_PATTERNS: LazyLock<FilePatterns> = LazyLock::new(|| FilePatterns {
 // Temporary implementation for refactoring.
 
 use crate::meta::stage::{
+    map_id::MapID,
     stage_id::StageID,
     stage_types::{
         parse::{
@@ -247,6 +248,18 @@ impl From<&LegacyStageMeta> for StageID {
     }
 }
 impl From<LegacyStageMeta> for StageID {
+    fn from(value: LegacyStageMeta) -> Self {
+        (&value).into()
+    }
+}
+
+impl From<&LegacyStageMeta> for MapID {
+    fn from(value: &LegacyStageMeta) -> Self {
+        let stage_id: StageID = value.into();
+        stage_id.map().clone()
+    }
+}
+impl From<LegacyStageMeta> for MapID {
     fn from(value: LegacyStageMeta) -> Self {
         (&value).into()
     }
