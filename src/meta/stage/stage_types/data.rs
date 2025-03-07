@@ -250,7 +250,7 @@ mod tests {
                 );
 
                 assert!(
-                    seen.insert(pattern),
+                    seen.insert(pattern.to_lowercase()),
                     "Duplicated matcher pattern {pattern:?} found for stage type {:?}",
                     cont.data.variant_id
                 );
