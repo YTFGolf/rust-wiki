@@ -100,7 +100,7 @@ fn _map_data_file(_map_id: MapID) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_types::iter_stage_types;
+    use crate::meta::stage::stage_types::{iter_stage_types, parse::parse_stage::parse_stage_file};
 
     #[test]
     fn test_custom_stypes() {
@@ -134,5 +134,10 @@ mod tests {
         let stage = StageID::from_components(T::ItfOutbreak, 0, 47);
         // check that doesn't do the same thing for itf/cotc
         assert_eq!(stage_data_file(&stage), "stageZ04_47.csv");
+
+        // make sure this goes both ways
+        let stage = StageID::from_components(T::EocOutbreak, 1, 47);
+        // EoC Moon 2
+        assert_eq!(parse_stage_file(&stage_data_file(&stage)).unwrap(), stage);
     }
 }

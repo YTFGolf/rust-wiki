@@ -446,6 +446,13 @@ mod tests {
             parse_stage_file(selector).unwrap(),
             StageID::from_components(T::ItfOutbreak, 0, 49)
         );
+
+        // make sure this goes both ways
+        let selector = "stageZ01_49.csv";
+        assert_eq!(
+            stage_data_file(&parse_stage_file(selector).unwrap()),
+            selector
+        );
     }
 
     #[test]
@@ -453,10 +460,6 @@ mod tests {
         assert_eq!(parse_general_stage_id("unknown 0"), None);
         assert_eq!(parse_stage_file("file no exist"), Err(E::InvalidFormat));
         assert_eq!(parse_stage_ref("not a reference"), Err(E::InvalidFormat));
-        // assert_eq!(
-        //     parse_stage_file("none "),
-        //     Err(StageMetaParseError::Invalid)
-        // );
     }
 
     #[test]
