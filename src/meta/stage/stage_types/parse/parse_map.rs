@@ -104,8 +104,9 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
 
 /// Captures `["s01001"]` from
 /// `"*https://battlecats-db.com/stage/s01001-999.html"`.
-static DB_REFERENCE_FULL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*\.html").unwrap());
+static DB_REFERENCE_FULL: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*\.html").unwrap()
+});
 /// Captures `["01001"]` in `"s01001-999"`.
 static DB_REFERENCE_MAP: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^s(\d{5})[\-\d]*").unwrap());
@@ -176,12 +177,12 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
 
 #[cfg(test)]
 mod tests {
-    use rand::random;
-    use strum::IntoEnumIterator;
     use super::*;
     use crate::meta::stage::stage_types::data::get_stage_type;
     use crate::meta::stage::stage_types::transform::transform_map::map_data_file;
     use crate::meta::stage::variant::StageVariantID;
+    use rand::random;
+    use strum::IntoEnumIterator;
 
     #[test]
     fn assert_main_selector() {
@@ -220,208 +221,139 @@ mod tests {
         assert_eq!(st, MapID::from_components(T::EocOutbreak, 0));
     }
 
-        #[test]
-        fn test_from_ref() {
-            let answer = MapID::from_components(T::SoL, 0);
+    #[test]
+    fn test_from_ref() {
+        let answer = MapID::from_components(T::SoL, 0);
 
-            let st = parse_map_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
-            assert_eq!(st, answer);
-            let st = parse_map_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
-            assert_eq!(st, answer);
-            let st = parse_map_ref("s00000-01").unwrap();
-            assert_eq!(st, answer);
+        let st = parse_map_ref("*https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_map_ref("https://battlecats-db.com/stage/s00000-01.html").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_map_ref("s00000-01").unwrap();
+        assert_eq!(st, answer);
 
-            let st = parse_map_ref("*https://battlecats-db.com/stage/s00000.html").unwrap();
-            assert_eq!(st, answer);
-            let st = parse_map_ref("https://battlecats-db.com/stage/s00000.html").unwrap();
-            assert_eq!(st, answer);
-            let st = parse_map_ref("s00000").unwrap();
-            assert_eq!(st, answer);
-        }
+        let st = parse_map_ref("*https://battlecats-db.com/stage/s00000.html").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_map_ref("https://battlecats-db.com/stage/s00000.html").unwrap();
+        assert_eq!(st, answer);
+        let st = parse_map_ref("s00000").unwrap();
+        assert_eq!(st, answer);
+    }
 
-        #[test]
-        fn test_general_parse() {
-            let selector = "*https://battlecats-db.com/stage/s01382-03.html";
-            assert_eq!(
-                parse_map_ref(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_general_map_id(selector).unwrap(),
-                MapID::from_components(T::Event, 382)
-            );
+    #[test]
+    fn test_general_parse() {
+        let selector = "*https://battlecats-db.com/stage/s01382-03.html";
+        assert_eq!(
+            parse_map_ref(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_general_map_id(selector).unwrap(),
+            MapID::from_components(T::Event, 382)
+        );
 
-            let selector = "ItF 1 48";
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                MapID::from_components(T::MainChapters, 3)
-            );
+        let selector = "ItF 1 48";
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            MapID::from_components(T::MainChapters, 3)
+        );
 
-            let selector = "DM 0";
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                MapID::from_components(T::AkuRealms, 0)
-            );
+        let selector = "DM 0";
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            MapID::from_components(T::AkuRealms, 0)
+        );
 
-            let selector = "Filibuster";
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                MapID::from_components(T::Filibuster, 0)
-            );
+        let selector = "Filibuster";
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            MapID::from_components(T::Filibuster, 0)
+        );
 
-            let selector = "itfz 1 0";
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_selector(selector).unwrap(),
-                MapID::from_components(T::ItfOutbreak, 1)
-            );
+        let selector = "itfz 1 0";
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_selector(selector).unwrap(),
+            MapID::from_components(T::ItfOutbreak, 1)
+        );
 
-            let selector = "stageRN013_05.csv";
-            assert_eq!(
-                parse_map_file(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_file(selector).unwrap(),
-                MapID::from_components(T::SoL, 13)
-            );
+        let selector = "stageRN013_05.csv";
+        assert_eq!(
+            parse_map_file(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_file(selector).unwrap(),
+            MapID::from_components(T::SoL, 13)
+        );
 
-            let selector = "stageRN000_00.csv";
-            assert_eq!(
-                parse_map_file(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_file(selector).unwrap(),
-                MapID::from_components(T::SoL, 0)
-            );
+        let selector = "stageRN000_00.csv";
+        assert_eq!(
+            parse_map_file(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_file(selector).unwrap(),
+            MapID::from_components(T::SoL, 0)
+        );
 
-            let selector = "stageW04_05.csv";
-            assert_eq!(
-                parse_map_file(selector).unwrap(),
-                parse_general_map_id(selector).unwrap()
-            );
-            assert_eq!(
-                parse_map_file(selector).unwrap(),
-                MapID::from_components(T::MainChapters, 3)
-            );
+        let selector = "stageW04_05.csv";
+        assert_eq!(
+            parse_map_file(selector).unwrap(),
+            parse_general_map_id(selector).unwrap()
+        );
+        assert_eq!(
+            parse_map_file(selector).unwrap(),
+            MapID::from_components(T::MainChapters, 3)
+        );
 
-            let selector = "stageW04_05.csv";
-            assert_eq!(
-                parse_general_map_id(&String::from(selector)),
-                parse_general_map_id(selector)
-            );
-            assert_eq!(
-                parse_general_map_id(&String::from(selector)).unwrap(),
-                MapID::from_components(T::MainChapters, 3)
-            );
-        }
+        let selector = "stageW04_05.csv";
+        assert_eq!(
+            parse_general_map_id(&String::from(selector)),
+            parse_general_map_id(selector)
+        );
+        assert_eq!(
+            parse_general_map_id(&String::from(selector)).unwrap(),
+            MapID::from_components(T::MainChapters, 3)
+        );
+    }
 
-        #[test]
-        fn test_random_properties() {
-            const NUM_ITERATIONS: usize = 20;
-            for var in StageVariantID::iter() {
-                if var == T::MainChapters {
-                    // main will need to be a bit more delicate
-                    continue;
-                }
-
-                for _ in 0..NUM_ITERATIONS {
-                    let map= if is_single_stage(var) || is_single_map(var) {
-                        0
-                    } else if var.is_outbreak() {
-                        random::<MapSize>() % 3
-                    } else {
-                        random::<MapSize>() % 1000
-                    };
-
-                    // assert all parse functions get the same result and the
-                    // map file stuff is bidirectional
-                    let st = MapID::from_components(var, map);
-                    let file_name = map_data_file(&st);
-                    assert_eq!(
-                        file_name,
-                        map_data_file(&parse_map_file(&file_name).unwrap())
-                    );
-                    assert_eq!(
-                        st,
-                        parse_map_selector(&format!("{} {map}", var.num())).unwrap()
-                    );
-                    assert_eq!(
-                        st,
-                        parse_map_ref(&format!("s{:02}{:03}", var.num(), map))
-                            .unwrap()
-                    );
-                }
-            }
-        }
-
-        #[test]
-        fn test_random_properties_main() {
-            const NUM_ITERATIONS: usize = 20;
-            let var = T::MainChapters;
-
-            // eoc
-            for _ in 0..1 {
-                let (map) = (0);
-                // can only have 2 digits
-
-                let st = MapID::from_components(var, map );
-                let file_name = map_data_file(&st);
-                assert_eq!(
-                    file_name,
-                    map_data_file(&parse_map_file(&file_name).unwrap())
-                );
-                assert_eq!(
-                    st,
-                    parse_map_selector(&format!("{} {map}", var.num())).unwrap()
-                );
-                assert_eq!(
-                    st,
-                    parse_map_ref(&format!("s{:02}{:03}", var.num(), map)).unwrap()
-                );
+    #[test]
+    fn test_random_properties() {
+        const NUM_ITERATIONS: usize = 20;
+        for var in StageVariantID::iter() {
+            if var == T::MainChapters {
+                // main will need to be a bit more delicate
+                continue;
             }
 
-            // itf
             for _ in 0..NUM_ITERATIONS {
-                let (map) = (random::<MapSize>() % 3 + 3);
+                let map = if is_single_stage(var) || is_single_map(var) {
+                    0
+                } else if var.is_outbreak() {
+                    random::<MapSize>() % 3
+                } else {
+                    random::<MapSize>() % 1000
+                };
 
-                let st = MapID::from_components(var, map );
-                let file_name = map_data_file(&st);
-                assert_eq!(
-                    file_name,
-                    map_data_file(&parse_map_file(&file_name).unwrap())
-                );
-                assert_eq!(
-                    st,
-                    parse_map_selector(&format!("{} {map}", var.num())).unwrap()
-                );
-                assert_eq!(
-                    st,
-                    parse_map_ref(&format!("s{:02}{:03}", var.num(), map)).unwrap()
-                );
-            }
-
-            // cotc
-            for _ in 0..NUM_ITERATIONS {
-                let (map) = (random::<MapSize>() % 3 + 6);
-
-                let st = MapID::from_components(var, map );
+                // assert all parse functions get the same result and the
+                // map file stuff is bidirectional
+                let st = MapID::from_components(var, map);
                 let file_name = map_data_file(&st);
                 assert_eq!(
                     file_name,
@@ -437,4 +369,72 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn test_random_properties_main() {
+        const NUM_ITERATIONS: usize = 20;
+        let var = T::MainChapters;
+
+        // eoc
+        for _ in 0..1 {
+            let (map) = (0);
+            // can only have 2 digits
+
+            let st = MapID::from_components(var, map);
+            let file_name = map_data_file(&st);
+            assert_eq!(
+                file_name,
+                map_data_file(&parse_map_file(&file_name).unwrap())
+            );
+            assert_eq!(
+                st,
+                parse_map_selector(&format!("{} {map}", var.num())).unwrap()
+            );
+            assert_eq!(
+                st,
+                parse_map_ref(&format!("s{:02}{:03}", var.num(), map)).unwrap()
+            );
+        }
+
+        // itf
+        for _ in 0..NUM_ITERATIONS {
+            let (map) = (random::<MapSize>() % 3 + 3);
+
+            let st = MapID::from_components(var, map);
+            let file_name = map_data_file(&st);
+            assert_eq!(
+                file_name,
+                map_data_file(&parse_map_file(&file_name).unwrap())
+            );
+            assert_eq!(
+                st,
+                parse_map_selector(&format!("{} {map}", var.num())).unwrap()
+            );
+            assert_eq!(
+                st,
+                parse_map_ref(&format!("s{:02}{:03}", var.num(), map)).unwrap()
+            );
+        }
+
+        // cotc
+        for _ in 0..NUM_ITERATIONS {
+            let (map) = (random::<MapSize>() % 3 + 6);
+
+            let st = MapID::from_components(var, map);
+            let file_name = map_data_file(&st);
+            assert_eq!(
+                file_name,
+                map_data_file(&parse_map_file(&file_name).unwrap())
+            );
+            assert_eq!(
+                st,
+                parse_map_selector(&format!("{} {map}", var.num())).unwrap()
+            );
+            assert_eq!(
+                st,
+                parse_map_ref(&format!("s{:02}{:03}", var.num(), map)).unwrap()
+            );
+        }
+    }
 }
