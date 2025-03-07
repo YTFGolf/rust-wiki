@@ -10,6 +10,16 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.4.3] - 2025-03-07
+
 This update's main goal was to deprecate `StageMeta`.
 
 After attempting to make a map data module in [0.4.2], I realised how badly
@@ -31,13 +41,10 @@ deprecated in the source code, although it has been renamed to
 - Dedicated modules for parsing strings into map and stage IDs.
 - Dedicated modules for parsing IDs into data such as file names.
 
-### Fixed
-
 ### Changed
 
 - Split `get_stages` function into `get_stage_files` and the initialiser.
-
-### Removed
+- Slightly changed how selectors work to go along with the update.
 
 ## [0.4.2] - 2025-02-26
 
@@ -140,8 +147,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-<!-- [unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...HEAD -->
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.3...dev
+[0.4.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.3.0...v0.4.0
