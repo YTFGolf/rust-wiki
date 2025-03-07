@@ -26,5 +26,5 @@ pub fn get_stage_files(version: &Version) -> impl Iterator<Item = String> {
 
 /// Get an iterator over all stages in the version.
 pub fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
-    get_stage_files(version).map(|file_name| StageData::new(&file_name, version).unwrap())
+    get_stage_files(version).map(|file_name| StageData::from_selector(&file_name, version).unwrap())
 }
