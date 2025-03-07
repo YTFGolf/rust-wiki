@@ -28,7 +28,20 @@ fn custom_stage_data_file(stage_id: &StageID) -> String {
                 _ => unreachable!(),
             };
 
-            format!("stageZ{map:02}_{stage:02}.csv", stage = stage_id.num())
+            let mut stage = stage_id.num();
+            if stage_id.variant() == T::EocOutbreak {
+                stage = match (map, stage) {
+                    (1, 47) => 49,
+                    (2, 47) => 50,
+                    _ => stage,
+                };
+                // Chapter 2 Moon = `stageZ01_49.csv`
+                // Chapter 3 Moon = `stageZ02_50.csv`
+                // `parse` will transform this into stage 47 so `transform`
+                // needs to transform it back.
+            }
+
+            format!("stageZ{map:02}_{stage:02}.csv")
         }
         T::MainChapters => match stage_id.map().num() {
             0 => format!("stage{stage:02}.csv", stage = stage_id.num()),
