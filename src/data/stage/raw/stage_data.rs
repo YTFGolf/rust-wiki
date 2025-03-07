@@ -1,11 +1,19 @@
 //! Module that deals with getting information about stages.
 use super::{stage_metadata::LegacyStageMeta, stage_option::StageOptionCSV};
-use crate::data::{
-    map::{
-        map_data::GameMap, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
-        special_rules::SpecialRule,
+use crate::{
+    data::{
+        map::{
+            map_data::GameMap, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
+            special_rules::SpecialRule,
+        },
+        version::Version,
     },
-    version::Version,
+    meta::stage::{
+        stage_id::StageID,
+        stage_types::{
+            parse::parse_stage::parse_general_stage_id, transform::transform_stage::stage_data_file,
+        },
+    },
 };
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
@@ -137,18 +145,15 @@ impl<'a> StageData<'_> {
         selector: &str,
         version: &'a Version,
     ) -> Result<StageData<'a>, StageDataError> {
-        let Some(meta) = LegacyStageMeta::new(selector) else {
+        let Some(id) = parse_general_stage_id(selector) else {
             panic!("Invalid selector: {selector:?}")
         };
-        Self::from_meta(meta, version)
+        Self::from_id(id, version)
     }
 
-    /// Get stage data from meta object.
-    pub fn from_meta(
-        meta: LegacyStageMeta,
-        version: &'a Version,
-    ) -> Result<StageData<'a>, StageDataError> {
-        let stage_file = PathBuf::from("DataLocal").join(meta.stage_file_name());
+    /// Get stage data from [`StageID`].
+    pub fn from_id(id: StageID, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
+        let stage_file = PathBuf::from("DataLocal").join(stage_data_file(&id));
         let reader = BufReader::new(
             File::open(version.get_file_path(&stage_file)).map_err(StageDataError::IOError)?,
         );
@@ -157,7 +162,7 @@ impl<'a> StageData<'_> {
         let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
         Ok(StageData {
-            meta,
+            meta: id.into(),
             stage_csv_data,
             version,
         })
