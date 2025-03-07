@@ -25,7 +25,8 @@ fn show_selectors() {
     }
 
     let mut stdout = io::stdout().lock();
-    writeln!(stdout, "\x1b[4m{msg}\x1b[0m", msg = "Available selectors:").unwrap();
+    let msg = "Available selectors:";
+    writeln!(stdout, "\x1b[4m{msg}\x1b[0m").unwrap();
     // 4 = underline
     for arr in arrs {
         writeln!(

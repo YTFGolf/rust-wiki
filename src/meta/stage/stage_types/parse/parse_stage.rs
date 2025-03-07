@@ -95,8 +95,7 @@ pub fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError>
             match map {
                 (0..=2) => {
                     let stage = match (map, stage) {
-                        (1, 49) => 47,
-                        (2, 50) => 47,
+                        (1, 49) | (2, 50) => 47,
                         _ => stage,
                     };
                     // Chapter 2 Moon = `stageZ01_49.csv`
