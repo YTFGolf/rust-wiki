@@ -1,13 +1,3 @@
-# New
-
-- Note that `l 0 0 0 0 0 0` works same as `l 0` and `l 0 0`, as does Aku Realms and EoC.
-- Challenge Battle and Filibuster completely ignore the numbers.
-- Available selectors can be printed off with a command so no need for that bit. Still mention the `CommonName|...` though.
-- Remove Z selector.
-- Still mention ItF and CotC, as well as EoC Moon. If you do `main` or `3` it'll be as you'd expect.
-
-# Old
-
 Stage info generates stage info.
 
 ## Input
@@ -19,14 +9,15 @@ Stage info uses "selectors" to work. For most stages, these will follow the form
 code mapnum stagenum
 ```
 
-For example, Earthshaker would be `sol 0 0`. Available selectors can be found in [stage_metadata](../src/data/stage/raw/stage_metadata.rs#L178) just below where it says `static STAGE_TYPE_MAP`, and are used in the `initialise_type_map` function. Each line uses pipe characters to separate them. For example,
-```rust
-        initialise_type_map("SoL|0|N|RN",                               T::SoL),
+For example, Earthshaker would be `sol 0 0`. Available selectors for each stage type will be shown if you run `rust-wiki stage --sel` or `rust-wiki stage -s`.
+
+Each line uses pipe characters to separate them. For example,
+```
+SoL|0|N|RN                      Stories of Legend
 ```
 means that valid selectors for Stories of Legend are `SoL`, `0`, `N` and `RN` (i.e. `SoL 0 0`, `0 0 0`, `N 0 0` and `RN 0 0` will all give you the information for Earthshaker). Selectors are case-insensitive.
-<!-- Note: need to update line number whenever stuff changes -->
 
-Possible selector values come in the form `CommonName|number|code_without_r|code_with_r`, with the exception of main chapters. Some types will have multiple common names, and some will have none.
+Selector values usually come in the form `CommonName|number|code_without_r|code_with_r`. Some types will have multiple common names, and some will have none.
 
 ## Other formats
 
@@ -39,7 +30,7 @@ Reference uses the battlecats-db reference. This can be of the form:
 - `https://battlecats-db.com/stage/s00000-01.html`
 - `s00000-01`
 
-## Numbers
+## Obtaining numbers
 Stage info requires the internal map and stage numbers to work. Unlike the selector, you can put as many leading 0s before the map and stage numbers. The two main ways you can find these are:
 
 - Looking at the stage name image below the enemy base image. For example, on Earthshaker this image is `[[File:Mapsn000 00 n en.png]]`. Therefore, you can use `n 00 000` to get Earthshaker's stage info. This method is not foolproof, since there are many pages which reuse images from different stages, but it's generally a good place to start.
@@ -54,12 +45,33 @@ Stage info requires the internal map and stage numbers to work. Unlike the selec
 
 If both of these methods fail, or give weird results, the last resort is to Ctrl+f on [StageNames.csv](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/data/StageNames.csv) (or your local copy) and look up the stage name.
 
-## Main chapters
-Main chapter selectors are significantly different from normal stages.
+## Other information
 
-- EoC: `eoc {num}` - gives EoC stage `num + 1`. Moon works differently: `47` gives chapter 1, `49` gives chapter 2, and `50` gives chapter 3.
-- ItF: `itf {chap} {num}` - chap is 1-based, i.e. `itf 1` means chapter 1. num is still 0-based, so `47` means Moon. `W` also works as an alias for `itf`.
-- CotC - same thing as ItF basically. `Space` is an alias for `cotc`.
-- Outbreaks: `Z {chap} {num}`. chap is 1-based (`1` is eoc 1, `4` is itf 1 etc.), num is 0-based.
-- Filibuster - `filibuster` is the invasion. There is no need for any numbers.
-- Aku Realms: `aku {stage}` - e.g. `aku 0` is Korea. `dm` is an alias for `aku`.
+### Limited stage types
+
+Certain stage types don't require a full path, such as when the stage types have only 1 map or stage. Stage types with 1 stage are:
+
+- Filibuster Invasion
+- Challenge Battle
+
+These stage types don't require a map or a stage number, so `rust-wiki challenge` will act as if you have inputted `rust-wiki challenge 0 0` (which will also give you the same result you would have if you input `rust-wiki challenge 999 999`).
+
+Stage types with 1 map are:
+
+- Aku Realms
+- Labyrinth
+
+Similarly, these ignore the map number, so `rust-wiki aku 20` is equivalent to `rust-wiki aku 0 20`. Due to how the parser works, `rust-wiki aku 1 2 3 4 5` is equivalent to `rust-wiki aku 5`.
+
+### Main chapters
+
+For convenience, main chapters not only include normal selectors, but also individual subtype selectors:
+
+- `main` and `3`: work like normal, i.e. `main 4 5` is the 6th stage of the 5th map (ItF Chapter 2 Norway).
+- `eoc` is equivalent to `main 0`, and works the exact same way that The Aku Realms and Labyrinth work.
+- `itf` and `w` refer to Into the Future. `itf 1 2` will be the third stage of the first chapter, and is equivalent to `main 3 2`.
+- `cotc` and `space` refer to Cats of the Cosmos. `cotc 1 2` is equivalent to `main 6 2`.
+
+A final thing worth mentioning is that `main 1` and `main 2` don't actually refer to any stages. If you want to find Empire of Cats's Moon stage, then `eoc 47` is chapter 1, `49` is chapter 2, and `50` is chapter 3.
+
+A similar problem occurs with EoC Zombie Outbreaks, where the file name for Chapter 2 Moon is, for example, `stageZ01_49.csv`. However, since the rest of the game files seem to assume it's stage 48, this input will automatically be converted to the appropriate number.
