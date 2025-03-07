@@ -105,4 +105,21 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn test_outbreak_coercion() {
+        // Note: it is extremely important to test this alongside the parse
+        // module.
+        let stage = StageID::from_components(T::EocOutbreak, 1, 47);
+        // EoC Moon 2
+        assert_eq!(stage_data_file(&stage), "stageZ01_49.csv");
+
+        let stage = StageID::from_components(T::EocOutbreak, 2, 47);
+        // EoC Moon 3
+        assert_eq!(stage_data_file(&stage), "stageZ02_50.csv");
+
+        let stage = StageID::from_components(T::ItfOutbreak, 0, 47);
+        // check that doesn't do the same thing for itf/cotc
+        assert_eq!(stage_data_file(&stage), "stageZ04_47.csv");
+    }
 }
