@@ -230,15 +230,25 @@ use crate::meta::stage::{
     },
 };
 
+impl From<&StageID> for LegacyStageMeta {
+    fn from(value: &StageID) -> Self {
+        LegacyStageMeta::from_file(&stage_data_file(value)).unwrap()
+    }
+}
 impl From<StageID> for LegacyStageMeta {
     fn from(value: StageID) -> Self {
-        LegacyStageMeta::from_file(&stage_data_file(&value)).unwrap()
+        (&value).into()
     }
 }
 
+impl From<&LegacyStageMeta> for StageID {
+    fn from(value: &LegacyStageMeta) -> Self {
+        parse_stage_file(&value.stage_file_name).unwrap()
+    }
+}
 impl From<LegacyStageMeta> for StageID {
     fn from(value: LegacyStageMeta) -> Self {
-        parse_stage_file(&value.stage_file_name).unwrap()
+        (&value).into()
     }
 }
 
