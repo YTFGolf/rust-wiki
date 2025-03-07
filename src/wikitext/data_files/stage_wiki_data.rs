@@ -84,7 +84,7 @@ impl StageWikiData {
 
     // rename to `stage_type`, replace
     /// Get stage type.
-    pub fn from_variant_id_replaceme(&self, id:StageVariantID)->Option<&TypeData>{
+    pub fn from_variant_id_replaceme(&self, id: StageVariantID) -> Option<&TypeData> {
         self.stage_name_map.get(id.num() as usize)?.into()
     }
 
@@ -107,14 +107,24 @@ impl StageWikiData {
     /// Get map data from ex map id.
     pub fn continue_map(&self, ex_map_id: u32) -> &MapData {
         let (t, m) = self.continue_id(ex_map_id).unwrap();
-        self.stage_map(t, m).unwrap()
+        self.from_map_id_replaceme(&MapID::from_numbers(t, m))
+            .unwrap()
     }
 
-    /// Get stage difficulty.
     #[deprecated]
     pub fn difficulty(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&u8> {
         self.difficulty_str(&format!("{type_id:03}-{map_id:03}-{stage_id:03}"))
     }
+    /// Get stage difficulty.
+    pub fn difficulty_stage_id_replaceme(&self, id: &StageID) -> Option<&u8> {
+        self.difficulty_str(&format!(
+            "{var:03}-{map:03}-{stage:03}",
+            var = id.variant().num(),
+            map = id.map().num(),
+            stage = id.num()
+        ))
+    }
+
     /// Get stage difficulty.
     fn difficulty_str(&self, id: &str) -> Option<&u8> {
         self.stage_difficulty_map.get(id)
@@ -265,7 +275,7 @@ mod tests {
             let continue_map_name = &result[0];
 
             let map_data = STAGE_WIKI_DATA
-                .stage_map(4, i)
+                .from_map_id_replaceme(&MapID::from_numbers(4, i))
                 .unwrap_or_else(|| panic!("Map name data does not exist for ex map {i}."));
             let real_map_name = &map_data.name;
 
