@@ -270,7 +270,7 @@ fn get_group<'a: 'b, 'b>(
     for stage in &section_map.1 {
         let stage_id: StageID = (&stage.meta).into();
         let stage_map = STAGE_WIKI_DATA
-            .from_map_id_replaceme(stage_id.map())
+            .stage_map(stage_id.map())
             .unwrap();
 
         if add_to_removed && OLD_OR_REMOVED_DETECT.is_match(&stage_map.name) {

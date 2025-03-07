@@ -81,7 +81,7 @@ fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
         name = extract_name(&map_data.name),
         num = get_ordinal(map.meta.map_num + 1),
         chap = STAGE_WIKI_DATA
-            .from_variant_id_replaceme(map_id.variant())
+            .stage_type(map_id.variant())
             .unwrap()
             .name,
     )
@@ -283,7 +283,7 @@ fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> Strin
 fn nav(map: &MapData) -> String {
     let map_id: MapID = (&map.meta).into();
     let type_data = &STAGE_WIKI_DATA
-        .from_variant_id_replaceme(map_id.variant())
+        .stage_type(map_id.variant())
         .unwrap();
     let chap = extract_name(&type_data.name);
     let heading = format!("[[:Category:{chap} Chapters|{chap} Chapters]]");
@@ -336,7 +336,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
 
 pub fn get_map_data(map: &MapID) -> &'static MapData2 {
     STAGE_WIKI_DATA
-        .from_map_id_replaceme(map)
+        .stage_map(map)
         .unwrap_or_else(|| {
             panic!(
                 "Couldn't find map name: {:03}-{:03}",

@@ -104,7 +104,7 @@ fn get_single_nav(location: Option<&StageData>) -> String {
 fn get_continuation_stages(data: &ContinueStages) -> String {
     let map_id: MapID = MapID::from_numbers(4, data.map_id);
     let map = STAGE_WIKI_DATA
-        .from_map_id_replaceme(&map_id)
+        .stage_map(&map_id)
         .unwrap_or_else(|| panic!("Extra stages map with id {} was not found!", data.map_id));
     let stage_names = (data.stage_ids.0..=data.stage_ids.1).map(|id| {
         let stage = &map.get(id).unwrap().name;
@@ -157,7 +157,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
 
     if let Some(ex_map_id) = stage.ex_invasion {
         let stage = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&StageID::from_numbers(
+            .stage(&StageID::from_numbers(
                 4,
                 ex_map_id % 1000,
                 stage.meta.stage_num,

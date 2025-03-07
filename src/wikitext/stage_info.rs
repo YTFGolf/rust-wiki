@@ -36,7 +36,7 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
     let stage_id: StageID = (&stage.meta).into();
 
     let stage_map = STAGE_WIKI_DATA
-        .from_map_id_replaceme(stage_id.map())
+        .stage_map(stage_id.map())
         .unwrap_or_else(|| {
             panic!(
                 "Couldn't find map name: {:03}-{:03}",

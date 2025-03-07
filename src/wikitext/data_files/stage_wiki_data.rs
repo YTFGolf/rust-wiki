@@ -1,7 +1,7 @@
 //! Module that gets information about stage names and continue stages.
 
 use crate::{
-    data::stage::raw::stage_metadata::{consts::LEGACY_STAGE_TYPES, LegacyStageMeta},
+    data::stage::raw::stage_metadata::consts::LEGACY_STAGE_TYPES,
     file_handler::{get_file_location, FileLocation},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID},
 };
@@ -64,40 +64,19 @@ pub struct StageWikiData {
 
 #[allow(missing_docs)]
 impl StageWikiData {
-    #[deprecated]
-    pub fn stage_type(&self, id: u32) -> Option<&TypeData> {
-        self.stage_name_map.get(id as usize)?.into()
-    }
-    #[deprecated]
-    pub fn stage_map(&self, type_id: u32, map_id: u32) -> Option<&MapData> {
-        self.stage_type(type_id)?.get(map_id)
-    }
-    /// Get stage from type, map and stage id.
-    #[deprecated]
-    pub fn stage(&self, type_id: u32, map_id: u32, stage_id: u32) -> Option<&StageData> {
-        self.stage_map(type_id, map_id)?.get(stage_id)
-    }
-    #[deprecated]
-    pub fn from_meta(&self, meta: &LegacyStageMeta) -> Option<&StageData> {
-        self.stage(meta.type_num, meta.map_num, meta.stage_num)
-    }
-
-    // rename to `stage_type`, replace
     /// Get stage type.
-    pub fn from_variant_id_replaceme(&self, id: StageVariantID) -> Option<&TypeData> {
+    pub fn stage_type(&self, id: StageVariantID) -> Option<&TypeData> {
         self.stage_name_map.get(id.num() as usize)?.into()
     }
 
-    // rename to `stage_map` replace
     /// Get stage map.
-    pub fn from_map_id_replaceme(&self, id: &MapID) -> Option<&MapData> {
-        self.from_variant_id_replaceme(id.variant())?.get(id.num())
+    pub fn stage_map(&self, id: &MapID) -> Option<&MapData> {
+        self.stage_type(id.variant())?.get(id.num())
     }
 
-    // rename to `stage`, replace stage and from_meta.
     /// Get stage.
-    pub fn from_stage_id_replaceme(&self, id: &StageID) -> Option<&StageData> {
-        self.from_map_id_replaceme(id.map())?.get(id.num())
+    pub fn stage(&self, id: &StageID) -> Option<&StageData> {
+        self.stage_map(id.map())?.get(id.num())
     }
 
     /// Get the type and map numbers from the ex map id.
@@ -107,7 +86,7 @@ impl StageWikiData {
     /// Get map data from ex map id.
     pub fn continue_map(&self, ex_map_id: u32) -> &MapData {
         let (t, m) = self.continue_id(ex_map_id).unwrap();
-        self.from_map_id_replaceme(&MapID::from_numbers(t, m))
+        self.stage_map(&MapID::from_numbers(t, m))
             .unwrap()
     }
 
@@ -275,7 +254,7 @@ mod tests {
             let continue_map_name = &result[0];
 
             let map_data = STAGE_WIKI_DATA
-                .from_map_id_replaceme(&MapID::from_numbers(4, i))
+                .stage_map(&MapID::from_numbers(4, i))
                 .unwrap_or_else(|| panic!("Map name data does not exist for ex map {i}."));
             let real_map_name = &map_data.name;
 

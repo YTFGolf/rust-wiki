@@ -352,7 +352,7 @@ mod tests {
     fn single_eoc_format() {
         let korea = parse_stage_selector("eoc 0").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&korea)
+            .stage(&korea)
             .unwrap()
             .name;
         const MAGS: &str = "";
@@ -368,7 +368,7 @@ mod tests {
     fn single_eoc_moon() {
         let moon_ch2 = parse_stage_selector("eoc 49").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&moon_ch2)
+            .stage(&moon_ch2)
             .unwrap()
             .name;
         const MAGS: &str = "";
@@ -384,7 +384,7 @@ mod tests {
     fn single_itf_format() {
         let great_abyss = parse_stage_selector("itf 1 23").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&great_abyss)
+            .stage(&great_abyss)
             .unwrap()
             .name;
         const MAGS: &str = "(150%)";
@@ -400,7 +400,7 @@ mod tests {
     fn single_cotc_format() {
         let sighter_star = parse_stage_selector("cotc 2 24").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&sighter_star)
+            .stage(&sighter_star)
             .unwrap()
             .name;
         const MAGS: &str = "(150%)";
@@ -416,7 +416,7 @@ mod tests {
     fn single_filibuster_format() {
         let mut filibuster = parse_stage_selector("filibuster").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&filibuster)
+            .stage(&filibuster)
             .unwrap()
             .name;
         filibuster.set_map(8);
@@ -436,7 +436,7 @@ mod tests {
     fn single_aku_realms() {
         let korea = parse_stage_selector("aku 0").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&korea)
+            .stage(&korea)
             .unwrap()
             .name;
         const MAGS: &str = "(100%)";
@@ -452,7 +452,7 @@ mod tests {
     fn single_story_format() {
         let torture_room = parse_stage_selector("sol 21 3").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&torture_room)
+            .stage(&torture_room)
             .unwrap()
             .name;
         const MAGS: &str = "(400%)";
@@ -468,7 +468,7 @@ mod tests {
     fn single_normal_format() {
         let xp_hard = parse_stage_selector("event 28 2").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&xp_hard)
+            .stage(&xp_hard)
             .unwrap()
             .name;
         const MAGS: &str = "(400%)";
@@ -484,7 +484,7 @@ mod tests {
     fn single_z_outbreak() {
         let zoutbreak = parse_stage_selector("eocz 2 43").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&zoutbreak)
+            .stage(&zoutbreak)
             .unwrap()
             .name;
         const MAGS: &str = "(600%)";
@@ -499,7 +499,7 @@ mod tests {
     #[test]
     fn single_aku_invasion() {
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&StageID::from_numbers(4, 42, 0))
+            .stage(&StageID::from_numbers(4, 42, 0))
             .unwrap()
             .name;
         let mount_aku_repr = parse_stage_selector("aku 999").unwrap();
@@ -516,7 +516,7 @@ mod tests {
     #[test]
     fn single_doron_invasion() {
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&StageID::from_numbers(4, 68, 0))
+            .stage(&StageID::from_numbers(4, 68, 0))
             .unwrap()
             .name;
         let idi_invasion_repr = parse_stage_selector("sol 35 999").unwrap();
@@ -534,7 +534,7 @@ mod tests {
     fn single_always_appeared_at() {
         let xp_hard = parse_stage_selector("event 28 2").unwrap();
         let name = &STAGE_WIKI_DATA
-            .from_stage_id_replaceme(&xp_hard)
+            .stage(&xp_hard)
             .unwrap()
             .name;
         const MAGS: &str = "";
