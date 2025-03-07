@@ -1,13 +1,10 @@
 //! Parse [`MapID`] from various formats.
 
 use super::{get_variant_from_code, is_single_map, is_single_stage, StageTypeParseError};
-use crate::{
-    data::map,
-    meta::stage::{
-        map_id::{MapID, MapSize},
-        stage_types::data::SELECTOR_SEPARATOR,
-        variant::StageVariantID as T,
-    },
+use crate::meta::stage::{
+    map_id::{MapID, MapSize},
+    stage_types::data::SELECTOR_SEPARATOR,
+    variant::StageVariantID as T,
 };
 use regex::Regex;
 use std::sync::LazyLock;
@@ -108,9 +105,25 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
     }
 }
 
+/// Captures `["s01001"]` from
+/// `"*https://battlecats-db.com/stage/s01001-999.html"`.
+static DB_REFERENCE_FULL: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*.html").unwrap());
+/// Captures `["01001"]` in `"s01001-999"`.
+static DB_REFERENCE_MAP: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^s(\d{5})[\-\d]*").unwrap());
+
 /// Parse battle-cats.db reference into [`MapID`].
-pub fn parse_map_ref(_selector: &str) -> Result<MapID, StageTypeParseError> {
-    todo!()
+pub fn parse_map_ref(reference: &str) -> Result<MapID, StageTypeParseError> {
+    let reference = DB_REFERENCE_FULL.replace(reference, "$1");
+
+    match DB_REFERENCE_MAP.captures(&reference) {
+        Some(cap) => {
+            let mapid: u32 = cap[1].parse().unwrap();
+            Ok(MapID::from_mapid(mapid))
+        }
+        None => Err(StageTypeParseError::InvalidFormat),
+    }
 }
 
 /// Parse map selector to [`MapID`].
