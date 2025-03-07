@@ -351,10 +351,7 @@ mod tests {
     #[test]
     fn single_eoc_format() {
         let korea = parse_stage_selector("eoc 0").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&korea)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&korea).unwrap().name;
         const MAGS: &str = "";
 
         let section = Ref::EoC.section();
@@ -367,10 +364,7 @@ mod tests {
     #[test]
     fn single_eoc_moon() {
         let moon_ch2 = parse_stage_selector("eoc 49").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&moon_ch2)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&moon_ch2).unwrap().name;
         const MAGS: &str = "";
 
         let section = Ref::EoC.section();
@@ -383,10 +377,7 @@ mod tests {
     #[test]
     fn single_itf_format() {
         let great_abyss = parse_stage_selector("itf 1 23").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&great_abyss)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&great_abyss).unwrap().name;
         const MAGS: &str = "(150%)";
 
         let section = Ref::ItF.section();
@@ -399,10 +390,7 @@ mod tests {
     #[test]
     fn single_cotc_format() {
         let sighter_star = parse_stage_selector("cotc 2 24").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&sighter_star)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&sighter_star).unwrap().name;
         const MAGS: &str = "(150%)";
 
         let section = Ref::CotC.section();
@@ -415,10 +403,7 @@ mod tests {
     #[test]
     fn single_filibuster_format() {
         let mut filibuster = parse_stage_selector("filibuster").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&filibuster)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&filibuster).unwrap().name;
         filibuster.set_map(8);
         filibuster.set_num(999);
         // expected from ContinueStages
@@ -435,10 +420,7 @@ mod tests {
     #[test]
     fn single_aku_realms() {
         let korea = parse_stage_selector("aku 0").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&korea)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&korea).unwrap().name;
         const MAGS: &str = "(100%)";
 
         let section = Ref::AkuRealms.section();
@@ -451,10 +433,7 @@ mod tests {
     #[test]
     fn single_story_format() {
         let torture_room = parse_stage_selector("sol 21 3").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&torture_room)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&torture_room).unwrap().name;
         const MAGS: &str = "(400%)";
 
         let section = Ref::SoL.section();
@@ -467,10 +446,7 @@ mod tests {
     #[test]
     fn single_normal_format() {
         let xp_hard = parse_stage_selector("event 28 2").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&xp_hard)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&xp_hard).unwrap().name;
         const MAGS: &str = "(400%)";
 
         let section = Ref::Event.section();
@@ -483,10 +459,7 @@ mod tests {
     #[test]
     fn single_z_outbreak() {
         let zoutbreak = parse_stage_selector("eocz 2 43").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&zoutbreak)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
 
         let section = Ref::AkuRealms.section();
@@ -533,10 +506,7 @@ mod tests {
     #[test]
     fn single_always_appeared_at() {
         let xp_hard = parse_stage_selector("event 28 2").unwrap();
-        let name = &STAGE_WIKI_DATA
-            .stage(&xp_hard)
-            .unwrap()
-            .name;
+        let name = &STAGE_WIKI_DATA.stage(&xp_hard).unwrap().name;
         const MAGS: &str = "";
 
         let section = Ref::Event.section();

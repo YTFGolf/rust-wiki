@@ -9,9 +9,7 @@ use crate::{
 pub fn get_stage_wiki_data(stage: &Stage) -> StageWikiData {
     let stage_id: StageID = (&stage.meta).into();
 
-    let stage_map = STAGE_WIKI_DATA
-        .stage_map(stage_id.map())
-        .unwrap();
+    let stage_map = STAGE_WIKI_DATA.stage_map(stage_id.map()).unwrap();
     let stage_name = stage_map.get(stage.meta.stage_num).unwrap();
     StageWikiData {
         stage_map,

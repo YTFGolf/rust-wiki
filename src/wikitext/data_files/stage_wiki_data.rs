@@ -86,8 +86,7 @@ impl StageWikiData {
     /// Get map data from ex map id.
     pub fn continue_map(&self, ex_map_id: u32) -> &MapData {
         let (t, m) = self.continue_id(ex_map_id).unwrap();
-        self.stage_map(&MapID::from_numbers(t, m))
-            .unwrap()
+        self.stage_map(&MapID::from_numbers(t, m)).unwrap()
     }
 
     #[deprecated]
