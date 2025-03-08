@@ -1,7 +1,11 @@
 //! Deals with basic stage information in the infobox.
 
 use crate::{
-    data::stage::{parsed::stage::Stage, raw::stage_metadata::consts::LegacyStageVariant},
+    data::stage::parsed::stage::Stage,
+    meta::stage::{
+        stage_id::StageID, stage_types::transform::transform_map::map_img_code,
+        variant::StageVariantID,
+    },
     wikitext::{
         data_files::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
         template_parameter::TemplateParameter,
@@ -13,6 +17,7 @@ use std::fmt::Write;
 
 /// Get the `|stage name` parameter.
 pub fn stage_name(stage: &Stage) -> TemplateParameter {
+    let stage_id: StageID = (&stage.meta).into();
     let mut buf = String::new();
 
     match stage.anim_base_id {
@@ -33,9 +38,9 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
     write!(
         buf,
         "\n[[File:Mapsn{map_num:03} {stage_num:02} {type_code} en.png]]",
-        map_num = stage.meta.map_num,
-        stage_num = stage.meta.stage_num,
-        type_code = stage.meta.type_code.to_lowercase(),
+        map_num = stage_id.map().num(),
+        stage_num = stage_id.num(),
+        type_code = map_img_code(stage_id.map()),
     )
     .unwrap();
     // stage name part
@@ -45,9 +50,10 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
 
 /// Get the `|stage location` parameter.
 pub fn stage_location(stage: &Stage) -> TemplateParameter {
+    let stage_id: StageID = (&stage.meta).into();
     let buf = format!(
         "[[File:Mapname{map_num:03} {type_code} en.png]]",
-        map_num = stage.meta.map_num,
+        map_num = stage_id.map().num(),
         type_code = stage.meta.type_code.to_lowercase(),
     );
     TemplateParameter::new("stage location", buf)
@@ -66,10 +72,11 @@ fn energy_catamin(cost: u32) -> TemplateParameter {
 
 /// Get the `|energy` parameter.
 pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
+    let stage_id: StageID = (&stage.meta).into();
     let energy = stage.energy?;
-    let amount = match stage.meta.type_enum {
-        LegacyStageVariant::Catamin => return Some(energy_catamin(energy)),
-        LegacyStageVariant::Extra => "N/A".to_string(),
+    let amount = match stage_id.variant() {
+        StageVariantID::Catamin => return Some(energy_catamin(energy)),
+        StageVariantID::Extra => "N/A".to_string(),
         _ => {
             let mut buf = String::new();
             buf.write_formatted(&energy, &Locale::en).unwrap();
@@ -164,8 +171,9 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
 
 /// Get the xp drop of a stage.
 pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
+    let stage_id: StageID = (&stage.meta).into();
     let xp = stage.xp?;
-    if matches!(stage.meta.type_enum, LegacyStageVariant::RankingDojo) && xp == 0 {
+    if stage_id.variant() == StageVariantID::RankingDojo && xp == 0 {
         return None;
     }
     let mut buf = String::new();
