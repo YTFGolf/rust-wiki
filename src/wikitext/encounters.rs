@@ -10,13 +10,14 @@ use crate::{
         stage::{
             get_stages,
             parsed::stage_enemy::StageEnemy,
-            raw::{
-                stage_data::StageData,
-                stage_metadata::{consts::LegacyStageVariant as T, LegacyStageMeta},
-            },
+            raw::{stage_data::StageData, stage_metadata::LegacyStageMeta},
         },
     },
-    meta::stage::{map_id::MainType, stage_id::StageID, variant::StageVariantID},
+    meta::stage::{
+        map_id::{MainType, MapID},
+        stage_id::StageID,
+        variant::StageVariantID as T,
+    },
     wikitext::{
         data_files::stage_wiki_data::STAGE_WIKI_DATA,
         wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
@@ -132,7 +133,6 @@ mod order {
 
 /// For use in [sort_encounters].
 fn key(meta: &LegacyStageMeta) -> (usize, u32, u32) {
-    type T = StageVariantID;
     let stage_id: StageID = meta.into();
 
     let stage_id = match stage_id.variant() {
@@ -162,7 +162,6 @@ fn sort_encounters(encounters: &mut [&StageData]) {
 ///
 /// Note: this does nothing about Removed Stages or any filtering based on type.
 fn raw_section(stage: &StageID) -> SectionRef {
-    type T = StageVariantID;
     match stage.variant() {
         T::MainChapters => match stage.map().main_type().unwrap() {
             MainType::EoC => Ref::EoC,
@@ -212,7 +211,8 @@ where
 
 /// Get a list of magnifications the enemy appears at.
 fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
-    if stage.meta.type_enum == T::MainChapters && stage.meta.map_num == 0 {
+    let stage_id: StageID = (&stage.meta).into();
+    if stage_id.map() == &MapID::from_components(T::MainChapters, 0) {
         return String::new();
     };
 
@@ -264,7 +264,10 @@ fn get_group<'a: 'b, 'b>(
 ) -> Group<'a> {
     let sec_ref = section_map.0;
     if *sec_ref.section().display_type() == DisplayType::Warn {
-        log::warn!("{:?} stages encountered.", section_map.1[0].meta.type_enum);
+        log::warn!(
+            "{:?} stages encountered.",
+            StageID::from(&section_map.1[0].meta)
+        );
     }
 
     let mut group = Group::new(sec_ref, vec![]);
@@ -281,8 +284,8 @@ fn get_group<'a: 'b, 'b>(
         if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
             log::info!(
                 "Map {:03}-{:03} is a placeholder.",
-                stage.meta.type_num,
-                stage.meta.map_num
+                stage_id.variant().num(),
+                stage_id.map().num()
             );
             continue;
         }
@@ -290,12 +293,12 @@ fn get_group<'a: 'b, 'b>(
         // below statement will catch it without any errors, but it's a better
         // error message.
 
-        let Some(stage_data) = stage_map.get(stage.meta.stage_num) else {
+        let Some(stage_data) = stage_map.get(stage_id.num()) else {
             log::info!(
                 "Stage {:03}-{:03}-{:03} has no name.",
-                stage.meta.type_num,
-                stage.meta.map_num,
-                stage.meta.stage_num
+                stage_id.variant().num(),
+                stage_id.map().num(),
+                stage_id.num()
             );
             continue;
         };
@@ -360,7 +363,7 @@ fn get_section_map<'a>(
             } else {
                 log::info!(
                     "Extra stage map {} has no continue id. Skipping.",
-                    encounter.meta.map_num
+                    stage_id.map().num()
                 );
                 continue;
             };
