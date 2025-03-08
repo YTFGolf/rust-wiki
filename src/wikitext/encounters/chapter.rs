@@ -12,7 +12,7 @@ pub struct Stage<'a> {
     /// Enemy magnifications in stage.
     pub mags: String,
     /// Stage ID.
-    pub id: StageID,
+    pub id: &'a StageID,
 }
 impl<'a> Stage<'a> {
     /// Create new Stage.
@@ -20,18 +20,9 @@ impl<'a> Stage<'a> {
         Self {
             stage_name,
             mags,
-            id: id.clone(),
+            id,
         }
     }
-
-        /// Create new Stage.
-        pub fn new2(stage_name: &'a str, mags: String, id:StageID) -> Self {
-            Self {
-                stage_name,
-                mags,
-                id: id.clone(),
-            }
-        }
 }
 
 #[derive(Debug)]

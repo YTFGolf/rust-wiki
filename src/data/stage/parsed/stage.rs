@@ -248,7 +248,7 @@ impl From<StageData<'_>> for Stage {
             restrictions = None;
         }
 
-        let meta = data.meta.into();
+        let meta = data.id.into();
 
         let base_id: i32 = data.stage_csv_data.header.base_id;
         let is_no_continues: bool = u8_to_bool(data.stage_csv_data.header.no_cont);

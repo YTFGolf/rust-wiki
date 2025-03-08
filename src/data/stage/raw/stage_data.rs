@@ -1,5 +1,5 @@
 //! Module that deals with getting information about stages.
-use super::{stage_metadata::LegacyStageMeta, stage_option::StageOptionCSV};
+use super::stage_option::StageOptionCSV;
 use crate::{
     data::{
         map::{
@@ -123,8 +123,7 @@ pub mod csv_types {
 #[derive(Debug)]
 pub struct StageData<'a> {
     /// Stage's metadata.
-    // pub meta: StageID,
-    pub meta: LegacyStageMeta,
+    pub id: StageID,
     /// Data stored in the stage's CSV file.
     pub stage_csv_data: RawCSVData,
 
@@ -163,7 +162,7 @@ impl<'a> StageData<'_> {
         let stage_csv_data = Self::read_stage_csv(stage_file_reader);
 
         Ok(StageData {
-            meta: id.into(),
+            id,
             stage_csv_data,
             version,
         })
@@ -232,32 +231,27 @@ impl<'a> StageData<'_> {
 
     /// Get MapStageData data if it exists.
     pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
-        let stage = StageID::from(&self.meta);
-        GameMap::get_stage_data(&stage, self.version)
+        GameMap::get_stage_data(&self.id, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
-        let stage = StageID::from(&self.meta);
-        GameMap::get_map_option_data(stage.map(), self.version)
+        GameMap::get_map_option_data(self.id.map(), self.version)
     }
 
     /// Get Stage_option data if it exists.
     pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
-        let stage = StageID::from(&self.meta);
-        GameMap::stage_stage_option_data(&stage, self.version)
+        GameMap::stage_stage_option_data(&self.id, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_ex_option_data(&self) -> Option<u32> {
-        let stage = StageID::from(&self.meta);
-        GameMap::get_ex_option_data(stage.map(), self.version)
+        GameMap::get_ex_option_data(self.id.map(), self.version)
     }
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
-        let stage = StageID::from(&self.meta);
-        GameMap::get_special_rules_data(stage.map(), self.version)
+        GameMap::get_special_rules_data(self.id.map(), self.version)
     }
 
     /// Get the data object's version.
