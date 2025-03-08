@@ -166,7 +166,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 
     let mut i = 0;
     while let Some(stage) = map_data.get(i) {
-        let meta = LegacyStageMeta::from_numbers(map.meta.type_num, map.meta.map_num, i).unwrap();
+        let stage_id = StageID::from_numbers(map.meta.type_num, map.meta.map_num, i);
         write!(
             buf,
             "\n|-\n\
@@ -177,7 +177,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
             | {energy} {{{{EnergyIcon}}}}",
             stagenum = i,
             stagenum2 = i + 1,
-            energy = GameMap::get_stage_data(&meta, version)
+            energy = GameMap::get_stage_data(&stage_id, version)
                 .unwrap()
                 .fixed_data
                 .energy

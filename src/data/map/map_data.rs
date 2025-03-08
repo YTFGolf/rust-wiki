@@ -7,12 +7,18 @@ use super::{
     raw::csv_types::{HeaderCSV, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
     special_rules::{SpecialRule, SpecialRules},
 };
-use crate::data::{
-    stage::raw::{
-        stage_metadata::{consts::LegacyStageVariant, LegacyStageMeta},
-        stage_option::{StageOption, StageOptionCSV},
+use crate::{
+    data::{
+        stage::raw::{
+            stage_metadata::LegacyStageMeta,
+            stage_option::{StageOption, StageOptionCSV},
+        },
+        version::Version,
     },
-    version::Version,
+    meta::stage::{
+        stage_id::StageID, stage_types::transform::transform_map::map_data_file,
+        variant::StageVariantID,
+    },
 };
 use csv::ByteRecord;
 use std::{
@@ -52,12 +58,14 @@ impl GameMap {
     ///
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
     /// Labyrinth stages above 100.
-    fn stage_data(md: &LegacyStageMeta, v: &Version) -> Option<StageDataCSV> {
-        let map_file = v.get_file_path("DataLocal").join(md.map_file_name());
+    fn stage_data(stage: &StageID, v: &Version) -> Option<StageDataCSV> {
+        let map_file = v
+            .get_file_path("DataLocal")
+            .join(map_data_file(stage.map()));
         let line = BufReader::new(File::open(map_file).unwrap())
             .lines()
             .skip(2)
-            .nth(md.stage_num.try_into().unwrap())?
+            .nth(stage.num().try_into().unwrap())?
             .unwrap();
 
         let mut split_line = line.split("//").next().unwrap().trim();
@@ -166,11 +174,11 @@ impl GameMap {
     }
 
     /// Get MapStageData data for the stage if it exists.
-    pub fn get_stage_data(meta: &LegacyStageMeta, version: &Version) -> Option<StageDataCSV> {
-        if meta.type_enum == LegacyStageVariant::Labyrinth {
+    pub fn get_stage_data(stage: &StageID, version: &Version) -> Option<StageDataCSV> {
+        if stage.variant() == StageVariantID::Labyrinth {
             return None;
         }
-        GameMap::stage_data(meta, version)
+        GameMap::stage_data(stage, version)
     }
 
     /// Get Map_option data if it exists.
