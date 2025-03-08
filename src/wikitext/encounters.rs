@@ -315,7 +315,7 @@ fn get_group<'a: 'b, 'b>(
         // Get rid of `(Old)` and `(Removed)`.
         let chap = get_group_chapter(group_chapters, map_name);
         let mags = get_stage_mags(stage, abs_enemy_id);
-        chap.stages.push(Stage::new(stage_name, mags, &stage.meta));
+        chap.stages.push(Stage::new2(stage_name, mags, stage_id.clone()));
     }
     group
 }

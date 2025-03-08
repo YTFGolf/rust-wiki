@@ -1,7 +1,7 @@
 //! Deals with singular chapters of encounters.
 
 use super::section::SectionRef;
-use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
+use crate::meta::stage::stage_id::StageID;
 use std::{borrow::Cow, collections::HashSet};
 
 #[derive(Debug)]
@@ -11,18 +11,27 @@ pub struct Stage<'a> {
     pub stage_name: &'a str,
     /// Enemy magnifications in stage.
     pub mags: String,
-    /// Stage metadata.
-    pub meta: &'a LegacyStageMeta,
+    /// Stage ID.
+    pub id: StageID,
 }
 impl<'a> Stage<'a> {
     /// Create new Stage.
-    pub fn new(stage_name: &'a str, mags: String, meta: &'a LegacyStageMeta) -> Self {
+    pub fn new(stage_name: &'a str, mags: String, id: &'a StageID) -> Self {
         Self {
             stage_name,
             mags,
-            meta,
+            id: id.clone(),
         }
     }
+
+        /// Create new Stage.
+        pub fn new2(stage_name: &'a str, mags: String, id:StageID) -> Self {
+            Self {
+                stage_name,
+                mags,
+                id: id.clone(),
+            }
+        }
 }
 
 #[derive(Debug)]

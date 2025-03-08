@@ -146,7 +146,7 @@ impl EncountersSection {
                 if chapter.stages.len() == 1 {
                     write!(buf, "*{chap}: ", chap = chapter.chapter_name).unwrap();
                     let stage = &chapter.stages[0];
-                    self.fmt_encounter(buf, &stage.meta.into(), stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, &stage.id, stage.stage_name, &stage.mags);
 
                     return;
                 }
@@ -154,7 +154,7 @@ impl EncountersSection {
                 write!(buf, "*{chap}:", chap = chapter.chapter_name).unwrap();
                 for stage in chapter.stages {
                     *buf += "\n**";
-                    self.fmt_encounter(buf, &stage.meta.into(), stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, &stage.id, stage.stage_name, &stage.mags);
                 }
             }
             D::Story | D::Flat | D::Custom => {
@@ -163,16 +163,15 @@ impl EncountersSection {
                 for stage in chapter.stages {
                     *buf += "*";
 
-                    let stage_id: StageID = stage.meta.into();
-                    let stage_id = match stage_id.variant() {
-                        T::Extra => {
-                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage_id.map().num()) {
+                    let stage_id = match stage.id.variant() {
+                        T::Extra => &{
+                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.id.map().num()) {
                                 StageID::from_numbers(ids.0, ids.1, 999)
                             } else {
                                 todo!()
                             }
-                        }
-                        _ => stage_id,
+                        },
+                        _ => &stage.id,
                     };
                     // Get correct numbers for continue stages.
 
@@ -495,8 +494,6 @@ mod tests {
 
     #[test]
     fn chapter_normal() {
-        use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
-
         let mut buf = String::new();
         let section = Ref::Event.section();
         section.fmt_chapter(
@@ -507,17 +504,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &LegacyStageMeta::new("event 0 0").unwrap(),
+                        &parse_stage_selector("event 0 0").unwrap(),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &LegacyStageMeta::new("event 0 1").unwrap(),
+                        &parse_stage_selector("event 0 1").unwrap(),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &LegacyStageMeta::new("event 0 2").unwrap(),
+                        &parse_stage_selector("event 0 2").unwrap(),
                     ),
                 ],
             ),
@@ -534,8 +531,6 @@ mod tests {
 
     #[test]
     fn chapter_flat() {
-        use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
-
         let mut buf = String::new();
         let section = Ref::Labyrinth.section();
         section.fmt_chapter(
@@ -546,17 +541,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &LegacyStageMeta::new("l 0 0").unwrap(),
+                        &parse_stage_selector("l 0 0").unwrap(),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &LegacyStageMeta::new("l 0 1").unwrap(),
+                        &parse_stage_selector("l 0 1").unwrap(),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &LegacyStageMeta::new("l 0 2").unwrap(),
+                        &parse_stage_selector("l 0 2").unwrap(),
                     ),
                 ],
             ),
@@ -572,8 +567,6 @@ mod tests {
 
     #[test]
     fn chapter_story() {
-        use crate::data::stage::raw::stage_metadata::LegacyStageMeta;
-
         let mut buf = String::new();
         let section = Ref::SoL.section();
         section.fmt_chapter(
@@ -584,17 +577,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &LegacyStageMeta::new("sol 0 0").unwrap(),
+                        &parse_stage_selector("sol 0 0").unwrap(),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &LegacyStageMeta::new("sol 0 1").unwrap(),
+                        &parse_stage_selector("sol 0 1").unwrap(),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &LegacyStageMeta::new("sol 0 2").unwrap(),
+                        &parse_stage_selector("sol 0 2").unwrap(),
                     ),
                 ],
             ),
