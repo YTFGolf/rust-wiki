@@ -146,7 +146,7 @@ impl EncountersSection {
                 if chapter.stages.len() == 1 {
                     write!(buf, "*{chap}: ", chap = chapter.chapter_name).unwrap();
                     let stage = &chapter.stages[0];
-                    self.fmt_encounter(buf, &stage.id, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, stage.id, stage.stage_name, &stage.mags);
 
                     return;
                 }
@@ -154,7 +154,7 @@ impl EncountersSection {
                 write!(buf, "*{chap}:", chap = chapter.chapter_name).unwrap();
                 for stage in chapter.stages {
                     *buf += "\n**";
-                    self.fmt_encounter(buf, &stage.id, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, stage.id, stage.stage_name, &stage.mags);
                 }
             }
             D::Story | D::Flat | D::Custom => {
@@ -171,11 +171,11 @@ impl EncountersSection {
                                 todo!()
                             }
                         },
-                        _ => &stage.id,
+                        _ => stage.id,
                     };
                     // Get correct numbers for continue stages.
 
-                    self.fmt_encounter(buf, &stage_id, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, stage_id, stage.stage_name, &stage.mags);
                     *buf += "\n";
                 }
                 buf.pop();

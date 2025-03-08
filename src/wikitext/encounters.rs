@@ -102,7 +102,7 @@ mod order {
     const _: () = assert!(TYPE_ORDER_INDICES[T::Extra as usize] == STYPE_AMT - 1);
 
     /// Enumerate a [`StageVariantID`] object for use in comparisons.
-    pub const fn enumerate_id(variant: &StageVariantID) -> usize {
+    pub const fn enumerate_id(variant: StageVariantID) -> usize {
         TYPE_ORDER_INDICES[variant.num() as usize]
     }
 
@@ -139,7 +139,7 @@ fn key(stage_id: &StageID) -> (usize, u32, u32) {
     };
 
     (
-        enumerate_id(&stage_id.variant()),
+        enumerate_id(stage_id.variant()),
         stage_id.map().num(),
         stage_id.num(),
     )

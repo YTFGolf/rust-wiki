@@ -115,7 +115,7 @@ impl MapData {
         if let Some(option_data) = GameMap::map_stage_option_data(&map_id, version) {
             restrictions = Some(
                 option_data
-                    .into_iter()
+                    .iter()
                     .filter_map(|r| {
                         let r = Restriction::from_option_csv(r, version);
                         match r.stages_applied {
