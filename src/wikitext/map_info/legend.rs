@@ -5,10 +5,9 @@ use crate::{
             map_data::GameMap,
             parsed::map::{MapData, ResetType},
         },
-        stage::raw::stage_metadata::consts::LegacyStageVariant,
         version::Version,
     },
-    meta::stage::{map_id::MapID, stage_id::StageID},
+    meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID},
     wikitext::{
         data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
@@ -38,18 +37,18 @@ ${nav}
 
 ${footer}";
 
-/// Subset of [`StageTypeEnum`] available in legend stages.
+/// Subset of [`StageVariantID`] available in Legend Stages.
 enum LegendSubset {
     SoL,
     UL,
     ZL,
 }
-impl From<LegacyStageVariant> for LegendSubset {
-    fn from(value: LegacyStageVariant) -> Self {
+impl From<StageVariantID> for LegendSubset {
+    fn from(value: StageVariantID) -> Self {
         match value {
-            LegacyStageVariant::SoL => Self::SoL,
-            LegacyStageVariant::UL => Self::UL,
-            LegacyStageVariant::ZL => Self::ZL,
+            StageVariantID::SoL => Self::SoL,
+            StageVariantID::UL => Self::UL,
+            StageVariantID::ZL => Self::ZL,
             x => panic!("Type not compatible with Legend Stages: {x:?}."),
         }
     }
@@ -79,12 +78,12 @@ fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
         buf,
         "'''{name}''' (?, ''?'', '''?''') is the {num} sub-chapter of {chap}",
         name = extract_name(&map_data.name),
-        num = get_ordinal(map.meta.map_num + 1),
+        num = get_ordinal(map_id.num() + 1),
         chap = STAGE_WIKI_DATA.stage_type(map_id.variant()).unwrap().name,
     )
     .unwrap();
 
-    let map_offset = match map.meta.type_enum.into() {
+    let map_offset = match map_id.variant().into() {
         LegendSubset::SoL => 0,
         LegendSubset::UL => 49,
         LegendSubset::ZL => 98,
@@ -94,7 +93,7 @@ fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
         write!(
             buf,
             ", and the {num} sub-chapter overall",
-            num = get_ordinal(map.meta.map_num + 1 + map_offset)
+            num = get_ordinal(map_id.num() + 1 + map_offset)
         )
         .unwrap();
     }
@@ -300,7 +299,8 @@ fn nav(map: &MapData) -> String {
 }
 
 fn footer(map: &MapData) -> String {
-    match map.meta.type_enum.into() {
+    let map_id: MapID = (&map.meta).into();
+    match map_id.variant().into() {
         LegendSubset::SoL => {
             "{{LegendStages}}\n\
             [[Category:Stories of Legend Chapters]]"
