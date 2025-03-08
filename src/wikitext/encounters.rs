@@ -12,9 +12,7 @@ use crate::{
             parsed::stage_enemy::StageEnemy,
             raw::{
                 stage_data::StageData,
-                stage_metadata::{
-                    consts::LegacyStageVariant as T, LegacyStageMeta, StageMetaParseError,
-                },
+                stage_metadata::{consts::LegacyStageVariant as T, LegacyStageMeta},
             },
         },
     },
@@ -35,18 +33,21 @@ use zoutbreak::manual_zoutbreak_replace;
 type Ref = SectionRef;
 
 mod order {
-    use crate::data::stage::raw::stage_metadata::{
-        consts::{LegacyStageVariant as T, LEGACY_STAGE_TYPES},
-        LegacyStageMeta,
+    use crate::meta::stage::{
+        stage_id::StageID,
+        stage_types::{MAX_VARIANT_INDEX, RAW_STAGE_TYPES},
+        variant::StageVariantID as T,
     };
 
-    /// Amount of individual [StageTypes][T] contained in [STAGE_TYPES].
-    const STYPE_AMT: usize = LEGACY_STAGE_TYPES.len();
+    /// Amount of individual [StageTypes][T] contained in [RAW_STAGE_TYPES].
+    const STYPE_AMT: usize = RAW_STAGE_TYPES.len();
 
     /// Order of the [StageTypes][T] in Encounters section.
     const TYPE_ORDER: [T; STYPE_AMT] = [
         T::MainChapters,
-        T::Outbreaks,
+        T::EocOutbreak,
+        T::ItfOutbreak,
+        T::CotcOutbreak,
         T::Filibuster,
         T::AkuRealms,
         //
@@ -76,14 +77,14 @@ mod order {
 
     /// Convert [TYPE_ORDER] to its indices. Allows [enumerate_meta] to be a
     /// constant time function.
-    const fn get_type_order() -> [usize; STYPE_AMT] {
-        let mut order_indices = [0; STYPE_AMT];
+    const fn get_type_order() -> [usize; MAX_VARIANT_INDEX] {
+        let mut order_indices = [0; MAX_VARIANT_INDEX];
 
         let mut i = 0;
         // for loops and iterators don't work in constant functions,
         // but while loops do
         while i < STYPE_AMT {
-            let enum_value = TYPE_ORDER[i] as usize;
+            let enum_value = TYPE_ORDER[i].num() as usize;
             order_indices[enum_value] = i;
             i += 1;
         }
@@ -95,13 +96,13 @@ mod order {
     ///
     /// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
     /// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
-    const TYPE_ORDER_INDICES: [usize; STYPE_AMT] = get_type_order();
+    const TYPE_ORDER_INDICES: [usize; MAX_VARIANT_INDEX] = get_type_order();
     // doctest would cause visibility nightmares so just use const assert
     const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
 
     /// Enumerate a [StageMeta] object for use in comparisons.
-    pub const fn enumerate_meta(meta: &LegacyStageMeta) -> usize {
-        TYPE_ORDER_INDICES[meta.type_enum as usize]
+    pub const fn enumerate_meta(stage: &StageID) -> usize {
+        TYPE_ORDER_INDICES[stage.variant().num() as usize]
     }
 
     #[cfg(test)]
@@ -111,14 +112,14 @@ mod order {
         #[test]
         /// Ensure type order has all [STAGE_TYPES].
         fn test_type_order() {
-            // technically this could be converted to a const assert but why
-            // bother.
-            assert_eq!(LEGACY_STAGE_TYPES.len(), TYPE_ORDER.len());
-            for stype in LEGACY_STAGE_TYPES {
+            assert_eq!(RAW_STAGE_TYPES.len(), TYPE_ORDER.len());
+            // technically don't need this because it's the literal definition
+            // but oh well
+            for stype in RAW_STAGE_TYPES {
                 assert!(
-                    TYPE_ORDER.contains(&stype.type_enum),
+                    TYPE_ORDER.contains(&stype.variant_id),
                     "Type order array does not contain variant {:?}",
-                    stype.type_enum
+                    stype.variant_id
                 );
             }
         }
@@ -127,19 +128,23 @@ mod order {
 
 /// For use in [sort_encounters].
 fn key(meta: &LegacyStageMeta) -> (usize, u32, u32) {
-    let m = match meta.type_enum {
-        T::Extra => match STAGE_WIKI_DATA.continue_id(meta.map_num) {
-            None => meta,
-            Some((t, m)) => match t {
-                30 => &LegacyStageMeta::from_selector_main(&t.to_string(), &[999]).unwrap(),
-                _ => &LegacyStageMeta::from_numbers(t, m, 999).unwrap(),
-            },
-            // TODO put unit tests in for mount aku
+    type T = StageVariantID;
+    let stage_id: StageID = meta.into();
+
+    let stage_id = match stage_id.variant() {
+        T::Extra => match STAGE_WIKI_DATA.continue_id(stage_id.map().num()) {
+            None => stage_id,
+            Some((t, m)) => StageID::from_numbers(t, m, 999), // TODO put unit tests in for mount aku
         },
         // Obviously want extra stages to be in correct place if possible
-        _ => meta,
+        _ => stage_id,
     };
-    (enumerate_meta(m), m.map_num, m.stage_num)
+
+    (
+        enumerate_meta(&stage_id),
+        stage_id.map().num(),
+        stage_id.num(),
+    )
     // extra stages will need the map (and possibly stage idk) num to be in the
     // correct place
     // TODO check if stage num is necessary
