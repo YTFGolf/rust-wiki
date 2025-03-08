@@ -76,17 +76,16 @@ fn map_img(map: &MapData) -> String {
 
 fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
     let mut buf = String::new();
-    let map_id: MapID = (&map.meta).into();
     write!(
         buf,
         "'''{name}''' (?, ''?'', '''?''') is the {num} sub-chapter of {chap}",
         name = extract_name(&map_data.name),
-        num = get_ordinal(map_id.num() + 1),
-        chap = STAGE_WIKI_DATA.stage_type(map_id.variant()).unwrap().name,
+        num = get_ordinal(map.id.num() + 1),
+        chap = STAGE_WIKI_DATA.stage_type(map.id.variant()).unwrap().name,
     )
     .unwrap();
 
-    let map_offset = match map_id.variant().into() {
+    let map_offset = match map.id.variant().into() {
         LegendSubset::SoL => 0,
         LegendSubset::UL => 49,
         LegendSubset::ZL => 98,
@@ -96,7 +95,7 @@ fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
         write!(
             buf,
             ", and the {num} sub-chapter overall",
-            num = get_ordinal(map_id.num() + 1 + map_offset)
+            num = get_ordinal(map.id.num() + 1 + map_offset)
         )
         .unwrap();
     }
@@ -150,9 +149,8 @@ fn difficulty(map: &MapData) -> String {
 }
 
 fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String {
-    let map_id: MapID = (&map.meta).into();
-    let mapnum = map_id.num();
-    let code = map_img_code(&map_id);
+    let mapnum = map.id.num();
+    let code = map_img_code(&map.id);
 
     let mut buf = format!(
         "{{| class=\"article-table\"\n\
@@ -169,7 +167,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 
     let mut i = 0;
     while let Some(stage) = map_data.get(i) {
-        let stage_id = StageID::from_map(map_id.clone(), i);
+        let stage_id = StageID::from_map(map.id.clone(), i);
         write!(
             buf,
             "\n|-\n\
@@ -201,9 +199,7 @@ fn materials(map: &MapData, version: &Version) -> String {
         format!("{{{{Materials|{miss_chance}{chances}}}}}")
     }
 
-    let map_id: MapID = (&map.meta).into();
-
-    let drop_item = GameMap::get_drop_item(&map_id, version).unwrap();
+    let drop_item = GameMap::get_drop_item(&map.id, version).unwrap();
     let normal = [
         drop_item.bricks,
         drop_item.feathers,
@@ -248,8 +244,7 @@ fn materials(map: &MapData, version: &Version) -> String {
 }
 
 fn reference(map: &MapData) -> String {
-    let map_id: MapID = (&map.meta).into();
-    let mapid = map_id.mapid();
+    let mapid = map.id.mapid();
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
@@ -284,26 +279,24 @@ fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> Strin
 }
 
 fn nav(map: &MapData) -> String {
-    let map_id: MapID = (&map.meta).into();
-    let type_data = &STAGE_WIKI_DATA.stage_type(map_id.variant()).unwrap();
+    let type_data = &STAGE_WIKI_DATA.stage_type(map.id.variant()).unwrap();
     let chap = extract_name(&type_data.name);
     let heading = format!("[[:Category:{chap} Chapters|{chap} Chapters]]");
 
-    let prev = match map_id.num() {
+    let prev = match map.id.num() {
         0 => None,
         n => type_data.get(n - 1),
     };
     let left = prev.map(|data| extract_name(&data.name));
     let right = type_data
-        .get(map_id.num() + 1)
+        .get(map.id.num() + 1)
         .map(|data| extract_name(&data.name));
 
     nav_item_opt(&heading, left, right)
 }
 
 fn footer(map: &MapData) -> String {
-    let map_id: MapID = (&map.meta).into();
-    match map_id.variant().into() {
+    match map.id.variant().into() {
         LegendSubset::SoL => {
             "{{LegendStages}}\n\
             [[Category:Stories of Legend Chapters]]"
@@ -350,7 +343,7 @@ pub fn get_legend_map(map: &MapData, config: &Config) -> String {
     test_invariants(map);
 
     // println!("{map:#?}");
-    let map_data = get_map_data(&MapID::from(&map.meta));
+    let map_data = get_map_data(&map.id);
 
     let mut buf = String::new();
     for node in parse_info_format(FORMAT) {
@@ -369,7 +362,7 @@ pub fn get_legend_map(map: &MapData, config: &Config) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TEST_CONFIG;
+    use crate::{config::TEST_CONFIG, meta::stage::map_id::MapID};
 
     #[test]
     fn test_full() {
