@@ -16,7 +16,7 @@ use crate::{
         version::Version,
     },
     meta::stage::{
-        stage_id::StageID, stage_types::transform::transform_map::map_data_file,
+        map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_data_file,
         variant::StageVariantID,
     },
 };
@@ -183,46 +183,38 @@ impl GameMap {
     }
 
     /// Get Map_option data if it exists.
-    pub fn get_map_option_data(meta: &LegacyStageMeta, version: &Version) -> Option<MapOptionCSV> {
-        let map_id = Self::get_map_id(meta);
+    pub fn get_map_option_data(map: &MapID, version: &Version) -> Option<MapOptionCSV> {
         let map_option = version.get_cached_file::<MapOption>();
-        map_option.get_map(map_id)
+        map_option.get_map(map.mapid())
     }
 
     /// Get Stage_option data for the stage (and whole map) if it exists.
     pub fn get_stage_option_data<'a>(
-        meta: &LegacyStageMeta,
+        stage: &StageID,
         version: &'a Version,
     ) -> Option<Vec<&'a StageOptionCSV>> {
-        let map_id = Self::get_map_id(meta);
         let stage_option = version.get_cached_file::<StageOption>();
-        stage_option.get_stage(map_id, meta.stage_num)
+        stage_option.get_stage(stage)
     }
 
     /// Get Map_option data if it exists.
-    pub fn get_ex_option_data(meta: &LegacyStageMeta, version: &Version) -> Option<u32> {
-        let map_id = Self::get_map_id(meta);
+    pub fn get_ex_option_data(map: &MapID, version: &Version) -> Option<u32> {
         let ex_option = version.get_cached_file::<ExOption>();
-        ex_option.get_ex_map(map_id)
+        ex_option.get_ex_map(map.mapid())
     }
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data<'a>(
-        meta: &LegacyStageMeta,
+        map: &MapID,
         version: &'a Version,
     ) -> Option<&'a SpecialRule> {
-        let map_id = Self::get_map_id(meta);
         let special_rules = version.get_cached_file::<SpecialRules>();
-        special_rules.get_map(map_id)
+        special_rules.get_map(map.mapid())
     }
 
     /// Get DropItem data if it exists.
-    pub fn get_drop_item<'a>(
-        meta: &LegacyStageMeta,
-        version: &'a Version,
-    ) -> Option<&'a DropItemRaw> {
-        let map_id = Self::get_map_id(meta);
+    pub fn get_drop_item<'a>(map: &MapID, version: &'a Version) -> Option<&'a DropItemRaw> {
         let drop_item = version.get_cached_file::<DropItem>();
-        drop_item.get_drop_item(map_id)
+        drop_item.get_drop_item(map.mapid())
     }
 }

@@ -1,6 +1,6 @@
 //! Module that deals with the `Stage_option` file.
 
-use crate::data::version::version_data::CacheableVersionData;
+use crate::{data::version::version_data::CacheableVersionData, meta::stage::stage_id::StageID};
 use std::{collections::HashMap, path::Path};
 
 /// Module that contains charagroup information.
@@ -155,12 +155,12 @@ impl StageOption {
     /// Get all restrictions in the map where either the entire map has a
     /// restriction or that specific stage has a restriction.
     #[allow(clippy::cast_possible_wrap)]
-    pub fn get_stage(&self, map_id: u32, stage_id: u32) -> Option<Vec<&StageOptionCSV>> {
+    pub fn get_stage(&self, stage_id: &StageID) -> Option<Vec<&StageOptionCSV>> {
         Some(
             self.map
-                .get(&map_id)?
+                .get(&stage_id.mapid())?
                 .iter()
-                .filter(move |stage| [-1, stage_id as i32].contains(&stage.stage_id))
+                .filter(move |stage| [-1, stage_id.num() as i32].contains(&stage.stage_id))
                 .collect(),
         )
     }

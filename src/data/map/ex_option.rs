@@ -26,8 +26,8 @@ impl CacheableVersionData for ExOption {
 }
 impl ExOption {
     /// Get the ex map that the map gets invaded by.
-    pub fn get_ex_map(&self, map_id: u32) -> Option<u32> {
-        Some(self.map.iter().find(|o| o.map_id == map_id)?.ex_map_id)
+    pub fn get_ex_map(&self, mapid: u32) -> Option<u32> {
+        Some(self.map.iter().find(|o| o.map_id == mapid)?.ex_map_id)
     }
 }
 

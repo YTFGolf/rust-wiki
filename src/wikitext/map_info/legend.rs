@@ -5,7 +5,7 @@ use crate::{
             map_data::GameMap,
             parsed::map::{MapData, ResetType},
         },
-        stage::raw::stage_metadata::{consts::LegacyStageVariant, LegacyStageMeta},
+        stage::raw::stage_metadata::consts::LegacyStageVariant,
         version::Version,
     },
     meta::stage::{map_id::MapID, stage_id::StageID},
@@ -244,7 +244,8 @@ fn materials(map: &MapData, version: &Version) -> String {
 }
 
 fn reference(map: &MapData) -> String {
-    let mapid = GameMap::get_map_id(&map.meta);
+    let map_id: MapID = (&map.meta).into();
+    let mapid = map_id.mapid();
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
