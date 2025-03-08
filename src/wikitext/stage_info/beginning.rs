@@ -2,7 +2,7 @@
 
 use crate::{
     data::stage::parsed::stage::Stage,
-    meta::stage::{stage_id::StageID, variant::StageVariantID},
+    meta::stage::variant::StageVariantID,
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         stage_info::StageWikiData,
@@ -32,13 +32,11 @@ pub fn enemies_appearing(stage: &Stage) -> String {
 
 /// Get the "{stage} is the nth stage in {map}." line.
 pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
-    let stage_id = StageID::from(&stage.meta);
-
-    if stage_id.variant() == StageVariantID::RankingDojo {
+    if stage.id.variant() == StageVariantID::RankingDojo {
         return format!(
             "'''{extracted_name}''' is the {num} [[Arena of Honor]] of the [[Catclaw Dojo]].",
             extracted_name = extract_name(&data.stage_name.name),
-            num = get_ordinal(stage_id.map().num() + 1)
+            num = get_ordinal(stage.id.map().num() + 1)
         );
     }
 
@@ -50,7 +48,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
     )
     .unwrap();
 
-    let num = stage_id.num();
+    let num = stage.id.num();
     match (num, data.stage_map.get(num + 1)) {
         (0, None) => {
             buf.write_str("only").unwrap();
@@ -67,7 +65,7 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
     write!(
         buf,
         " {stage_in} {map_name}{punct}",
-        stage_in = match stage_id.variant() {
+        stage_in = match stage.id.variant() {
             StageVariantID::Tower => "floor of",
             _ => "stage in",
         },
