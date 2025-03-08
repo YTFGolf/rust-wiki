@@ -4,7 +4,7 @@ mod legend;
 use crate::{
     config::Config,
     data::map::parsed::map::MapData,
-    meta::stage::{map_id::MapID, variant::StageVariantID},
+    meta::stage::variant::StageVariantID,
 };
 use legend::get_legend_map;
 
@@ -43,8 +43,7 @@ const fn get_preset(st: StageVariantID) -> Preset {
 
 /// Get full map info.
 pub fn get_map_info(map: &MapData, config: &Config) -> String {
-    let map_id: MapID = (&map.meta).into();
-    let preset = get_preset(map_id.variant());
+    let preset = get_preset(map.id.variant());
     match preset {
         Preset::Legend => get_legend_map(map, config),
         _ => todo!(),

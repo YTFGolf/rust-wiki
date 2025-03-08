@@ -38,7 +38,7 @@ impl CommandExec for MapInfoOptions {
             _ => self.selector.join(" "),
         };
 
-        let map = MapData::new_str(selector, config.version.current_version());
+        let map = MapData::from_selector(&selector, config.version.current_version()).unwrap();
         let info = get_map_info(&map, config);
         println!("{info}");
     }
