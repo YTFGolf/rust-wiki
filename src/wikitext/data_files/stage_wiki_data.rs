@@ -1,9 +1,10 @@
 //! Module that gets information about stage names and continue stages.
 
 use crate::{
-    data::stage::raw::stage_metadata::consts::LEGACY_STAGE_TYPES,
     file_handler::{get_file_location, FileLocation},
-    meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID},
+    meta::stage::{
+        map_id::MapID, stage_id::StageID, stage_types::MAX_VARIANT_INDEX, variant::StageVariantID,
+    },
 };
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
@@ -50,8 +51,7 @@ pub struct StageData {
     _num: u32,
 }
 
-const MAX_TYPE_ID: usize = LEGACY_STAGE_TYPES[LEGACY_STAGE_TYPES.len() - 1].number as usize;
-type StageNameMap = [Option<TypeData>; MAX_TYPE_ID + 1];
+type StageNameMap = [Option<TypeData>; MAX_VARIANT_INDEX];
 type ContinueStagesMap = Vec<Option<(u32, u32)>>;
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
@@ -140,7 +140,7 @@ struct StageDifficultyLine {
 }
 
 fn get_stage_name_map() -> StageNameMap {
-    let mut map = [const { None }; MAX_TYPE_ID + 1];
+    let mut map = [const { None }; MAX_VARIANT_INDEX];
 
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b',')
