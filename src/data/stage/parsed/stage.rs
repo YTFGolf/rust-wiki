@@ -366,7 +366,13 @@ impl Stage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, data::stage::get_stage_files};
+    use crate::{
+        config::TEST_CONFIG,
+        data::stage::get_stage_files,
+        meta::stage::{
+            stage_id::StageID, stage_types::transform::transform_stage::stage_data_file,
+        },
+    };
 
     // test none values, esp. with crown data
 
@@ -375,7 +381,8 @@ mod tests {
     fn get_all() {
         for stage_name in get_stage_files(TEST_CONFIG.version.current_version()) {
             let stage = Stage::new_current(&stage_name).unwrap();
-            assert_eq!(stage.meta.stage_file_name(), stage_name);
+            let stage_id: StageID = (&stage.meta).into();
+            assert_eq!(stage_data_file(&stage_id), stage_name);
         }
     }
 
