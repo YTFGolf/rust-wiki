@@ -371,8 +371,9 @@ mod tests {
         config.version.init_all();
 
         let version = config.version.current_version();
-        let leg_begins = MapData::new(0, version);
-        let map_data = get_map_data(&(&leg_begins.meta).into());
+        let leg_begins = MapData::from_id(MapID::from_numbers(0, 0), version);
+        let map_data = get_map_data(&leg_begins.id);
+
         assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
         assert_eq!(
             intro(&leg_begins, map_data, &config),
@@ -415,8 +416,11 @@ mod tests {
         with_version.map_info.set_version(true);
         with_version.version.init_all();
 
-        let leg_begins = MapData::new(0, with_version.version.current_version());
-        let map_data = get_map_data(&(&leg_begins.meta).into());
+        let leg_begins = MapData::from_id(
+            MapID::from_numbers(0, 0),
+            with_version.version.current_version(),
+        );
+        let map_data = get_map_data(&leg_begins.id);
 
         let mut ver = with_version.version.current_version().number();
         if let Some(s) = ver.strip_suffix(".0") {
