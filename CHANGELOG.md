@@ -18,6 +18,10 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Removed
 
+## [0.5.0] - 2025-03-08
+
+Removed `LegacyStageMeta`.
+
 ## [0.4.3] - 2025-03-07
 
 This update's main goal was to deprecate `StageMeta`.
@@ -147,7 +151,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.3...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.0...dev
+[0.5.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.3...v0.5.0
 [0.4.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.0...v0.4.1
