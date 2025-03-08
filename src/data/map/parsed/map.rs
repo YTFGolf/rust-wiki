@@ -1,12 +1,12 @@
 //! Represents a map.
 
-use crate::data::{
-    map::{map_data::GameMap, special_rules::SpecialRule},
-    stage::{
-        parsed::stage::{CrownData, Restriction, RestrictionStages},
-        raw::stage_metadata::LegacyStageMeta,
+use crate::{
+    data::{
+        map::{map_data::GameMap, special_rules::SpecialRule},
+        stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
+        version::Version,
     },
-    version::Version,
+    meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
 };
 use std::num::NonZeroU32;
 
@@ -46,8 +46,8 @@ impl From<u8> for ResetType {
 #[derive(Debug)]
 /// Full map struct.
 pub struct MapData {
-    /// Easier to just reuse StageMeta.
-    pub meta: LegacyStageMeta,
+    /// ID of map.
+    pub id: MapID,
     // MapStageData
     /// Background image of the map.
     pub map_file_num: i32,
@@ -74,30 +74,16 @@ pub struct MapData {
     pub special_rule: Option<SpecialRule>,
 }
 impl MapData {
-    /// Get [`MapData`] from string.
-    pub fn new_str(selector: String, version: &Version) -> Self {
-        if let Ok(mapid) = selector.parse() {
-            return MapData::new(mapid, version);
-        }
-
-        let new_selector = selector + " 0";
-        let m = LegacyStageMeta::new(&new_selector).unwrap();
-        Self::from_meta(m, version)
+    /// Create a new [`MapData`] object from `selector`.
+    pub fn from_selector(selector: &str, version: &Version) -> Option<Self> {
+        Some(Self::from_id(parse_general_map_id(selector)?, version))
     }
 
-    /// Create new [`MapData`] object.
-    pub fn new(mapid: u32, version: &Version) -> Self {
-        let type_id = mapid / 1000;
-        let map_id = mapid % 1000;
-        let m = LegacyStageMeta::from_numbers(type_id, map_id, 0).unwrap();
-        Self::from_meta(m, version)
-    }
+    /// Create a new [`MapData`] object from given id.
+    pub fn from_id(map_id: MapID, version: &Version) -> Self {
+        let map_file_num = GameMap::new(&map_id, version).map_file_num;
 
-    fn from_meta(m: LegacyStageMeta, version: &Version) -> Self {
-        let map_id = &(&m).into();
-        let map_file_num = GameMap::new(map_id, version).map_file_num;
-
-        let map_option_data = GameMap::get_map_option_data(map_id, version);
+        let map_option_data = GameMap::get_map_option_data(&map_id, version);
 
         let crown_data: Option<CrownData>;
         let reset_type: ResetType;
@@ -126,7 +112,7 @@ impl MapData {
         }
 
         let restrictions: Option<Vec<Restriction>>;
-        if let Some(option_data) = GameMap::map_stage_option_data(map_id, version) {
+        if let Some(option_data) = GameMap::map_stage_option_data(&map_id, version) {
             restrictions = Some(
                 option_data
                     .into_iter()
@@ -143,10 +129,10 @@ impl MapData {
             restrictions = None;
         }
 
-        let ex_option_map = GameMap::get_ex_option_data(map_id, version);
-        let special_rule = GameMap::get_special_rules_data(map_id, version).cloned();
+        let ex_option_map = GameMap::get_ex_option_data(&map_id, version);
+        let special_rule = GameMap::get_special_rules_data(&map_id, version).cloned();
         Self {
-            meta: m,
+            id: map_id,
             //
             map_file_num,
             //
