@@ -44,5 +44,6 @@ pub fn map_img_code(map: &MapID) -> String {
         StageCodeType::Map | StageCodeType::RPrefix => stype.map_code.unwrap().to_lowercase(),
         StageCodeType::Other(code) => code.to_lowercase(),
         StageCodeType::Custom => "main".to_lowercase(),
+        // sort of a placeholder
     }
 }
