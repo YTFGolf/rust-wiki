@@ -28,9 +28,8 @@ pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
     fn get_map_name(map: &MapData) -> String {
         OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1").to_string()
     }
-    let stage_id: StageID = (&stage.meta).into();
 
-    match stage_id.variant() {
+    match stage.id.variant() {
         T::MainChapters
         | T::EocOutbreak
         | T::ItfOutbreak
@@ -84,8 +83,7 @@ pub fn max_clears(stage: &Stage) -> Option<TemplateParameter> {
 
 /// Get star difficulty of stage.
 pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
-    let stage_id: StageID = (&stage.meta).into();
-    let difficulty = STAGE_WIKI_DATA.difficulty(&stage_id)?;
+    let difficulty = STAGE_WIKI_DATA.difficulty(&stage.id)?;
 
     Some(TemplateParameter::new(
         "difficulty",
@@ -141,20 +139,18 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
 
 /// Get the prev and next stage nav items.
 fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
-    let stage_id: StageID = (&stage.meta).into();
-
     let prev;
     let next;
-    if [T::Extra].contains(&stage_id.variant()) {
+    if [T::Extra].contains(&stage.id.variant()) {
         prev = None;
         next = None;
     } else {
-        prev = if stage_id.num() == 0 {
+        prev = if stage.id.num() == 0 {
             None
         } else {
-            data.stage_map.get(stage_id.num() - 1)
+            data.stage_map.get(stage.id.num() - 1)
         };
-        next = data.stage_map.get(stage_id.num() + 1);
+        next = data.stage_map.get(stage.id.num() + 1);
     }
 
     let (prev, mut next) = (get_single_nav(prev), get_single_nav(next));
@@ -169,7 +165,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
 
     if let Some(ex_map_id) = stage.ex_invasion {
         let stage = &STAGE_WIKI_DATA
-            .stage(&StageID::from_numbers(4, ex_map_id % 1000, stage_id.num()))
+            .stage(&StageID::from_numbers(4, ex_map_id % 1000, stage.id.num()))
             .unwrap()
             .name;
         let invaded = format!("{stage} (''Invasion Stage'')");
@@ -185,8 +181,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
 
 /// Get the `prev stage` and `next stage` infobox parameters.
 pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
-    let stage_id: StageID = (&stage.meta).into();
-    if [T::Dojo, T::RankingDojo].contains(&stage_id.variant()) {
+    if [T::Dojo, T::RankingDojo].contains(&stage.id.variant()) {
         return vec![];
     }
 
