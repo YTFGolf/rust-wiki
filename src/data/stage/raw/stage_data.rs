@@ -145,10 +145,10 @@ impl<'a> StageData<'_> {
         selector: &str,
         version: &'a Version,
     ) -> Result<StageData<'a>, StageDataError> {
-        let Some(id) = parse_general_stage_id(selector) else {
-            panic!("Invalid selector: {selector:?}")
-        };
-        Self::from_id(id, version)
+        match parse_general_stage_id(selector) {
+            Some(id) => Self::from_id(id, version),
+            None => Err(StageDataError::InvalidSelector),
+        }
     }
 
     /// Get stage data from [`StageID`].
