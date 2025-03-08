@@ -2,9 +2,7 @@
 
 mod legend;
 use crate::{
-    config::Config,
-    data::map::parsed::map::MapData,
-    meta::stage::variant::StageVariantID,
+    config::Config, data::map::parsed::map::MapData, meta::stage::variant::StageVariantID,
 };
 use legend::get_legend_map;
 
