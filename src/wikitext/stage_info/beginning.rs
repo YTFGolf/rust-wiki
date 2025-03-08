@@ -52,17 +52,11 @@ pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
         (0, None) => {
             buf.write_str("only").unwrap();
         }
-        (n, next) => {
-            write!(
-                buf,
-                "{ord}{is_last}",
-                ord = get_ordinal(n + 1),
-                is_last = match next {
-                    None => " and final",
-                    _ => "",
-                }
-            )
-            .unwrap();
+        (n, None) => {
+            write!(buf, "{ord} and final", ord = get_ordinal(n + 1)).unwrap();
+        }
+        (n, Some(_)) => {
+            write!(buf, "{ord}", ord = get_ordinal(n + 1)).unwrap();
         }
     };
     // only/nth/nth and final
