@@ -132,7 +132,7 @@ impl MapData {
                     .into_iter()
                     .filter_map(|r| {
                         let r = Restriction::from_option_csv(r, version);
-                        match r.stage {
+                        match r.stages_applied {
                             RestrictionStages::All => Some(r),
                             RestrictionStages::One(_) => None,
                         }

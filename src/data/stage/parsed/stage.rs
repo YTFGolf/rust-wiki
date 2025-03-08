@@ -128,7 +128,7 @@ impl From<i32> for RestrictionStages {
 /// Stage's restriction. Multiple fields can be active at once.
 pub struct Restriction {
     /// Which stages the restriction applies to.
-    pub stage: RestrictionStages,
+    pub stages_applied: RestrictionStages,
     /// Crown difficulties that the restrictions apply to.
     pub crowns_applied: RestrictionCrowns,
     /// Rarities allowed.
@@ -160,7 +160,7 @@ impl Restriction {
         // now this is enough.
 
         Self {
-            stage: value.stage_id.into(),
+            stages_applied: value.stage_id.into(),
             crowns_applied: value.stars.into(),
             rarity: std::num::NonZeroU8::new(value.rarity),
             deploy_limit: NonZeroU32::new(value.deploy_limit),
