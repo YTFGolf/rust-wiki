@@ -18,7 +18,7 @@ use crate::{
             },
         },
     },
-    meta::stage::stage_id::StageID,
+    meta::stage::{map_id::MainType, stage_id::StageID, variant::StageVariantID},
     wikitext::{
         data_files::stage_wiki_data::STAGE_WIKI_DATA,
         wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
@@ -156,20 +156,17 @@ fn sort_encounters(encounters: &mut [&StageData]) {
 /// Get the section that the stage refers to.
 ///
 /// Note: this does nothing about Removed Stages or any filtering based on type.
-fn raw_section(meta: &LegacyStageMeta) -> SectionRef {
-    match meta.type_enum {
-        T::MainChapters => match meta.map_num {
-            0..=2 => Ref::EoC,
-            3..=5 => Ref::ItF,
-            6..=8 => Ref::CotC,
-            _ => unreachable!(),
+fn raw_section(stage: &StageID) -> SectionRef {
+    type T = StageVariantID;
+    match stage.variant() {
+        T::MainChapters => match stage.map().main_type().unwrap() {
+            MainType::EoC => Ref::EoC,
+            MainType::ItF => Ref::ItF,
+            MainType::CotC => Ref::CotC,
         },
-        T::Outbreaks => match meta.type_num {
-            20 => Ref::EoCOutbreak,
-            21 => Ref::ItFOutbreak,
-            22 => Ref::CotCOutbreak,
-            _ => unreachable!(),
-        },
+        T::EocOutbreak => Ref::EocOutbreak,
+        T::ItfOutbreak => Ref::ItfOutbreak,
+        T::CotcOutbreak => Ref::CotcOutbreak,
         T::Filibuster => Ref::CotC,
         T::AkuRealms => Ref::AkuRealms,
         T::SoL => Ref::SoL,
@@ -345,28 +342,17 @@ fn get_section_map<'a>(
 ) -> Vec<(SectionRef, Vec<&'a StageData<'a>>)> {
     let mut sections_map: Vec<(Ref, Vec<&StageData<'_>>)> = Vec::new();
     for encounter in encounters {
-        let mut raw = raw_section(&encounter.meta);
+        let stage_id = (&encounter.meta).into();
+        let mut raw = raw_section(&stage_id);
 
         if *raw.section().display_type() == DisplayType::Skip {
             continue;
         }
 
         if raw == Ref::Extra {
-            if let Some(ids) = STAGE_WIKI_DATA.continue_id(encounter.meta.map_num) {
-                let new_meta = match LegacyStageMeta::from_numbers(ids.0, ids.1, 999) {
-                    Ok(nm) => nm,
-                    Err(StageMetaParseError::Rejected) => {
-                        assert_eq!(ids.0, 30);
-                        LegacyStageMeta::from_selector_main(&ids.0.to_string(), &[999]).unwrap()
-                    }
-                    Err(StageMetaParseError::Invalid) => {
-                        panic!("Matching meta failed or something.")
-                    }
-                };
-                raw = raw_section(&new_meta);
-            }
-            // Use continuestages to get proper section.
-            else {
+            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage_id.map().num()) {
+                raw = raw_section(&StageID::from_numbers(ids.0, ids.1, 999));
+            } else {
                 log::info!(
                     "Extra stage map {} has no continue id. Skipping.",
                     encounter.meta.map_num

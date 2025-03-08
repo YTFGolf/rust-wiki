@@ -162,20 +162,20 @@ impl EncountersSection {
                 for stage in chapter.stages {
                     *buf += "*";
 
-                    let id: StageID = stage.meta.into();
-                    let id = match id.variant() {
+                    let stage_id: StageID = stage.meta.into();
+                    let stage_id = match stage_id.variant() {
                         T::Extra => {
-                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(id.map().num()) {
+                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage_id.map().num()) {
                                 StageID::from_numbers(ids.0, ids.1, 999)
                             } else {
                                 todo!()
                             }
                         }
-                        _ => id,
+                        _ => stage_id,
                     };
                     // Get correct numbers for continue stages.
 
-                    self.fmt_encounter(buf, &id, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, &stage_id, stage.stage_name, &stage.mags);
                     *buf += "\n";
                 }
                 buf.pop();
@@ -228,11 +228,11 @@ type SectionRefRepr = u8;
 /// Enum reference to a section.
 pub enum SectionRef {
     EoC,
-    EoCOutbreak,
+    EocOutbreak,
     ItF,
-    ItFOutbreak,
+    ItfOutbreak,
     CotC,
-    CotCOutbreak,
+    CotcOutbreak,
     AkuRealms,
     //
     SoL,
@@ -289,17 +289,17 @@ mod tests {
     fn assert_section_ref() {
         assert_eq!(Ref::EoC.section().heading, "[[Empire of Cats]]");
         assert_eq!(
-            Ref::EoCOutbreak.section().heading,
+            Ref::EocOutbreak.section().heading,
             "[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]"
         );
         assert_eq!(Ref::ItF.section().heading, "[[Into the Future]]");
         assert_eq!(
-            Ref::ItFOutbreak.section().heading,
+            Ref::ItfOutbreak.section().heading,
             "[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]"
         );
         assert_eq!(Ref::CotC.section().heading, "[[Cats of the Cosmos]]");
         assert_eq!(
-            Ref::CotCOutbreak.section().heading,
+            Ref::CotcOutbreak.section().heading,
             "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]"
         );
         assert_eq!(Ref::AkuRealms.section().heading, "[[The Aku Realms]]");
