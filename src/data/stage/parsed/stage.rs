@@ -1,21 +1,23 @@
 //! Represents a full stage.
 
 use super::stage_enemy::StageEnemy;
-use crate::data::{
-    map::{
-        map_option::MapOptionCSV,
-        raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-        special_rules::SpecialRule,
-    },
-    stage::raw::{
-        stage_data::StageData,
-        stage_metadata::LegacyStageMeta,
-        stage_option::{
-            charagroups::{CharaGroup, CharaGroups},
-            StageOptionCSV,
+use crate::{
+    data::{
+        map::{
+            map_option::MapOptionCSV,
+            raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+            special_rules::SpecialRule,
         },
+        stage::raw::{
+            stage_data::StageData,
+            stage_option::{
+                charagroups::{CharaGroup, CharaGroups},
+                StageOptionCSV,
+            },
+        },
+        version::Version,
     },
-    version::Version,
+    meta::stage::stage_id::StageID,
 };
 use std::num::NonZeroU32;
 
@@ -175,8 +177,8 @@ impl Restriction {
 #[derive(Debug)]
 /// Full stage struct.
 pub struct Stage {
-    /// Stage's metadata.
-    pub meta: LegacyStageMeta,
+    /// Unique identifier for stage.
+    pub id: StageID,
 
     // Data that always exists.
     /// ID of enemy base (if [anim_base_id][Self::anim_base_id] exists then that
@@ -248,7 +250,7 @@ impl From<StageData<'_>> for Stage {
             restrictions = None;
         }
 
-        let meta = data.id.into();
+        let id = data.id;
 
         let base_id: i32 = data.stage_csv_data.header.base_id;
         let is_no_continues: bool = u8_to_bool(data.stage_csv_data.header.no_cont);
@@ -312,7 +314,7 @@ impl From<StageData<'_>> for Stage {
         }
 
         Self {
-            meta,
+            id,
             base_id,
             is_no_continues,
             continue_data,
@@ -367,11 +369,8 @@ impl Stage {
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG,
-        data::stage::get_stage_files,
-        meta::stage::{
-            stage_id::StageID, stage_types::transform::transform_stage::stage_data_file,
-        },
+        config::TEST_CONFIG, data::stage::get_stage_files,
+        meta::stage::stage_types::transform::transform_stage::stage_data_file,
     };
 
     // test none values, esp. with crown data
@@ -381,8 +380,7 @@ mod tests {
     fn get_all() {
         for stage_name in get_stage_files(TEST_CONFIG.version.current_version()) {
             let stage = Stage::new_current(&stage_name).unwrap();
-            let stage_id: StageID = (&stage.meta).into();
-            assert_eq!(stage_data_file(&stage_id), stage_name);
+            assert_eq!(stage_data_file(&stage.id), stage_name);
         }
     }
 
