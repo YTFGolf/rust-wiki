@@ -123,6 +123,7 @@ pub mod csv_types {
 #[derive(Debug)]
 pub struct StageData<'a> {
     /// Stage's metadata.
+    // pub meta: StageID,
     pub meta: LegacyStageMeta,
     /// Data stored in the stage's CSV file.
     pub stage_csv_data: RawCSVData,

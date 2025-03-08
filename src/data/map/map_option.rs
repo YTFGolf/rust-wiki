@@ -67,11 +67,11 @@ impl CacheableVersionData for MapOption {
     }
 }
 impl MapOption {
-    /// Get the map data that `map_id` corresponds to.
-    pub fn get_map(&self, map_id: u32) -> Option<MapOptionCSV> {
+    /// Get the map data that `mapid` corresponds to.
+    pub fn get_map(&self, mapid: u32) -> Option<MapOptionCSV> {
         Some(
             self.map
-                .get_key_value(&map_id)?
+                .get_key_value(&mapid)?
                 .1
                 .deserialize(None)
                 .unwrap(),

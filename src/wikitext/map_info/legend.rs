@@ -8,7 +8,7 @@ use crate::{
         stage::raw::stage_metadata::{consts::LegacyStageVariant, LegacyStageMeta},
         version::Version,
     },
-    meta::stage::map_id::MapID,
+    meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{
         data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
@@ -150,6 +150,7 @@ fn difficulty(map: &MapData) -> String {
 fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String {
     let mapnum = map.meta.map_num;
     let code = map.meta.type_code.to_lowercase();
+    // TODO img_code
 
     let mut buf = format!(
         "{{| class=\"article-table\"\n\
