@@ -237,22 +237,22 @@ impl<'a> StageData<'_> {
 
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
-        GameMap::get_map_option_data(&self.meta, self.version)
+        GameMap::get_map_option_data(&(&self.meta).into(), self.version)
     }
 
     /// Get Stage_option data if it exists.
-    pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
-        GameMap::get_stage_option_data(&self.meta, self.version)
+    pub fn get_stage_option_data(&self) -> Option<&Vec<StageOptionCSV>> {
+        GameMap::map_stage_option_data(&(&self.meta).into(), self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_ex_option_data(&self) -> Option<u32> {
-        GameMap::get_ex_option_data(&self.meta, self.version)
+        GameMap::get_ex_option_data(&(&self.meta).into(), self.version)
     }
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
-        GameMap::get_special_rules_data(&self.meta, self.version)
+        GameMap::get_special_rules_data(&(&self.meta).into(), self.version)
     }
 
     /// Get the data object's version.

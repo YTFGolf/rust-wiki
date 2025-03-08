@@ -126,7 +126,7 @@ impl MapData {
         }
 
         let restrictions: Option<Vec<Restriction>>;
-        if let Some(option_data) = GameMap::get_stage_option_data(&m, version) {
+        if let Some(option_data) = GameMap::map_stage_option_data(map_id, version) {
             restrictions = Some(
                 option_data
                     .into_iter()
@@ -143,8 +143,8 @@ impl MapData {
             restrictions = None;
         }
 
-        let ex_option_map = GameMap::get_ex_option_data(&m, version);
-        let special_rule = GameMap::get_special_rules_data(&m, version).cloned();
+        let ex_option_map = GameMap::get_ex_option_data(map_id, version);
+        let special_rule = GameMap::get_special_rules_data(map_id, version).cloned();
         Self {
             meta: m,
             //

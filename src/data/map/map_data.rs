@@ -178,8 +178,17 @@ impl GameMap {
         map_option.get_map(map.mapid())
     }
 
-    /// Get Stage_option data for the stage (and whole map) if it exists.
-    pub fn get_stage_option_data<'a>(
+    /// Get Stage_option data for the whole map if it exists.
+    pub fn map_stage_option_data<'a>(
+        map: &MapID,
+        version: &'a Version,
+    ) -> Option<&'a Vec<StageOptionCSV>> {
+        let stage_option = version.get_cached_file::<StageOption>();
+        stage_option.get_map_from_id(map)
+    }
+
+    /// Get Stage_option data for the stage if it exists.
+    pub fn stage_stage_option_data<'a>(
         stage: &StageID,
         version: &'a Version,
     ) -> Option<Vec<&'a StageOptionCSV>> {

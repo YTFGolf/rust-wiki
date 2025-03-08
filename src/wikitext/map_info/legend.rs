@@ -199,7 +199,9 @@ fn materials(map: &MapData, version: &Version) -> String {
         format!("{{{{Materials|{miss_chance}{chances}}}}}")
     }
 
-    let drop_item = GameMap::get_drop_item(&map.meta, version).unwrap();
+    let map_id: MapID = (&map.meta).into();
+
+    let drop_item = GameMap::get_drop_item(&map_id, version).unwrap();
     let normal = [
         drop_item.bricks,
         drop_item.feathers,
