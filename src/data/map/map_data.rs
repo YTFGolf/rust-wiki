@@ -9,10 +9,7 @@ use super::{
 };
 use crate::{
     data::{
-        stage::raw::{
-            stage_metadata::LegacyStageMeta,
-            stage_option::{StageOption, StageOptionCSV},
-        },
+        stage::raw::stage_option::{StageOption, StageOptionCSV},
         version::Version,
     },
     meta::stage::{
@@ -34,8 +31,8 @@ pub struct GameMap {
 
 impl GameMap {
     /// Create new [`GameMap`].
-    pub fn new(md: &LegacyStageMeta, v: &Version) -> Self {
-        let map_file = v.get_file_path("DataLocal").join(md.map_file_name());
+    pub fn new(map: &MapID, v: &Version) -> Self {
+        let map_file = v.get_file_path("DataLocal").join(map_data_file(map));
         let lines = BufReader::new(File::open(map_file).unwrap());
 
         let mut rdr = csv::ReaderBuilder::new()
