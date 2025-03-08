@@ -232,27 +232,32 @@ impl<'a> StageData<'_> {
 
     /// Get MapStageData data if it exists.
     pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
-        GameMap::get_stage_data(&(&self.meta).into(), self.version)
+        let stage = StageID::from(&self.meta);
+        GameMap::get_stage_data(&stage, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
-        GameMap::get_map_option_data(&(&self.meta).into(), self.version)
+        let stage = StageID::from(&self.meta);
+        GameMap::get_map_option_data(stage.map(), self.version)
     }
 
     /// Get Stage_option data if it exists.
-    pub fn get_stage_option_data(&self) -> Option<&Vec<StageOptionCSV>> {
-        GameMap::map_stage_option_data(&(&self.meta).into(), self.version)
+    pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
+        let stage = StageID::from(&self.meta);
+        GameMap::stage_stage_option_data(&stage, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_ex_option_data(&self) -> Option<u32> {
-        GameMap::get_ex_option_data(&(&self.meta).into(), self.version)
+        let stage = StageID::from(&self.meta);
+        GameMap::get_ex_option_data(stage.map(), self.version)
     }
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
-        GameMap::get_special_rules_data(&(&self.meta).into(), self.version)
+        let stage = StageID::from(&self.meta);
+        GameMap::get_special_rules_data(stage.map(), self.version)
     }
 
     /// Get the data object's version.
