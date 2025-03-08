@@ -1,13 +1,11 @@
 //! Module for the [enemies_list] function.
 
 use crate::{
-    data::stage::{
-        parsed::{
-            stage::Stage,
-            stage_enemy::{BossType, StageEnemy},
-        },
-        raw::stage_metadata::consts::LegacyStageVariant as S,
+    data::stage::parsed::{
+        stage::Stage,
+        stage_enemy::{BossType, StageEnemy},
     },
+    meta::stage::{stage_id::StageID, variant::StageVariantID as T},
     wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
 };
 use either::Either::{Left, Right};
@@ -19,6 +17,8 @@ pub fn enemies_list(
     stage: &Stage,
     suppress_gauntlet_magnification: bool,
 ) -> Vec<TemplateParameter> {
+    let stage_id: StageID = (&stage.meta).into();
+
     struct EnemyListWithDupes<'a> {
         base: Vec<&'a StageEnemy>,
         enemies: Vec<&'a StageEnemy>,
@@ -40,9 +40,8 @@ pub fn enemies_list(
     }
     // get all enemies
 
-    let suppress_magnification: bool = matches!(stage.meta.type_enum, S::Dojo | S::RankingDojo)
-        || suppress_gauntlet_magnification
-            && matches!(stage.meta.type_enum, S::Gauntlet | S::CollabGauntlet);
+    let suppress_magnification: bool = matches!(stage_id.variant(), T::Dojo | T::RankingDojo)
+        || suppress_gauntlet_magnification && stage_id.variant().is_gauntlet();
 
     assert!(
         enemy_list.base.len() <= 1,
