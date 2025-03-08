@@ -36,3 +36,15 @@ pub fn map_data_file(map_id: &MapID) -> String {
         }
     }
 }
+
+/// Get the image code used in map and stage name files.
+pub fn map_img_code(map: &MapID) -> String {
+    let stype = get_stage_type(map.variant()).data;
+    if let Some(code) = stype.map_code {
+        return code.to_lowercase();
+    }
+
+    match T::from(stype.variant_id) {
+        _ => unimplemented!(),
+    }
+}

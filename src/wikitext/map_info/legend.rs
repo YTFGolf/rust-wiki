@@ -7,7 +7,10 @@ use crate::{
         },
         version::Version,
     },
-    meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID},
+    meta::stage::{
+        map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
+        variant::StageVariantID,
+    },
     wikitext::{
         data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
@@ -147,9 +150,9 @@ fn difficulty(map: &MapData) -> String {
 }
 
 fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String {
+    let map_id: MapID = (&map.meta).into();
     let mapnum = map.meta.map_num;
-    let code = map.meta.type_code.to_lowercase();
-    // TODO img_code
+    let code = map_img_code(&map_id);
 
     let mut buf = format!(
         "{{| class=\"article-table\"\n\
