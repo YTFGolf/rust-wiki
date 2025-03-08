@@ -25,7 +25,7 @@ use crate::{
 use chapter::{Chapter, Group, Stage};
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
-use order::enumerate_meta;
+use order::enumerate_id;
 use regex::Regex;
 use section::{DisplayType, SectionRef};
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
@@ -34,10 +34,10 @@ type Ref = SectionRef;
 
 mod order {
     use crate::meta::stage::{
-        stage_id::StageID,
         stage_types::{MAX_VARIANT_INDEX, RAW_STAGE_TYPES},
-        variant::StageVariantID as T,
+        variant::StageVariantID,
     };
+    type T = StageVariantID;
 
     /// Amount of individual [StageTypes][T] contained in [RAW_STAGE_TYPES].
     const STYPE_AMT: usize = RAW_STAGE_TYPES.len();
@@ -97,12 +97,16 @@ mod order {
     /// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
     /// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
     const TYPE_ORDER_INDICES: [usize; MAX_VARIANT_INDEX] = get_type_order();
-    // doctest would cause visibility nightmares so just use const assert
-    const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
 
-    /// Enumerate a [StageMeta] object for use in comparisons.
-    pub const fn enumerate_meta(stage: &StageID) -> usize {
-        TYPE_ORDER_INDICES[stage.variant().num() as usize]
+    const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
+    // doctest would cause visibility nightmares so just use const assert
+    const _: () = assert!(TYPE_ORDER_INDICES[T::Labyrinth as usize] == 15);
+    // just to make sure I can count
+    const _: () = assert!(TYPE_ORDER_INDICES[T::Extra as usize] == STYPE_AMT - 1);
+
+    /// Enumerate a [`StageVariantID`] object for use in comparisons.
+    pub const fn enumerate_id(variant: &StageVariantID) -> usize {
+        TYPE_ORDER_INDICES[variant.num() as usize]
     }
 
     #[cfg(test)]
@@ -141,16 +145,12 @@ fn key(meta: &LegacyStageMeta) -> (usize, u32, u32) {
     };
 
     (
-        enumerate_meta(&stage_id),
+        enumerate_id(&stage_id.variant()),
         stage_id.map().num(),
         stage_id.num(),
     )
     // extra stages will need the map (and possibly stage idk) num to be in the
     // correct place
-    // TODO check if stage num is necessary
-
-    // Type num is not necessary since it will only make a difference for
-    // outbreaks, which each have their own section anyway.
 }
 
 /// Sort `encounters` in-place.
