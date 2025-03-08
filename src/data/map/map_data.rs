@@ -184,7 +184,7 @@ impl GameMap {
         version: &'a Version,
     ) -> Option<&'a Vec<StageOptionCSV>> {
         let stage_option = version.get_cached_file::<StageOption>();
-        stage_option.get_map_from_id(map)
+        stage_option.get_map(map)
     }
 
     /// Get Stage_option data for the stage if it exists.

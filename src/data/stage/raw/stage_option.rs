@@ -150,15 +150,9 @@ pub struct StageOption {
     map: HashMap<u32, Vec<StageOptionCSV>>,
 }
 impl StageOption {
-    // TODO make this function non-public and refactor
     /// Get the data for the map that `map_id` corresponds to.
-    pub fn get_map(&self, mapid: u32) -> Option<&Vec<StageOptionCSV>> {
-        self.map.get(&mapid)
-    }
-
-    /// Get the data for the map that `map_id` corresponds to.
-    pub fn get_map_from_id(&self, map_id: &MapID) -> Option<&Vec<StageOptionCSV>> {
-        self.get_map(map_id.mapid())
+    pub fn get_map(&self, map_id: &MapID) -> Option<&Vec<StageOptionCSV>> {
+        self.map.get(&map_id.mapid())
     }
 
     /// Get all restrictions in the map where either the entire map has a
@@ -166,7 +160,7 @@ impl StageOption {
     #[allow(clippy::cast_possible_wrap)]
     pub fn get_stage(&self, stage_id: &StageID) -> Option<Vec<&StageOptionCSV>> {
         Some(
-            self.get_map_from_id(stage_id.map())?
+            self.get_map(stage_id.map())?
                 .iter()
                 .filter(move |stage| [-1, stage_id.num() as i32].contains(&stage.stage_id))
                 .collect(),
