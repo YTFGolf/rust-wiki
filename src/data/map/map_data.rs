@@ -164,13 +164,6 @@ impl GameMap {
 }
 
 impl GameMap {
-    /// Get `map_id` to use in map_option and stage_option.
-    #[deprecated]
-    pub fn get_map_id(meta: &LegacyStageMeta) -> u32 {
-        let m = meta;
-        m.type_num * 1000 + m.map_num
-    }
-
     /// Get MapStageData data for the stage if it exists.
     pub fn get_stage_data(stage: &StageID, version: &Version) -> Option<StageDataCSV> {
         if stage.variant() == StageVariantID::Labyrinth {

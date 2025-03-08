@@ -94,9 +94,10 @@ impl MapData {
     }
 
     fn from_meta(m: LegacyStageMeta, version: &Version) -> Self {
-        let map_file_num = GameMap::new(&m, version).map_file_num;
+        let map_id = &(&m).into();
+        let map_file_num = GameMap::new(map_id, version).map_file_num;
 
-        let map_option_data = GameMap::get_map_option_data(&m, version);
+        let map_option_data = GameMap::get_map_option_data(map_id, version);
 
         let crown_data: Option<CrownData>;
         let reset_type: ResetType;
