@@ -113,18 +113,18 @@ impl MapData {
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = GameMap::map_stage_option_data(&map_id, version) {
-            restrictions = Some(
-                option_data
-                    .iter()
-                    .filter_map(|r| {
-                        let r = Restriction::from_option_csv(r, version);
-                        match r.stages_applied {
-                            RestrictionStages::All => Some(r),
-                            RestrictionStages::One(_) => None,
-                        }
-                    })
-                    .collect(),
-            );
+            let data = option_data
+                .iter()
+                .filter_map(|r| {
+                    let r = Restriction::from_option_csv(r, version);
+                    match r.stages_applied {
+                        RestrictionStages::All => Some(r),
+                        RestrictionStages::One(_) => None,
+                    }
+                })
+                .collect();
+
+            restrictions = Some(data);
         } else {
             restrictions = None;
         }

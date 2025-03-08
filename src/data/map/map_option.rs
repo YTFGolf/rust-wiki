@@ -69,7 +69,13 @@ impl CacheableVersionData for MapOption {
 impl MapOption {
     /// Get the map option data for map if exists.
     pub fn get_map(&self, map_id: &MapID) -> Option<MapOptionCSV> {
-        Some(self.map.get_key_value(&map_id.mapid())?.1.deserialize(None).unwrap())
+        Some(
+            self.map
+                .get_key_value(&map_id.mapid())?
+                .1
+                .deserialize(None)
+                .unwrap(),
+        )
     }
 }
 
