@@ -5,7 +5,7 @@ use crate::{
         stage::Stage,
         stage_enemy::{BossType, EnemyAmount, StageEnemy},
     },
-    meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+    meta::stage::variant::StageVariantID as T,
     wikitext::{data_files::enemy_data::ENEMY_DATA, wiki_utils::extract_name},
 };
 use either::Either::{Left, Right};
@@ -214,8 +214,7 @@ fn get_enemy_spawns(
 
 /// Get the battlegrounds section of the stage.
 pub fn battlegrounds(stage: &Stage) -> String {
-    let stage_id: StageID = (&stage.meta).into();
-    let is_dojo = matches!(stage_id.variant(), T::Dojo | T::RankingDojo);
+    let is_dojo = matches!(stage.id.variant(), T::Dojo | T::RankingDojo);
 
     let is_default_spawn: fn(&StageEnemy) -> bool = match is_dojo {
         false => |enemy: &StageEnemy| enemy.base_hp >= 100,
