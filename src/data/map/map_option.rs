@@ -1,6 +1,6 @@
 //! Module that deals with the `Map_option` file.
 
-use crate::data::version::version_data::CacheableVersionData;
+use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use csv::ByteRecord;
 use std::{collections::HashMap, num::NonZero, path::Path};
 
@@ -68,8 +68,8 @@ impl CacheableVersionData for MapOption {
 }
 impl MapOption {
     /// Get the map option data for map if exists.
-    pub fn get_map(&self, mapid: u32) -> Option<MapOptionCSV> {
-        Some(self.map.get_key_value(&mapid)?.1.deserialize(None).unwrap())
+    pub fn get_map(&self, map_id: &MapID) -> Option<MapOptionCSV> {
+        Some(self.map.get_key_value(&map_id.mapid())?.1.deserialize(None).unwrap())
     }
 }
 
@@ -110,7 +110,7 @@ mod tests {
             .version
             .current_version()
             .get_cached_file::<MapOption>()
-            .get_map(0)
+            .get_map(&MapID::from_numbers(0, 0))
             .unwrap();
 
         assert_eq!(s.crown_4, 300);

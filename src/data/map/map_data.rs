@@ -175,7 +175,7 @@ impl GameMap {
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(map: &MapID, version: &Version) -> Option<MapOptionCSV> {
         let map_option = version.get_cached_file::<MapOption>();
-        map_option.get_map(map.mapid())
+        map_option.get_map(map)
     }
 
     /// Get Stage_option data for the whole map if it exists.
