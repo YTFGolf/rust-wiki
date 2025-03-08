@@ -151,7 +151,7 @@ fn difficulty(map: &MapData) -> String {
 
 fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String {
     let map_id: MapID = (&map.meta).into();
-    let mapnum = map.meta.map_num;
+    let mapnum = map_id.num();
     let code = map_img_code(&map_id);
 
     let mut buf = format!(
@@ -169,7 +169,7 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
 
     let mut i = 0;
     while let Some(stage) = map_data.get(i) {
-        let stage_id = StageID::from_numbers(map.meta.type_num, map.meta.map_num, i);
+        let stage_id = StageID::from_map(map_id.clone(), i);
         write!(
             buf,
             "\n|-\n\

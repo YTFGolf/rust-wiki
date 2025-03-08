@@ -54,7 +54,7 @@ pub fn stage_location(stage: &Stage) -> TemplateParameter {
     let buf = format!(
         "[[File:Mapname{map_num:03} {type_code} en.png]]",
         map_num = stage_id.map().num(),
-        type_code = stage.meta.type_code.to_lowercase(),
+        type_code = map_img_code(stage_id.map())
     );
     TemplateParameter::new("stage location", buf)
 }

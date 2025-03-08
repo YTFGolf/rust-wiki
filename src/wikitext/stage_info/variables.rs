@@ -10,6 +10,7 @@ use super::treasure::{score_rewards, treasure};
 use super::StageWikiData;
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
+use crate::meta::stage::stage_id::StageID;
 
 /// Default format for stage info.
 pub const DEFAULT_FORMAT: &str = "\
@@ -118,10 +119,11 @@ pub fn get_stage_variable(
 
 /// Get the battlecats-db reference link.
 fn reference(stage: &Stage) -> String {
+    let stage_id: StageID = (&stage.meta).into();
     format!(
         "https://battlecats-db.com/stage/s{type:02}{map:03}-{incremented_stage:02}.html",
-        r#type = stage.meta.type_num,
-        map = stage.meta.map_num,
-        incremented_stage = stage.meta.stage_num + 1,
+        r#type = stage_id.variant().num(),
+        map = stage_id.map().num(),
+        incremented_stage = stage_id.num() + 1,
     )
 }
