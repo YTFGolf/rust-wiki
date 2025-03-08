@@ -6,6 +6,7 @@ use crate::{
     wikitext::data_files::stage_wiki_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;
+use strum::EnumIter;
 
 #[derive(Debug, PartialEq)]
 /// How you display the section.
@@ -224,7 +225,7 @@ type SectionRefRepr = u8;
 
 #[repr(u8)]
 #[allow(missing_docs)]
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, EnumIter)]
 /// Enum reference to a section.
 pub enum SectionRef {
     EoC,
@@ -283,58 +284,34 @@ mod tests {
         wikitext::{data_files::stage_wiki_data::STAGE_WIKI_DATA, encounters::chapter::Stage},
     };
     use std::borrow::Cow;
+    use strum::IntoEnumIterator;
     use SectionRef as Ref;
 
     #[test]
     fn assert_section_ref() {
-        assert_eq!(Ref::EoC.section().heading, "[[Empire of Cats]]");
-        assert_eq!(
-            Ref::EocOutbreak.section().heading,
-            "[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]"
-        );
-        assert_eq!(Ref::ItF.section().heading, "[[Into the Future]]");
-        assert_eq!(
-            Ref::ItfOutbreak.section().heading,
-            "[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]"
-        );
-        assert_eq!(Ref::CotC.section().heading, "[[Cats of the Cosmos]]");
-        assert_eq!(
-            Ref::CotcOutbreak.section().heading,
-            "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]"
-        );
-        assert_eq!(Ref::AkuRealms.section().heading, "[[The Aku Realms]]");
-        assert_eq!(
-            Ref::SoL.section().heading,
-            "[[Legend Stages#Stories of Legend|Stories of Legend]]"
-        );
-        assert_eq!(
-            Ref::UL.section().heading,
-            "[[Legend Stages#Uncanny Legends|Uncanny Legends]]"
-        );
-        assert_eq!(
-            Ref::ZL.section().heading,
-            "[[Legend Stages#Zero Legends|Zero Legends]]"
-        );
-        assert_eq!(
-            Ref::Event.section().heading,
-            "[[Special Events|Event Stages]]"
-        );
-        assert_eq!(
-            Ref::Labyrinth.section().heading,
-            "[[Underground Labyrinth]]"
-        );
-        assert_eq!(
-            Ref::Collab.section().heading,
-            "[[Collaboration Events|Collaboration Stages]]"
-        );
-        assert_eq!(Ref::Enigma.section().heading, "[[Enigma Stages]]");
-        assert_eq!(Ref::Dojo.section().heading, "[[Catclaw Dojo]]");
-        assert_eq!(
-            Ref::Removed.section().heading,
-            "[[:Category:Removed Content|Removed Stages]]"
-        );
-        assert_eq!(Ref::Extra.section().heading, "Extra Stages");
-        assert_eq!(Ref::Catamin.section().heading, "[[Catamin Stages]]");
+        for sref in SectionRef::iter() {
+            let heading = match sref {
+                Ref::EoC => "[[Empire of Cats]]",
+                Ref::EocOutbreak => "[[Empire of Cats]] [[Zombie Outbreaks|Outbreaks]]",
+                Ref::ItF => "[[Into the Future]]",
+                Ref::ItfOutbreak => "[[Into the Future]] [[Zombie Outbreaks|Outbreaks]]",
+                Ref::CotC => "[[Cats of the Cosmos]]",
+                Ref::CotcOutbreak => "[[Cats of the Cosmos]] [[Zombie Outbreaks|Outbreaks]]",
+                Ref::AkuRealms => "[[The Aku Realms]]",
+                Ref::SoL => "[[Legend Stages#Stories of Legend|Stories of Legend]]",
+                Ref::UL => "[[Legend Stages#Uncanny Legends|Uncanny Legends]]",
+                Ref::ZL => "[[Legend Stages#Zero Legends|Zero Legends]]",
+                Ref::Event => "[[Special Events|Event Stages]]",
+                Ref::Labyrinth => "[[Underground Labyrinth]]",
+                Ref::Collab => "[[Collaboration Events|Collaboration Stages]]",
+                Ref::Enigma => "[[Enigma Stages]]",
+                Ref::Dojo => "[[Catclaw Dojo]]",
+                Ref::Removed => "[[:Category:Removed Content|Removed Stages]]",
+                Ref::Extra => "Extra Stages",
+                Ref::Catamin => "[[Catamin Stages]]",
+            };
+            assert_eq!(sref.section().heading(), heading);
+        }
     }
 
     fn stringify(
