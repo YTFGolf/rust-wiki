@@ -1,6 +1,6 @@
 //! Module that deals with the `DropItem.csv` file.
 
-use crate::data::version::version_data::CacheableVersionData;
+use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
@@ -61,8 +61,8 @@ pub struct DropItem {
 }
 impl DropItem {
     /// Get drop_item for specific map if it exists.
-    pub fn get_drop_item(&self, mapid: u32) -> Option<&DropItemRaw> {
-        self.map.get(&mapid)
+    pub fn get_drop_item(&self, map_id: &MapID) -> Option<&DropItemRaw> {
+        self.map.get(&map_id.mapid())
     }
 }
 impl CacheableVersionData for DropItem {

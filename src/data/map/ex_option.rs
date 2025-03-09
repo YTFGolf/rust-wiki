@@ -1,6 +1,6 @@
 //! Module that deals with the `EX_option` file.
 
-use crate::data::version::version_data::CacheableVersionData;
+use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use std::path::Path;
 
 #[derive(Debug, serde::Deserialize)]
@@ -26,8 +26,13 @@ impl CacheableVersionData for ExOption {
 }
 impl ExOption {
     /// Get the ex map that the map gets invaded by.
-    pub fn get_ex_map(&self, mapid: u32) -> Option<u32> {
-        Some(self.map.iter().find(|o| o.map_id == mapid)?.ex_map_id)
+    pub fn get_ex_map(&self, map_id: &MapID) -> Option<u32> {
+        Some(
+            self.map
+                .iter()
+                .find(|o| o.map_id == map_id.mapid())?
+                .ex_map_id,
+        )
     }
 }
 

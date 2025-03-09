@@ -199,7 +199,7 @@ impl GameMap {
     /// Get Map_option data if it exists.
     pub fn get_ex_option_data(map: &MapID, version: &Version) -> Option<u32> {
         let ex_option = version.get_cached_file::<ExOption>();
-        ex_option.get_ex_map(map.mapid())
+        ex_option.get_ex_map(map)
     }
 
     /// Get SpecialRulesMap data if it exists.
@@ -208,12 +208,12 @@ impl GameMap {
         version: &'a Version,
     ) -> Option<&'a SpecialRule> {
         let special_rules = version.get_cached_file::<SpecialRules>();
-        special_rules.get_map(map.mapid())
+        special_rules.get_map(map)
     }
 
     /// Get DropItem data if it exists.
     pub fn get_drop_item<'a>(map: &MapID, version: &'a Version) -> Option<&'a DropItemRaw> {
         let drop_item = version.get_cached_file::<DropItem>();
-        drop_item.get_drop_item(map.mapid())
+        drop_item.get_drop_item(map)
     }
 }

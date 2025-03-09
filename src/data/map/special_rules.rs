@@ -1,6 +1,6 @@
 //! Deals with `SpecialRulesMap.json`.
 
-use crate::data::version::version_data::CacheableVersionData;
+use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use raw::{RawRuleData, RawRuleType, RulesMap};
 use std::{collections::HashMap, fs::File};
 
@@ -163,8 +163,8 @@ pub struct SpecialRules {
 }
 impl SpecialRules {
     /// Get the map data that `map_id` corresponds to.
-    pub fn get_map(&self, map_id: u32) -> Option<&SpecialRule> {
-        self.map.get(&map_id)
+    pub fn get_map(&self, map_id: &MapID) -> Option<&SpecialRule> {
+        self.map.get(&map_id.mapid())
     }
 }
 impl From<RulesMap> for SpecialRules {
