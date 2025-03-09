@@ -50,16 +50,3 @@ fn is_single_map(v: StageVariantID) -> bool {
     type T = StageVariantID;
     matches!(v, T::AkuRealms | T::Labyrinth)
 }
-
-/*
-Test:
-// check that all functions return a value (except custom on identifier)
-// Test (in another module) every available alias
- */
-
-// impl StageType {
-//     // Get identifier (map,rprefix=map,other=other,custom=unimplemented)
-//     // fn stage_ident(&self) -> &'static str {
-//     //     todo!()
-//     // }
-// }
