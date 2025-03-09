@@ -7,14 +7,8 @@ use std::{collections::HashMap, num::NonZero, path::Path};
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the map option CSV.
 pub struct MapOptionCSV {
-    /// ID of map.
-    ///
-    /// Roughly follows the format of `str(type_id * 1000 + map_id)`, except for
-    /// CotC Zombie Outbreaks where it's `str(22000 + map_id)`. Also used in
-    /// [stage_option][map_id].
-    ///
-    /// [map_id]: crate::data::stage::raw::stage_option::StageOptionCSV::map_id
-    pub map_id: u32,
+    /// Map's mapid.
+    pub mapid: u32,
     /// Highest crown difficulty the stage goes up to.
     pub max_difficulty: NonZero<u8>,
     /// Magnification on 1-crown difficulty (will always be 100).
@@ -126,7 +120,7 @@ mod tests {
     /// 100.
     #[allow(clippy::used_underscore_binding)]
     fn assert_conditions(record_parsed: &MapOptionCSV, seen: &HashSet<u32>) -> u32 {
-        let map_id = record_parsed.map_id;
+        let map_id = record_parsed.mapid;
         let d: u8 = record_parsed.max_difficulty.into();
 
         assert!((1..=4).contains(&d));

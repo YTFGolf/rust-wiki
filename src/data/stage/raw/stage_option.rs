@@ -122,8 +122,8 @@ pub mod charagroups {
 /// If map has multiple restrictions it will have multiple entries in the file.
 /// If any restriction field is 0 then that restriction does not apply.
 pub struct StageOptionCSV {
-    /// Same as [`map_option`'s][crate::data::map::map_option::MapOptionCSV::map_id].
-    pub map_id: u32,
+    /// Stage's map's mapid.
+    pub mapid: u32,
     /// Crown difficulties that restriction applies to. -1 = all crowns,
     /// otherwise it's just 0-based.
     pub stars: i8,
@@ -191,11 +191,11 @@ fn get_stage_option(path: &Path) -> HashMap<u32, Vec<StageOptionCSV>> {
     // well just convert everything to a [StageOptionCSV] anyway.
     for record in records {
         let result: StageOptionCSV = record.unwrap().deserialize(None).unwrap();
-        let entry = map.get_mut(&result.map_id);
+        let entry = map.get_mut(&result.mapid);
         match entry {
             Some(map_option) => map_option.push(result),
             None => {
-                map.insert(result.map_id, vec![result]);
+                map.insert(result.mapid, vec![result]);
             }
         };
     }
