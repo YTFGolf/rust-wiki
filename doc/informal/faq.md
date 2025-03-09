@@ -26,13 +26,9 @@ For one, there was now a clear flow of data. Instead of the `Stage` object doing
 - A `Stage` struct that provides high-level abstractions. While `StageData` showed raw data and was bound to a containing `Version` object, `Stage` had no references to `Version` and owned all of its data. I also managed to use the typing system to assign meanings: see [Appendix A](#appendix-a) because it's really long.
 - A `StageWikiData` struct that is part of a module that provides functions to allow you to find the names of stages, maps and stage types (using `StageNames.csv`).
 
-Was this a lot more complicated to set up? Absolutely. Was it worth it? Also absolutely.
+Was this a lot more complicated to set up? Absolutely. Was it worth it? Also absolutely. I fixed bugs, such as the Treasure one in the appendix; I was able to add more stuff such as max clears; and I found it much easier to add new stuff on top (such as maps) rather than basically having to write them from scratch like I would have with Python.
 
-fixed bugs e.g. treasure
-easy to add more stuff
-testing
-
-I will also say that this codebase is only a few months old, compared to the Python version which is years old and probably still needs light maintenance.
+I will also say that this codebase is only a few months old, compared to the Python version which is years old and probably still needs light maintenance. Also not a whole lot of this section is unique to Rust and is more related to general principles of good design.
 
 ## Were there any difficulties?
 
@@ -41,12 +37,18 @@ Yes I'm aware this doesn't seem like a question a real human would ask but I mad
 stagemeta
 should have been split apart individual bits, e.g. if only needs variant then should only use variant rather than full thing.
 
+## Is Rust better than Python?
+
+I'd call Rust _more scalable_. If you want to do something simple, Python is absolutely the better choice. I still write Stage Info scripts in Python, such as when I want to make a stage page by clicking a button. The only real difference is that instead of doing it by `import StageInfo` I now do it by `import subprocess` and use regexes to make any alterations.
+
+However, Rust's design has just forced me to make better code for a project that needs to scale well. Stuff like sum-type enums making me consider every variant, constructors not existing, and built-in testing have made it just easier to write maintainable, future-proof code (those adjectives together make me sound like a tech bro trying to sell you something and it's disgusting, but it's also 100% true. Ugh).
+
 ## Appendices
 
 Yes I'm fancy like that and have appendices.
 
 ### Appendix A
 
-Using the typing system for meaning.
+This appendix is about using the typing system for meaning.
 
 Treasures in TBC have a complicated system. They are contained inside the MapStageData file alongside timed rewards.
