@@ -5,7 +5,9 @@ use crate::meta::stage::variant::StageVariantID;
 pub mod transform_map;
 pub mod transform_stage;
 
-/// Every [`StageVariantID`] that has a custom [`StageCodeType`].
+/// Every [`StageVariantID`] that has a custom [`StageCodeType`][StageCodeType].
+///
+/// [StageCodeType]: crate::meta::stage::stage_types::types::StageCodeType
 #[derive(Debug, PartialEq)]
 enum CustomVariantID {
     MainChapters,

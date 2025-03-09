@@ -72,7 +72,7 @@ mod order {
         T::Extra,
     ];
 
-    /// Convert [TYPE_ORDER] to its indices. Allows [enumerate_meta] to be a
+    /// Convert [`TYPE_ORDER`] to its indices. Allows [`enumerate_id`] to be a
     /// constant time function.
     const fn get_type_order() -> [usize; MAX_VARIANT_INDEX] {
         let mut order_indices = [0; MAX_VARIANT_INDEX];
