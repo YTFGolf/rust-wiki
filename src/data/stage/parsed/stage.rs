@@ -175,7 +175,7 @@ impl Restriction {
 }
 
 #[derive(Debug)]
-/// Full stage struct.
+/// Full Version-agnostic owned stage struct.
 pub struct Stage {
     /// Unique identifier for stage.
     pub id: StageID,

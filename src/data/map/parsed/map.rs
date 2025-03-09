@@ -44,7 +44,7 @@ impl From<u8> for ResetType {
 }
 
 #[derive(Debug)]
-/// Full map struct.
+/// Full Version-agnostic owned map struct.
 pub struct GameMap {
     /// ID of map.
     pub id: MapID,
