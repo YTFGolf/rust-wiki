@@ -7,7 +7,7 @@ use super::information::{base_hp, energy, max_enemies, stage_location, stage_nam
 use super::misc_information::{chapter, difficulty, max_clears, stage_nav, star};
 use super::restrictions::{restrictions_info, restrictions_section, rules};
 use super::treasure::{score_rewards, treasure};
-use super::StageWikiData;
+use super::StageWikiDataContainer;
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 
@@ -57,7 +57,7 @@ ${battlegrounds}
 pub fn get_stage_variable(
     variable_name: &str,
     stage: &Stage,
-    stage_wiki_data: &StageWikiData,
+    stage_wiki_data: &StageWikiDataContainer,
     config: &Config,
 ) -> String {
     match variable_name {

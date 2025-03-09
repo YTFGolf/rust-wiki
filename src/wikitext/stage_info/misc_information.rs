@@ -4,8 +4,8 @@ use crate::{
     data::stage::parsed::stage::{ContinueStages, Stage},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     wikitext::{
-        data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA},
-        stage_info::StageWikiData,
+        data_files::stage_wiki_data::{MapWikiData, StageWikiData, STAGE_WIKI_DATA},
+        stage_info::StageWikiDataContainer,
         template_parameter::TemplateParameter,
         wiki_utils::OLD_OR_REMOVED_SUB,
     },
@@ -24,8 +24,8 @@ pub fn star(stage: &Stage) -> TemplateParameter {
 }
 
 /// Get the `event`, `event-chapter` or `sub-chapter` items.
-pub fn chapter(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
-    fn get_map_name(map: &MapData) -> String {
+pub fn chapter(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplateParameter> {
+    fn get_map_name(map: &MapWikiData) -> String {
         OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1").to_string()
     }
 
@@ -92,7 +92,7 @@ pub fn difficulty(stage: &Stage) -> Option<TemplateParameter> {
 }
 
 /// Get a single possible next or prev stage's string representation.
-fn get_single_nav(location: Option<&StageData>) -> String {
+fn get_single_nav(location: Option<&StageWikiData>) -> String {
     assert!(
         location.is_none()
             || matches!(
@@ -138,7 +138,7 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
 }
 
 /// Get the prev and next stage nav items.
-fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
+fn get_nav(stage: &Stage, data: &StageWikiDataContainer) -> (String, String) {
     let prev;
     let next;
     if [T::Extra].contains(&stage.id.variant()) {
@@ -180,7 +180,7 @@ fn get_nav(stage: &Stage, data: &StageWikiData) -> (String, String) {
 }
 
 /// Get the `prev stage` and `next stage` infobox parameters.
-pub fn stage_nav(stage: &Stage, data: &StageWikiData) -> Vec<TemplateParameter> {
+pub fn stage_nav(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplateParameter> {
     if [T::Dojo, T::RankingDojo].contains(&stage.id.variant()) {
         return vec![];
     }

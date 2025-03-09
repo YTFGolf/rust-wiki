@@ -12,7 +12,7 @@ use crate::{
         variant::StageVariantID,
     },
     wikitext::{
-        data_files::stage_wiki_data::{MapData as MapData2, STAGE_WIKI_DATA},
+        data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
         format_parser::{parse_info_format, ParseType},
         wiki_utils::{extract_link, extract_name, get_ordinal},
     },
@@ -74,7 +74,7 @@ fn map_img(map: &MapData) -> String {
     format!("[[File:Map{:03}.png|center|350px]]", map.map_file_num)
 }
 
-fn intro(map: &MapData, map_data: &MapData2, config: &Config) -> String {
+fn intro(map: &MapData, map_data: &MapWikiData, config: &Config) -> String {
     let mut buf = String::new();
     write!(
         buf,
@@ -148,9 +148,9 @@ fn difficulty(map: &MapData) -> String {
     buf
 }
 
-fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String {
-    let mapnum = map.id.num();
-    let code = map_img_code(&map.id);
+fn stage_table(map_data: &MapData, map_wiki_data: &MapWikiData, version: &Version) -> String {
+    let mapnum = map_data.id.num();
+    let code = map_img_code(&map_data.id);
 
     let mut buf = format!(
         "{{| class=\"article-table\"\n\
@@ -162,12 +162,12 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
         |-\n\
         ! scope=\"col\" | Translation\n\
         ! scope=\"col\" | Energy",
-        star_mask = map.star_mask.unwrap_or_default()
+        star_mask = map_data.star_mask.unwrap_or_default()
     );
 
     let mut i = 0;
-    while let Some(stage) = map_data.get(i) {
-        let stage_id = StageID::from_map(map.id.clone(), i);
+    while let Some(stage) = map_wiki_data.get(i) {
+        let stage_id = StageID::from_map(map_data.id.clone(), i);
         write!(
             buf,
             "\n|-\n\
@@ -194,12 +194,12 @@ fn stage_table(map: &MapData, map_data: &MapData2, version: &Version) -> String 
     buf
 }
 
-fn materials(map: &MapData, version: &Version) -> String {
+fn materials(map_data: &MapData, version: &Version) -> String {
     fn format_material(miss_chance: u8, chances: &str) -> String {
         format!("{{{{Materials|{miss_chance}{chances}}}}}")
     }
 
-    let drop_item = GameMap::get_drop_item(&map.id, version).unwrap();
+    let drop_item = GameMap::get_drop_item(&map_data.id, version).unwrap();
     let normal = [
         drop_item.bricks,
         drop_item.feathers,
@@ -313,8 +313,7 @@ fn footer(map: &MapData) -> String {
     .to_string()
 }
 
-fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Config) -> String {
-    // TODO rename MapData2
+fn get_map_variable(name: &str, map: &MapData, map_data: &MapWikiData, config: &Config) -> String {
     let version = &config.version.current_version();
     match name {
         "map_img" => map_img(map),
@@ -329,7 +328,7 @@ fn get_map_variable(name: &str, map: &MapData, map_data: &MapData2, config: &Con
     }
 }
 
-pub fn get_map_data(map: &MapID) -> &'static MapData2 {
+pub fn get_map_data(map: &MapID) -> &'static MapWikiData {
     STAGE_WIKI_DATA.stage_map(map).unwrap_or_else(|| {
         panic!(
             "Couldn't find map name: {:03}-{:03}",

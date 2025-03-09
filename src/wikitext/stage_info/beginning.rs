@@ -5,7 +5,7 @@ use crate::{
     meta::stage::variant::StageVariantID,
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
-        stage_info::StageWikiData,
+        stage_info::StageWikiDataContainer,
         wiki_utils::{extract_name, get_ordinal, OLD_OR_REMOVED_SUB},
     },
 };
@@ -31,7 +31,7 @@ pub fn enemies_appearing(stage: &Stage) -> String {
 }
 
 /// Get the "{stage} is the nth stage in {map}." line.
-pub fn intro(stage: &Stage, data: &StageWikiData) -> String {
+pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
     if stage.id.variant() == StageVariantID::RankingDojo {
         return format!(
             "'''{extracted_name}''' is the {num} [[Arena of Honor]] of the [[Catclaw Dojo]].",

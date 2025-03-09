@@ -1,6 +1,6 @@
 //! Get information about a stage.
 
-use super::data_files::stage_wiki_data::{MapData, StageData, STAGE_WIKI_DATA};
+use super::data_files::stage_wiki_data::{MapWikiData, StageWikiData, STAGE_WIKI_DATA};
 use super::format_parser::{parse_info_format, ParseType};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
@@ -17,9 +17,9 @@ mod test_util;
 mod treasure;
 mod variables;
 
-struct StageWikiData {
-    stage_map: &'static MapData,
-    stage_name: &'static StageData,
+struct StageWikiDataContainer {
+    stage_map: &'static MapWikiData,
+    stage_name: &'static StageWikiData,
 }
 
 /// Get full stage info.
@@ -51,7 +51,7 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
         )
     });
 
-    let stage_wiki_data = StageWikiData {
+    let stage_wiki_data = StageWikiDataContainer {
         stage_map,
         stage_name,
     };

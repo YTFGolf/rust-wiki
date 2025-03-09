@@ -11,30 +11,30 @@ use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Debug)]
 /// Data about all possible stage types.
-pub struct TypeData {
+pub struct StageVariantWikiData {
     /// Name of the type.
     pub name: String,
     _num: u32,
-    maps: HashMap<u32, MapData>,
+    maps: HashMap<u32, MapWikiData>,
 }
-impl TypeData {
+impl StageVariantWikiData {
     /// Get map with map id `map_id` in this type.
-    pub fn get(&self, map_id: u32) -> Option<&MapData> {
+    pub fn get(&self, map_id: u32) -> Option<&MapWikiData> {
         self.maps.get(&map_id)
     }
 }
 
 #[derive(Debug)]
 /// Data about stage maps.
-pub struct MapData {
+pub struct MapWikiData {
     /// Name of the map.
     pub name: String,
     _num: u32,
-    stages: Vec<StageData>,
+    stages: Vec<StageWikiData>,
 }
-impl MapData {
+impl MapWikiData {
     /// Get stage with stage id `stage_id` in this map.
-    pub fn get(&self, stage_id: u32) -> Option<&StageData> {
+    pub fn get(&self, stage_id: u32) -> Option<&StageWikiData> {
         self.stages.get(stage_id as usize)
     }
     /// Does the map have any stages.
@@ -45,37 +45,37 @@ impl MapData {
 
 #[derive(Debug)]
 /// Data about individual stages.
-pub struct StageData {
+pub struct StageWikiData {
     /// Name of the stage.
     pub name: String,
     _num: u32,
 }
 
-type StageNameMap = [Option<TypeData>; MAX_VARIANT_INDEX];
+type StageNameMap = [Option<StageVariantWikiData>; MAX_VARIANT_INDEX];
 type ContinueStagesMap = Vec<Option<(u32, u32)>>;
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
 /// Container for [STAGE_WIKI_DATA] static.
-pub struct StageWikiData {
+pub struct StageWikiDataContainer {
     stage_name_map: LazyLock<StageNameMap>,
     continue_stages: LazyLock<ContinueStagesMap>,
     stage_difficulty_map: LazyLock<StageDifficultyMap>,
 }
 
 #[allow(missing_docs)]
-impl StageWikiData {
+impl StageWikiDataContainer {
     /// Get stage type.
-    pub fn stage_type(&self, id: StageVariantID) -> Option<&TypeData> {
+    pub fn stage_type(&self, id: StageVariantID) -> Option<&StageVariantWikiData> {
         self.stage_name_map.get(id.num() as usize)?.into()
     }
 
     /// Get stage map.
-    pub fn stage_map(&self, id: &MapID) -> Option<&MapData> {
+    pub fn stage_map(&self, id: &MapID) -> Option<&MapWikiData> {
         self.stage_type(id.variant())?.get(id.num())
     }
 
     /// Get stage.
-    pub fn stage(&self, id: &StageID) -> Option<&StageData> {
+    pub fn stage(&self, id: &StageID) -> Option<&StageWikiData> {
         self.stage_map(id.map())?.get(id.num())
     }
 
@@ -85,7 +85,7 @@ impl StageWikiData {
     }
 
     /// Get map data from ex map id.
-    pub fn continue_map(&self, ex_map_id: u32) -> &MapData {
+    pub fn continue_map(&self, ex_map_id: u32) -> &MapWikiData {
         let (t, m) = self.continue_id(ex_map_id).unwrap();
         self.stage_map(&MapID::from_numbers(t, m)).unwrap()
     }
@@ -107,7 +107,7 @@ impl StageWikiData {
 }
 
 /// Contains parsed StageNames.csv file.
-pub static STAGE_WIKI_DATA: StageWikiData = StageWikiData {
+pub static STAGE_WIKI_DATA: StageWikiDataContainer = StageWikiDataContainer {
     stage_name_map: LazyLock::new(get_stage_name_map),
     continue_stages: LazyLock::new(get_continue_stages_map),
     stage_difficulty_map: LazyLock::new(get_stage_difficulty_map),
@@ -151,7 +151,7 @@ fn get_stage_name_map() -> StageNameMap {
         let record: StageNamesLine = result.unwrap();
         match (record.type_num, record.map_num, record.stage_num) {
             (n, None, None) => {
-                map[n as usize] = Some(TypeData {
+                map[n as usize] = Some(StageVariantWikiData {
                     name: record.link,
                     _num: n,
                     maps: HashMap::new(),
@@ -161,7 +161,7 @@ fn get_stage_name_map() -> StageNameMap {
                 let type_data = map[t as usize].as_mut().unwrap();
                 type_data.maps.insert(
                     m,
-                    MapData {
+                    MapWikiData {
                         name: record.link,
                         _num: m,
                         stages: Vec::new(),
@@ -181,7 +181,7 @@ fn get_stage_name_map() -> StageNameMap {
                     "Error parsing stage names record {record:?}: data is out of order."
                 );
 
-                stages.push(StageData {
+                stages.push(StageWikiData {
                     name: record.link,
                     _num: s,
                 });
