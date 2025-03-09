@@ -176,7 +176,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic = "Invalid selector: \" 0 0\""]
+    #[should_panic = "Selector \" 0 0\" doesn't correspond to a real stage."]
     fn invalid_selector() {
         const ARGS: [&str; 3] = ["run_program", "stage", " 0 0"];
         let cli = Cli::parse_from(ARGS.iter());
