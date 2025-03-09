@@ -24,12 +24,12 @@ use std::{
 };
 
 /// Stage map.
-pub struct GameMap {
+pub struct GameMapData {
     /// Background image of the map.
     pub map_file_num: i32,
 }
 
-impl GameMap {
+impl GameMapData {
     /// Create new [`GameMap`].
     pub fn new(map: &MapID, v: &Version) -> Self {
         let map_file = v.get_file_path("DataLocal").join(map_data_file(map));
@@ -50,7 +50,7 @@ impl GameMap {
 }
 
 // Stage-related.
-impl GameMap {
+impl GameMapData {
     /// Just get the stage data, don't care for anything else the map can offer.
     ///
     /// If you get [None] then the stage doesn't have proper rewards, e.g.
@@ -163,13 +163,13 @@ impl GameMap {
     }
 }
 
-impl GameMap {
+impl GameMapData {
     /// Get MapStageData data for the stage if it exists.
     pub fn get_stage_data(stage: &StageID, version: &Version) -> Option<StageDataCSV> {
         if stage.variant() == StageVariantID::Labyrinth {
             return None;
         }
-        GameMap::stage_data(stage, version)
+        GameMapData::stage_data(stage, version)
     }
 
     /// Get Map_option data if it exists.

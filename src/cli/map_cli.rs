@@ -6,7 +6,7 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    cli::cli_util::input, config::Config, data::map::parsed::map::MapData,
+    cli::cli_util::input, config::Config, data::map::parsed::map::GameMap,
     wikitext::map_info::get_map_info,
 };
 use clap::Args;
@@ -38,7 +38,7 @@ impl CommandExec for MapInfoOptions {
             _ => self.selector.join(" "),
         };
 
-        let map = MapData::from_selector(&selector, config.version.current_version()).unwrap();
+        let map = GameMap::from_selector(&selector, config.version.current_version()).unwrap();
         let info = get_map_info(&map, config);
         println!("{info}");
     }

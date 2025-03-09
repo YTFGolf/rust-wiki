@@ -3,7 +3,7 @@ use super::stage_option::StageOptionCSV;
 use crate::{
     data::{
         map::{
-            map_data::GameMap, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
+            map_data::GameMapData, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
             special_rules::SpecialRule,
         },
         version::Version,
@@ -231,27 +231,27 @@ impl<'a> StageData<'_> {
 
     /// Get MapStageData data if it exists.
     pub fn get_map_stage_data(&self) -> Option<StageDataCSV> {
-        GameMap::get_stage_data(&self.id, self.version)
+        GameMapData::get_stage_data(&self.id, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_map_option_data(&self) -> Option<MapOptionCSV> {
-        GameMap::get_map_option_data(self.id.map(), self.version)
+        GameMapData::get_map_option_data(self.id.map(), self.version)
     }
 
     /// Get Stage_option data if it exists.
     pub fn get_stage_option_data(&self) -> Option<Vec<&StageOptionCSV>> {
-        GameMap::stage_stage_option_data(&self.id, self.version)
+        GameMapData::stage_stage_option_data(&self.id, self.version)
     }
 
     /// Get Map_option data if it exists.
     pub fn get_ex_option_data(&self) -> Option<u32> {
-        GameMap::get_ex_option_data(self.id.map(), self.version)
+        GameMapData::get_ex_option_data(self.id.map(), self.version)
     }
 
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
-        GameMap::get_special_rules_data(self.id.map(), self.version)
+        GameMapData::get_special_rules_data(self.id.map(), self.version)
     }
 
     /// Get the data object's version.

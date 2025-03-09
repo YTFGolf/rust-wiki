@@ -2,8 +2,8 @@ use crate::{
     config::Config,
     data::{
         map::{
-            map_data::GameMap,
-            parsed::map::{MapData, ResetType},
+            map_data::GameMapData,
+            parsed::map::{GameMap, ResetType},
         },
         version::Version,
     },
@@ -58,7 +58,7 @@ impl From<StageVariantID> for LegendSubset {
 }
 
 /// Ensure that expected stage invariants are met.
-fn test_invariants(map: &MapData) {
+fn test_invariants(map: &GameMap) {
     // assert_eq!(map.crown_data, None);
     assert_eq!(map.reset_type, ResetType::None);
     assert_eq!(map.max_clears, None);
@@ -70,11 +70,11 @@ fn test_invariants(map: &MapData) {
     assert_eq!(map.special_rule, None);
 }
 
-fn map_img(map: &MapData) -> String {
+fn map_img(map: &GameMap) -> String {
     format!("[[File:Map{:03}.png|center|350px]]", map.map_file_num)
 }
 
-fn intro(map: &MapData, map_data: &MapWikiData, config: &Config) -> String {
+fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     let mut buf = String::new();
     write!(
         buf,
@@ -123,7 +123,7 @@ fn intro(map: &MapData, map_data: &MapWikiData, config: &Config) -> String {
     buf
 }
 
-fn difficulty(map: &MapData) -> String {
+fn difficulty(map: &GameMap) -> String {
     let data = map.crown_data.as_ref().unwrap();
     if u8::from(data.max_difficulty) == 1 {
         return String::new();
@@ -148,7 +148,7 @@ fn difficulty(map: &MapData) -> String {
     buf
 }
 
-fn stage_table(map_data: &MapData, map_wiki_data: &MapWikiData, version: &Version) -> String {
+fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Version) -> String {
     let mapnum = map_data.id.num();
     let code = map_img_code(&map_data.id);
 
@@ -178,7 +178,7 @@ fn stage_table(map_data: &MapData, map_wiki_data: &MapWikiData, version: &Versio
             | {energy} {{{{EnergyIcon}}}}",
             stagenum = i,
             stagenum2 = i + 1,
-            energy = GameMap::get_stage_data(&stage_id, version)
+            energy = GameMapData::get_stage_data(&stage_id, version)
                 .unwrap()
                 .fixed_data
                 .energy
@@ -194,12 +194,12 @@ fn stage_table(map_data: &MapData, map_wiki_data: &MapWikiData, version: &Versio
     buf
 }
 
-fn materials(map_data: &MapData, version: &Version) -> String {
+fn materials(map_data: &GameMap, version: &Version) -> String {
     fn format_material(miss_chance: u8, chances: &str) -> String {
         format!("{{{{Materials|{miss_chance}{chances}}}}}")
     }
 
-    let drop_item = GameMap::get_drop_item(&map_data.id, version).unwrap();
+    let drop_item = GameMapData::get_drop_item(&map_data.id, version).unwrap();
     let normal = [
         drop_item.bricks,
         drop_item.feathers,
@@ -243,7 +243,7 @@ fn materials(map_data: &MapData, version: &Version) -> String {
     format_material(100 - total, &buf)
 }
 
-fn reference(map: &MapData) -> String {
+fn reference(map: &GameMap) -> String {
     let mapid = map.id.mapid();
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
@@ -278,7 +278,7 @@ fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> Strin
     nav_item(heading, &left, &right)
 }
 
-fn nav(map: &MapData) -> String {
+fn nav(map: &GameMap) -> String {
     let type_data = &STAGE_WIKI_DATA.stage_type(map.id.variant()).unwrap();
     let chap = extract_name(&type_data.name);
     let heading = format!("[[:Category:{chap} Chapters|{chap} Chapters]]");
@@ -295,7 +295,7 @@ fn nav(map: &MapData) -> String {
     nav_item_opt(&heading, left, right)
 }
 
-fn footer(map: &MapData) -> String {
+fn footer(map: &GameMap) -> String {
     match map.id.variant().into() {
         LegendSubset::SoL => {
             "{{LegendStages}}\n\
@@ -313,7 +313,7 @@ fn footer(map: &MapData) -> String {
     .to_string()
 }
 
-fn get_map_variable(name: &str, map: &MapData, map_data: &MapWikiData, config: &Config) -> String {
+fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     let version = &config.version.current_version();
     match name {
         "map_img" => map_img(map),
@@ -338,7 +338,7 @@ pub fn get_map_data(map: &MapID) -> &'static MapWikiData {
     })
 }
 
-pub fn get_legend_map(map: &MapData, config: &Config) -> String {
+pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
     test_invariants(map);
 
     // println!("{map:#?}");
@@ -370,7 +370,7 @@ mod tests {
         config.version.init_all();
 
         let version = config.version.current_version();
-        let leg_begins = MapData::from_id(MapID::from_numbers(0, 0), version);
+        let leg_begins = GameMap::from_id(MapID::from_numbers(0, 0), version);
         let map_data = get_map_data(&leg_begins.id);
 
         assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
@@ -415,7 +415,7 @@ mod tests {
         with_version.map_info.set_version(true);
         with_version.version.init_all();
 
-        let leg_begins = MapData::from_id(
+        let leg_begins = GameMap::from_id(
             MapID::from_numbers(0, 0),
             with_version.version.current_version(),
         );

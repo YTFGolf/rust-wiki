@@ -2,7 +2,7 @@
 
 use crate::{
     data::{
-        map::{map_data::GameMap, special_rules::SpecialRule},
+        map::{map_data::GameMapData, special_rules::SpecialRule},
         stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
         version::Version,
     },
@@ -45,7 +45,7 @@ impl From<u8> for ResetType {
 
 #[derive(Debug)]
 /// Full map struct.
-pub struct MapData {
+pub struct GameMap {
     /// ID of map.
     pub id: MapID,
     // MapStageData
@@ -73,7 +73,7 @@ pub struct MapData {
     /// Map rules.
     pub special_rule: Option<SpecialRule>,
 }
-impl MapData {
+impl GameMap {
     /// Create a new [`MapData`] object from `selector`.
     pub fn from_selector(selector: &str, version: &Version) -> Option<Self> {
         Some(Self::from_id(parse_general_map_id(selector)?, version))
@@ -81,9 +81,9 @@ impl MapData {
 
     /// Create a new [`MapData`] object from given id.
     pub fn from_id(map_id: MapID, version: &Version) -> Self {
-        let map_file_num = GameMap::new(&map_id, version).map_file_num;
+        let map_file_num = GameMapData::new(&map_id, version).map_file_num;
 
-        let map_option_data = GameMap::get_map_option_data(&map_id, version);
+        let map_option_data = GameMapData::get_map_option_data(&map_id, version);
 
         let crown_data: Option<CrownData>;
         let reset_type: ResetType;
@@ -112,7 +112,7 @@ impl MapData {
         }
 
         let restrictions: Option<Vec<Restriction>>;
-        if let Some(option_data) = GameMap::map_stage_option_data(&map_id, version) {
+        if let Some(option_data) = GameMapData::map_stage_option_data(&map_id, version) {
             let data = option_data
                 .iter()
                 .filter_map(|r| {
@@ -129,8 +129,8 @@ impl MapData {
             restrictions = None;
         }
 
-        let ex_option_map = GameMap::get_ex_option_data(&map_id, version);
-        let special_rule = GameMap::get_special_rules_data(&map_id, version).cloned();
+        let ex_option_map = GameMapData::get_ex_option_data(&map_id, version);
+        let special_rule = GameMapData::get_special_rules_data(&map_id, version).cloned();
         Self {
             id: map_id,
             //
