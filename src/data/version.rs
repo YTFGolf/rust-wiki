@@ -108,10 +108,11 @@ impl Version {
     /// use rust_wiki::data::map::map_option::MapOption;
     /// # use rust_wiki::data::version::Version;
     /// # use rust_wiki::config::version_config::Lang;
+    /// # use rust_wiki::meta::stage::map_id::MapID;
     ///
     /// let version = Version::new("~", Lang::EN, Some("1.0".to_string()));
     /// let map_option = version.get_cached_file::<MapOption>();
-    /// let earthshaker_option = map_option.get_map(0);
+    /// let earthshaker_option = map_option.get_map(&MapID::from_numbers(0, 0));
     /// ```
     /// This can be run with any type that implements [CacheableVersionData].
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
