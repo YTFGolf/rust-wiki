@@ -34,7 +34,52 @@ I will also say that this codebase is only a few months old, compared to the Pyt
 
 Yes I'm aware this doesn't seem like a question a real human would ask but I made this part of the docs to ramble and ramble I shall do. I don't even know if _**I**_ will be reading this in the future.
 
-stagemeta
+The main difficult thing I will talk about is the `StageMeta` struct, which was incidentally the very first thing I wrote for the project, basically making the entire thing based off of this one struct that I ended up removing completely.
+
+### In the beginning
+
+This was getting really long so I split it into sections.
+
+When I was beginning the project, I wanted to have something small that I could use as a single part of the Stage struct, that would just describe metadata such as the stage's numbers and the files its data was contained in. I defined some initial data like I did with the old Python code's `StageType` file, basically a map over every stage type describing the name, "code", number, and the "R" column, as well as another map which contained regex matchers.
+
+The old `StageType` file contained a lot of stuff. I think initially it was just about parsing selectors, but then when I had Encounters I then added something to parse file names, then later on I added a db reference parser since it was actually pretty easy to do with a simple regex and quite useful. This probably sounds bad but like what else could I have really done. It's either a nightmare to implement or a nightmare to use. This way pretty much meant I only needed to change two lines if a new stage type was added, and my fragile spaghetti code would make sure it _just worked_.
+
+### Rustifying
+
+The original `StageMeta` took me like 2.5 days to implement and had about 1300 lines of code. The vast majority of this was testing. I tested if selectors were case insensitive, I tested invalid values, I tested every parse mode, I tested properties on randomised data. This might sound tedious but it basically meant the entire thing was airtight. If I accidentally broke the slightest thing, I would know immediately. Having testing built-in is great.
+
+I also implemented an enum for the stage type, because why not use Rust capabilities. Instead of being like `if meta.code == "RN"` I could be like `if meta.type_enum == StageTypeEnum::SoL`, which is leagues better.
+
+There was also an update that added support for having difficulties in main chapters, which eventually forced me to completely redefine the numbers. I'd been going off of BCU's numbers (note: NEVER assume BCU devs know what they're doing), which essentially said every sort of main story level had the type number 3. This is not the case in the game: only EoC, ItF and CotC proper have the type number 3. Outbreaks are 20, 21 and 22, Filibuster is 23, and Aku Realms is 30. I had to completely change that and add some more enums.
+
+### Problems
+
+The `StageMeta` at this point was pretty much a 1-to-1 translation of the functionalities of `StageType`. My equivalent of `stage_codes` was easier to use (i.e. actually used a function call rather than being a line in a string) and I had tests and enums, but overall it was just the same thing with some extra bells and whistles.
+
+This was terrible. For starters, I couldn't just create a new `StageMeta` object. I had to initialise it from a selector. Using the raw numbers didn't work for main chapters. Even after my refactoring, all of my tests (more than 100) relied on these selectors when they didn't need to. There had to be substantial plumbing and error handling to deal with the Aku Realms invasion in the encounters module.
+
+The second major problem occurred when I tried to start implementing a module to show map data, and I realised that I just didn't have anything capable of showing metadata about maps. So I just cheated and added `" 0"` to the end of the selector and reused `StageMeta`. However, this was too much information: e.g. if I had a function that needed data about map n would I make that take in the type and map numbers (inconvenient) or a `StageMeta` (means that if you don't already have the object then you need to create it even when you don't need its functionalities).
+
+A minor problem was also just the sort of 'mental overhead' of creating a new `StageMeta` object. Every time I wanted to do it, I would have to add a new string into memory since it also initialised the stage file name and the map file name.
+
+### Fixing it
+
+I found the overreliance on strings annoying, but the only real pain point was the Aku Realms invasion; using selectors in tests was something I only realised was completely stupid once I'd started to replace old code. But when it came to maps I immediately realised I had to stop development and fix the mess that was `StageMeta`.
+
+#### IDs
+
+The first thing I did was create "ID" structs. There were 3 of these: stage types (I called them "variants" because "variant" isn't a reserved keyword), stage maps and stages themselves. Each of these ID structs basically only had one job: identify something you're supposed to identify.
+
+Variants (`StageVariantID`) were implemented as an enum with discriminants (basically, each variant corresponds to one type number, and you can easily switch back and forth between the `u32` and `StageVariantID` representations). This was mostly the same as `StageTypeEnum` except it split `Outbreaks` into `EocOutbreak` etc. because each of them has a separate type number in the game. Being mostly the same also made it really easy to convert old code to `StageVariantID` because all of the non-outbreak variants had the exact same name.
+
+Variants also came with a few functions alongside converting the variant to a number: these were simple convenience functions that only needed to be defined in one place. As of time writing, all of these are simple "is questions" such as `is_main`, which checks if it's main chapters, outbreaks, filibuster invasion or aku realms.
+
+Maps (`MapID`) are simply a struct with a `StageVariantID` and a `map_num`. It has a few more ways of initialisation, allowing you to create it from its parts, from raw numbers (the variant number gets converted before initialising), and from the `mapid` that you see in places like `Map_option.csv`. It contains fewer pure functions if you ignore the getters: it has one to get the `mapid` described earlier and it has one to determine the subtype in main chapters levels (eoc, itf or cotc).
+
+Stages (`StageID`) work in a consistent way to `MapID`, containing a `MapID` and a `stage_num`. There's not much special about it, and that's how it should be.
+
+#### Parse and transform
+
 should have been split apart individual bits, e.g. if only needs variant then should only use variant rather than full thing.
 
 ## Is Rust better than Python?
