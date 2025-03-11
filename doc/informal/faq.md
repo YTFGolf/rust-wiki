@@ -66,6 +66,8 @@ A minor problem was also just the sort of 'mental overhead' of creating a new `S
 
 I found the overreliance on strings annoying, but the only real pain point was the Aku Realms invasion; using selectors in tests was something I only realised was completely stupid once I'd started to replace old code. But when it came to maps I immediately realised I had to stop development and fix the mess that was `StageMeta`.
 
+I got a bit annoyed at this section because it felt more like a boring recap of what's in the new thing, so consider this a warning that what follows is really boring.
+
 #### IDs
 
 The first thing I did was create "ID" structs. There were 3 of these: stage types (I called them "variants" because "variant" isn't a reserved keyword), stage maps and stages themselves. Each of these ID structs basically only had one job: identify something you're supposed to identify.
@@ -78,9 +80,35 @@ Maps (`MapID`) are simply a struct with a `StageVariantID` and a `map_num`. It h
 
 Stages (`StageID`) work in a consistent way to `MapID`, containing a `MapID` and a `stage_num`. There's not much special about it, and that's how it should be.
 
+#### "Stage Types"
+
+For all their faults, `StageMeta` and the original `StageType` had one key benefit: adding a new type required 3 lines of code: one for the variant, one for the list of stage types, and one for the regex mapping (two lines for `StageType`). To be honest, I think a monolith is a necessary evil there.
+
+I decided to go with a similar static variable containing everything. I slightly changed how the information was spread out.
+
+The whole "map code" and "has r prefix" didn't really work. First off, I had to do something completely different for main chapters anyway, and for extra stages the map code was `"RE|EX"` which kinda goes against the whole "write explicit Rust" thing I've kinda been going for in this repo. Instead, I split this into a map code and a stage code.
+
+Map code is an `Option<&'static str>` and is primarily the code used in `MapStageData` files. For all of the maps that don't have a `MapStageData` file (main, outbreaks, filibuster), this will be `None`. Stage code is a custom enum that allows me to define the different cases. `RPrefix` stages have stage data file names that begin with R. `Map` stages have stage data file names that use their map's prefix, which seems to be happening a lot with the more recent types. `Custom` stages have completely unpredictable stage data file names and must have custom logic. `Other` stages use their stage code rather than their map code for most purposes, and it's currently only EX stages that are `Other` (`MapStageData` files use `RE` but everything else uses `EX`). To assert invariants like a `None` mapcode happening iff stagecode is `Custom` I just used tests.
+
+The other major thing is that I put the selectors inside the stage types static directly. Being inside the static meant the entire thing needed to be `LazyLock`ed but it also reduces the amount of lines of code needed. With separating out the outbreaks I was now able to calculate most of the selector parts at runtime, so all that the defined selectors needed to do was write the common name: the number, map code and stage code were added at runtime. I was also finally able to create a CLI option to show available selectors. I might have done other things but I hate this section and want to stop writing it.
+
 #### Parse and transform
 
-should have been split apart individual bits, e.g. if only needs variant then should only use variant rather than full thing.
+One of the major features of `StageMeta` was that you could use strings to initialise it, which was important for both the command line interface and for the encounters module which needed to loop through each individual stage. A second thing was that you could get the map and stage data file names, as well as the images used for the display names.
+
+In order to try and avoid the mistakes of `StageMeta`, I created separate modules for parsing and transforming. `parse` would deal with stuff like selectors, db refs, file names, then turning them into variant, map or stage data. `transform` would do the opposite: it would take the variant, map or stage data and transform them into the formats they came from.
+
+I don't really have much else to say about it, I implemented them and copied over basically every test from `StageMeta` into here, and made sure that `parse(transform(data))` was equivalent to `data` and the same the other way around.
+
+### Deprecating the old version
+
+Fully replacing `StageMeta` with ID objects actually only took a single weekend, once I'd properly written and tested everything. I tried to take a sort of "bottom-up" approach, where I replaced `StageMeta` with IDs in parts that didn't call other functions requiring `StageMeta` objects. In practice it ended up being a bit of a mess but I cleaned it up eventually.
+
+The way the deprecation ended up going was I implemented `From<&StageID> for StageMeta` and basically just put `let stage_id: StageID = (&meta).into();` at the tops of functions that used `StageMeta`, and changed any functions requiring numbers to use the IDs instead. Once a `meta` field of a struct was only used to convert it to an ID I would then just remove `meta` from that struct and remove all of my old conversion stuff. Honestly it was quite boring and same-y. Then I deleted `StageMeta` completely when I was done with that.
+
+<!-- need to update with deprecating the old selectors in tests -->
+
+This whole question ended up way longer than I expected it to be so I'll probably end up putting this in its own file.
 
 ## Is Rust better than Python?
 
