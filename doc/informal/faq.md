@@ -124,4 +124,25 @@ Yes I'm fancy like that and have appendices.
 
 This appendix is about using the typing system for meaning.
 
-Treasures in TBC have a complicated system. They are contained inside the MapStageData file alongside timed rewards.
+Treasures in TBC have a complicated system that are probably boring so skip this paragraph if you don't care. They are contained inside the MapStageData file alongside timed rewards. If the line is longer than 15 columns and everything from `line[8]` to `line[14]` is `"-2"`, then it uses timed score rewards, which can also have a treasure drop. If it's not a timed score reward stage then the stage can have multiple treasures drop. If there are multiple treasures dropped then there will be a number ranging from -4 to 1 that dictates how that drop works.
+
+Initially, in the Python, I just copied BCU's code. This was a mistake. BCU's code goes into the full Java thing of "make all the logic as difficult to follow as possible and don't document anything for job security".
+
+#### BCU sucks
+
+First off, here are the relevant pieces of code:
+- <https://github.com/battlecatsultimate/BCU_java_util_common/blob/1df366ad04a77a44405c40d21c09b7999c61f8f9/util/stage/info/DefStageInfo.java#L36>
+- <https://github.com/battlecatsultimate/BCU-java-PC/blob/f8e32702cd5cb493e33ebbb34aacb9c0778cea8f/src/main/java/utilpc/Interpret.java#L1137>
+
+`DefStageInfo`'s initial bit looks quite like my old Python: it just reads from the appropriate `MapStageData` line and stores all of the appropriate numbers into appropriate variables. I'm not a fan of Java making it difficult to tell what's local and what's a class variable but that doesn't begin to describe my hatred of this code.
+
+Line 48 then reads as `once = data[data.length - 1];`. Now I checked the entire repo: THIS DOES NOTHING. THIS NEVER GETS USED EVEN ONCE. There's zero documentation of what it's used for if it's used for something outside BCU.
+
+Then it does some fairly easy-enough-to-understand stuff, it just checks relevant entries if they all are `-2` as I stated earlier. Then we have `time = new int[(data.length - 17) / 3][3];`.
+
+I hate this for the following reasons:
+- You're assigning it to a variable that hasn't been initialised. This is why Java gets so many null pointer exceptions. Maybe if you hadn't stupidly made it `public final int[][] time;` then you would be able to initialise it properly.
+- Why is this an array. Literally look at [this comment](https://github.com/battlecatsultimate/BCU_java_util_common/pull/36#discussion_r1970074891), Mandarin themselves says you shouldn't do this. This should be an `ArrayList` and you should be pushing to it.
+- Why is this an array of arrays. Each item in `time` is an array of `[score, item_id, item_amt]`. WHY COULD YOU NOT JUST MAKE EACH ITEM A NORMAL OBJECT.
+
+<!-- I cannot believe this has gotten to like 3k words in 3 days, when only working on it late at night. If I could have had this productivity when doing my third year project... -->
