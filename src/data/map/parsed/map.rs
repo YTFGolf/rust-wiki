@@ -74,12 +74,12 @@ pub struct GameMap {
     pub special_rule: Option<SpecialRule>,
 }
 impl GameMap {
-    /// Create a new [`MapData`] object from `selector`.
+    /// Create a new [`GameMap`] object from `selector`.
     pub fn from_selector(selector: &str, version: &Version) -> Option<Self> {
         Some(Self::from_id(parse_general_map_id(selector)?, version))
     }
 
-    /// Create a new [`MapData`] object from given id.
+    /// Create a new [`GameMap`] object from given id.
     pub fn from_id(map_id: MapID, version: &Version) -> Self {
         let map_file_num = GameMapData::new(&map_id, version).map_file_num;
 

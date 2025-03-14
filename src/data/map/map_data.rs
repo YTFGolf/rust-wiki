@@ -30,7 +30,7 @@ pub struct GameMapData {
 }
 
 impl GameMapData {
-    /// Create new [`GameMap`].
+    /// Create new [`GameMapData`] object.
     pub fn new(map: &MapID, v: &Version) -> Self {
         let map_file = v.get_file_path("DataLocal").join(map_data_file(map));
         let lines = BufReader::new(File::open(map_file).unwrap());
