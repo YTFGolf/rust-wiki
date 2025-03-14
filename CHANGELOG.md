@@ -20,6 +20,7 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 ### Changed
 
 - Updated dependencies.
+- Updated Rust edition to 2024.
 - Renamed Map data objects.
 - Replaced existing `mapid` functions with `MapID`s.
 
