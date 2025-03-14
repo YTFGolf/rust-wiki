@@ -128,11 +128,12 @@ Treasures in TBC have a complicated system that are probably boring so skip this
 
 Initially, in the Python, I just copied BCU's code. This was a mistake. BCU's code goes into the full Java thing of "make all the logic as difficult to follow as possible and don't document anything for job security".
 
-#### BCU sucks
+#### BCU sucks, part 1
 
 First off, here are the relevant pieces of code:
-- <https://github.com/battlecatsultimate/BCU_java_util_common/blob/1df366ad04a77a44405c40d21c09b7999c61f8f9/util/stage/info/DefStageInfo.java#L36>
-- <https://github.com/battlecatsultimate/BCU-java-PC/blob/f8e32702cd5cb493e33ebbb34aacb9c0778cea8f/src/main/java/utilpc/Interpret.java#L1137>
+- [DefStageInfo](https://github.com/battlecatsultimate/BCU_java_util_common/blob/1df366ad04a77a44405c40d21c09b7999c61f8f9/util/stage/info/DefStageInfo.java#L36)
+- [analyzeRewardChance](https://github.com/battlecatsultimate/BCU_java_util_common/blob/1df366ad04a77a44405c40d21c09b7999c61f8f9/util/stage/info/DefStageInfo.java#L155)
+- [readDropData](https://github.com/battlecatsultimate/BCU-java-PC/blob/f8e32702cd5cb493e33ebbb34aacb9c0778cea8f/src/main/java/utilpc/Interpret.java#L1137)
 
 `DefStageInfo`'s initial bit looks quite like my old Python: it just reads from the appropriate `MapStageData` line and stores all of the appropriate numbers into appropriate variables. I'm not a fan of Java making it difficult to tell what's local and what's a class variable but that doesn't begin to describe my hatred of this code.
 
@@ -144,5 +145,37 @@ I hate this for the following reasons:
 - You're assigning it to a variable that hasn't been initialised. This is why Java gets so many null pointer exceptions. Maybe if you hadn't stupidly made it `public final int[][] time;` then you would be able to initialise it properly.
 - Why is this an array. Literally look at [this comment](https://github.com/battlecatsultimate/BCU_java_util_common/pull/36#discussion_r1970074891), Mandarin themselves says you shouldn't do this. This should be an `ArrayList` and you should be pushing to it.
 - Why is this an array of arrays. Each item in `time` is an array of `[score, item_id, item_amt]`. WHY COULD YOU NOT JUST MAKE EACH ITEM A NORMAL OBJECT.
+
+The next loop doesn't contain much I haven't already complained about. For some reason it does `for (int j = 0; j < 3; j++)` rather than just making an object, but that was the last point in the previous thing. Then there's at least an else that initialises `time` which ig prevents a null pointer exception but why not just make it an empty arraylist.
+
+Then we have drop rewards (treasures). It begins with some fairly innocuous stuff, then intitialises an empty array which I've already talked about. Then there's `rand = 0`. Zero explanation of what `rand` is and it'll definitely come up later so just you wait. The next branch then does a similar thing and creates an array of length... 1? The next branch does nothing wrong that I haven't already complained about.
+
+Then it does
+```java
+if (drop.length > 0)
+	drop[0] = new int[] { data[5], data[6], data[7] };
+```
+
+... what? why? why could you not just have done this when initialising this? Are you really that concerned with repeating yourself you'd rather make the code completely unreadable?
+
+#### BCU sucks, part 2
+
+Yep this is also becoming an essay.
+
+So, `analyzeRewardChance`. Starts off fairly alright... hold on is that an ArrayList I see? Where was that in the previous function? I don't actually have that much to say about `analyzeRewardChance`. The only real thing is that imo it should be initialising `res` inside each if block and returning it at the end, but maybe java sucks and can't be relied on.
+
+What I will complain about is how this is utterly terribly designed, and for that we need to look at `readDropData`. It begins with some fairly simple stuff, getting lists and adding null guards because java sucks. Then we have the loop and my god I hate the loop.
+
+Understanding the loop requires an understanding of `analyzeRewardChance`, which... why? Why does a function in a git submodule with zero documentation dictate how this loop works? It uses the special value of `[]` to mean that all the items have an equal chance of dropping. But this is not communicated in any way.
+
+Except here's the thing: it also uses this when `rand = -3`. Is this intended behaviour or is this a bug? I have no clue, but based on the fact that this was probably written before Infernal Tower and that Infernal Tower stages have drop reward chances like `[33, 33, 34]`, and also the fact that there are way too many dumb assumptions in the code, I'm gonna assume it's a bug. Although tbf, it is what the [official data](https://www.youtube.com/watch?v=oWUZjIbgcao) says.
+
+In fact, I'm convinced that BCU doesn't understand `rand = -3` because it also doesn't know that these rewards only appear once. It also doesn't appear to know that you can't use Treasure Radars for `rand = -3`.
+
+if it's empty then it gives you the index of the reward
+treasure radar bug
+exiting on empty
+coding should be simple. If you rely on some invariants, make it clear what those are
+Rust is the only thing that let me make sense of BCU's terrible code
 
 <!-- I cannot believe this has gotten to like 3k words in 3 days, when only working on it late at night. If I could have had this productivity when doing my third year project... -->
