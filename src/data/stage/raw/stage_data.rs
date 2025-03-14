@@ -306,11 +306,11 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
                     }
                 }
                 _ => unimplemented!(), // csv::DeserializeErrorKind::Message(_) => unimplemented!(),
-                              // csv::DeserializeErrorKind::Unsupported(_) => unimplemented!(),
-                              // csv::DeserializeErrorKind::UnexpectedEndOfRow => unimplemented!(),
-                              // csv::DeserializeErrorKind::InvalidUtf8(utf8_error) => unimplemented!(),
-                              // csv::DeserializeErrorKind::ParseBool(parse_bool_error) => unimplemented!(),
-                              // csv::DeserializeErrorKind::ParseFloat(parse_float_error) => unimplemented!(),
+                                       // csv::DeserializeErrorKind::Unsupported(_) => unimplemented!(),
+                                       // csv::DeserializeErrorKind::UnexpectedEndOfRow => unimplemented!(),
+                                       // csv::DeserializeErrorKind::InvalidUtf8(utf8_error) => unimplemented!(),
+                                       // csv::DeserializeErrorKind::ParseBool(parse_bool_error) => unimplemented!(),
+                                       // csv::DeserializeErrorKind::ParseFloat(parse_float_error) => unimplemented!(),
             },
             // csv::ErrorKind::Io(error) => unimplemented!(),
             // csv::ErrorKind::Utf8 { pos, err } => unimplemented!(),

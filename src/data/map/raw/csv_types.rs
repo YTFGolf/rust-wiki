@@ -1,5 +1,7 @@
 //! Types to deserialise map csv files.
 
+use strum::FromRepr;
+
 #[derive(Debug, serde::Deserialize)]
 /// No real clue.
 // mapnum?,treasuredrop,scorerewards,?,?
@@ -74,7 +76,8 @@ pub struct ScoreRewardsCSV {
     pub item_amt: u32,
 }
 
-#[derive(Debug, PartialEq)]
+#[repr(i32)]
+#[derive(Debug, PartialEq, FromRepr)]
 /// Treasure drop reward modifier.
 ///
 /// All descriptions are purely speculative based on BCU code; if you have
@@ -109,14 +112,9 @@ pub enum TreasureType {
 
 impl From<i32> for TreasureType {
     fn from(treasure_type: i32) -> Self {
-        match treasure_type {
-            1 => TreasureType::OnceThenUnlimited,
-            0 => TreasureType::AllUnlimited,
-            -1 => TreasureType::UnclearMaybeRaw,
-            -3 => TreasureType::GuaranteedOnce,
-            -4 => TreasureType::GuaranteedUnlimited,
-            _ => panic!("{treasure_type} is not recognised!"),
-        }
+        TreasureType::from_repr(treasure_type).unwrap_or_else(|| {
+            panic!("{treasure_type} is not recognised as a valid treasure type.")
+        })
     }
 }
 // 1 = first item is once, rest are as in 0
@@ -137,5 +135,3 @@ pub struct StageDataCSV {
     /// Raw score rewards data.
     pub score_rewards: Vec<ScoreRewardsCSV>,
 }
-
-// TODO use strum to make `from` better
