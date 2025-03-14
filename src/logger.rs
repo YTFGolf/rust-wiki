@@ -62,7 +62,7 @@ impl log::Log for Logger {
                 blank = Color::Blank,
                 args = record.args()
             ),
-            Level::Trace => todo!(),
+            Level::Trace => unimplemented!(),
         }
     }
 
