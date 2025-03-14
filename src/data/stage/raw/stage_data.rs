@@ -145,12 +145,29 @@ impl<'a> StageData<'_> {
     #[deprecated]
     pub fn from_selector(
         selector: &str,
-        version: &'a Version,
+        _version: &'a Version,
     ) -> Result<StageData<'a>, StageDataError> {
-        match parse_general_stage_id(selector) {
-            Some(id) => Self::from_id(id, version),
-            None => Err(StageDataError::InvalidSelector),
-        }
+        // StageData::from_selector("stageRN000_00.csv"
+        // let id = match parse_general_stage_id(selector) {
+        //     Some(id) => id,
+        //     None => return Err(StageDataError::InvalidSelector),
+        // };
+
+        let old = format!("StageData::from_selector({selector:?}");
+        let new = {
+            let parsed = parse_general_stage_id(selector).unwrap();
+
+            let formatted = format!(
+                "StageID::from_components(T::{:?}, {}, {})",
+                parsed.variant(),
+                parsed.map().num(),
+                parsed.num()
+            );
+
+            format!("StageData::from_id({formatted}")
+        };
+        let repl = format!("'{old}' = {new:?}");
+        panic!("XXX_NEW_CURRENT_XXX: {repl}");
     }
 
     /// Create new StageData object.

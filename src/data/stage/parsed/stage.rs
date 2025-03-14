@@ -371,7 +371,7 @@ impl Stage {
 
     /// Create a new stage object from `selector` in current version.
     #[cfg(test)]
-    #[deprecated]
+    // #[deprecated]
     pub fn new_current(selector: &str) -> Option<Self> {
         use crate::{
             config::TEST_CONFIG, meta::stage::stage_types::parse::parse_stage::parse_stage_selector,
@@ -386,7 +386,7 @@ impl Stage {
                 'Stage::new_current("s 17 0").unwrap()' = "StageID::from_components(T::Event, 17, 0)"
             }
 
-            Get-ChildItem -Path . -Recurse -File | ForEach-Object {
+            Get-ChildItem -Path . -Recurse -File -Filter "*.rs" | ForEach-Object {
                 $content = Get-Content $_.FullName -Raw
                 foreach ($key in $replacements.Keys) {
                     $escapedKey = [regex]::Escape($key)  # Escape special characters
@@ -414,13 +414,14 @@ impl Stage {
                     parsed.map().num(),
                     parsed.num()
                 );
-                formatted
+
+                format!("Stage::from")
             };
 
             // let repl = format!("'s/{old}/{new}/g'");
             let repl = format!("'{old}' = {new:?}");
 
-            panic!("XXX_NEW_CURRENT_XXX: {repl}");
+            // panic!("XXX_NEW_CURRENT_XXX: {repl}");
         }
         Self::from_selector(selector, TEST_CONFIG.version.current_version())
     }
