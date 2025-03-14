@@ -12,6 +12,9 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Added
 
+- Informal docs section.
+- Specification docs section.
+
 ### Fixed
 
 ### Changed
