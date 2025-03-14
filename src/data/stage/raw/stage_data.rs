@@ -141,36 +141,7 @@ pub enum StageDataError {
 }
 
 impl<'a> StageData<'_> {
-    /// Create new StageData object.
-    #[deprecated]
-    pub fn from_selector(
-        selector: &str,
-        _version: &'a Version,
-    ) -> Result<StageData<'a>, StageDataError> {
-        // StageData::from_id(StageID::from_components(T::SoL, 0, 0)
-        // let id = match parse_general_stage_id(selector) {
-        //     Some(id) => id,
-        //     None => return Err(StageDataError::InvalidSelector),
-        // };
-
-        let old = format!("StageData::from_selector({selector:?}");
-        let new = {
-            let parsed = parse_general_stage_id(selector).unwrap();
-
-            let formatted = format!(
-                "StageID::from_components(T::{:?}, {}, {})",
-                parsed.variant(),
-                parsed.map().num(),
-                parsed.num()
-            );
-
-            format!("StageData::from_id({formatted}")
-        };
-        let repl = format!("'{old}' = {new:?}");
-        panic!("XXX_NEW_CURRENT_XXX: {repl}");
-    }
-
-    /// Create new StageData object.
+    /// Create new StageData object from file name.
     pub fn from_file_name(
         selector: &str,
         version: &'a Version,
