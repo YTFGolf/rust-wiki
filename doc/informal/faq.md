@@ -23,7 +23,7 @@ Now of course, as I said, the first thing I wrote was a monolith making the same
 For one, there was now a clear flow of data. Instead of the `Stage` object doing everything from implementation details of the game all the way up to storing wiki-specific information, this was turned into multiple different structs:
 - A `StageMeta` struct that contained metadata about a stage, including the type, map and file numbers, and the stage's file names. This struct itself was also a bit too big, as you'll see down below, but it's nothing compared to the monstrosity lurking inside the Python code.
 - A raw `StageData` struct that stores raw data directly pulled from the files. Rust's `serde` crate is so much better than storing everything in arrays like I did when parsing stuff with Python. `serde-derive` essentially let me write a definition of the raw data and `serde` would deal with parsing the data, whereas with Python I specifically had to be like `self.energy = int(line[1])`.
-- A `Stage` struct that provides high-level abstractions. While `StageData` showed raw data and was bound to a containing `Version` object, `Stage` had no references to `Version` and owned all of its data. I also managed to use the typing system to assign meanings: see [Appendix A](#appendix-a) because it's really long.
+- A `Stage` struct that provides high-level abstractions. While `StageData` showed raw data and was bound to a containing `Version` object, `Stage` had no references to `Version` and owned all of its data. I also managed to use the typing system to essentially assign meaning to pieces of data, mainly by creating enums.
 - A `StageWikiData` struct that is part of a module that provides functions to allow you to find the names of stages, maps and stage types (using `StageNames.csv`).
 
 Was this a lot more complicated to set up? Absolutely. Was it worth it? Also absolutely. I fixed bugs, such as the Treasure one in the appendix; I was able to add more stuff such as max clears; and I found it much easier to add new stuff on top (such as maps) rather than basically having to write them from scratch like I would have with Python.
@@ -168,14 +168,26 @@ What I will complain about is how this is utterly terribly designed, and for tha
 
 Understanding the loop requires an understanding of `analyzeRewardChance`, which... why? Why does a function in a git submodule with zero documentation dictate how this loop works? It uses the special value of `[]` to mean that all the items have an equal chance of dropping. But this is not communicated in any way.
 
-Except here's the thing: it also uses this when `rand = -3`. Is this intended behaviour or is this a bug? I have no clue, but based on the fact that this was probably written before Infernal Tower and that Infernal Tower stages have drop reward chances like `[33, 33, 34]`, and also the fact that there are way too many dumb assumptions in the code, I'm gonna assume it's a bug. Although tbf, it is what the [official data](https://www.youtube.com/watch?v=oWUZjIbgcao) says.
+Except here's the thing: it also uses this special value this when `rand = -3`. Is this intended behaviour or is this a bug? I have no clue, but based on the fact that this was probably written before Infernal Tower and that Infernal Tower stages have drop reward chances like `[33, 33, 34]`, and also the fact that there are way too many dumb assumptions in the code, I'm gonna assume it's a bug. Tbf, it is what the [official data](https://www.youtube.com/watch?v=oWUZjIbgcao) says, but [so does `rand = -4`](https://youtu.be/TG7ERi2MyP8?t=1264), plus PONOS are usually really vague anyway.
 
 In fact, I'm convinced that BCU doesn't understand `rand = -3` because it also doesn't know that these rewards only appear once. It also doesn't appear to know that you can't use Treasure Radars for `rand = -3`.
 
-if it's empty then it gives you the index of the reward
-treasure radar bug
-exiting on empty
-coding should be simple. If you rely on some invariants, make it clear what those are
-Rust is the only thing that let me make sense of BCU's terrible code
+So anyway, with that out of the way, the rest of `analyzeRewardChance` is... fine ig. I don't know why it doesn't just do a different case for each `rand` value, surely doing it another way is gonna cause bugs. Honestly, `readDropData` isn't that bad once you consider its main faults derive from `analyzeRewardChance`. It thinks that `rand = -3` can be radared which it definitely can't, and it only checks the reward ID (so it can determine if the item drops once) when it's the first item, for whatever reason.
 
-<!-- I cannot believe this has gotten to like 3k words in 3 days, when only working on it late at night. If I could have had this productivity when doing my third year project... -->
+#### Fixing what's broken
+
+I just spent two sections complaining about BCU's code, so now it's time to get to the actual point which was how I used the type system to apply meaning to the raw data, and in doing so get a much deeper understanding of the mechanism and fix BCU's bugs.
+
+The first thing I did was make an enum. I love enums. I used my old `StageInfo` code's test capabilities, and got it to collect every value of `rand` so I could see all the possible values. Then I put it in an enum called `TreasureType`. I also renamed `rand` to `treasure_type` because `rand` is an utterly terrible name for it.
+
+I then did a pretty much straight port of the original BCU code, similar to how my Python had been. The only real differences were basically the Rust way vs the Java way. Rust makes it impossible to do things like uninitialised variables and warns you of unused ones, and also makes it really easy to have simple structs instead of "intelligent classes". Therefore, I used `Vec`s for reward data and structs for both the Treasure and the Timed Score rewards. It also made me realise that `once` was a completely unused variable.
+
+Now that I had a more informative set of data than BCU provided, I could properly document my enum. I used my same Python script to just show me the sorts of stages that had particular values of `rand`, and consulted existing wiki information, BCU, YT and other people with access to the game to try and understand how it worked. Eventually I was able to get enough information to document and name the enum variants.
+
+With my much better-organised information it was really easy to implement the treasure drop information. Since I now isolated every `treasure_type` value, if I had an error I knew immediately where that error was. I also fixed multiple bugs that happened with the Python implementation, such as the one where it would say that Treasure Radars were guaranteed to appear when their chance was 0.
+
+#### Conclusion
+
+Coding should have one simple rule: if you rely on some invariant, make it clear what that invariant is. BCU gives no indication that `[]` means all rewards have an equal chance. In Rust I would at least document it, or the better option would be to use an enum like `enum RewardChances { AllEqual, Chances(Vec<f64>) }` so that you have to treat both cases separately ***or it won't compile***.
+
+Rust is a fantastic tool and it's the only thing that made me able to understand BCU's terrible spaghetti code. Or at the very least, it was significantly more helpful than Python which doesn't have enums (although I think later versions of Python might be getting better, it's still not a language I'd recommend using on a large-scale project).
