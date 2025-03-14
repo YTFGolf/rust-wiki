@@ -249,11 +249,11 @@ mod tests {
             )]
         );
 
-        let 昇段試験1 =
+        let rankup1 =
             Stage::from_id_current(StageID::from_components(T::Championships, 0, 0)).unwrap();
-        let data = get_stage_wiki_data(&昇段試験1);
+        let data = get_stage_wiki_data(&rankup1);
         assert_eq!(
-            chapter(&昇段試験1, &data),
+            chapter(&rankup1, &data),
             vec![TemplateParameter::new(
                 "dojo-chapter",
                 "[[Catclaw Championships#Catclaw Championships Rank 1|Catclaw Championships Rank 1]]".to_string()
