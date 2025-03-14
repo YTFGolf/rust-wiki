@@ -136,7 +136,7 @@ impl GameMapData {
             }]
         } else {
             let drop_len = (record.len() - 7) / 3;
-            let mut drop = vec![];
+            let mut drop = Vec::with_capacity(drop_len);
             drop.push(TreasureCSV {
                 item_chance: parse_u32(&record[5]),
                 item_id: parse_u32(&record[6]),
