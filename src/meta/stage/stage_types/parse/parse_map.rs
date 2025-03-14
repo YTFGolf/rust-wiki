@@ -1,6 +1,6 @@
 //! Parse [`MapID`] from various formats.
 
-use super::{get_variant_from_code, is_single_map, is_single_stage, StageTypeParseError};
+use super::{StageTypeParseError, get_variant_from_code, is_single_map, is_single_stage};
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
     stage_types::data::SELECTOR_SEPARATOR,
@@ -84,7 +84,7 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
             return Ok(MapID::from_components(
                 T::MainChapters,
                 chap_num * 3 + map_num,
-            ))
+            ));
         }
         '_' => (),
         _ => return Err(StageTypeParseError::InvalidFormat),

@@ -4,7 +4,7 @@ use crate::{
     data::stage::parsed::stage::{ContinueStages, Stage},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     wikitext::{
-        data_files::stage_wiki_data::{MapWikiData, StageWikiData, STAGE_WIKI_DATA},
+        data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
         stage_info::StageWikiDataContainer,
         template_parameter::TemplateParameter,
         wiki_utils::OLD_OR_REMOVED_SUB,

@@ -2,7 +2,7 @@
 
 use crate::{
     config::Config,
-    file_handler::{get_file_location, FileLocation},
+    file_handler::{FileLocation, get_file_location},
 };
 use similar::{ChangeTag, TextDiff};
 use std::{

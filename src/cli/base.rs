@@ -3,8 +3,8 @@
 use super::cli_util::ConfigMerge;
 use crate::{config::Config, logger::set_log_level};
 use clap::{
-    builder::{PossibleValuesParser, TypedValueParser},
     Args,
+    builder::{PossibleValuesParser, TypedValueParser},
 };
 use log::Level;
 

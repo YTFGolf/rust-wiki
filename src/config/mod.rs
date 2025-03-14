@@ -8,4 +8,4 @@ pub mod wiki_config;
 
 #[cfg(test)]
 pub use config_obj::TEST_CONFIG;
-pub use config_obj::{Config, CONFIG_FILE};
+pub use config_obj::{CONFIG_FILE, Config};

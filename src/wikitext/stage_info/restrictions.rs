@@ -371,7 +371,10 @@ mod tests {
         let sighter_star =
             Stage::from_id_current(StageID::from_components(T::MainChapters, 8, 24)).unwrap();
         assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_string() )) );
-        assert_eq!( &restrictions_section(&sighter_star), "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
+        assert_eq!(
+            &restrictions_section(&sighter_star),
+            "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]"
+        );
     }
 
     #[test]
@@ -379,7 +382,10 @@ mod tests {
         let babies_first =
             Stage::from_id_current(StageID::from_components(T::Event, 375, 0)).unwrap();
         assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_string() )) );
-        assert_eq!( &restrictions_section(&babies_first), "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
+        assert_eq!(
+            &restrictions_section(&babies_first),
+            "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]"
+        );
     }
 
     #[test]
@@ -403,7 +409,10 @@ mod tests {
     fn restriction_rarity_4() {
         let wahwah = Stage::from_id_current(StageID::from_components(T::Event, 158, 0)).unwrap();
         assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_string() )) );
-        assert_eq!( &restrictions_section(&wahwah), "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
+        assert_eq!(
+            &restrictions_section(&wahwah),
+            "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]"
+        );
     }
 
     #[test]

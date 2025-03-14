@@ -6,7 +6,7 @@ use crate::{
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         stage_info::StageWikiDataContainer,
-        wiki_utils::{extract_name, get_ordinal, OLD_OR_REMOVED_SUB},
+        wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
     },
 };
 use std::{collections::HashSet, fmt::Write};
@@ -108,7 +108,10 @@ mod tests {
         let not_alone =
             Stage::from_id_current(StageID::from_components(T::Collab, 176, 4)).unwrap();
         let buf = enemies_appearing(&not_alone);
-        assert_eq!(&buf, "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Dessert Witch - Obsession}}");
+        assert_eq!(
+            &buf,
+            "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Dessert Witch - Obsession}}"
+        );
         // used to be charlotte but that changed in 14.1 so kinda pointless now
         // but then again no reason to remove it
 
@@ -126,13 +129,19 @@ mod tests {
         let ht30 = Stage::from_id_current(StageID::from_components(T::Tower, 0, 29)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&ht30);
         let buf = intro(&ht30, &stage_wiki_data);
-        assert_eq!(&buf, "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
+        assert_eq!(
+            &buf,
+            "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage."
+        );
         // tower; no continues
 
         let whole_new = Stage::from_id_current(StageID::from_components(T::ZL, 0, 0)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&whole_new);
         let buf = intro(&whole_new, &stage_wiki_data);
-        assert_eq!(&buf, "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
+        assert_eq!(
+            &buf,
+            "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage."
+        );
         // only
 
         let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
@@ -148,7 +157,10 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Collab, 206, 1)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&refusal_type);
         let buf = intro(&refusal_type, &stage_wiki_data);
-        assert_eq!(&buf, "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
+        assert_eq!(
+            &buf,
+            "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage."
+        );
         // ! in map name; final
 
         let crimson_trial =

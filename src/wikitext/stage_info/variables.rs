@@ -1,5 +1,6 @@
 //! Deals with stage info variables.
 
+use super::StageWikiDataContainer;
 use super::battlegrounds::battlegrounds;
 use super::beginning::{enemies_appearing, intro};
 use super::enemies_list::enemies_list;
@@ -7,7 +8,6 @@ use super::information::{base_hp, energy, max_enemies, stage_location, stage_nam
 use super::misc_information::{chapter, difficulty, max_clears, stage_nav, star};
 use super::restrictions::{restrictions_info, restrictions_section, rules};
 use super::treasure::{score_rewards, treasure};
-use super::StageWikiDataContainer;
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 

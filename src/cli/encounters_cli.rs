@@ -6,7 +6,7 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{config::Config, wikitext::data_files::enemy_data::ENEMY_DATA};
-use clap::{command, Args};
+use clap::{Args, command};
 
 #[derive(Debug, Args, PartialEq)]
 /// Encounters options.

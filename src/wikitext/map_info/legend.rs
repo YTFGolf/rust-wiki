@@ -13,7 +13,7 @@ use crate::{
     },
     wikitext::{
         data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
-        format_parser::{parse_info_format, ParseType},
+        format_parser::{ParseType, parse_info_format},
         wiki_utils::{extract_link, extract_name, get_ordinal},
     },
 };

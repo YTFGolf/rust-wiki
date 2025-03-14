@@ -1,6 +1,6 @@
 //! Module that gets information about enemy names and data.
 
-use crate::file_handler::{get_file_location, FileLocation};
+use crate::file_handler::{FileLocation, get_file_location};
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
 

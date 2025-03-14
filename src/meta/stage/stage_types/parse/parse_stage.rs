@@ -1,7 +1,7 @@
 //! Parse [`StageID`] from various formats.
 
 use super::parse_map::parse_map_selector;
-use super::{is_single_map, is_single_stage, StageTypeParseError};
+use super::{StageTypeParseError, is_single_map, is_single_stage};
 use crate::meta::stage::variant::VariantSize;
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
@@ -179,9 +179,9 @@ mod tests {
     use super::*;
     use crate::meta::stage::stage_types::transform::transform_stage::stage_data_file;
     use crate::meta::stage::variant::StageVariantID;
+    use StageTypeParseError as E;
     use rand::random;
     use strum::IntoEnumIterator;
-    use StageTypeParseError as E;
 
     #[test]
     fn test_parse_selector_sol() {

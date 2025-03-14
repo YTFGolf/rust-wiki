@@ -282,9 +282,9 @@ mod tests {
         meta::stage::stage_types::parse::parse_stage::parse_stage_selector,
         wikitext::{data_files::stage_wiki_data::STAGE_WIKI_DATA, encounters::chapter::Stage},
     };
+    use SectionRef as Ref;
     use std::borrow::Cow;
     use strum::IntoEnumIterator;
-    use SectionRef as Ref;
 
     #[test]
     fn assert_section_ref() {

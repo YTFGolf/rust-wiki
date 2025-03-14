@@ -1,7 +1,7 @@
 use clap::Parser;
 use rust_wiki::{
     cli::commands::Cli,
-    config::{Config, CONFIG_FILE},
+    config::{CONFIG_FILE, Config},
     logger::{init_logger, set_log_level},
 };
 use std::process::exit;

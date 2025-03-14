@@ -1,12 +1,12 @@
 //! Get information about a stage.
 
-use super::data_files::stage_wiki_data::{MapWikiData, StageWikiData, STAGE_WIKI_DATA};
-use super::format_parser::{parse_info_format, ParseType};
+use super::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
+use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
 use std::fmt::Write;
-use variables::{get_stage_variable, DEFAULT_FORMAT};
+use variables::{DEFAULT_FORMAT, get_stage_variable};
 mod battlegrounds;
 mod beginning;
 mod enemies_list;

@@ -10,5 +10,5 @@ pub mod transform;
 mod types;
 
 pub use data::{
-    get_stage_type, iter_stage_types, MAX_VARIANT_INDEX, MAX_VARIANT_NUMBER, RAW_STAGE_TYPES,
+    MAX_VARIANT_INDEX, MAX_VARIANT_NUMBER, RAW_STAGE_TYPES, get_stage_type, iter_stage_types,
 };

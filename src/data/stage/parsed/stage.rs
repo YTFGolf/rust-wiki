@@ -11,8 +11,8 @@ use crate::{
         stage::raw::{
             stage_data::StageData,
             stage_option::{
-                charagroups::{CharaGroup, CharaGroups},
                 StageOptionCSV,
+                charagroups::{CharaGroup, CharaGroups},
             },
         },
         version::Version,
