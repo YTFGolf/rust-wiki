@@ -1,0 +1,3 @@
+This folder will define specifications for files and file formats. It aims to describe both the folders used in this project and those in the game files, and will describe where information is given. This will help to identify any bugs with the implementation and will make it clearer what the code for each part is trying to do.
+
+[Stage Structure Page/Battlegrounds](https://battlecats.miraheze.org/wiki/The_Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds) should be viewed as the golden standard for any parts of this folder. It contains extensive detail on both the format of the stage files and the wiki battlegrounds, including examples, edge cases and exceptions.
