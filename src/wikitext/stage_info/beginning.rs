@@ -105,7 +105,8 @@ mod tests {
         assert_eq!(&buf, "{{EnemiesAppearing}}");
         // blank
 
-        let not_alone = Stage::new_current("c 176 4").unwrap();
+        let not_alone =
+            Stage::from_id_current(StageID::from_components(T::Collab, 176, 4)).unwrap();
         let buf = enemies_appearing(&not_alone);
         assert_eq!(&buf, "{{EnemiesAppearing|Shibalien|Mistress Celeboodle|Imperator Sael|Kroxo|Cyberhorn|Dessert Witch - Obsession}}");
         // used to be charlotte but that changed in 14.1 so kinda pointless now
@@ -128,7 +129,7 @@ mod tests {
         assert_eq!(&buf, "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
         // tower; no continues
 
-        let whole_new = Stage::new_current("zl 0 0").unwrap();
+        let whole_new = Stage::from_id_current(StageID::from_components(T::ZL, 0, 0)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&whole_new);
         let buf = intro(&whole_new, &stage_wiki_data);
         assert_eq!(&buf, "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
@@ -143,13 +144,15 @@ mod tests {
         );
         // normal stage
 
-        let refusal_type = Stage::new_current("c 206 1").unwrap();
+        let refusal_type =
+            Stage::from_id_current(StageID::from_components(T::Collab, 206, 1)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&refusal_type);
         let buf = intro(&refusal_type, &stage_wiki_data);
         assert_eq!(&buf, "'''Refusal Type (Merciless)''' is the second and final stage in [[The 10th Angel Strikes!]] This is a [[No Continues]] stage.");
         // ! in map name; final
 
-        let crimson_trial = Stage::new_current("r 20 0").unwrap();
+        let crimson_trial =
+            Stage::from_id_current(StageID::from_components(T::RankingDojo, 20, 0)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&crimson_trial);
         let buf = intro(&crimson_trial, &stage_wiki_data);
         assert_eq!(

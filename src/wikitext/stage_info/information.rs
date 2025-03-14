@@ -218,7 +218,8 @@ mod tests {
             "
         );
 
-        let red_summit = Stage::new_current("h 10 0").unwrap();
+        let red_summit =
+            Stage::from_id_current(StageID::from_components(T::Enigma, 10, 0)).unwrap();
         let mut buf = String::new();
         buf.write_str(&stage_name(&red_summit).to_string()).unwrap();
         buf.write_str("\n").unwrap();

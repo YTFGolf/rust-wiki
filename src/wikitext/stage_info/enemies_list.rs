@@ -293,7 +293,8 @@ mod tests {
             )]
         );
 
-        let sacrifice_apprenticeship = Stage::new_current("nd 3 3").unwrap();
+        let sacrifice_apprenticeship =
+            Stage::from_id_current(StageID::from_components(T::ZL, 3, 3)).unwrap();
         assert_eq!(
             enemies_list(&sacrifice_apprenticeship, true),
             vec![

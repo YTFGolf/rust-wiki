@@ -238,7 +238,8 @@ mod tests {
             )]
         );
 
-        let crimson_trial_arena = Stage::new_current("rank 0 0").unwrap();
+        let crimson_trial_arena =
+            Stage::from_id_current(StageID::from_components(T::RankingDojo, 0, 0)).unwrap();
         let data = get_stage_wiki_data(&crimson_trial_arena);
         assert_eq!(
             chapter(&crimson_trial_arena, &data),
@@ -248,7 +249,8 @@ mod tests {
             )]
         );
 
-        let 昇段試験1 = Stage::new_current("g 0 0").unwrap();
+        let 昇段試験1 =
+            Stage::from_id_current(StageID::from_components(T::Championships, 0, 0)).unwrap();
         let data = get_stage_wiki_data(&昇段試験1);
         assert_eq!(
             chapter(&昇段試験1, &data),
