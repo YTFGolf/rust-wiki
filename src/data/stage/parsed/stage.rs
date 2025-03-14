@@ -359,6 +359,7 @@ impl Stage {
 
     /// Create a new stage object from `selector` in current version.
     #[cfg(test)]
+    #[deprecated]
     pub fn new_current(selector: &str) -> Option<Self> {
         use crate::config::TEST_CONFIG;
         Self::from_selector(selector, TEST_CONFIG.version.current_version())
