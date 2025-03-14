@@ -88,10 +88,11 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
 mod tests {
     use super::super::test_util::get_stage_wiki_data;
     use super::*;
+    use crate::meta::stage::{stage_id::StageID, variant::StageVariantID as T};
 
     #[test]
     fn test_enemies_appearing() {
-        let crazed_cat = Stage::new_current("s 17 0").unwrap();
+        let crazed_cat = Stage::from_id_current(StageID::from_components(T::Event, 17, 0)).unwrap();
         let buf = enemies_appearing(&crazed_cat);
         assert_eq!(
             &buf,

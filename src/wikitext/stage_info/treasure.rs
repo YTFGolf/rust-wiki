@@ -237,7 +237,10 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::map::raw::csv_types::{TreasureCSV, TreasureType};
+    use crate::{
+        data::map::raw::csv_types::{TreasureCSV, TreasureType},
+        meta::stage::{stage_id::StageID, variant::StageVariantID},
+    };
 
     #[test]
     fn write_name_and_amount_normal() {
@@ -297,7 +300,8 @@ mod tests {
 
     #[test]
     fn unit_reward() {
-        let dark_souls = Stage::new_current("s 17 0").unwrap();
+        let dark_souls =
+            Stage::from_id_current(StageID::from_components(StageVariantID::Event, 17, 0)).unwrap();
         assert_eq!(
             treasure(&dark_souls),
             Some(TemplateParameter::new(
