@@ -11,7 +11,8 @@ use crate::{
     meta::stage::{
         stage_id::StageID,
         stage_types::{
-            parse::parse_stage::parse_general_stage_id, transform::transform_stage::stage_data_file,
+            parse::parse_stage::{parse_general_stage_id, parse_stage_file},
+            transform::transform_stage::stage_data_file,
         },
     },
 };
@@ -141,6 +142,7 @@ pub enum StageDataError {
 
 impl<'a> StageData<'_> {
     /// Create new StageData object.
+    #[deprecated]
     pub fn from_selector(
         selector: &str,
         version: &'a Version,
@@ -148,6 +150,17 @@ impl<'a> StageData<'_> {
         match parse_general_stage_id(selector) {
             Some(id) => Self::from_id(id, version),
             None => Err(StageDataError::InvalidSelector),
+        }
+    }
+
+    /// Create new StageData object.
+    pub fn from_file_name(
+        selector: &str,
+        version: &'a Version,
+    ) -> Result<StageData<'a>, StageDataError> {
+        match parse_stage_file(selector) {
+            Ok(id) => Self::from_id(id, version),
+            Err(_) => Err(StageDataError::InvalidSelector),
         }
     }
 
