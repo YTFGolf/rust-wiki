@@ -330,7 +330,8 @@ mod tests {
 
     #[test]
     fn no_restrictions() {
-        let boxing_clever = Stage::new_current("s 50 1").unwrap();
+        let boxing_clever =
+            Stage::from_id_current(StageID::from_components(T::Event, 50, 1)).unwrap();
         assert_eq!(boxing_clever.restrictions, None);
         assert_eq!(restrictions_info(&boxing_clever), None);
         assert_eq!(&restrictions_section(&boxing_clever), "");
@@ -338,7 +339,8 @@ mod tests {
 
     #[test]
     fn no_continues() {
-        let realm_of_carnage = Stage::new_current("s 117 0").unwrap();
+        let realm_of_carnage =
+            Stage::from_id_current(StageID::from_components(T::Event, 117, 0)).unwrap();
         assert_eq!(realm_of_carnage.restrictions, None);
         assert_eq!(
             restrictions_info(&realm_of_carnage),
@@ -352,7 +354,7 @@ mod tests {
 
     #[test]
     fn only_4_crown_restrictions() {
-        let earthshaker = Stage::new_current("sol 0 0").unwrap();
+        let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
         assert_eq!(
             earthshaker.restrictions.as_ref().unwrap(),
             &[FOUR_CROWN_DEFAULT_RESTRICTION]
@@ -363,21 +365,24 @@ mod tests {
 
     #[test]
     fn restriction_rarity_1() {
-        let sighter_star = Stage::new_current("cotc 3 24").unwrap();
+        let sighter_star =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 8, 24)).unwrap();
         assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_string() )) );
         assert_eq!( &restrictions_section(&sighter_star), "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]" );
     }
 
     #[test]
     fn restriction_rarity_2() {
-        let babies_first = Stage::new_current("s 375 0").unwrap();
+        let babies_first =
+            Stage::from_id_current(StageID::from_components(T::Event, 375, 0)).unwrap();
         assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_string() )) );
         assert_eq!( &restrictions_section(&babies_first), "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]" );
     }
 
     #[test]
     fn restriction_rarity_3() {
-        let somolon = Stage::new_current("cotc 3 37").unwrap();
+        let somolon =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 8, 37)).unwrap();
         assert_eq!(
             restrictions_info(&somolon),
             Some(TemplateParameter::new(
@@ -393,14 +398,15 @@ mod tests {
 
     #[test]
     fn restriction_rarity_4() {
-        let wahwah = Stage::new_current("s 158 0").unwrap();
+        let wahwah = Stage::from_id_current(StageID::from_components(T::Event, 158, 0)).unwrap();
         assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_string() )) );
         assert_eq!( &restrictions_section(&wahwah), "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]" );
     }
 
     #[test]
     fn restriction_deploy_limit() {
-        let wrath_w_cyclone = Stage::new_current("s 176 0").unwrap();
+        let wrath_w_cyclone =
+            Stage::from_id_current(StageID::from_components(T::Event, 176, 0)).unwrap();
         assert_eq!(
             restrictions_info(&wrath_w_cyclone),
             Some(TemplateParameter::new(
@@ -416,7 +422,8 @@ mod tests {
 
     #[test]
     fn restriction_rows() {
-        let uranus = Stage::new_current("cotc 2 7").unwrap();
+        let uranus =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 7, 7)).unwrap();
         assert_eq!(
             restrictions_info(&uranus),
             Some(TemplateParameter::new(
@@ -429,7 +436,8 @@ mod tests {
 
     #[test]
     fn restriction_min_cost_1() {
-        let saturn = Stage::new_current("cotc 2 3").unwrap();
+        let saturn =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 7, 3)).unwrap();
         assert_eq!(
             restrictions_info(&saturn),
             Some(TemplateParameter::new(
@@ -445,7 +453,8 @@ mod tests {
 
     #[test]
     fn restriction_min_cost_2() {
-        let skelling = Stage::new_current("cotc 2 40").unwrap();
+        let skelling =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 7, 40)).unwrap();
         assert_eq!(
             restrictions_info(&skelling),
             Some(TemplateParameter::new(
@@ -461,7 +470,8 @@ mod tests {
 
     #[test]
     fn restriction_max_cost_1() {
-        let buutara = Stage::new_current("cotc 1 27").unwrap();
+        let buutara =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 6, 27)).unwrap();
         assert_eq!(
             restrictions_info(&buutara),
             Some(TemplateParameter::new(
@@ -477,7 +487,8 @@ mod tests {
 
     #[test]
     fn restriction_max_cost_2() {
-        let catseye_nebula = Stage::new_current("cotc 1 13").unwrap();
+        let catseye_nebula =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 6, 13)).unwrap();
         assert_eq!(
             restrictions_info(&catseye_nebula),
             Some(TemplateParameter::new(
@@ -493,7 +504,7 @@ mod tests {
 
     #[test]
     fn restriction_only_cat() {
-        let finale = Stage::new_current("c 209 0").unwrap();
+        let finale = Stage::from_id_current(StageID::from_components(T::Collab, 209, 0)).unwrap();
         assert_eq!(
             restrictions_info(&finale),
             Some(TemplateParameter::new(
@@ -509,7 +520,8 @@ mod tests {
 
     #[test]
     fn restriction_only_jra() {
-        let final_race = Stage::new_current("c 179 0").unwrap();
+        let final_race =
+            Stage::from_id_current(StageID::from_components(T::Collab, 179, 0)).unwrap();
         assert_eq!(
             restrictions_info(&final_race),
             Some(TemplateParameter::new(
@@ -525,7 +537,7 @@ mod tests {
 
     #[test]
     fn restriction_exclude_madoka() {
-        let sorry = Stage::new_current("c 178 4").unwrap();
+        let sorry = Stage::from_id_current(StageID::from_components(T::Collab, 178, 4)).unwrap();
         assert_eq!(
             restrictions_info(&sorry),
             Some(TemplateParameter::new(
@@ -541,7 +553,8 @@ mod tests {
 
     #[test]
     fn restriction_multiple_cotc() {
-        let black_hole = Stage::new_current("cotc 2 46").unwrap();
+        let black_hole =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 7, 46)).unwrap();
         assert_eq!(
             restrictions_info(&black_hole),
             Some(TemplateParameter::new(
@@ -562,7 +575,7 @@ mod tests {
 
     #[test]
     fn individual_crown_restrictions() {
-        let feathered = Stage::new_current("c 86 0").unwrap();
+        let feathered = Stage::from_id_current(StageID::from_components(T::Collab, 86, 0)).unwrap();
 
         assert_eq!(
             restrictions_info(&feathered),
@@ -582,7 +595,8 @@ mod tests {
 
     #[test]
     fn blank_some_restrictions() {
-        let revenge_r_cyclone = Stage::new_current("s 169 1").unwrap();
+        let revenge_r_cyclone =
+            Stage::from_id_current(StageID::from_components(T::Event, 169, 1)).unwrap();
         assert_eq!(revenge_r_cyclone.restrictions, Some(vec![]));
         assert_eq!(restrictions_info(&revenge_r_cyclone), None);
         assert_eq!(restrictions_section(&revenge_r_cyclone), "");
@@ -590,7 +604,8 @@ mod tests {
 
     #[test]
     fn multiple_same_restriction() {
-        let vanguard_veteran = Stage::new_current("s 213 0").unwrap();
+        let vanguard_veteran =
+            Stage::from_id_current(StageID::from_components(T::Event, 213, 0)).unwrap();
         let restrictions = vanguard_veteran.restrictions.as_ref().unwrap();
         assert_eq!(restrictions[0], restrictions[1]);
         assert_eq!(
@@ -623,7 +638,8 @@ mod tests {
     }
     #[test]
     fn multiple_restrictions_with_4_crown() {
-        let afraid_nothing = Stage::new_current("c 221 3").unwrap();
+        let afraid_nothing =
+            Stage::from_id_current(StageID::from_components(T::Collab, 221, 3)).unwrap();
         assert_eq!(
             afraid_nothing.restrictions.as_ref().unwrap(),
             &[
@@ -663,13 +679,15 @@ mod tests {
 
     #[test]
     fn rule_trust_fund() {
-        let trust_fund_2 = Stage::new_current("sr 0 1").unwrap();
+        let trust_fund_2 =
+            Stage::from_id_current(StageID::from_components(T::Colosseum, 0, 1)).unwrap();
         assert_eq!(rules(&trust_fund_2), "{{ColosseumRule|Trust Fund}}");
     }
 
     #[test]
     fn rule_12th_anniversary() {
-        let doge_disturbance_last = Stage::new_current("ex 71 9").unwrap();
+        let doge_disturbance_last =
+            Stage::from_id_current(StageID::from_components(T::Extra, 71, 9)).unwrap();
         assert_eq!(rules(&doge_disturbance_last), "{{StageRule|12thAnni}}");
     }
 }

@@ -100,7 +100,7 @@ mod tests {
         );
         // normal
 
-        let tada = Stage::new_current("ex 63 0").unwrap();
+        let tada = Stage::from_id_current(StageID::from_components(T::Extra, 63, 0)).unwrap();
         let buf = enemies_appearing(&tada);
         assert_eq!(&buf, "{{EnemiesAppearing}}");
         // blank
@@ -111,7 +111,7 @@ mod tests {
         // used to be charlotte but that changed in 14.1 so kinda pointless now
         // but then again no reason to remove it
 
-        let star_ocean = Stage::new_current("sol 15 7").unwrap();
+        let star_ocean = Stage::from_id_current(StageID::from_components(T::SoL, 15, 7)).unwrap();
         let buf = enemies_appearing(&star_ocean);
         assert_eq!(
             &buf,
@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_intro() {
-        let ht30 = Stage::new_current("v 0 29").unwrap();
+        let ht30 = Stage::from_id_current(StageID::from_components(T::Tower, 0, 29)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&ht30);
         let buf = intro(&ht30, &stage_wiki_data);
         assert_eq!(&buf, "'''Floor 30''' is the 30th floor of [[Heavenly Tower]]. This is a [[No Continues]] stage.");
@@ -134,7 +134,7 @@ mod tests {
         assert_eq!(&buf, "'''A Whole New World''' is the only stage in [[Zero Field]]. This is a [[No Continues]] stage.");
         // only
 
-        let earthshaker = Stage::new_current("sol 0 0").unwrap();
+        let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
         let stage_wiki_data = get_stage_wiki_data(&earthshaker);
         let buf = intro(&earthshaker, &stage_wiki_data);
         assert_eq!(

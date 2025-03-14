@@ -282,7 +282,7 @@ mod tests {
 
     #[test]
     fn test_basic_battleground() {
-        let earthshaker = Stage::new_current("sol 0 0").unwrap();
+        let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
         assert_eq!(earthshaker.enemies.len(), 4);
         assert_eq!(earthshaker.enemies[3].start_frame, 27_000);
         assert_eq!(
@@ -295,7 +295,7 @@ mod tests {
 
     #[test]
     fn test_show_mag_and_ms_sign() {
-        let star_ocean = Stage::new_current("sol 15 7").unwrap();
+        let star_ocean = Stage::from_id_current(StageID::from_components(T::SoL, 15, 7)).unwrap();
         assert_eq!(
             battlegrounds(&star_ocean),
             "*Infinite [[Doge]]s spawn, delay 4~40 seconds<sup>120f~1,200f</sup>.\n\
@@ -316,7 +316,8 @@ mod tests {
 
     #[test]
     fn test_base_hit() {
-        let lovely_minerals = Stage::new_current("sol 4 0").unwrap();
+        let lovely_minerals =
+            Stage::from_id_current(StageID::from_components(T::SoL, 4, 0)).unwrap();
         let master_a = &lovely_minerals.enemies[4];
         assert_eq!(master_a.start_frame, 1_200);
         assert_eq!(master_a.base_hp, 90);
@@ -336,7 +337,8 @@ mod tests {
 
     #[test]
     fn test_zero_percent() {
-        let way_of_sleeping_punt = Stage::new_current("c 44 0").unwrap();
+        let way_of_sleeping_punt =
+            Stage::from_id_current(StageID::from_components(T::Collab, 44, 0)).unwrap();
         assert_eq!(way_of_sleeping_punt.enemies[5].base_hp, 0);
         assert_eq!(
             battlegrounds(&way_of_sleeping_punt),
@@ -351,7 +353,8 @@ mod tests {
 
     #[test]
     fn test_multibase_with_1_second() {
-        let mistakes_dont_matter = Stage::new_current("s 261 3").unwrap();
+        let mistakes_dont_matter =
+            Stage::from_id_current(StageID::from_components(T::Event, 261, 3)).unwrap();
         let base = &mistakes_dont_matter.enemies[0];
         assert_eq!(base.amount, EnemyAmount::from(10));
         assert!(base.is_base);
@@ -377,7 +380,8 @@ mod tests {
 
     #[test]
     fn test_1_second_spawn() {
-        let cat_catharsis = Stage::new_current("n 27 2").unwrap();
+        let cat_catharsis =
+            Stage::from_id_current(StageID::from_components(T::SoL, 27, 2)).unwrap();
         assert_eq!(
             battlegrounds(&cat_catharsis),
             "*1 [[Dark Emperor Nyandam]] spawns after 1 second<sup>30f</sup>.\n\
@@ -390,7 +394,8 @@ mod tests {
 
     #[test]
     fn test_multiboss() {
-        let ultra_stress = Stage::new_current("s 34 0").unwrap();
+        let ultra_stress =
+            Stage::from_id_current(StageID::from_components(T::Event, 34, 0)).unwrap();
         let squirrels = &ultra_stress.enemies[5];
         assert_eq!(squirrels.amount, EnemyAmount::from(5));
         assert_eq!(squirrels.boss_type, BossType::Boss);
@@ -411,7 +416,8 @@ mod tests {
 
     #[test]
     fn test_base_out_of_order() {
-        let bouquet_toss = Stage::new_current("s 343 4").unwrap();
+        let bouquet_toss =
+            Stage::from_id_current(StageID::from_components(T::Event, 343, 4)).unwrap();
         let base = &bouquet_toss.enemies[5];
         assert!(base.is_base);
         assert_eq!(
@@ -429,7 +435,8 @@ mod tests {
 
     #[test]
     fn test_indestructible_base() {
-        let disaster_strikes = Stage::new_current("s 369 0").unwrap();
+        let disaster_strikes =
+            Stage::from_id_current(StageID::from_components(T::Event, 369, 0)).unwrap();
         assert!(disaster_strikes.is_base_indestructible);
         assert_eq!(
             battlegrounds(&disaster_strikes),
@@ -445,7 +452,8 @@ mod tests {
 
     #[test]
     fn test_enforce_start_frame_1() {
-        let retreat_of_living_dead = Stage::new_current("na 45 3").unwrap();
+        let retreat_of_living_dead =
+            Stage::from_id_current(StageID::from_components(T::UL, 45, 3)).unwrap();
         assert_eq!(
             battlegrounds(&retreat_of_living_dead),
             "*The enemy base here is a [[Surge Base (Enemy Base)|Surge Base]].\n\
@@ -462,7 +470,8 @@ mod tests {
 
     #[test]
     fn test_enforce_start_frame_with_1_second() {
-        let titanic_steakhouse = Stage::new_current("na 45 4").unwrap();
+        let titanic_steakhouse =
+            Stage::from_id_current(StageID::from_components(T::UL, 45, 4)).unwrap();
         assert_eq!(
             battlegrounds(&titanic_steakhouse),
             "*10 [[Cerberus Kids]] spawn after 6.67 seconds<sup>200f</sup>, delay 2~4 seconds<sup>60f~120f</sup>.\n\
@@ -484,7 +493,7 @@ mod tests {
 
     #[test]
     fn test_an() {
-        let mexico = Stage::new_current("aku 42").unwrap();
+        let mexico = Stage::from_id_current(StageID::from_components(T::AkuRealms, 0, 42)).unwrap();
         let base_name = ENEMY_DATA.get_common_name(u32::from(mexico.anim_base_id.unwrap()) - 2);
         assert_eq!(base_name.chars().next().unwrap(), 'A');
         assert_eq!(
@@ -509,7 +518,8 @@ mod tests {
 
     #[test]
     fn test_infinite_base() {
-        let stand_by_motel = Stage::new_current("na 45 1").unwrap();
+        let stand_by_motel =
+            Stage::from_id_current(StageID::from_components(T::UL, 45, 1)).unwrap();
         let base = &stand_by_motel.enemies[0];
         assert_eq!(base.amount, EnemyAmount::Infinite);
         assert!(base.is_base);
@@ -530,7 +540,8 @@ mod tests {
 
     #[test]
     fn test_ms_sign_boss() {
-        let hall_of_four_kings = Stage::new_current("na 36 5").unwrap();
+        let hall_of_four_kings =
+            Stage::from_id_current(StageID::from_components(T::UL, 36, 5)).unwrap();
         let ms_sign = &hall_of_four_kings.enemies[1];
         assert_eq!(ms_sign.id, 21);
         assert_eq!(ms_sign.boss_type, BossType::Boss);
@@ -546,7 +557,8 @@ mod tests {
 
     #[test]
     fn test_killcount() {
-        let deep_jungle_10 = Stage::new_current("q 0 9").unwrap();
+        let deep_jungle_10 =
+            Stage::from_id_current(StageID::from_components(T::Behemoth, 0, 9)).unwrap();
         assert_eq!(
             battlegrounds(&deep_jungle_10),
             "*Infinite [[Doge Dark]]s spawn after 6.67 seconds<sup>200f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
@@ -561,7 +573,8 @@ mod tests {
 
     #[test]
     fn test_all_enemies_base_hit() {
-        let great_burglar_battle = Stage::new_current("c 132 0").unwrap();
+        let great_burglar_battle =
+            Stage::from_id_current(StageID::from_components(T::Collab, 132, 0)).unwrap();
         assert_eq!(
             battlegrounds(&great_burglar_battle),
             "*When the base reaches 99% HP:\n\
@@ -574,7 +587,8 @@ mod tests {
 
     #[test]
     fn test_dojo() {
-        let anniv_11 = Stage::new_current("r 25 0").unwrap();
+        let anniv_11 =
+            Stage::from_id_current(StageID::from_components(T::RankingDojo, 25, 0)).unwrap();
         // 11th anniversary is plural + general dojo layout
         // nearly 200 lines lmao
         assert_eq!(

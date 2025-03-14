@@ -287,7 +287,7 @@ mod tests {
 
     #[test]
     fn once_then_nothing() {
-        let ht30 = Stage::new_current("v 0 29").unwrap();
+        let ht30 = Stage::from_id_current(StageID::from_components(T::Tower, 0, 29)).unwrap();
         assert_eq!(
             treasure(&ht30),
             Some(TemplateParameter::new(
@@ -314,7 +314,8 @@ mod tests {
 
     #[test]
     fn once_then_many() {
-        let merciless_xp = Stage::new_current("s 155 0").unwrap();
+        let merciless_xp =
+            Stage::from_id_current(StageID::from_components(T::Event, 155, 0)).unwrap();
         assert_eq!(
             treasure(&merciless_xp),
             Some(TemplateParameter::new(
@@ -330,7 +331,8 @@ mod tests {
 
     #[test]
     fn many_unlimited() {
-        let jubilee_night = Stage::new_current("ex 1 0").unwrap();
+        let jubilee_night =
+            Stage::from_id_current(StageID::from_components(T::Extra, 1, 0)).unwrap();
         assert_eq!(
             treasure(&jubilee_night),
             Some(TemplateParameter::new(
@@ -346,7 +348,8 @@ mod tests {
 
     #[test]
     fn treasure_radar() {
-        let round_4_trust_fund = Stage::new_current("sr 0 3").unwrap();
+        let round_4_trust_fund =
+            Stage::from_id_current(StageID::from_components(T::Colosseum, 0, 3)).unwrap();
         assert_eq!(
             round_4_trust_fund.rewards,
             Some(StageRewards {
@@ -364,7 +367,7 @@ mod tests {
 
     #[test]
     fn guaranteed_once_single() {
-        let it30 = Stage::new_current("v 6 29").unwrap();
+        let it30 = Stage::from_id_current(StageID::from_components(T::Tower, 6, 29)).unwrap();
         assert_eq!(
             treasure(&it30),
             Some(TemplateParameter::new(
@@ -377,7 +380,7 @@ mod tests {
 
     #[test]
     fn guaranteed_once_many() {
-        let it29 = Stage::new_current("v 6 28").unwrap();
+        let it29 = Stage::from_id_current(StageID::from_components(T::Tower, 6, 28)).unwrap();
         assert_eq!(
             treasure(&it29),
             Some(TemplateParameter::new(
@@ -399,7 +402,7 @@ mod tests {
 
     #[test]
     fn guaranteed_once_different_chance() {
-        let it2 = Stage::new_current("v 6 1").unwrap();
+        let it2 = Stage::from_id_current(StageID::from_components(T::Tower, 6, 1)).unwrap();
         assert_eq!(
             treasure(&it2),
             Some(TemplateParameter::new(
@@ -415,7 +418,8 @@ mod tests {
 
     #[test]
     fn guaranteed_once_same_chance() {
-        let spring_popstar = Stage::new_current("c 128 0").unwrap();
+        let spring_popstar =
+            Stage::from_id_current(StageID::from_components(T::Collab, 128, 0)).unwrap();
         assert_eq!(
             treasure(&spring_popstar),
             Some(TemplateParameter::new(
@@ -432,7 +436,8 @@ mod tests {
 
     #[test]
     fn test_guaranteed_unlimited_one() {
-        let afternoon_bug_hunt = Stage::new_current("h 30 0").unwrap();
+        let afternoon_bug_hunt =
+            Stage::from_id_current(StageID::from_components(T::Enigma, 30, 0)).unwrap();
         assert_eq!(
             treasure(&afternoon_bug_hunt),
             Some(TemplateParameter::new(
@@ -444,7 +449,8 @@ mod tests {
 
     #[test]
     fn guaranteed_unlimited_many() {
-        let sakura_dance = Stage::new_current("c 128 2").unwrap();
+        let sakura_dance =
+            Stage::from_id_current(StageID::from_components(T::Collab, 128, 2)).unwrap();
         assert_eq!(
             treasure(&sakura_dance),
             Some(TemplateParameter::new(
@@ -464,7 +470,8 @@ mod tests {
 
     #[test]
     fn labyrinth() {
-        let labyrinth_67 = Stage::new_current("l 0 66").unwrap();
+        let labyrinth_67 =
+            Stage::from_id_current(StageID::from_components(T::Labyrinth, 0, 66)).unwrap();
         assert_eq!(labyrinth_67.rewards, None);
         assert_eq!(treasure(&labyrinth_67), None);
         assert_eq!(score_rewards(&labyrinth_67), None);
@@ -472,7 +479,8 @@ mod tests {
 
     #[test]
     fn score_basic() {
-        let korea = Stage::new_current("itf 1 1").unwrap();
+        let korea =
+            Stage::from_id_current(StageID::from_components(T::MainChapters, 3, 1)).unwrap();
         assert_eq!(
             score_rewards(&korea),
             Some(TemplateParameter::new(
@@ -486,7 +494,8 @@ mod tests {
 
     #[test]
     fn radar_impossible() {
-        let explosion_in_sky = Stage::new_current("s 112 0").unwrap();
+        let explosion_in_sky =
+            Stage::from_id_current(StageID::from_components(T::Event, 112, 0)).unwrap();
         assert_eq!(
             explosion_in_sky.rewards,
             Some(StageRewards {
@@ -504,7 +513,8 @@ mod tests {
 
     #[test]
     fn guaranteed_unlimited_unequal_chance() {
-        let impact_site = Stage::new_current("s 150 0").unwrap();
+        let impact_site =
+            Stage::from_id_current(StageID::from_components(T::Event, 150, 0)).unwrap();
         assert_eq!(
             treasure(&impact_site),
             Some(TemplateParameter::new(
@@ -521,7 +531,8 @@ mod tests {
 
     #[test]
     fn test_single_raw() {
-        let not_fault = Stage::new_current("c 102 0").unwrap();
+        let not_fault =
+            Stage::from_id_current(StageID::from_components(T::Collab, 102, 0)).unwrap();
         assert_eq!(
             treasure(&not_fault),
             Some(TemplateParameter::new(
@@ -534,7 +545,8 @@ mod tests {
 
     #[test]
     fn test_single_raw_unlimited() {
-        let incompetent_watchman = Stage::new_current("zl 16 0").unwrap();
+        let incompetent_watchman =
+            Stage::from_id_current(StageID::from_components(T::ZL, 16, 0)).unwrap();
         assert_eq!(
             incompetent_watchman.rewards,
             Some(StageRewards {
