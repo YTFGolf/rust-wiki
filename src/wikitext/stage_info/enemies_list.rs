@@ -195,6 +195,7 @@ pub fn enemies_list(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::meta::stage::stage_id::StageID;
 
     #[test]
     fn simple_case() {

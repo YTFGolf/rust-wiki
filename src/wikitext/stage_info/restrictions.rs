@@ -326,7 +326,10 @@ pub fn rules(stage: &Stage) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::stage::parsed::stage::RestrictionCrowns;
+    use crate::{
+        data::stage::parsed::stage::RestrictionCrowns,
+        meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+    };
 
     #[test]
     fn no_restrictions() {

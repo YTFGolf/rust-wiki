@@ -279,6 +279,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::meta::stage::stage_id::StageID;
 
     #[test]
     fn test_basic_battleground() {

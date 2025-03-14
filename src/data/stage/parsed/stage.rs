@@ -433,8 +433,11 @@ impl Stage {
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG, data::stage::get_stage_files,
-        meta::stage::stage_types::transform::transform_stage::stage_data_file,
+        config::TEST_CONFIG,
+        data::stage::get_stage_files,
+        meta::stage::{
+            stage_types::transform::transform_stage::stage_data_file, variant::StageVariantID as T,
+        },
     };
 
     // test none values, esp. with crown data

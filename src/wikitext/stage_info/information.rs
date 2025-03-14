@@ -196,6 +196,8 @@ pub fn max_enemies(stage: &Stage) -> TemplateParameter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::meta::stage::stage_id::StageID;
+    use StageVariantID as T;
 
     #[test]
     fn test_stage_name_and_loc() {
