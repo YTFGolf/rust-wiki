@@ -137,3 +137,5 @@ pub struct StageDataCSV {
     /// Raw score rewards data.
     pub score_rewards: Vec<ScoreRewardsCSV>,
 }
+
+// TODO use strum to make `from` better

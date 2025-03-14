@@ -84,7 +84,7 @@ impl GameMapData {
     }
 
     fn parse_stage_line(record: &ByteRecord) -> StageDataCSV {
-        // https://github.com/battlecatsultimate/BCU_java_util_common/commits/slow_kotlin/util/stage/info/DefStageInfo.java
+        // https://github.com/battlecatsultimate/BCU_java_util_common/blob/slow_kotlin/util/stage/info/DefStageInfo.java#L36
 
         let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();
 
