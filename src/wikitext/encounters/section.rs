@@ -168,7 +168,7 @@ impl EncountersSection {
                             if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.id.map().num()) {
                                 StageID::from_numbers(ids.0, ids.1, 999)
                             } else {
-                                todo!()
+                                panic!("Extra stage not listed in continue stages: {:?}", stage.id);
                             }
                         },
                         _ => stage.id,
