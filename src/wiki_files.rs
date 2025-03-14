@@ -78,10 +78,10 @@ pub fn update_wiki_files(config: &Config) {
     for (file_name, page_name) in FILES {
         let uri = format!("{WIKI_URL}/{page_name}?action=raw");
         let response = ureq::get(&uri)
-            .set(USER_AGENT, &user_agent)
+            .header(USER_AGENT, &user_agent)
             .call()
             .expect("Couldn't get the data from the wiki.");
-        let mut res_str = response.into_string().unwrap();
+        let mut res_str = response.into_body().read_to_string().unwrap();
         res_str.push('\n');
         let content = strip_pre(&res_str);
 
