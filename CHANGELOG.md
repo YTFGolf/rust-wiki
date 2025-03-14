@@ -12,10 +12,18 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.5.1] - 2025-03-14
+
+### Added
+
 - Informal docs section.
 - Specification docs section.
-
-### Fixed
 
 ### Changed
 
@@ -23,8 +31,6 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 - Updated Rust edition to 2024.
 - Renamed Map data objects.
 - Replaced existing `mapid` functions with `MapID`s.
-
-### Removed
 
 ### Replaced
 
@@ -164,7 +170,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.0...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.1...dev
+[0.5.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.3...v0.5.0
 [0.4.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.1...v0.4.2
