@@ -228,12 +228,13 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
 mod tests {
     use super::*;
     use crate::data::stage::parsed::stage::Stage;
+    use StageVariantID as T;
 
     #[test]
     fn assert_continue_stages_name_is_correct() {
         let mut max_index = 0;
         for i in 0.. {
-            let d = Stage::new_current(&format!("4 {i} 0"));
+            let d = Stage::from_id_current(StageID::from_components(T::Extra, i, 0));
             match d {
                 None => break,
                 Some(_) => max_index = i,

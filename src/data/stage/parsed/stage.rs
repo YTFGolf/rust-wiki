@@ -445,8 +445,9 @@ mod tests {
     #[test]
     #[ignore]
     fn get_all() {
-        for stage_name in get_stage_files(TEST_CONFIG.version.current_version()) {
-            let stage = Stage::new_current(&stage_name).unwrap();
+        let version = TEST_CONFIG.version.current_version();
+        for stage_name in get_stage_files(version) {
+            let stage = Stage::from_selector(&stage_name, version).unwrap();
             assert_eq!(stage_data_file(&stage.id), stage_name);
         }
     }
