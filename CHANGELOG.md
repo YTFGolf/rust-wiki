@@ -19,7 +19,16 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Changed
 
+- Updated dependencies.
+- Renamed Map data objects.
+- Replaced existing `mapid` functions with `MapID`s.
+
 ### Removed
+
+### Replaced
+
+- `StageData::from_selector` -> `from_file_name` and others replaced by id.
+- `Stage::new_current` -> `from_id_current` and others replaced by id.
 
 ## [0.5.0] - 2025-03-08
 
