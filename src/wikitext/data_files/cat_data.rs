@@ -56,6 +56,7 @@ impl CatDataContainer {
             "Kuwagata Cat Sw" => "Kuwagata Cat",
             other => other,
         }
+        // TODO put in file
     }
 }
 

@@ -305,6 +305,7 @@ pub fn rules(stage: &Stage) -> String {
             "SpecialRuleName007" => "Plus One: Uber",
             _ => panic!("Error: unknown label {name:?}"),
         };
+        // TODO file
 
         let mut buf = "{{ColosseumRule|".to_string();
         buf += rule_desc;
