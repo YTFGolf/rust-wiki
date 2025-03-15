@@ -151,6 +151,7 @@ fn get_stage_name_map() -> StageNameMap {
         let record: StageNamesLine = result.unwrap();
         match (record.type_num, record.map_num, record.stage_num) {
             (n, None, None) => {
+                // stage type
                 map[n as usize] = Some(StageVariantWikiData {
                     name: record.link,
                     _num: n,
@@ -158,6 +159,7 @@ fn get_stage_name_map() -> StageNameMap {
                 });
             }
             (t, Some(m), None) => {
+                // stage map
                 let type_data = map[t as usize].as_mut().unwrap();
                 type_data.maps.insert(
                     m,
@@ -169,6 +171,7 @@ fn get_stage_name_map() -> StageNameMap {
                 );
             }
             (t, Some(m), Some(s)) => {
+                // stage
                 let map = &mut map[t as usize].as_mut().unwrap().maps.get_mut(&m);
                 let map_data = map.as_mut().unwrap_or_else(|| {
                     panic!("Map {m} not found when attempting to insert stage {s}")
@@ -180,13 +183,15 @@ fn get_stage_name_map() -> StageNameMap {
                     u32::try_from(stages.len()).unwrap(),
                     "Error parsing stage names record {record:?}: data is out of order."
                 );
+                // this could probably be done in tests to avoid runtime costs,
+                // although tbf it is only run once.
 
                 stages.push(StageWikiData {
                     name: record.link,
                     _num: s,
                 });
             }
-            _ => (),
+            r => panic!("Unexpected line found when getting stage names: {r:?}"),
         }
     }
 
