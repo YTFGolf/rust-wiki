@@ -23,6 +23,7 @@ const fn non_zero_u8(value: u8) -> NonZero<u8> {
         Some(v) => v,
         None => panic!("Value must be non-zero!"),
     }
+    // TODO extract
 }
 /// Specials and rares only and only applies to 4-crown.
 const FOUR_CROWN_DEFAULT_RESTRICTION: Restriction = Restriction {
