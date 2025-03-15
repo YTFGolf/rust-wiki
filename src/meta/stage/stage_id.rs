@@ -26,11 +26,6 @@ impl StageID {
         &self.map
     }
 
-    /// Get map id used in game files.
-    pub const fn mapid(&self) -> u32 {
-        self.map.mapid()
-    }
-
     /// Get stage number.
     pub const fn num(&self) -> StageSize {
         self.num
