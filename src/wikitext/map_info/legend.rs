@@ -20,6 +20,7 @@ use crate::{
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
 
+/// Base [format][parse_info_format] string for Legend Stages.
 const FORMAT: &str = "${map_img}
 ${intro}
 
@@ -70,10 +71,12 @@ fn test_invariants(map: &GameMap) {
     assert_eq!(map.special_rule, None);
 }
 
+/// Map's background image.
 fn map_img(map: &GameMap) -> String {
     format!("[[File:Map{:03}.png|center|350px]]", map.map_file_num)
 }
 
+/// Introduction sentences.
 fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     let mut buf = String::new();
     write!(
@@ -123,6 +126,7 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     buf
 }
 
+/// LegendDiff invocation for map.
 fn difficulty(map: &GameMap) -> String {
     let data = map.crown_data.as_ref().unwrap();
     if u8::from(data.max_difficulty) == 1 {
@@ -148,6 +152,7 @@ fn difficulty(map: &GameMap) -> String {
     buf
 }
 
+/// Table showing what stages are available in the map.
 fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Version) -> String {
     let mapnum = map_data.id.num();
     let code = map_img_code(&map_data.id);
@@ -178,6 +183,7 @@ fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Versio
             | {energy} {{{{EnergyIcon}}}}",
             stagenum = i,
             stagenum2 = i + 1,
+            // TODO this really shouldn't be dealing with `GameMapData`
             energy = GameMapData::get_stage_data(&stage_id, version)
                 .unwrap()
                 .fixed_data
@@ -194,6 +200,7 @@ fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Versio
     buf
 }
 
+/// Stage's material drops.
 fn materials(map_data: &GameMap, version: &Version) -> String {
     fn format_material(miss_chance: u8, chances: &str) -> String {
         format!("{{{{Materials|{miss_chance}{chances}}}}}")
@@ -243,11 +250,14 @@ fn materials(map_data: &GameMap, version: &Version) -> String {
     format_material(100 - total, &buf)
 }
 
+/// battlecats-db reference.
 fn reference(map: &GameMap) -> String {
     let mapid = map.id.mapid();
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
+/// Format navigation.
+// TODO this should probably be extracted out somewhere.
 fn nav_item(heading: &str, left: &str, right: &str) -> String {
     const START: &str = "<p style=\"text-align:center;\">";
     const END: &str = "</p>";
@@ -258,6 +268,8 @@ fn nav_item(heading: &str, left: &str, right: &str) -> String {
     )
 }
 
+/// Format navigation.
+// TODO this should also probably be extracted out somewhere.
 fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> String {
     const PREV: &str = "&lt;&lt;";
     const NEXT: &str = "&gt;&gt;";
@@ -278,6 +290,7 @@ fn nav_item_opt(heading: &str, left: Option<&str>, right: Option<&str>) -> Strin
     nav_item(heading, &left, &right)
 }
 
+/// Navigation menu for map.
 fn nav(map: &GameMap) -> String {
     let type_data = &STAGE_WIKI_DATA.stage_type(map.id.variant()).unwrap();
     let chap = extract_name(&type_data.name);
@@ -295,6 +308,7 @@ fn nav(map: &GameMap) -> String {
     nav_item_opt(&heading, left, right)
 }
 
+/// Footer (templates/categories).
 fn footer(map: &GameMap) -> String {
     match map.id.variant().into() {
         LegendSubset::SoL => {
@@ -313,6 +327,7 @@ fn footer(map: &GameMap) -> String {
     .to_string()
 }
 
+/// Get variable defined in format.
 fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     let version = &config.version.current_version();
     match name {
@@ -328,7 +343,8 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
     }
 }
 
-pub fn get_map_data(map: &MapID) -> &'static MapWikiData {
+/// Get map's wiki data.
+fn get_map_wiki_data(map: &MapID) -> &'static MapWikiData {
     STAGE_WIKI_DATA.stage_map(map).unwrap_or_else(|| {
         panic!(
             "Couldn't find map name: {:03}-{:03}",
@@ -338,11 +354,12 @@ pub fn get_map_data(map: &MapID) -> &'static MapWikiData {
     })
 }
 
+/// Get map data for legend stages.
 pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
     test_invariants(map);
 
     // println!("{map:#?}");
-    let map_data = get_map_data(&map.id);
+    let map_wiki_data = get_map_wiki_data(&map.id);
 
     let mut buf = String::new();
     for node in parse_info_format(FORMAT) {
@@ -351,7 +368,7 @@ pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
             continue;
         }
 
-        let new_buf = get_map_variable(node.content, map, map_data, config);
+        let new_buf = get_map_variable(node.content, map, map_wiki_data, config);
         buf.write_str(&new_buf).unwrap();
     }
 
@@ -368,10 +385,10 @@ mod tests {
         let mut config = TEST_CONFIG.clone();
         config.map_info.set_version(false);
         config.version.init_all();
-
         let version = config.version.current_version();
+
         let leg_begins = GameMap::from_id(MapID::from_numbers(0, 0), version);
-        let map_data = get_map_data(&leg_begins.id);
+        let map_data = get_map_wiki_data(&leg_begins.id);
 
         assert_eq!(map_img(&leg_begins), "[[File:Map004.png|center|350px]]");
         assert_eq!(
@@ -414,14 +431,12 @@ mod tests {
         let mut with_version = TEST_CONFIG.clone();
         with_version.map_info.set_version(true);
         with_version.version.init_all();
+        let version = with_version.version.current_version();
 
-        let leg_begins = GameMap::from_id(
-            MapID::from_numbers(0, 0),
-            with_version.version.current_version(),
-        );
-        let map_data = get_map_data(&leg_begins.id);
+        let leg_begins = GameMap::from_id(MapID::from_numbers(0, 0), version);
+        let map_data = get_map_wiki_data(&leg_begins.id);
 
-        let mut ver = with_version.version.current_version().number();
+        let mut ver = version.number();
         if let Some(s) = ver.strip_suffix(".0") {
             ver = s;
         }
