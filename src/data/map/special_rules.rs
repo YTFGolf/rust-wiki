@@ -3,6 +3,7 @@
 use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use raw::{RawRuleData, RawRuleType, RulesMap};
 use std::{collections::HashMap, fs::File};
+use strum::FromRepr;
 
 /// Size of numeric parameters to rules.
 type ParamSize = u32;
@@ -40,7 +41,8 @@ mod raw {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[repr(u8)]
+#[derive(Debug, Clone, PartialEq, FromRepr)]
 /// Exact meaning is unclear.
 pub enum ContentsType {
     /// Only used in Colosseum stages.
@@ -50,14 +52,8 @@ pub enum ContentsType {
 }
 impl From<ContentsSize> for ContentsType {
     fn from(value: ContentsSize) -> Self {
-        let ctype = match value {
-            0 => Self::Colosseum,
-            1 => Self::Anni12,
-            _ => unreachable!(),
-        };
-
-        assert_eq!(ctype.clone() as ContentsSize, value);
-        ctype
+        ContentsType::from_repr(value)
+            .unwrap_or_else(|| panic!("Unexpected SpecialRule ContentsType value: {value}."))
     }
 }
 
@@ -113,8 +109,11 @@ impl From<RawRuleItem> for RuleType {
             6 => Self::RestrictPriceOrCd2(Self::to_arr(params)),
             7 => Self::DeployLimit(Self::to_arr(params)),
             8 => Self::AwesomeCatSpawn(Self::to_arr(params)),
-            id => panic!("Unknown rule id: {id}"),
+            id => panic!("Unknown SpecialRule id: {id}"),
         }
+        // unfortunately using a match is probably the only way to do this since
+        // strum doesn't have the capability and even if it did I couldn't mark
+        // the discriminants with explicit values
     }
 }
 impl RuleType {

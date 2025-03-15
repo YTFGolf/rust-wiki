@@ -9,8 +9,10 @@ use crate::{
     meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
 };
 use std::num::NonZeroU32;
+use strum::FromRepr;
 
-#[derive(Debug, PartialEq)]
+#[repr(u8)]
+#[derive(Debug, PartialEq, FromRepr)]
 /// What happens when event ends. Event can be ended by reaching max clears or
 /// by the timer running out.
 pub enum ResetType {
@@ -33,13 +35,7 @@ pub enum ResetType {
 }
 impl From<u8> for ResetType {
     fn from(value: u8) -> Self {
-        match value {
-            0 => Self::None,
-            1 => Self::ResetRewards,
-            2 => Self::ResetRewardsAndClear,
-            3 => Self::ResetMaxClears,
-            _ => panic!("Reset type not recognised: {value}."),
-        }
+        ResetType::from_repr(value).unwrap_or_else(|| panic!("Reset type not recognised: {value}."))
     }
 }
 

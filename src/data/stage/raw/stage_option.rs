@@ -10,6 +10,7 @@ use std::{collections::HashMap, path::Path};
 pub mod charagroups {
     use crate::data::version::version_data::CacheableVersionData;
     use std::path::Path;
+    use strum::FromRepr;
 
     #[derive(Debug, serde::Deserialize)]
     /// Fixed csv data in Charagroup.csv.
@@ -22,22 +23,20 @@ pub mod charagroups {
         group_type: u32,
     }
 
-    #[derive(Debug, PartialEq, Clone)]
+    #[repr(u32)]
+    #[derive(Debug, PartialEq, Clone, FromRepr)]
     /// Type of the Charagroup.
     pub enum CharaGroupType {
         /// Can only use select cats.
-        OnlyUse,
+        OnlyUse = 0,
         /// Cannot use select cats.
-        CannotUse,
+        CannotUse = 2,
     }
 
     impl From<u32> for CharaGroupType {
         fn from(value: u32) -> Self {
-            match value {
-                0 => Self::OnlyUse,
-                2 => Self::CannotUse,
-                _ => panic!("Value {value} is not recognised as a valid charagroup!"),
-            }
+            Self::from_repr(value)
+                .unwrap_or_else(|| panic!("Value {value} is not recognised as a valid charagroup!"))
         }
     }
 

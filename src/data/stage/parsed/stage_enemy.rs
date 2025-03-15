@@ -1,25 +1,22 @@
 //! Module that deals with getting information about enemies in stages.
 use crate::data::stage::raw::stage_data::csv_types::StageEnemyCSV;
 use either::Either::{self, Left, Right};
+use strum::FromRepr;
 
-#[derive(Debug, PartialEq)]
+#[repr(u32)]
+#[derive(Debug, PartialEq, FromRepr)]
 /// Type of boss.
 pub enum BossType {
     /// Isn't a boss.
-    None,
+    None = 0,
     /// Normal boss.
-    Boss,
+    Boss = 1,
     /// Screen shake boss.
-    ScreenShake,
+    ScreenShake = 2,
 }
 impl From<u32> for BossType {
     fn from(n: u32) -> Self {
-        match n {
-            0 => BossType::None,
-            1 => BossType::Boss,
-            2 => BossType::ScreenShake,
-            _ => panic!("Unrecognised boss type value: {n}!"),
-        }
+        Self::from_repr(n).unwrap_or_else(|| panic!("Unrecognised boss type value: {n}!"))
     }
 }
 
