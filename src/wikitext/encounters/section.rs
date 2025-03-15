@@ -218,13 +218,9 @@ const SECTIONS: [EncountersSection; 18] = [
     get_new_section("[[Catamin Stages]]",                                    D::Skip),
 ];
 
-const _: () = assert!(std::mem::size_of::<SectionRef>() == std::mem::size_of::<SectionRefRepr>());
-type SectionRefRepr = u8;
-// make sure that this stays in line with the representation of SectionRef
-
 #[repr(u8)]
 #[allow(missing_docs)]
-#[derive(Debug, PartialEq, EnumIter)]
+#[derive(Debug, Copy, Clone, PartialEq, EnumIter)]
 /// Enum reference to a section.
 pub enum SectionRef {
     EoC,
@@ -252,22 +248,8 @@ pub enum SectionRef {
 impl SectionRef {
     /// Get the index of the section in the ordered list of sections. Can be
     /// used as an ordering function.
-    pub const fn index(&self) -> SectionRefRepr {
-        unsafe { *std::ptr::from_ref::<SectionRef>(self).cast::<SectionRefRepr>() }
-        // Casts the borrow to a SectionRef pointer (obviously borrows are
-        // pointers with extra compiler magic), then converts that to a pointer
-        // to a SectionRefRepr pointer, which can then be dereferenced without
-        // the borrow checker complaining.
-
-        // Safety: as long as SectionRefRepr is kept in line with SectionRef's
-        // memory representation this works fine. I.e. if they take up the same
-        // number of bytes then no information is lost or corrupted when doing
-        // raw casts. This behaviour is guaranteed at compile time with the
-        // const assert above.
-
-        // Unsafe is necessary, otherwise calling this function on a borrowed
-        // SectionRef would require a clone, which is just completely
-        // unnecessary when the function can take care of that detail itself.
+    pub const fn index(&self) -> u8 {
+        *self as u8
     }
     /// Get the defined section.
     pub const fn section(&self) -> &'static EncountersSection {
