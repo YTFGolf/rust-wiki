@@ -20,7 +20,7 @@ use crate::{
 use csv::ByteRecord;
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Cursor},
+    io::{BufRead, BufReader},
 };
 
 /// Stage map.
@@ -65,20 +65,14 @@ impl GameMapData {
             .nth(stage.num().try_into().unwrap())?
             .unwrap();
 
-        let mut split_line = line.split("//").next().unwrap().trim();
-        if split_line.is_empty() {
-            return None;
-        }
-        if split_line.ends_with(',') {
-            split_line = &split_line[0..split_line.len() - 1];
-            // remove final bit since parse function relies on it
-        }
+        let split_line = line
+            .split("//")
+            .next()
+            .expect("Shouldn't panic on first next.")
+            .trim_matches(|c: char| c.is_whitespace() || c == ',');
 
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(false)
-            // .flexible(true)
-            .from_reader(Cursor::new(split_line));
-        let stage_line = rdr.byte_records().next().unwrap().unwrap();
+        let stage_line = ByteRecord::from_iter(split_line.split(','));
+        // assuming that there is no quoting
 
         Some(Self::parse_stage_line(&stage_line))
     }
