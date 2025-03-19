@@ -79,8 +79,9 @@ pub struct CatCSV {
     strengthen_multiplier: Big,
     survives_chance: Percent,
     has_metal: Bool,
-    ld_min: Big,
+    ld_base: Big,
     ld_range: i32,
+    // if ld_range is neg then is omnistrike, need to consult the hitbox page
     immune_wave: Bool,
     wave_blocker: Bool,
     immune_kb: Bool,
@@ -127,6 +128,47 @@ struct CatCSV2 {
     _uk76: OpSmall,
     witch_killer_2: OpBool,
     // ???
+    targ_relic: OpBool,
+    immune_curse: OpBool,
+
+    // 80
+    has_insane_resist: OpBool,
+    has_insane_damage: OpBool,
+    savage_blow_chance: OpPercent,
+    savage_blow_percent: OpBig,
+    dodge_chance: OpPercent,
+    dodge_duration: OpBig,
+    surge_chance: OpPercent,
+    // like wave is dependent on `is_mini_surge`
+    surge_param_0: OpBig,
+    surge_param_1: OpBig,
+    // TODO figure out what these are
+    surge_level: OpSmall,
+
+    // 90
+    immune_toxic: OpBool,
+    immune_surge: OpBool,
+    curse_chance: OpPercent,
+    curse_duration: OpBig,
+    is_mini_wave: OpBool,
+    shield_pierce_chance: OpPercent,
+    targ_aku: OpBool,
+    has_colossus_slayer: OpBool,
+    soulstrike: OpBool,
+    second_ld_is_different: OpBool,
+
+    // 100
+    second_ld_base: OpBig,
+    second_ld_range: OpBig,
+    third_ld_is_different: OpBool,
+    third_ld_base: OpBig,
+    third_ld_range: OpBig,
+    has_behemoth_slayer: OpBool,
+    bslayer_dodge_chance: OpPercent,
+    bslayer_dodge_duration: OpBig,
+    is_mini_surge: OpBool,
+
+    rest: Vec<i32>,
 }
 
 fn read_data_file(file_name: &str, version: &Version) {
