@@ -18,7 +18,7 @@ type Bool = u8;
 #[derive(Debug, serde::Deserialize)]
 pub struct CatCSV {
     hp: Massive,
-    kb: Small,
+    kb: Big,
     speed: Small,
     atk: Massive,
     tba: Big,
@@ -50,9 +50,9 @@ pub struct CatCSV {
     has_strong: Bool,
     kb_chance: Percent,
     freeze_chance: Percent,
-    freeze_time: Small,
+    freeze_time: Big,
     slow_chance: Percent,
-    slow_time: Small,
+    slow_time: Big,
     has_resist: Bool,
 
     // 30
@@ -70,7 +70,7 @@ pub struct CatCSV {
 
     // 40
     strengthen_chance: Percent,
-    strengthen_multiplier: Percent,
+    strengthen_multiplier: Big,
     survives_chance: Percent,
     has_metal: Bool,
     ld_min: Big,
