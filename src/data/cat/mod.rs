@@ -1,6 +1,7 @@
 #![allow(missing_docs, unused_imports, dead_code)]
 
 use super::version::Version;
+use csv::{ByteRecord, StringRecord};
 use regex::Regex;
 use std::{fs::File, io::BufReader, path::PathBuf};
 
@@ -20,7 +21,7 @@ pub struct CatCSV {
     range: Big,
     price: Big,
     respawn: Big,
-    _uk1: Small,
+    _uk8: Small,
     width: Big,
     // should always be 320
 
@@ -29,9 +30,9 @@ pub struct CatCSV {
     _uk2: Small,
     is_area: Bool,
     foreswing: Big,
-    _uk3: Small,
+    _uk14: Small,
     // "front"
-    _uk4: Small,
+    _uk15: Small,
     // "back"
     targ_float: Bool,
     targ_black: Bool,
@@ -80,6 +81,43 @@ pub struct CatCSV {
     immune_weaken: Bool,
 }
 
+#[derive(Debug, serde::Deserialize)]
+struct CatCSV2 {
+    // // index = 52
+    // has_zkill: Bool,
+    // has_wkill: Bool,
+    // _uk54: Small,
+    // _uk55: i8,
+    // // "loop", appears to be something to do with multihit
+    // immune_boss_shockwave: Bool,
+    // _uk57: i8,
+    // kamikaze: Bool,
+    // mhit_atk2: Big,
+
+    // // 60
+    // mhit_atk3: Big,
+    // mhit_atk2_fswing: Big,
+    // mhit_atk3_fswing: Big,
+    // proc_on_hit1: Bool,
+    // proc_on_hit2: Bool,
+    // proc_on_hit3: Bool,
+    // _uk66: i8,
+    // death: Small,
+    // _uk68: Small,
+    // _uk69: Small,
+
+    // // 70
+    // barrier_break: Percent,
+    // _uk71: Small,
+    // _uk72: Small,
+    // _uk73: Small,
+    // _uk74: Small,
+    // immune_warp: Percent,
+    // _uk76: Small,
+    // witch_killer_2: Bool,
+    // // ???s
+}
+
 fn read_data_file(file_name: &str, version: &Version) {
     let stage_file = PathBuf::from("DataLocal").join(file_name);
     let reader = BufReader::new(File::open(version.get_file_path(&stage_file)).unwrap());
@@ -91,8 +129,17 @@ fn read_data_file(file_name: &str, version: &Version) {
 
     for result in rdr.byte_records() {
         let record = result.unwrap();
-        let cat: CatCSV = record.deserialize(None).unwrap();
-        println!("{cat:?}")
+        let cat: CatCSV = ByteRecord::from_iter(record.iter())
+            .deserialize(None)
+            .unwrap();
+        println!("{cat:?}");
+
+        if record.len() > 52 {
+            let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
+                .deserialize(None)
+                .unwrap();
+            println!("{a:?}");
+        }
     }
 }
 
