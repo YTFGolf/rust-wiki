@@ -91,65 +91,40 @@ pub struct CatCSV {
     immune_weaken: Bool,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, Default, serde::Deserialize)]
+#[serde(default)]
 struct CatCSV2 {
     // index = 52
-    #[serde(default)]
     has_zkill: OpBool,
-    #[serde(default)]
     has_wkill: OpBool,
-    #[serde(default)]
     _uk54: OpSmall,
-    #[serde(default)]
     _uk55: Option<i8>,
     // "loop", appears to be something to do with multihit
-    #[serde(default)]
     immune_boss_shockwave: OpBool,
-    #[serde(default)]
     _uk57: Option<i8>,
-    #[serde(default)]
     kamikaze: OpBool,
-    #[serde(default)]
     mhit_atk2: OpBig,
 
     // 60
-    #[serde(default)]
     mhit_atk3: OpBig,
-    #[serde(default)]
     mhit_atk2_fswing: OpBig,
-    #[serde(default)]
     mhit_atk3_fswing: OpBig,
-    #[serde(default)]
     proc_on_hit1: OpBool,
-    #[serde(default)]
     proc_on_hit2: OpBool,
-    #[serde(default)]
     proc_on_hit3: OpBool,
-    #[serde(default)]
     _uk66: Option<i8>,
-    #[serde(default)]
     death: Option<i8>,
-    #[serde(default)]
     _uk68: OpSmall,
-    #[serde(default)]
     _uk69: OpSmall,
 
     // 70
-    #[serde(default)]
     barrier_break: OpPercent,
-    #[serde(default)]
     _uk71: OpSmall,
-    #[serde(default)]
     _uk72: OpSmall,
-    #[serde(default)]
     _uk73: OpSmall,
-    #[serde(default)]
     _uk74: OpSmall,
-    #[serde(default)]
     immune_warp: OpPercent,
-    #[serde(default)]
     _uk76: OpSmall,
-    #[serde(default)]
     witch_killer_2: OpBool,
     // ???
 }
@@ -180,13 +155,11 @@ fn read_data_file(file_name: &str, version: &Version) {
             .expect("Error when converting to fixed cat data");
         println!("{len} {cat:?}", len = record.len());
 
-        if record.len() > 52 {
-            // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
-            let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
-                .deserialize(None)
-                .expect("Error when converting to extra cat data");
-            println!("{a:?}");
-        }
+        // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
+        let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
+            .deserialize(None)
+            .expect("Error when converting to extra cat data");
+        println!("{a:?}");
     }
 }
 
