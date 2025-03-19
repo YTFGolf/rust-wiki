@@ -3,7 +3,11 @@
 use super::version::Version;
 use csv::{ByteRecord, StringRecord};
 use regex::Regex;
-use std::{fs::File, io::BufReader, path::PathBuf};
+use std::{
+    fs::File,
+    io::{BufRead, BufReader, Cursor},
+    path::PathBuf,
+};
 
 type Massive = u32;
 type Big = u16;
@@ -122,25 +126,39 @@ fn read_data_file(file_name: &str, version: &Version) {
     let stage_file = PathBuf::from("DataLocal").join(file_name);
     let reader = BufReader::new(File::open(version.get_file_path(&stage_file)).unwrap());
 
-    let mut rdr = csv::ReaderBuilder::new()
-        .has_headers(false)
-        // .flexible(true)
-        .from_reader(reader);
+    // let mut rdr = csv::ReaderBuilder::new()
+    //     .has_headers(false)
+    //     // .flexible(true)
+    //     .from_reader(reader);
 
-    for result in rdr.byte_records() {
-        let record = result.unwrap();
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let line = line
+            .split("//")
+            .next()
+            .expect("Shouldn't panic on first next.")
+            .trim_matches([',', ' ']);
+        if line.is_empty() {
+            continue;
+        }
+
+        let record = ByteRecord::from_iter(line.split(','));
         let cat: CatCSV = ByteRecord::from_iter(record.iter())
             .deserialize(None)
             .unwrap();
-        println!("{cat:?}");
-
-        if record.len() > 52 {
-            let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
-                .deserialize(None)
-                .unwrap();
-            println!("{a:?}");
-        }
+        println!("{len} {cat:?}", len = record.len());
     }
+
+    // for result in rdr.byte_records() {
+    //     let record = result.unwrap();
+
+    //     if record.len() > 52 {
+    //         let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
+    //             .deserialize(None)
+    //             .unwrap();
+    //         println!("{a:?}");
+    //     }
+    // }
 }
 
 #[test]
