@@ -137,7 +137,7 @@ fn read_data_file(file_name: &str, version: &Version) {
             .split("//")
             .next()
             .expect("Shouldn't panic on first next.")
-            .trim_matches([',', ' ']);
+            .trim_matches(|c: char| c.is_whitespace() || c == ',');
         if line.is_empty() {
             continue;
         }
@@ -145,20 +145,17 @@ fn read_data_file(file_name: &str, version: &Version) {
         let record = ByteRecord::from_iter(line.split(','));
         let cat: CatCSV = ByteRecord::from_iter(record.iter())
             .deserialize(None)
-            .unwrap();
+            .expect("Error when converting to fixed cat data");
         println!("{len} {cat:?}", len = record.len());
+
+        if record.len() > 52 {
+            // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
+            let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
+                .deserialize(None)
+                .expect("Error when converting to extra cat data");
+            println!("{a:?}");
+        }
     }
-
-    // for result in rdr.byte_records() {
-    //     let record = result.unwrap();
-
-    //     if record.len() > 52 {
-    //         let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
-    //             .deserialize(None)
-    //             .unwrap();
-    //         println!("{a:?}");
-    //     }
-    // }
 }
 
 #[test]
