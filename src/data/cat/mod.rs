@@ -159,14 +159,25 @@ struct CatCSV2 {
 
     // 100
     second_ld_base: OpBig,
-    second_ld_range: OpBig,
+    second_ld_range: Option<i32>,
     third_ld_is_different: OpBool,
     third_ld_base: OpBig,
-    third_ld_range: OpBig,
+    third_ld_range: Option<i32>,
     has_behemoth_slayer: OpBool,
     bslayer_dodge_chance: OpPercent,
     bslayer_dodge_duration: OpBig,
     is_mini_surge: OpBool,
+    counter_surge: OpBool,
+
+    // 110
+    conjure_unit: Option<i16>,
+    // for some godforsaken reason this can be -1
+    has_sage_slayer: OpBool,
+    metal_killer_percent: OpPercent,
+    explosion_chance: OpPercent,
+    explosion_range: OpBig,
+    _uk115: OpSmall,
+    immune_explosion: OpBool,
 
     rest: Vec<i32>,
 }
