@@ -71,7 +71,7 @@ impl GameMapData {
             .expect("Shouldn't panic on first next.")
             .trim_matches(|c: char| c.is_whitespace() || c == ',');
 
-        let stage_line = ByteRecord::from_iter(split_line.split(','));
+        let stage_line = split_line.split(',').collect::<ByteRecord>();
         // assuming that there is no quoting
 
         Some(Self::parse_stage_line(&stage_line))

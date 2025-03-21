@@ -15,6 +15,7 @@ enum Preset {
     Colosseum,
 }
 
+#[allow(clippy::match_same_arms)]
 /// Get the preset value of the stage variant.
 const fn get_preset(st: StageVariantID) -> Option<Preset> {
     type T = StageVariantID;

@@ -192,14 +192,19 @@ pub struct CatCSV2 {
 }
 
 fn read_form_line(line: &str) -> CombinedCatData {
-    let record = ByteRecord::from_iter(line.split(','));
-    let fixed: CatCSV = ByteRecord::from_iter(record.iter())
+    let record = line.split(',').collect::<ByteRecord>();
+    let fixed: CatCSV = record
+        .iter()
+        .collect::<ByteRecord>()
         .deserialize(None)
         .expect("Error when converting to fixed cat data");
     // println!("{len} {cat:?}", len = record.len());
 
     // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
-    let var: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
+    let var: CatCSV2 = record
+        .iter()
+        .skip(52)
+        .collect::<ByteRecord>()
         .deserialize(None)
         .expect("Error when converting to extra cat data");
 
