@@ -251,7 +251,7 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
 /// twice.
 fn get_group<'a: 'b, 'b>(
     abs_enemy_id: u32,
-    section_map: (SectionRef, Vec<&'a StageData<'a>>),
+    section_map: &(SectionRef, Vec<&'a StageData<'a>>),
     removed_vec: &mut Vec<&'a StageData<'a>>,
     add_to_removed: bool,
 ) -> Group<'a> {
@@ -320,11 +320,11 @@ fn get_encounter_groups<'a>(
         if map.1.is_empty() {
             continue;
         }
-        let group = get_group(abs_enemy_id, map, &mut removed.1, true);
+        let group = get_group(abs_enemy_id, &map, &mut removed.1, true);
         groups.push(group);
     }
     if !removed.1.is_empty() {
-        let group = get_group(abs_enemy_id, removed, &mut vec![], false);
+        let group = get_group(abs_enemy_id, &removed, &mut vec![], false);
         groups.push(group);
     }
 

@@ -264,6 +264,7 @@ mod tests {
             // println!("{file}");
             let forms = read_data_file(&file, version);
 
+            #[allow(clippy::used_underscore_binding)]
             for (fixed, var) in forms {
                 assert_eq!(fixed._width, 320);
                 assert!(
