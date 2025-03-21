@@ -5,9 +5,11 @@ macro_rules! generate_config {
         $(
             $(#[doc = $doc:expr])?
             {
-                name = $variant:ident $( { $($(#[doc = $field_doc:expr])? $field_name:ident : $field_type:ty),* $(,)? } )?,
-                is_general  = $is_general:expr,
-                is_cursable = $is_cursable:expr
+                name = $variant:ident $({
+                    $($(#[doc = $field_doc:expr])?
+                    $field_name:ident : $field_type:ty),* $(,)?
+                })?,
+                config = $config:expr
             }
         ),* $(,)?
     ) => {
@@ -16,20 +18,18 @@ macro_rules! generate_config {
         pub enum Ability {
             $(
                 $(#[doc = $doc])?
-                $variant $( { $($(#[doc = $field_doc])? $field_name: $field_type),* } )?,
-
+                $variant $( { $(
+                    $(#[doc = $field_doc])?
+                    $field_name: $field_type),*
+                } )?,
             )*
         }
 
         impl Ability {
             /// Is the ability a general ability.
-            pub fn is_general(&self) -> bool {
-                match self {
-                    $(
-                        Self::$variant { .. } => $is_general,
-                    )*
-                }
-            }
+            pub fn is_general(&self)  -> bool { match self { $( Self::$variant { .. } => $config.is_general, )* } }
+            /// Is the ability removed by curse.
+            pub fn is_cursable(&self) -> bool { match self { $( Self::$variant { .. } => $config.is_cursable, )* } }
         }
     };
 }
