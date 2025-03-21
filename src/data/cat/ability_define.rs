@@ -2,21 +2,27 @@
 /// Generate the enum for game abilities.
 macro_rules! generate_config {
     (
-        $({
-            name = $variant:ident $( { $($field_name:ident : $field_type:ty),*$(,)? } )?,
-            is_general  = $is_general:expr,
-            is_cursable = $is_cursable:expr
-        }),* $(,)?
+        $(
+            $(#[doc = $doc:expr])?
+            {
+                name = $variant:ident $( { $($(#[doc = $field_doc:expr])? $field_name:ident : $field_type:ty),* $(,)? } )?,
+                is_general  = $is_general:expr,
+                is_cursable = $is_cursable:expr
+            }
+        ),* $(,)?
     ) => {
-        // Define the enum
         #[derive(Debug)]
+        /// Available abilities.
         pub enum Ability {
             $(
-                $variant $( { $($field_name: $field_type),* } )?,
+                $(#[doc = $doc])?
+                $variant $( { $($(#[doc = $field_doc])? $field_name: $field_type),* } )?,
+
             )*
         }
 
         impl Ability {
+            /// Is the ability a general ability.
             pub fn is_general(&self) -> bool {
                 match self {
                     $(
