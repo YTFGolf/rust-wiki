@@ -186,15 +186,27 @@ struct CatCSV2 {
     rest: Vec<i32>,
 }
 
-fn read_data_file(file_name: &str, version: &Version) {
+fn read_form_line(line: &str) -> (CatCSV, CatCSV2) {
+    let record = ByteRecord::from_iter(line.split(','));
+    let fixed: CatCSV = ByteRecord::from_iter(record.iter())
+        .deserialize(None)
+        .expect("Error when converting to fixed cat data");
+    // println!("{len} {cat:?}", len = record.len());
+
+    // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
+    let var: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
+        .deserialize(None)
+        .expect("Error when converting to extra cat data");
+
+    (fixed, var)
+}
+
+const MAX_FORMS: usize = 4;
+fn read_data_file(file_name: &str, version: &Version) -> Vec<(CatCSV, CatCSV2)> {
     let stage_file = PathBuf::from("DataLocal").join(file_name);
     let reader = BufReader::new(File::open(version.get_file_path(&stage_file)).unwrap());
 
-    // let mut rdr = csv::ReaderBuilder::new()
-    //     .has_headers(false)
-    //     // .flexible(true)
-    //     .from_reader(reader);
-
+    let mut forms = Vec::<(CatCSV, CatCSV2)>::with_capacity(MAX_FORMS);
     for line in reader.lines() {
         let line = line.unwrap();
         let line = line
@@ -206,29 +218,11 @@ fn read_data_file(file_name: &str, version: &Version) {
             continue;
         }
 
-        let record = ByteRecord::from_iter(line.split(','));
-        let _cat: CatCSV = ByteRecord::from_iter(record.iter())
-            .deserialize(None)
-            .expect("Error when converting to fixed cat data");
-        // println!("{len} {cat:?}", len = record.len());
-
-        // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
-        let a: CatCSV2 = ByteRecord::from_iter(record.iter().skip(52))
-            .deserialize(None)
-            .expect("Error when converting to extra cat data");
-
-        assert!(
-            a.rest.is_empty(),
-            "Remaining fields not empty, found {:?}",
-            a.rest
-        );
-
-        // if a.rest.len() > 0 || !matches!(a.conjure_unit, None | Some(0) | Some(-1)) {
-        // if a.rest.len() > 0 && a.rest != [0, 0] {
-        //     println!("{len} {cat:?}", len = record.len());
-        //     println!("{a:?}");
-        // }
+        let (fixed, var) = read_form_line(line);
+        forms.push((fixed, var));
     }
+
+    forms
 }
 
 /// Get a list of all cat data files in the game.
@@ -240,6 +234,7 @@ pub fn get_cat_files(version: &Version) -> impl Iterator<Item = String> {
 
     files.filter_map(move |f| {
         let file_name = f.unwrap().file_name().into_string().unwrap();
+        // needs to be converted to string so regex works
 
         if re.is_match(&file_name) {
             Some(file_name)
@@ -256,7 +251,14 @@ fn do_thing() {
 
     for file in get_cat_files(version) {
         println!("{file}");
-        read_data_file(&file, version);
-        // assert that `rest` is empty
+        let forms = read_data_file(&file, version);
+
+        for (_fixed, var) in forms {
+            assert!(
+                var.rest.is_empty(),
+                "Remaining fields not empty, found {:?}",
+                var.rest
+            );
+        }
     }
 }
