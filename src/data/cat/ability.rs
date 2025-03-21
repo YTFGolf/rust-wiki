@@ -1,34 +1,153 @@
 //! Deals with cat/enemy abilities.
 
+/// Configuration values/modifiers for abilities.
 struct Config {
+    /// Does the ability apply on every hit or only on specified ones (e.g.
+    /// CgtG's KB vs double bounty).
     is_general: bool,
+    /// Is the ability removed by curse.
     is_cursable: bool,
+}
+
+type Percent = u8;
+
+#[derive(Debug)]
+pub enum WaveType {
+    Wave,
+    MiniWave,
+}
+
+#[derive(Debug)]
+pub struct Wave {
+    wtype: WaveType,
+    chance: Percent,
+    level: u8,
+}
+
+#[derive(Debug)]
+pub enum SurgeType {
+    Surge,
+    MiniSurge,
+}
+
+#[derive(Debug)]
+pub struct Surge {
+    stype: SurgeType,
+    surge_chance: Percent,
+    param_0: u16,
+    param_1: u16,
+    level: u8,
 }
 
 #[derive(Debug)]
 /// Cat or enemy ability.
 pub enum Ability {
+    StrongAgainst,
+    Knockback {
+        chance: Percent,
+    },
     /// Freeze the enemy.
     Freeze {
         /// Chance to freeze the enemy.
-        chance: u8,
+        chance: Percent,
         /// Duration of freeze in frames.
-        duration: u32,
+        duration: u16,
     },
+    /// Slow the enemy.
+    Slow {
+        /// Chance to slow the enemy.
+        chance: Percent,
+        /// Duration of slow in frames.
+        duration: u16,
+    },
+    Resist,
+    MassiveDamage,
+    Crit {
+        chance: Percent,
+    },
+    TargetsOnly,
     /// Double money collected when defeating the enemy.
     DoubleBounty,
+    BaseDestroyer,
+    Wave(Wave),
+    Weaken {
+        chance: Percent,
+        duration: u16,
+        multiplier: Percent,
+    },
+    Strengthen {
+        chance: Percent,
+        multiplier: u16,
+    },
+    Survives {
+        chance: Percent,
+    },
+    Metal,
+    ImmuneToWave,
+    WaveBlocker,
+    ImmuneToKB,
+    ImmuneToFreeze,
+    ImmuneToSlow,
+    ImmuneToWeaken,
+    ZombieKiller,
+    WitchKiller1,
+    ImmuneToBossShockwave,
+    Kamikaze,
+    BarrierBreaker {
+        chance: Percent,
+    },
+    ImmuneToWarp,
+    WitchKiller2,
+    ImmuneToCurse,
+    InsaneResist,
+    InsaneDamage,
+    SavageBlow {
+        chance: Percent,
+        /// Additional damage as a percent of initial.
+        damage: u16,
+    },
+    Dodge {
+        chance: Percent,
+        duration: u16,
+    },
+    Surge(Surge),
+    ImmuneToToxic,
+    ImmuneToSurge,
+    Curse {
+        chance: Percent,
+        duration: u16,
+    },
+    ShieldPierce {
+        chance: Percent,
+    },
+    ColossusSlayer,
+    Soulstrike,
+    BehemothSlayer {
+        dodge_chance: Percent,
+        dodge_duration: u16,
+    },
+    CounterSurge,
+    ConjureUnit {
+        /// ID of the conjured spirit.
+        id: u16,
+    },
+    SageSlayer,
+    MetalKiller {
+        damage: Percent,
+    },
+    Explosion {
+        chance: Percent,
+        range: u16,
+    },
+    ImmuneToExplosion,
 }
+
 impl Ability {
+    #[rustfmt::skip]
     const fn get_config(&self) -> Config {
         match self {
-            Self::Freeze { .. } => Config {
-                is_general: false,
-                is_cursable: true,
-            },
-            Self::DoubleBounty => Config {
-                is_general: true,
-                is_cursable: false,
-            },
+            Self::Freeze { .. } => Config { is_general: false, is_cursable: true },
+            Self::DoubleBounty => Config { is_general: true, is_cursable: false },
         }
     }
 }
