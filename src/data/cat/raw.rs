@@ -186,7 +186,8 @@ struct CatCSV2 {
     rest: Vec<i32>,
 }
 
-fn read_form_line(line: &str) -> (CatCSV, CatCSV2) {
+type CombinedCatData = (CatCSV, CatCSV2);
+fn read_form_line(line: &str) -> CombinedCatData {
     let record = ByteRecord::from_iter(line.split(','));
     let fixed: CatCSV = ByteRecord::from_iter(record.iter())
         .deserialize(None)
@@ -201,13 +202,11 @@ fn read_form_line(line: &str) -> (CatCSV, CatCSV2) {
     (fixed, var)
 }
 
-const MAX_FORMS: usize = 4;
-fn read_data_file(file_name: &str, version: &Version) -> Vec<(CatCSV, CatCSV2)> {
+fn read_data_file(file_name: &str, version: &Version) -> impl Iterator<Item = CombinedCatData> {
     let stage_file = PathBuf::from("DataLocal").join(file_name);
     let reader = BufReader::new(File::open(version.get_file_path(&stage_file)).unwrap());
 
-    let mut forms = Vec::<(CatCSV, CatCSV2)>::with_capacity(MAX_FORMS);
-    for line in reader.lines() {
+    reader.lines().filter_map(|line| {
         let line = line.unwrap();
         let line = line
             .split("//")
@@ -215,14 +214,12 @@ fn read_data_file(file_name: &str, version: &Version) -> Vec<(CatCSV, CatCSV2)> 
             .expect("Shouldn't panic on first next.")
             .trim_matches(|c: char| c.is_whitespace() || c == ',');
         if line.is_empty() {
-            continue;
+            return None;
         }
 
         let (fixed, var) = read_form_line(line);
-        forms.push((fixed, var));
-    }
-
-    forms
+        return Some((fixed, var));
+    })
 }
 
 /// Get a list of all cat data files in the game.
@@ -244,21 +241,26 @@ pub fn get_cat_files(version: &Version) -> impl Iterator<Item = String> {
     })
 }
 
-#[test]
-fn do_thing() {
+#[cfg(test)]
+mod tests {
+    use super::*;
     use crate::config::TEST_CONFIG;
-    let version = TEST_CONFIG.version.current_version();
 
-    for file in get_cat_files(version) {
-        println!("{file}");
-        let forms = read_data_file(&file, version);
+    #[test]
+    fn test_file_reader() {
+        let version = TEST_CONFIG.version.current_version();
 
-        for (_fixed, var) in forms {
-            assert!(
-                var.rest.is_empty(),
-                "Remaining fields not empty, found {:?}",
-                var.rest
-            );
+        for file in get_cat_files(version) {
+            println!("{file}");
+            let forms = read_data_file(&file, version);
+
+            for (_fixed, var) in forms {
+                assert!(
+                    var.rest.is_empty(),
+                    "Remaining fields not empty, found {:?}",
+                    var.rest
+                );
+            }
         }
     }
 }
