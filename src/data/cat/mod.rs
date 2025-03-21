@@ -15,11 +15,9 @@ type Percent = u8;
 type Small = u8;
 type Bool = u8;
 
-type OpMassive = Option<u32>;
 type OpBig = Option<u16>;
-type OpPercent = Option<u8>;
 type OpSmall = Option<u8>;
-type OpBool = Option<u8>;
+// TODO if 0 and None are basically synonymous then all of these can be removed
 
 #[derive(Debug, serde::Deserialize)]
 pub struct CatCSV {
@@ -96,49 +94,49 @@ pub struct CatCSV {
 #[serde(default)]
 struct CatCSV2 {
     // index = 52
-    has_zkill: OpBool,
-    has_wkill: OpBool,
+    has_zkill: Option<Bool>,
+    has_wkill: Bool,
     _uk54: OpSmall,
     _uk55: Option<i8>,
     // "loop", appears to be something to do with multihit
-    immune_boss_shockwave: OpBool,
+    immune_boss_shockwave: Bool,
     _uk57: Option<i8>,
-    kamikaze: OpBool,
+    kamikaze: Bool,
     mhit_atk2: OpBig,
 
     // 60
     mhit_atk3: OpBig,
     mhit_atk2_fswing: OpBig,
     mhit_atk3_fswing: OpBig,
-    proc_on_hit1: OpBool,
-    proc_on_hit2: OpBool,
-    proc_on_hit3: OpBool,
+    proc_on_hit1: Bool,
+    proc_on_hit2: Bool,
+    proc_on_hit3: Bool,
     _uk66: Option<i8>,
     death: Option<i8>,
     _uk68: OpSmall,
     _uk69: OpSmall,
 
     // 70
-    barrier_break: OpPercent,
+    barrier_break_chance: Percent,
     _uk71: OpSmall,
     _uk72: OpSmall,
     _uk73: OpSmall,
     _uk74: OpSmall,
-    immune_warp: OpPercent,
+    immune_warp: Percent,
     _uk76: OpSmall,
-    witch_killer_2: OpBool,
+    witch_killer_2: Bool,
     // ???
-    targ_relic: OpBool,
-    immune_curse: OpBool,
+    targ_relic: Bool,
+    immune_curse: Bool,
 
     // 80
-    has_insane_resist: OpBool,
-    has_insane_damage: OpBool,
-    savage_blow_chance: OpPercent,
+    has_insane_resist: Bool,
+    has_insane_damage: Bool,
+    savage_blow_chance: Percent,
     savage_blow_percent: OpBig,
-    dodge_chance: OpPercent,
+    dodge_chance: Percent,
     dodge_duration: OpBig,
-    surge_chance: OpPercent,
+    surge_chance: Percent,
     // like wave is dependent on `is_mini_surge`
     surge_param_0: OpBig,
     surge_param_1: OpBig,
@@ -146,38 +144,38 @@ struct CatCSV2 {
     surge_level: OpSmall,
 
     // 90
-    immune_toxic: OpBool,
-    immune_surge: OpBool,
-    curse_chance: OpPercent,
+    immune_toxic: Bool,
+    immune_surge: Bool,
+    curse_chance: Percent,
     curse_duration: OpBig,
-    is_mini_wave: OpBool,
-    shield_pierce_chance: OpPercent,
-    targ_aku: OpBool,
-    has_colossus_slayer: OpBool,
-    soulstrike: OpBool,
-    second_ld_is_different: OpBool,
+    is_mini_wave: Bool,
+    shield_pierce_chance: Percent,
+    targ_aku: Bool,
+    has_colossus_slayer: Bool,
+    soulstrike: Bool,
+    second_ld_is_different: Bool,
 
     // 100
     second_ld_base: Option<i32>,
     second_ld_range: Option<i32>,
-    third_ld_is_different: OpBool,
+    third_ld_is_different: Bool,
     third_ld_base: OpBig,
     third_ld_range: Option<i32>,
-    has_behemoth_slayer: OpBool,
-    bslayer_dodge_chance: OpPercent,
+    has_behemoth_slayer: Bool,
+    bslayer_dodge_chance: Percent,
     bslayer_dodge_duration: OpBig,
-    is_mini_surge: OpBool,
-    counter_surge: OpBool,
+    is_mini_surge: Bool,
+    counter_surge: Bool,
 
     // 110
     conjure_unit: Option<i16>,
     // for some godforsaken reason this can be -1
-    has_sage_slayer: OpBool,
-    metal_killer_percent: OpPercent,
-    explosion_chance: OpPercent,
+    has_sage_slayer: Bool,
+    metal_killer_percent: Percent,
+    explosion_chance: Percent,
     explosion_range: OpBig,
     _uk115: OpSmall,
-    immune_explosion: OpBool,
+    immune_explosion: Bool,
 
     rest: Vec<i32>,
 }
