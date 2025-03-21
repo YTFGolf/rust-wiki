@@ -1,7 +1,8 @@
-#![allow(missing_docs, unused_imports, dead_code)]
+//! Deals with raw CSV cat data.
+#![allow(dead_code)]
 
 use crate::data::version::Version;
-use csv::{ByteRecord, StringRecord};
+use csv::ByteRecord;
 use regex::Regex;
 use std::{
     fs::File,
@@ -21,7 +22,12 @@ type Small = u8;
 /// 0 or 1.
 type Bool = u8;
 
+/// CSV data about a cat.
+pub type CombinedCatData = (CatCSV, CatCSV2);
+
 #[derive(Debug, serde::Deserialize)]
+#[allow(missing_docs)]
+/// Fixed CSV data.
 pub struct CatCSV {
     hp: Massive,
     kb: Big,
@@ -94,7 +100,9 @@ pub struct CatCSV {
 
 #[derive(Debug, Default, serde::Deserialize)]
 #[serde(default)]
-struct CatCSV2 {
+#[allow(missing_docs)]
+/// Data that may not exist. All fields default to `0` if not explicitly given.
+pub struct CatCSV2 {
     // index = 52
     has_zkill: Option<Bool>,
     // can be blank for whatever reason so needs `Option`
@@ -183,7 +191,6 @@ struct CatCSV2 {
     rest: Vec<i32>,
 }
 
-type CombinedCatData = (CatCSV, CatCSV2);
 fn read_form_line(line: &str) -> CombinedCatData {
     let record = ByteRecord::from_iter(line.split(','));
     let fixed: CatCSV = ByteRecord::from_iter(record.iter())
@@ -199,7 +206,8 @@ fn read_form_line(line: &str) -> CombinedCatData {
     (fixed, var)
 }
 
-fn read_data_file(file_name: &str, version: &Version) -> impl Iterator<Item = CombinedCatData> {
+/// Read a cat data file and return all of the unit's forms.
+pub fn read_data_file(file_name: &str, version: &Version) -> impl Iterator<Item = CombinedCatData> {
     let stage_file = PathBuf::from("DataLocal").join(file_name);
     let reader = BufReader::new(File::open(version.get_file_path(&stage_file)).unwrap());
 
@@ -259,15 +267,5 @@ mod tests {
                 );
             }
         }
-    }
-
-    #[test]
-    fn tmp() {
-        let file_name = "unit026.csv";
-        let version = TEST_CONFIG.version.current_version();
-        panic!(
-            "{:#?}",
-            read_data_file(file_name, version).collect::<Vec<_>>()
-        )
     }
 }
