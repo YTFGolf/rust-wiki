@@ -1,34 +1,38 @@
 #[macro_export]
 /// Generate the enum for game abilities.
-macro_rules! generate_config {
+macro_rules! generate_ability_enum {
     (
+        $(#[doc = $enum_doc:expr])?
+        name = $enum_name:ident,
+
         $(
-            $(#[doc = $doc:expr])?
+            $(#[doc = $variant_doc:expr])?
             {
-                name = $variant:ident $({
-                    $($(#[doc = $field_doc:expr])?
-                    $field_name:ident : $field_type:ty),* $(,)?
-                })?,
+                name = $variant:ident $({$(
+                    $(#[doc = $field_doc:expr])?
+                    $field_name:ident : $field_type:ty
+                ),* $(,)?})?,
                 config = $config:expr
             }
         ),* $(,)?
     ) => {
+
         #[derive(Debug)]
-        /// Available abilities.
-        pub enum Ability {
+        $(#[doc = $enum_doc])?
+        pub enum $enum_name {
             $(
-                $(#[doc = $doc])?
-                $variant $( { $(
+                $(#[doc = $variant_doc])?
+                $variant $({$(
                     $(#[doc = $field_doc])?
-                    $field_name: $field_type),*
-                } )?,
+                    $field_name: $field_type
+                ),*})?,
             )*
         }
 
-        impl Ability {
-            /// Is the ability a general ability.
+        impl $enum_name {
+            /// Does the ability apply on every hit regardless?
             pub fn is_general(&self)  -> bool { match self { $( Self::$variant { .. } => $config.is_general, )* } }
-            /// Is the ability removed by curse.
+            /// Is the ability removed by curse?
             pub fn is_cursable(&self) -> bool { match self { $( Self::$variant { .. } => $config.is_cursable, )* } }
         }
     };
