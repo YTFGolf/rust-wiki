@@ -1,5 +1,4 @@
 //! Deals with raw CSV cat data.
-#![allow(dead_code)]
 
 use crate::data::version::Version;
 use csv::ByteRecord;
@@ -38,7 +37,7 @@ pub struct CatCSV {
     price: Big,
     respawn: Big,
     _uk8: Small,
-    width: Big,
+    _width: Big,
     // should always be 320
 
     // 10
@@ -259,7 +258,8 @@ mod tests {
             // println!("{file}");
             let forms = read_data_file(&file, version);
 
-            for (_fixed, var) in forms {
+            for (fixed, var) in forms {
+                assert_eq!(fixed._width, 320);
                 assert!(
                     var.rest.is_empty(),
                     "Remaining fields not empty, found {:?}",
