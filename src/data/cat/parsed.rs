@@ -1,20 +1,11 @@
 #![allow(missing_docs, unused_imports, dead_code)]
 
-use super::raw::CombinedCatData;
+use super::{ ability_data::Ability, raw::CombinedCatData};
 use std::rc::Rc;
 
 #[derive(Debug)]
-pub enum Ability {}
-// will need to be done better. Trait or proc macro I think
-/*
-/// Is it removed with curse.
-is_cursable
-/// Does this occur on every hit.
-is_general
-*/
-
-#[derive(Debug)]
 pub enum EnemyType {}
+
 
 #[derive(Debug)]
 pub struct AttackRange {}
