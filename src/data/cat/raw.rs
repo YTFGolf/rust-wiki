@@ -231,17 +231,14 @@ fn read_data_file(file_name: &str, version: &Version) {
     }
 }
 
-#[test]
-fn do_thing() {
-    use crate::config::TEST_CONFIG;
-    let version = TEST_CONFIG.version.current_version();
-
+/// Get a list of all cat data files in the game.
+pub fn get_cat_files(version: &Version) -> impl Iterator<Item = String> {
     let re = Regex::new(r"^unit\d").unwrap();
     let dir = &version.get_file_path("DataLocal");
 
     let files = std::fs::read_dir(dir).unwrap();
 
-    let filter = files.filter_map(move |f| {
+    files.filter_map(move |f| {
         let file_name = f.unwrap().file_name().into_string().unwrap();
 
         if re.is_match(&file_name) {
@@ -249,9 +246,15 @@ fn do_thing() {
         } else {
             None
         }
-    });
+    })
+}
 
-    for file in filter {
+#[test]
+fn do_thing() {
+    use crate::config::TEST_CONFIG;
+    let version = TEST_CONFIG.version.current_version();
+
+    for file in get_cat_files(version) {
         println!("{file}");
         read_data_file(&file, version);
         // assert that `rest` is empty
