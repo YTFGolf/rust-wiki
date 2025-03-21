@@ -1,6 +1,6 @@
 #![allow(missing_docs, unused_imports, dead_code)]
 
-use super::version::Version;
+use crate::data::version::Version;
 use csv::{ByteRecord, StringRecord};
 use regex::Regex;
 use std::{
@@ -9,10 +9,16 @@ use std::{
     path::PathBuf,
 };
 
+/// Could reasonably either go above 65,535 or be multiplied to go above (e.g.
+/// stats).
 type Massive = u32;
+/// Big number from 0 to 65,535.
 type Big = u16;
+/// 0-100.
 type Percent = u8;
+/// 0-256.
 type Small = u8;
+/// 0 or 1.
 type Bool = u8;
 
 type OpBig = Option<u16>;
