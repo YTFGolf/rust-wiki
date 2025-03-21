@@ -21,9 +21,6 @@ type Small = u8;
 /// 0 or 1.
 type Bool = u8;
 
-type OpBig = Option<u16>;
-// TODO if 0 and None are basically synonymous then this can be removed
-
 #[derive(Debug, serde::Deserialize)]
 pub struct CatCSV {
     hp: Massive,
@@ -108,17 +105,17 @@ struct CatCSV2 {
     immune_boss_shockwave: Bool,
     _uk57: i8,
     kamikaze: Bool,
-    mhit_atk2: OpBig,
+    mhit_atk2: Big,
 
     // 60
-    mhit_atk3: OpBig,
-    mhit_atk2_fswing: OpBig,
-    mhit_atk3_fswing: OpBig,
+    mhit_atk3: Big,
+    mhit_atk2_fswing: Big,
+    mhit_atk3_fswing: Big,
     proc_on_hit1: Bool,
     proc_on_hit2: Bool,
     proc_on_hit3: Bool,
     _uk66: i8,
-    death: Option<i8>,
+    death: i8,
     _uk68: Small,
     _uk69: Small,
 
@@ -139,13 +136,13 @@ struct CatCSV2 {
     has_insane_resist: Bool,
     has_insane_damage: Bool,
     savage_blow_chance: Percent,
-    savage_blow_percent: OpBig,
+    savage_blow_dmg_percent: Big,
     dodge_chance: Percent,
-    dodge_duration: OpBig,
+    dodge_duration: Big,
     surge_chance: Percent,
     // like wave is dependent on `is_mini_surge`
-    surge_param_0: OpBig,
-    surge_param_1: OpBig,
+    surge_param_0: Big,
+    surge_param_1: Big,
     // TODO figure out what these are
     surge_level: Small,
 
@@ -153,7 +150,7 @@ struct CatCSV2 {
     immune_toxic: Bool,
     immune_surge: Bool,
     curse_chance: Percent,
-    curse_duration: OpBig,
+    curse_duration: Big,
     is_mini_wave: Bool,
     shield_pierce_chance: Percent,
     targ_aku: Bool,
@@ -162,24 +159,24 @@ struct CatCSV2 {
     second_ld_is_different: Bool,
 
     // 100
-    second_ld_base: Option<i32>,
-    second_ld_range: Option<i32>,
+    second_ld_base: i32,
+    second_ld_range: i32,
     third_ld_is_different: Bool,
-    third_ld_base: OpBig,
-    third_ld_range: Option<i32>,
+    third_ld_base: Big,
+    third_ld_range: i32,
     has_behemoth_slayer: Bool,
     bslayer_dodge_chance: Percent,
-    bslayer_dodge_duration: OpBig,
+    bslayer_dodge_duration: Big,
     is_mini_surge: Bool,
     counter_surge: Bool,
 
     // 110
-    conjure_unit: Option<i16>,
-    // for some godforsaken reason this can be -1
+    conjure_unit: i16,
+    // for some godforsaken reason this can be -1 or 0 to represent doesn't summon
     has_sage_slayer: Bool,
     metal_killer_percent: Percent,
     explosion_chance: Percent,
-    explosion_range: OpBig,
+    explosion_range: Big,
     _uk115: Small,
     immune_explosion: Bool,
 
@@ -251,7 +248,7 @@ mod tests {
         let version = TEST_CONFIG.version.current_version();
 
         for file in get_cat_files(version) {
-            println!("{file}");
+            // println!("{file}");
             let forms = read_data_file(&file, version);
 
             for (_fixed, var) in forms {
@@ -262,5 +259,15 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn tmp() {
+        let file_name = "unit026.csv";
+        let version = TEST_CONFIG.version.current_version();
+        panic!(
+            "{:#?}",
+            read_data_file(file_name, version).collect::<Vec<_>>()
+        )
     }
 }
