@@ -16,8 +16,7 @@ type Small = u8;
 type Bool = u8;
 
 type OpBig = Option<u16>;
-type OpSmall = Option<u8>;
-// TODO if 0 and None are basically synonymous then all of these can be removed
+// TODO if 0 and None are basically synonymous then this can be removed
 
 #[derive(Debug, serde::Deserialize)]
 pub struct CatCSV {
@@ -95,6 +94,7 @@ pub struct CatCSV {
 struct CatCSV2 {
     // index = 52
     has_zkill: Option<Bool>,
+    // can be blank for whatever reason so needs `Option`
     has_wkill: Bool,
     _uk54: Small,
     _uk55: i8,
@@ -141,7 +141,7 @@ struct CatCSV2 {
     surge_param_0: OpBig,
     surge_param_1: OpBig,
     // TODO figure out what these are
-    surge_level: OpSmall,
+    surge_level: Small,
 
     // 90
     immune_toxic: Bool,
