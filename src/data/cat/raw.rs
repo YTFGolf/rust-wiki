@@ -133,7 +133,7 @@ pub struct CatCSV2 {
     _uk72: Small,
     _uk73: Small,
     _uk74: Small,
-    immune_warp: Percent,
+    immune_warp: bool,
     _uk76: Small,
     witch_killer_2: Bool,
     // ???
