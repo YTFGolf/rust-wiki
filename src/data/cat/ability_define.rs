@@ -31,19 +31,9 @@ macro_rules! generate_ability_enum {
 
         impl $enum_name {
             /// Does the ability apply on every hit regardless?
-            pub fn is_general(&self)  -> bool { match self { $( Self::$variant { .. } => $config.is_general, )* } }
+            pub fn is_general(&self)  -> bool { match self { $( Self::$variant { .. } => {const ANS: bool = $config.is_general; ANS} )* } }
             /// Is the ability removed by curse?
-            pub fn is_cursable(&self) -> bool { match self { $( Self::$variant { .. } => $config.is_cursable, )* } }
+            pub fn is_cursable(&self) -> bool { match self { $( Self::$variant { .. } => {const ANS: bool = $config.is_cursable; ANS} )* } }
         }
     };
 }
-
-// #[derive(Debug)]
-// pub enum Ability {}
-// will need to be done better. Trait or macro I think. Check Donut's `multab`.
-/*
-/// Is it removed with curse.
-is_cursable
-/// Does this occur on every hit.
-is_general
-*/
