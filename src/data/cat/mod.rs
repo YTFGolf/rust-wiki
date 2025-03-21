@@ -96,11 +96,11 @@ struct CatCSV2 {
     // index = 52
     has_zkill: Option<Bool>,
     has_wkill: Bool,
-    _uk54: OpSmall,
-    _uk55: Option<i8>,
+    _uk54: Small,
+    _uk55: i8,
     // "loop", appears to be something to do with multihit
     immune_boss_shockwave: Bool,
-    _uk57: Option<i8>,
+    _uk57: i8,
     kamikaze: Bool,
     mhit_atk2: OpBig,
 
@@ -111,19 +111,19 @@ struct CatCSV2 {
     proc_on_hit1: Bool,
     proc_on_hit2: Bool,
     proc_on_hit3: Bool,
-    _uk66: Option<i8>,
+    _uk66: i8,
     death: Option<i8>,
-    _uk68: OpSmall,
-    _uk69: OpSmall,
+    _uk68: Small,
+    _uk69: Small,
 
     // 70
     barrier_break_chance: Percent,
-    _uk71: OpSmall,
-    _uk72: OpSmall,
-    _uk73: OpSmall,
-    _uk74: OpSmall,
+    _uk71: Small,
+    _uk72: Small,
+    _uk73: Small,
+    _uk74: Small,
     immune_warp: Percent,
-    _uk76: OpSmall,
+    _uk76: Small,
     witch_killer_2: Bool,
     // ???
     targ_relic: Bool,
@@ -174,7 +174,7 @@ struct CatCSV2 {
     metal_killer_percent: Percent,
     explosion_chance: Percent,
     explosion_range: OpBig,
-    _uk115: OpSmall,
+    _uk115: Small,
     immune_explosion: Bool,
 
     rest: Vec<i32>,
