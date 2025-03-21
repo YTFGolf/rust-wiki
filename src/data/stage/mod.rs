@@ -15,6 +15,7 @@ pub fn get_stage_files(version: &Version) -> impl Iterator<Item = String> {
 
     files.filter_map(move |f| {
         let file_name = f.unwrap().file_name().into_string().unwrap();
+        // needs to be converted to string so regex works
 
         if stage_file_re.is_match(&file_name) {
             Some(file_name)

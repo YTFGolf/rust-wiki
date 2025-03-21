@@ -213,12 +213,12 @@ fn read_data_file(file_name: &str, version: &Version) -> impl Iterator<Item = Co
             .next()
             .expect("Shouldn't panic on first next.")
             .trim_matches(|c: char| c.is_whitespace() || c == ',');
-        if line.is_empty() {
-            return None;
-        }
 
-        let (fixed, var) = read_form_line(line);
-        return Some((fixed, var));
+        if line.is_empty() {
+            None
+        } else {
+            Some(read_form_line(line))
+        }
     })
 }
 
