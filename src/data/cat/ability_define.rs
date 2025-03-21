@@ -1,3 +1,5 @@
+//! Defines a procedural macro for [`super::ability_data`].
+
 #[macro_export]
 /// Generate the enum for game abilities.
 macro_rules! generate_ability_enum {

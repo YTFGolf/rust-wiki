@@ -1,4 +1,4 @@
-#![allow(missing_docs, unused_imports, dead_code)]
+#![allow(missing_docs, unused_imports, dead_code, unreachable_code)]
 
 use super::{ ability_data::Ability, raw::CombinedCatData};
 use std::rc::Rc;

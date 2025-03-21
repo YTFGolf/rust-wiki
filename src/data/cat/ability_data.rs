@@ -1,9 +1,24 @@
+//! Deals with cat/enemy abilities.
+
 use crate::generate_ability_enum;
 
 struct Config {
     is_general: bool,
     is_cursable: bool,
 }
+
+/*
+This is done as a macro so that properties as in [`Config`] can be intrinsically
+tied to the enum parameters.
+
+If this gets too unreadable it's also entirely possible to either A) inline it
+completely then format that B) create a procedural macro that allows the syntax
+to be completely custom.
+
+Migrating it to another format wouldn't be quick (well I could write a Python
+script to do it) but it would probably be quite easy, so it's not really much of
+a concern that this is getting too esoteric.
+*/
 
 generate_ability_enum!(
     #[doc = "Cat or enemy ability."]
