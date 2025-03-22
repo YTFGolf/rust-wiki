@@ -1,5 +1,7 @@
 //! Deals with cat/enemy abilities.
 
+#![allow(missing_docs, dead_code, unreachable_code)]
+
 /// Configuration values/modifiers for abilities.
 struct Config {
     /// Does the ability apply on every hit or only on specified ones (e.g.
@@ -166,7 +168,7 @@ impl Ability {
                 is_cursable: true,
             },
             Self::MassiveDamage => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::Crit { .. } => Config {
@@ -242,7 +244,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Kamikaze => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::BarrierBreaker { .. } => Config {
@@ -266,11 +268,11 @@ impl Ability {
                 is_cursable: true,
             },
             Self::InsaneDamage => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::SavageBlow { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::Dodge { .. } => Config {
@@ -290,11 +292,11 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Curse { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: true,
             },
             Self::ShieldPierce { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::ColossusSlayer => Config {
@@ -302,27 +304,27 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Soulstrike => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::BehemothSlayer { .. } => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::CounterSurge => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ConjureUnit { .. } => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::SageSlayer => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::MetalKiller { .. } => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Explosion { .. } => Config {
