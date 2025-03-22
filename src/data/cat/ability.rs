@@ -447,10 +447,10 @@ fn bool(value: Percent) -> bool {
 
 impl Ability {
     #[allow(unreachable_code)]
-    pub fn from_combined((fixed, variable): &CombinedCatData) -> Vec<Ability> {
+    pub fn get_all_abilities((fixed, variable): &CombinedCatData) -> Vec<Ability> {
         let mut abilities = vec![];
 
-        if todo!() {
+        if bool(fixed.has_strong) {
             abilities.push(Self::StrongAgainst);
         }
 
@@ -466,11 +466,11 @@ impl Ability {
             abilities.push(Self::Slow);
         }
 
-        if todo!() {
+        if bool(fixed.has_resist) {
             abilities.push(Self::Resist);
         }
 
-        if todo!() {
+        if bool(fixed.has_massive_dmg) {
             abilities.push(Self::MassiveDamage);
         }
 
@@ -478,15 +478,15 @@ impl Ability {
             abilities.push(Self::Crit);
         }
 
-        if todo!() {
+        if bool(fixed.has_targets_only) {
             abilities.push(Self::TargetsOnly);
         }
 
-        if todo!() {
+        if bool(fixed.has_double_bounty) {
             abilities.push(Self::DoubleBounty);
         }
 
-        if todo!() {
+        if bool(fixed.has_double_bounty) {
             abilities.push(Self::BaseDestroyer);
         }
 
@@ -506,47 +506,47 @@ impl Ability {
             abilities.push(Self::Survives);
         }
 
-        if todo!() {
+        if bool(fixed.has_metal) {
             abilities.push(Self::Metal);
         }
 
-        if todo!() {
+        if bool(fixed.immune_wave) {
             abilities.push(Self::ImmuneToWave);
         }
 
-        if todo!() {
+        if bool(fixed.wave_blocker) {
             abilities.push(Self::WaveBlocker);
         }
 
-        if todo!() {
+        if bool(fixed.immune_kb) {
             abilities.push(Self::ImmuneToKB);
         }
 
-        if todo!() {
+        if bool(fixed.immune_freeze) {
             abilities.push(Self::ImmuneToFreeze);
         }
 
-        if todo!() {
+        if bool(fixed.immune_slow) {
             abilities.push(Self::ImmuneToSlow);
         }
 
-        if todo!() {
+        if bool(fixed.immune_weaken) {
             abilities.push(Self::ImmuneToWeaken);
         }
 
-        if todo!() {
+        if bool(variable.has_zkill) {
             abilities.push(Self::ZombieKiller);
         }
 
-        if todo!() {
+        if bool(variable.has_wkill) {
             abilities.push(Self::WitchKiller);
         }
 
-        if todo!() {
+        if bool(variable.immune_boss_shockwave) {
             abilities.push(Self::ImmuneToBossShockwave);
         }
 
-        if todo!() {
+        if bool(variable.kamikaze) {
             abilities.push(Self::Kamikaze);
         }
 
@@ -554,23 +554,23 @@ impl Ability {
             abilities.push(Self::BarrierBreaker);
         }
 
-        if todo!() {
+        if bool(variable.immune_warp) {
             abilities.push(Self::ImmuneToWarp);
         }
 
-        if todo!() {
+        if bool(variable.eva_angel_killer) {
             abilities.push(Self::EvaAngelKiller);
         }
 
-        if todo!() {
+        if bool(variable.immune_curse) {
             abilities.push(Self::ImmuneToCurse);
         }
 
-        if todo!() {
+        if bool(variable.has_insane_resist) {
             abilities.push(Self::InsaneResist);
         }
 
-        if todo!() {
+        if bool(variable.has_insane_damage) {
             abilities.push(Self::InsaneDamage);
         }
 
@@ -586,11 +586,11 @@ impl Ability {
             abilities.push(Self::Surge(_));
         }
 
-        if todo!() {
+        if bool(variable.immune_toxic) {
             abilities.push(Self::ImmuneToToxic);
         }
 
-        if todo!() {
+        if bool(variable.immune_surge) {
             abilities.push(Self::ImmuneToSurge);
         }
 
@@ -602,11 +602,11 @@ impl Ability {
             abilities.push(Self::ShieldPierce);
         }
 
-        if todo!() {
+        if bool(variable.has_colossus_slayer) {
             abilities.push(Self::ColossusSlayer);
         }
 
-        if todo!() {
+        if bool(variable.soulstrike) {
             abilities.push(Self::Soulstrike);
         }
 
@@ -614,7 +614,7 @@ impl Ability {
             abilities.push(Self::BehemothSlayer);
         }
 
-        if todo!() {
+        if bool(variable.counter_surge) {
             abilities.push(Self::CounterSurge);
         }
 
@@ -622,7 +622,7 @@ impl Ability {
             abilities.push(Self::ConjureUnit);
         }
 
-        if todo!() {
+        if bool(variable.has_sage_slayer) {
             abilities.push(Self::SageSlayer);
         }
 
@@ -634,7 +634,7 @@ impl Ability {
             abilities.push(Self::Explosion);
         }
 
-        if todo!() {
+        if bool(variable.immune_explosion) {
             abilities.push(Self::ImmuneToExplosion);
         }
 
