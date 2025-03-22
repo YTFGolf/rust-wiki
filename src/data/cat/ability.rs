@@ -5,9 +5,9 @@ use super::raw::CombinedCatData;
 /// Configuration values/modifiers for abilities.
 struct Config {
     /// Does the ability apply on every hit or only on specified ones (e.g.
-    /// CgtG's KB vs double bounty).
+    /// CgtG's KB vs double bounty)?
     is_general: bool,
-    /// Is the ability removed by curse.
+    /// Is the ability removed by curse?
     is_cursable: bool,
 }
 
@@ -69,7 +69,7 @@ pub struct Surge {
     pub spawn_quad: u16,
     /// Surge range distance (once again * 4).
     pub range_quad: u16,
-    /// Level of surge (20f per level),
+    /// Level of surge (20f/1 tick per level),
     pub level: u8,
 }
 
@@ -252,7 +252,7 @@ pub enum Ability {
         /// Chance to explode.
         chance: Percent,
         /// Range. Appears to be spawnpoint * 4.
-        range: u16,
+        spawn_quad: u16,
     },
     /// Immune to explosion.
     ImmuneToExplosion,
@@ -502,14 +502,14 @@ impl Ability {
         if chance(fixed.freeze_chance) {
             abilities.push(Self::Freeze {
                 chance: fixed.freeze_chance,
-                duration: fixed.freeze_time,
+                duration: fixed.freeze_duration,
             });
         }
 
         if chance(fixed.slow_chance) {
             abilities.push(Self::Slow {
                 chance: fixed.slow_chance,
-                duration: fixed.slow_time,
+                duration: fixed.slow_duration,
             });
         }
 
@@ -517,7 +517,7 @@ impl Ability {
             abilities.push(Self::Resist);
         }
 
-        if bool(fixed.has_massive_dmg) {
+        if bool(fixed.has_massive_damage) {
             abilities.push(Self::MassiveDamage);
         }
 
@@ -572,7 +572,7 @@ impl Ability {
             abilities.push(Self::ImmuneToWave);
         }
 
-        if bool(fixed.wave_blocker) {
+        if bool(fixed.has_wave_blocker) {
             abilities.push(Self::WaveBlocker);
         }
 
@@ -592,11 +592,11 @@ impl Ability {
             abilities.push(Self::ImmuneToWeaken);
         }
 
-        if bool(variable.has_zkill.unwrap_or_default()) {
+        if bool(variable.has_zombie_killer.unwrap_or_default()) {
             abilities.push(Self::ZombieKiller);
         }
 
-        if bool(variable.has_wkill) {
+        if bool(variable.has_witch_killer) {
             abilities.push(Self::WitchKiller);
         }
 
@@ -618,7 +618,7 @@ impl Ability {
             abilities.push(Self::ImmuneToWarp);
         }
 
-        if bool(variable.eva_angel_killer) {
+        if bool(variable.has_eva_angel_killer) {
             abilities.push(Self::EvaAngelKiller);
         }
 
@@ -637,7 +637,7 @@ impl Ability {
         if chance(variable.savage_blow_chance) {
             abilities.push(Self::SavageBlow {
                 chance: variable.savage_blow_chance,
-                damage: variable.savage_blow_dmg_percent,
+                damage: variable.savage_blow_percent,
             });
         }
 
@@ -677,7 +677,7 @@ impl Ability {
             abilities.push(Self::ColossusSlayer);
         }
 
-        if bool(variable.soulstrike) {
+        if bool(variable.has_soulstrike) {
             abilities.push(Self::Soulstrike);
         }
 
@@ -688,13 +688,13 @@ impl Ability {
             });
         }
 
-        if bool(variable.counter_surge) {
+        if bool(variable.has_counter_surge) {
             abilities.push(Self::CounterSurge);
         }
 
-        if variable.conjure_unit > 0 {
+        if variable.conjure_unit_id > 0 {
             abilities.push(Self::ConjureUnit {
-                id: variable.conjure_unit as u16,
+                id: variable.conjure_unit_id as u16,
             });
         }
 
@@ -711,7 +711,7 @@ impl Ability {
         if chance(variable.explosion_chance) {
             abilities.push(Self::Explosion {
                 chance: variable.explosion_chance,
-                range: variable.explosion_range,
+                spawn_quad: variable.explosion_spawn_quad,
             });
         }
 

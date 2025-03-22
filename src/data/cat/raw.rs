@@ -62,13 +62,13 @@ pub struct CatCSV {
     pub has_strong: Bool,
     pub kb_chance: Percent,
     pub freeze_chance: Percent,
-    pub freeze_time: Big,
+    pub freeze_duration: Big,
     pub slow_chance: Percent,
-    pub slow_time: Big,
+    pub slow_duration: Big,
     pub has_resist: Bool,
 
     // 30
-    pub has_massive_dmg: Bool,
+    pub has_massive_damage: Bool,
     pub crit_chance: Percent,
     pub has_targets_only: Bool,
     pub has_double_bounty: Bool,
@@ -89,7 +89,7 @@ pub struct CatCSV {
     pub ld_range: i32,
     // if ld_range is neg then is omnistrike, need to consult the hitbox page
     pub immune_wave: Bool,
-    pub wave_blocker: Bool,
+    pub has_wave_blocker: Bool,
     pub immune_kb: Bool,
     pub immune_freeze: Bool,
 
@@ -104,9 +104,9 @@ pub struct CatCSV {
 /// Data that may not exist. All fields default to `0` if not explicitly given.
 pub struct CatCSV2 {
     // index = 52
-    pub has_zkill: Option<Bool>,
+    pub has_zombie_killer: Option<Bool>,
     // can be blank for whatever reason so needs `Option`
-    pub has_wkill: Bool,
+    pub has_witch_killer: Bool,
     _uk54: Small,
     _uk55: i8,
     // "loop", appears to be something to do with multihit
@@ -135,7 +135,7 @@ pub struct CatCSV2 {
     _uk74: Small,
     pub immune_warp: Bool,
     _uk76: Small,
-    pub eva_angel_killer: Bool,
+    pub has_eva_angel_killer: Bool,
     pub targ_relic: Bool,
     pub immune_curse: Bool,
 
@@ -143,7 +143,7 @@ pub struct CatCSV2 {
     pub has_insane_resist: Bool,
     pub has_insane_damage: Bool,
     pub savage_blow_chance: Percent,
-    pub savage_blow_dmg_percent: Big,
+    pub savage_blow_percent: Big,
     pub dodge_chance: Percent,
     pub dodge_duration: Big,
     pub surge_chance: Percent,
@@ -162,7 +162,7 @@ pub struct CatCSV2 {
     pub shield_pierce_chance: Percent,
     pub targ_aku: Bool,
     pub has_colossus_slayer: Bool,
-    pub soulstrike: Bool,
+    pub has_soulstrike: Bool,
     pub second_ld_is_different: Bool,
 
     // 100
@@ -175,15 +175,15 @@ pub struct CatCSV2 {
     pub bslayer_dodge_chance: Percent,
     pub bslayer_dodge_duration: Big,
     pub is_mini_surge: Bool,
-    pub counter_surge: Bool,
+    pub has_counter_surge: Bool,
 
     // 110
-    pub conjure_unit: i16,
+    pub conjure_unit_id: i16,
     // for some godforsaken reason this can be -1 or 0 to represent doesn't summon
     pub has_sage_slayer: Bool,
     pub metal_killer_percent: Percent,
     pub explosion_chance: Percent,
-    pub explosion_range: Big,
+    pub explosion_spawn_quad: Big,
     // for some reason is 4 * actual range
     _uk115: Small,
     pub immune_explosion: Bool,
