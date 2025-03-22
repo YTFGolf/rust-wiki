@@ -4,14 +4,39 @@ use super::{ability::Ability, raw::CombinedCatData};
 use std::rc::Rc;
 
 #[derive(Debug)]
-pub enum EnemyType {}
+pub enum EnemyType {
+    Red,
+    Float,
+    Black,
+    Metal,
+    Traitless,
+    Angel,
+    Alien,
+    Zombie,
+    Relic,
+    Aku,
+}
 
 #[derive(Debug)]
-pub struct AttackRange {}
+pub enum AttackRangeClassification {
+    Normal,
+    LD,
+    Omni,
+}
+
+#[derive(Debug)]
+pub struct AttackRange {
+    classification: AttackRangeClassification,
+    standing: u16,
+    base: u16,
+    distance: i16,
+}
 
 #[derive(Debug)]
 pub struct AttackHit {
     active_ability: bool,
+    damage: u32,
+    tba: u16,
     range: AttackRange,
     foreswing: u32,
     backswing: u32,
@@ -25,32 +50,33 @@ pub enum AttackHits {
 }
 
 #[derive(Debug)]
+pub enum AreaOfEffect {
+    SingleAttack,
+    AreaAttack,
+}
+
+#[derive(Debug)]
 pub struct Attack {
     abilities: Rc<[Ability]>,
     targets: Rc<[EnemyType]>,
     hits: AttackHits,
+    aoe: AreaOfEffect,
 }
 
 #[derive(Debug)]
 struct Cat {
     base_hp: u32,
     kb: u16,
+    death_anim: i8,
     speed: u8,
-    // atk: u32,
-    // tba: u16,
-    // range: u16,
     price: u16,
-    // width: u16,
+    respawn: u16,
+    attack: Attack,
 }
 
 impl Cat {
     fn from_combined(_data: &CombinedCatData) -> Self {
-        Self {
-            base_hp: todo!(),
-            kb: todo!(),
-            speed: todo!(),
-            price: todo!(),
-        }
+        todo!()
     }
 }
 
@@ -67,12 +93,12 @@ mod tests {
         if cond {
             return;
         }
-        let file_name = "unit026.csv";
+        let file_name = "unit419.csv";
         let version = TEST_CONFIG.version.current_version();
         panic!(
             "{:#?}",
             read_data_file(file_name, version)
-                .map(|comb| Cat::from_combined(&comb))
+                // .map(|comb| Cat::from_combined(&comb))
                 .collect::<Vec<_>>()
         )
     }
