@@ -176,7 +176,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::TargetsOnly => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::DoubleBounty => Config {
@@ -184,7 +184,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::BaseDestroyer => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Wave(_) => Config {
@@ -196,7 +196,7 @@ impl Ability {
                 is_cursable: true,
             },
             Self::Strengthen { .. } => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Survives { .. } => Config {
@@ -204,7 +204,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Metal => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToWave => Config {
@@ -236,7 +236,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::WitchKiller1 => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToBossShockwave => Config {
@@ -256,7 +256,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::WitchKiller2 => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToCurse => Config {
