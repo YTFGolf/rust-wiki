@@ -1,5 +1,7 @@
 //! Deals with cat/enemy abilities.
 
+use super::raw::CombinedCatData;
+
 /// Configuration values/modifiers for abilities.
 struct Config {
     /// Does the ability apply on every hit or only on specified ones (e.g.
@@ -432,5 +434,210 @@ impl Ability {
     /// [`Ability::is_cursable`].
     pub const fn has_targets(&self) -> bool {
         self.is_cursable()
+    }
+}
+
+fn bool(value: Percent) -> bool {
+    match value {
+        0 => false,
+        1 => true,
+        _ => panic!("{value} is not a boolean"),
+    }
+}
+
+impl Ability {
+    #[allow(unreachable_code)]
+    pub fn from_combined((fixed, variable): &CombinedCatData) -> Vec<Ability> {
+        let mut abilities = vec![];
+
+        if todo!() {
+            abilities.push(Self::StrongAgainst);
+        }
+
+        if todo!() {
+            abilities.push(Self::Knockback);
+        }
+
+        if todo!() {
+            abilities.push(Self::Freeze);
+        }
+
+        if todo!() {
+            abilities.push(Self::Slow);
+        }
+
+        if todo!() {
+            abilities.push(Self::Resist);
+        }
+
+        if todo!() {
+            abilities.push(Self::MassiveDamage);
+        }
+
+        if todo!() {
+            abilities.push(Self::Crit);
+        }
+
+        if todo!() {
+            abilities.push(Self::TargetsOnly);
+        }
+
+        if todo!() {
+            abilities.push(Self::DoubleBounty);
+        }
+
+        if todo!() {
+            abilities.push(Self::BaseDestroyer);
+        }
+
+        if todo!() {
+            abilities.push(Self::Wave(_));
+        }
+
+        if todo!() {
+            abilities.push(Self::Weaken);
+        }
+
+        if todo!() {
+            abilities.push(Self::Strengthen);
+        }
+
+        if todo!() {
+            abilities.push(Self::Survives);
+        }
+
+        if todo!() {
+            abilities.push(Self::Metal);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToWave);
+        }
+
+        if todo!() {
+            abilities.push(Self::WaveBlocker);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToKB);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToFreeze);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToSlow);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToWeaken);
+        }
+
+        if todo!() {
+            abilities.push(Self::ZombieKiller);
+        }
+
+        if todo!() {
+            abilities.push(Self::WitchKiller);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToBossShockwave);
+        }
+
+        if todo!() {
+            abilities.push(Self::Kamikaze);
+        }
+
+        if todo!() {
+            abilities.push(Self::BarrierBreaker);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToWarp);
+        }
+
+        if todo!() {
+            abilities.push(Self::EvaAngelKiller);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToCurse);
+        }
+
+        if todo!() {
+            abilities.push(Self::InsaneResist);
+        }
+
+        if todo!() {
+            abilities.push(Self::InsaneDamage);
+        }
+
+        if todo!() {
+            abilities.push(Self::SavageBlow);
+        }
+
+        if todo!() {
+            abilities.push(Self::Dodge);
+        }
+
+        if todo!() {
+            abilities.push(Self::Surge(_));
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToToxic);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToSurge);
+        }
+
+        if todo!() {
+            abilities.push(Self::Curse);
+        }
+
+        if todo!() {
+            abilities.push(Self::ShieldPierce);
+        }
+
+        if todo!() {
+            abilities.push(Self::ColossusSlayer);
+        }
+
+        if todo!() {
+            abilities.push(Self::Soulstrike);
+        }
+
+        if todo!() {
+            abilities.push(Self::BehemothSlayer);
+        }
+
+        if todo!() {
+            abilities.push(Self::CounterSurge);
+        }
+
+        if todo!() {
+            abilities.push(Self::ConjureUnit);
+        }
+
+        if todo!() {
+            abilities.push(Self::SageSlayer);
+        }
+
+        if todo!() {
+            abilities.push(Self::MetalKiller);
+        }
+
+        if todo!() {
+            abilities.push(Self::Explosion);
+        }
+
+        if todo!() {
+            abilities.push(Self::ImmuneToExplosion);
+        }
+
+        todo!()
     }
 }
