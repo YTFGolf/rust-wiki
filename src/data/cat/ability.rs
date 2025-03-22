@@ -445,6 +445,10 @@ fn bool(value: Percent) -> bool {
     }
 }
 
+fn chance(value: Percent) -> bool {
+    value > 0
+}
+
 impl Ability {
     #[allow(unreachable_code)]
     pub fn get_all_abilities((fixed, variable): &CombinedCatData) -> Vec<Ability> {
@@ -454,16 +458,24 @@ impl Ability {
             abilities.push(Self::StrongAgainst);
         }
 
-        if todo!() {
-            abilities.push(Self::Knockback);
+        if chance(fixed.kb_chance) {
+            abilities.push(Self::Knockback {
+                chance: fixed.kb_chance,
+            });
         }
 
-        if todo!() {
-            abilities.push(Self::Freeze);
+        if chance(fixed.freeze_chance) {
+            abilities.push(Self::Freeze {
+                chance: fixed.freeze_chance,
+                duration: fixed.freeze_time,
+            });
         }
 
-        if todo!() {
-            abilities.push(Self::Slow);
+        if chance(fixed.slow_chance) {
+            abilities.push(Self::Slow {
+                chance: fixed.slow_chance,
+                duration: fixed.slow_time,
+            });
         }
 
         if bool(fixed.has_resist) {
@@ -474,8 +486,10 @@ impl Ability {
             abilities.push(Self::MassiveDamage);
         }
 
-        if todo!() {
-            abilities.push(Self::Crit);
+        if chance(fixed.crit_chance) {
+            abilities.push(Self::Crit {
+                chance: fixed.crit_chance,
+            });
         }
 
         if bool(fixed.has_targets_only) {
@@ -490,20 +504,26 @@ impl Ability {
             abilities.push(Self::BaseDestroyer);
         }
 
-        if todo!() {
+        if chance(todo!()) {
             abilities.push(Self::Wave(_));
         }
 
-        if todo!() {
-            abilities.push(Self::Weaken);
+        if chance(fixed.weaken_chance) {
+            abilities.push(Self::Weaken {
+                chance: fixed.weaken_chance,
+                duration: fixed.weaken_duration,
+                multiplier: fixed.weaken_multiplier,
+            });
         }
 
         if todo!() {
             abilities.push(Self::Strengthen);
         }
 
-        if todo!() {
-            abilities.push(Self::Survives);
+        if chance(fixed.survives_chance) {
+            abilities.push(Self::Survives {
+                chance: fixed.survives_chance,
+            });
         }
 
         if bool(fixed.has_metal) {
@@ -534,7 +554,7 @@ impl Ability {
             abilities.push(Self::ImmuneToWeaken);
         }
 
-        if bool(variable.has_zkill) {
+        if bool(variable.has_zkill.unwrap_or_default()) {
             abilities.push(Self::ZombieKiller);
         }
 
@@ -550,8 +570,10 @@ impl Ability {
             abilities.push(Self::Kamikaze);
         }
 
-        if todo!() {
-            abilities.push(Self::BarrierBreaker);
+        if chance(variable.barrier_break_chance) {
+            abilities.push(Self::BarrierBreaker {
+                chance: variable.barrier_break_chance,
+            });
         }
 
         if bool(variable.immune_warp) {
@@ -574,16 +596,22 @@ impl Ability {
             abilities.push(Self::InsaneDamage);
         }
 
-        if todo!() {
-            abilities.push(Self::SavageBlow);
+        if chance(variable.savage_blow_chance) {
+            abilities.push(Self::SavageBlow {
+                chance: variable.savage_blow_chance,
+                damage: variable.savage_blow_dmg_percent,
+            });
         }
 
-        if todo!() {
-            abilities.push(Self::Dodge);
+        if chance(variable.dodge_chance) {
+            abilities.push(Self::Dodge {
+                chance: variable.dodge_chance,
+                duration: variable.dodge_duration,
+            });
         }
 
-        if todo!() {
-            abilities.push(Self::Surge(_));
+        if chance(variable.surge_chance) {
+            abilities.push(Self::Surge(todo!()));
         }
 
         if bool(variable.immune_toxic) {
@@ -594,12 +622,17 @@ impl Ability {
             abilities.push(Self::ImmuneToSurge);
         }
 
-        if todo!() {
-            abilities.push(Self::Curse);
+        if chance(variable.curse_chance) {
+            abilities.push(Self::Curse {
+                chance: variable.curse_chance,
+                duration: variable.curse_duration,
+            });
         }
 
-        if todo!() {
-            abilities.push(Self::ShieldPierce);
+        if chance(variable.shield_pierce_chance) {
+            abilities.push(Self::ShieldPierce {
+                chance: variable.shield_pierce_chance,
+            });
         }
 
         if bool(variable.has_colossus_slayer) {
@@ -630,8 +663,11 @@ impl Ability {
             abilities.push(Self::MetalKiller);
         }
 
-        if todo!() {
-            abilities.push(Self::Explosion);
+        if chance(variable.explosion_chance) {
+            abilities.push(Self::Explosion {
+                chance: variable.explosion_chance,
+                range: variable.explosion_range,
+            });
         }
 
         if bool(variable.immune_explosion) {
