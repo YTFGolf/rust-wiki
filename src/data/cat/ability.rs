@@ -145,53 +145,194 @@ pub enum Ability {
 impl Ability {
     const fn get_config(&self) -> Config {
         match self {
-            Self::StrongAgainst => Config { is_general: todo!(), is_cursable: true },
-            Self::Knockback {..} => Config { is_general: todo!(), is_cursable: true },
-            Self::Freeze {..} => Config { is_general: false, is_cursable: true },
-            Self::Slow {..} => Config { is_general: todo!(), is_cursable: true },
-            Self::Resist => Config { is_general: todo!(), is_cursable: true },
-            Self::MassiveDamage => Config { is_general: todo!(), is_cursable: true },
-            Self::Crit {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::TargetsOnly => Config { is_general: todo!(), is_cursable: true },
-            Self::DoubleBounty => Config { is_general: true, is_cursable: false },
-            Self::BaseDestroyer => Config{is_general:todo!(),is_cursable:false},
-            Self::Wave(_) => Config{is_general:todo!(),is_cursable:false},
-            Self::Weaken {..} => Config { is_general: todo!(), is_cursable: true },
-            Self::Strengthen {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::Survives {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::Metal => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToWave => Config{is_general:todo!(),is_cursable:false},
-            Self::WaveBlocker => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToKB => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToFreeze => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToSlow => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToWeaken => Config{is_general:todo!(),is_cursable:false},
-            Self::ZombieKiller => Config{is_general:todo!(),is_cursable:false},
-            Self::WitchKiller1 => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToBossShockwave => Config{is_general:todo!(),is_cursable:false},
-            Self::Kamikaze => Config{is_general:todo!(),is_cursable:false},
-            Self::BarrierBreaker {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToWarp => Config{is_general:todo!(),is_cursable:false},
-            Self::WitchKiller2 => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToCurse => Config{is_general:todo!(),is_cursable:false},
-            Self::InsaneResist => Config { is_general: todo!(), is_cursable: true },
-            Self::InsaneDamage => Config { is_general: todo!(), is_cursable: true },
-            Self::SavageBlow {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::Dodge {..} => Config { is_general: todo!(), is_cursable: true },
-            Self::Surge(_) => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToToxic => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToSurge => Config{is_general:todo!(),is_cursable:false},
-            Self::Curse {..} => Config { is_general: todo!(), is_cursable: true },
-            Self::ShieldPierce {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::ColossusSlayer => Config{is_general:todo!(),is_cursable:false},
-            Self::Soulstrike => Config{is_general:todo!(),is_cursable:false},
-            Self::BehemothSlayer {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::CounterSurge => Config{is_general:todo!(),is_cursable:false},
-            Self::ConjureUnit {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::SageSlayer => Config{is_general:todo!(),is_cursable:false},
-            Self::MetalKiller {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::Explosion {..} => Config{is_general:todo!(),is_cursable:false},
-            Self::ImmuneToExplosion => Config{is_general:todo!(),is_cursable:false},
+            Self::StrongAgainst => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::Knockback { .. } => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::Freeze { .. } => Config {
+                is_general: false,
+                is_cursable: true,
+            },
+            Self::Slow { .. } => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::Resist => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::MassiveDamage => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::Crit { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::TargetsOnly => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::DoubleBounty => Config {
+                is_general: true,
+                is_cursable: false,
+            },
+            Self::BaseDestroyer => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Wave(_) => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Weaken { .. } => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::Strengthen { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Survives { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Metal => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToWave => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::WaveBlocker => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToKB => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToFreeze => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToSlow => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToWeaken => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ZombieKiller => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::WitchKiller1 => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToBossShockwave => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Kamikaze => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::BarrierBreaker { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToWarp => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::WitchKiller2 => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToCurse => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::InsaneResist => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::InsaneDamage => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::SavageBlow { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Dodge { .. } => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::Surge(_) => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToToxic => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToSurge => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Curse { .. } => Config {
+                is_general: todo!(),
+                is_cursable: true,
+            },
+            Self::ShieldPierce { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ColossusSlayer => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Soulstrike => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::BehemothSlayer { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::CounterSurge => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ConjureUnit { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::SageSlayer => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::MetalKiller { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::Explosion { .. } => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
+            Self::ImmuneToExplosion => Config {
+                is_general: todo!(),
+                is_cursable: false,
+            },
         }
     }
 }
