@@ -1,7 +1,5 @@
 //! Deals with cat/enemy abilities.
 
-#![allow(dead_code)]
-
 /// Configuration values/modifiers for abilities.
 struct Config {
     /// Does the ability apply on every hit or only on specified ones (e.g.
@@ -49,8 +47,10 @@ pub struct Surge {
     pub stype: SurgeType,
     /// Chance for surge to proc.
     pub surge_chance: Percent,
-    param_0: u16,
-    param_1: u16,
+    /// Surge range min bound (* 4 for some reason).
+    pub spawn: u16,
+    /// Surge range distance (once again * 4).
+    pub range: u16,
     /// Level of surge (20f per level),
     pub level: u8,
 }
@@ -83,7 +83,9 @@ pub enum Ability {
     Resist,
     /// Massive damage.
     MassiveDamage,
+    /// Critical hit.
     Crit {
+        /// Crit chance.
         chance: Percent,
     },
     /// Targets only.
@@ -94,21 +96,34 @@ pub enum Ability {
     BaseDestroyer,
     /// Wave.
     Wave(Wave),
+    /// Weaken.
     Weaken {
+        /// Chance to weaken.
         chance: Percent,
+        /// Duration of weaken (f).
         duration: u16,
+        /// % of attack that opponent is weakened to.
         multiplier: Percent,
     },
+    /// Strengthen at certain point.
     Strengthen {
-        chance: Percent,
+        /// HP where it activates.
+        hp: Percent,
+        /// Extra damage percentage.
         multiplier: u16,
     },
+    /// Survive lethal strike.
     Survives {
+        /// Chance to survive.
         chance: Percent,
     },
+    /// Metal.
     Metal,
+    /// Immune to wave.
     ImmuneToWave,
+    /// Wave blocker.
     WaveBlocker,
+    /// Immune to knockback.
     ImmuneToKB,
     /// Immune to freeze.
     ImmuneToFreeze,
@@ -124,7 +139,9 @@ pub enum Ability {
     ImmuneToBossShockwave,
     /// Kamikaze.
     Kamikaze,
+    /// Break starred alien barriers.
     BarrierBreaker {
+        /// Chance to break barriers.
         chance: Percent,
     },
     /// Immune to warp.
@@ -137,13 +154,18 @@ pub enum Ability {
     InsaneResist,
     /// Insane damage.
     InsaneDamage,
+    /// Savage blow.
     SavageBlow {
+        /// Savage blow chance.
         chance: Percent,
         /// Additional damage as a percent of initial.
         damage: u16,
     },
+    /// Dodge.
     Dodge {
+        /// Chance to dodge.
         chance: Percent,
+        /// Duration of dodge (f).
         duration: u16,
     },
     /// Surge.
@@ -152,34 +174,48 @@ pub enum Ability {
     ImmuneToToxic,
     /// Immune to surge.
     ImmuneToSurge,
+    /// Curse.
     Curse {
+        /// Chance to curse.
         chance: Percent,
+        /// Duration of curse.
         duration: u16,
     },
+    /// Shield pierce.
     ShieldPierce {
+        /// Shield pierce chance.
         chance: Percent,
     },
     /// Colossus slayer.
     ColossusSlayer,
     /// Soulstrike.
     Soulstrike,
+    /// Behemoth slayer.
     BehemothSlayer {
+        /// Chance to dodge behemoth attacks.
         dodge_chance: Percent,
+        /// Duration of dodge.
         dodge_duration: u16,
     },
     /// Counter surge.
     CounterSurge,
+    /// Conjure a spirit.
     ConjureUnit {
         /// ID of the conjured spirit.
         id: u16,
     },
     /// Sage slayer.
     SageSlayer,
+    /// Metal killer.
     MetalKiller {
+        /// % of hp taken with every hit.
         damage: Percent,
     },
+    /// Explosion attack.
     Explosion {
+        /// Chance to explode.
         chance: Percent,
+        /// Range. Appears to be spawnpoint * 4.
         range: u16,
     },
     /// Immune to explosion.
