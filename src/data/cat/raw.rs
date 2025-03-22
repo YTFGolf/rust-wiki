@@ -212,7 +212,10 @@ fn read_form_line(line: &str) -> CombinedCatData {
 }
 
 /// Read a cat data file and return all of the unit's forms.
-pub fn read_data_file(file_name: &str, version: &Version) -> impl Iterator<Item = CombinedCatData> {
+pub fn read_data_file(
+    file_name: &str,
+    version: &Version,
+) -> impl Iterator<Item = CombinedCatData> + use<> {
     let stage_file = PathBuf::from("DataLocal").join(file_name);
     let reader = BufReader::new(File::open(version.get_file_path(&stage_file)).unwrap());
 

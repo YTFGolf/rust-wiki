@@ -13,7 +13,7 @@ struct Config {
 
 type Percent = u8;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Possible type of wave attack.
 pub enum WaveType {
     /// Normal wave.
@@ -22,7 +22,7 @@ pub enum WaveType {
     MiniWave,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Wave ability.
 pub struct Wave {
     /// Type of wave.
@@ -49,7 +49,7 @@ impl Wave {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Possible type of surge attack.
 pub enum SurgeType {
     /// Normal surge.
@@ -58,7 +58,7 @@ pub enum SurgeType {
     MiniSurge,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Surge ability.
 pub struct Surge {
     /// Type of surge.
@@ -91,7 +91,7 @@ impl Surge {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Cat or enemy ability.
 pub enum Ability {
     /// Strong against.
@@ -723,12 +723,91 @@ impl Ability {
     }
 }
 
-/*
-Cat
-A. Bahamut
-no abilities
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{config::TEST_CONFIG, data::cat::raw::read_data_file};
+    use Ability as A;
+    use std::iter::zip;
 
-Kasli -> level 3 surge
+    fn get_unit(wiki_id: usize) -> impl Iterator<Item = Vec<Ability>> {
+        let abs_id = wiki_id + 1;
+        let file_name = format!("unit{abs_id:03}.csv");
+        let combined_iter = read_data_file(&file_name, TEST_CONFIG.version.current_version());
+        combined_iter.map(|combined| Ability::get_all_abilities(&combined))
+    }
+
+    fn sorted<T: Ord>(mut v: Vec<T>) -> Vec<T> {
+        v.sort();
+        v
+    }
+
+    #[test]
+    fn test_no_abilities() {
+        let cat = get_unit(0);
+        for form in cat {
+            assert_eq!(form, vec![]);
+        }
+    }
+
+    #[test]
+    fn test_no_abilities_multihit() {
+        let bahamut = get_unit(25);
+        for form in bahamut {
+            assert_eq!(form, vec![]);
+        }
+    }
+
+    #[test]
+    fn test_surge() {
+        let dasli = get_unit(543);
+
+        let form_abilities = [
+            vec![
+                A::Surge(Surge {
+                    stype: SurgeType::Surge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 1200,
+                    level: 2,
+                }),
+                A::Curse {
+                    chance: 100,
+                    duration: 135,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToSurge,
+            ],
+            vec![
+                A::Surge(Surge {
+                    stype: SurgeType::Surge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 1200,
+                    level: 3,
+                }),
+                A::Curse {
+                    chance: 100,
+                    duration: 135,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToSurge,
+            ],
+        ];
+
+        for (form, ans) in zip(dasli, form_abilities) {
+            assert_eq!(sorted(form), sorted(ans));
+        }
+    }
+}
+
+/*
 Ultra Kaguya
 Dr. Nova
 Thaumaturge
