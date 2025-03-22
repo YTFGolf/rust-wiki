@@ -133,7 +133,7 @@ pub struct CatCSV2 {
     _uk72: Small,
     _uk73: Small,
     _uk74: Small,
-    immune_warp: bool,
+    immune_warp: Bool,
     _uk76: Small,
     witch_killer_2: Bool,
     // ???
@@ -261,11 +261,14 @@ mod tests {
         let version = TEST_CONFIG.version.current_version();
 
         for file in get_cat_files(version) {
-            // println!("{file}");
+            println!("{file}");
             let forms = read_data_file(&file, version);
 
             #[allow(clippy::used_underscore_binding)]
             for (fixed, var) in forms {
+                if var.mhit_atk2 > 0 || var.mhit_atk3_fswing > 0 {
+                    println!("{}, {var:?}", var.proc_on_hit1 + var.proc_on_hit2 + var.proc_on_hit3);
+                }
                 assert_eq!(fixed._width, 320);
                 assert!(
                     var.rest.is_empty(),
