@@ -1,6 +1,6 @@
 //! Deals with cat/enemy abilities.
 
-#![allow(missing_docs, dead_code, unreachable_code)]
+#![allow(dead_code)]
 
 /// Configuration values/modifiers for abilities.
 struct Config {
@@ -14,63 +14,85 @@ struct Config {
 type Percent = u8;
 
 #[derive(Debug)]
+/// Possible type of wave attack.
 pub enum WaveType {
+    /// Normal wave.
     Wave,
+    /// Mini wave, 2x speed and 20% damage.
     MiniWave,
 }
 
 #[derive(Debug)]
+/// Wave ability.
 pub struct Wave {
-    wtype: WaveType,
-    chance: Percent,
-    level: u8,
+    /// Type of wave.
+    pub wtype: WaveType,
+    /// Chance for wave to proc.
+    pub chance: Percent,
+    /// Level of wave (amount of hits).
+    pub level: u8,
 }
 
 #[derive(Debug)]
+/// Possible type of surge attack.
 pub enum SurgeType {
+    /// Normal surge.
     Surge,
+    /// Mini surge, 20% damage.
     MiniSurge,
 }
 
 #[derive(Debug)]
+/// Surge ability.
 pub struct Surge {
-    stype: SurgeType,
-    surge_chance: Percent,
+    /// Type of surge.
+    pub stype: SurgeType,
+    /// Chance for surge to proc.
+    pub surge_chance: Percent,
     param_0: u16,
     param_1: u16,
-    level: u8,
+    /// Level of surge (20f per level),
+    pub level: u8,
 }
 
 #[derive(Debug)]
 /// Cat or enemy ability.
 pub enum Ability {
+    /// Strong against.
     StrongAgainst,
+    /// Knockback.
     Knockback {
+        /// Knockback chance.
         chance: Percent,
     },
     /// Freeze the enemy.
     Freeze {
-        /// Chance to freeze the enemy.
+        /// Chance to freeze.
         chance: Percent,
-        /// Duration of freeze in frames.
+        /// Duration of freeze (f).
         duration: u16,
     },
     /// Slow the enemy.
     Slow {
-        /// Chance to slow the enemy.
+        /// Chance to slow.
         chance: Percent,
-        /// Duration of slow in frames.
+        /// Duration of slow (f).
         duration: u16,
     },
+    /// Resist.
     Resist,
+    /// Massive damage.
     MassiveDamage,
     Crit {
         chance: Percent,
     },
+    /// Targets only.
     TargetsOnly,
     /// Double money collected when defeating the enemy.
     DoubleBounty,
+    /// Base destroyer.
     BaseDestroyer,
+    /// Wave.
     Wave(Wave),
     Weaken {
         chance: Percent,
@@ -88,20 +110,32 @@ pub enum Ability {
     ImmuneToWave,
     WaveBlocker,
     ImmuneToKB,
+    /// Immune to freeze.
     ImmuneToFreeze,
+    /// Immune to slow.
     ImmuneToSlow,
+    /// Immune to weaken.
     ImmuneToWeaken,
+    /// Zombie killer.
     ZombieKiller,
+    /// Witch killer.
     WitchKiller1,
+    /// Immune to boss shockwave.
     ImmuneToBossShockwave,
+    /// Kamikaze.
     Kamikaze,
     BarrierBreaker {
         chance: Percent,
     },
+    /// Immune to warp.
     ImmuneToWarp,
+    /// Witch killer, but it appears twice for some reason.
     WitchKiller2,
+    /// Immune to curse.
     ImmuneToCurse,
+    /// Insane resist.
     InsaneResist,
+    /// Insane damage.
     InsaneDamage,
     SavageBlow {
         chance: Percent,
@@ -112,8 +146,11 @@ pub enum Ability {
         chance: Percent,
         duration: u16,
     },
+    /// Surge.
     Surge(Surge),
+    /// Immune to toxic.
     ImmuneToToxic,
+    /// Immune to surge.
     ImmuneToSurge,
     Curse {
         chance: Percent,
@@ -122,17 +159,21 @@ pub enum Ability {
     ShieldPierce {
         chance: Percent,
     },
+    /// Colossus slayer.
     ColossusSlayer,
+    /// Soulstrike.
     Soulstrike,
     BehemothSlayer {
         dodge_chance: Percent,
         dodge_duration: u16,
     },
+    /// Counter surge.
     CounterSurge,
     ConjureUnit {
         /// ID of the conjured spirit.
         id: u16,
     },
+    /// Sage slayer.
     SageSlayer,
     MetalKiller {
         damage: Percent,
@@ -141,6 +182,7 @@ pub enum Ability {
         chance: Percent,
         range: u16,
     },
+    /// Immune to explosion.
     ImmuneToExplosion,
 }
 
@@ -356,5 +398,3 @@ impl Ability {
         self.is_cursable()
     }
 }
-
-// Check Donut's `multab`.
