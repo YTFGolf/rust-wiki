@@ -27,7 +27,6 @@ pub enum AttackRangeClassification {
 #[derive(Debug)]
 pub struct AttackRange {
     classification: AttackRangeClassification,
-    standing: u16,
     base: u16,
     distance: i16,
 }
@@ -36,10 +35,8 @@ pub struct AttackRange {
 pub struct AttackHit {
     active_ability: bool,
     damage: u32,
-    tba: u16,
     range: AttackRange,
-    foreswing: u32,
-    backswing: u32,
+    foreswing: u16,
 }
 
 #[derive(Debug)]
@@ -61,6 +58,9 @@ pub struct Attack {
     targets: Rc<[EnemyType]>,
     hits: AttackHits,
     aoe: AreaOfEffect,
+    standing_range: u16,
+    tba: u16,
+    backswing: u32,
 }
 
 #[derive(Debug)]
@@ -93,7 +93,7 @@ mod tests {
         if cond {
             return;
         }
-        let file_name = "unit419.csv";
+        let file_name = "unit544.csv";
         let version = TEST_CONFIG.version.current_version();
         panic!(
             "{:#?}",
