@@ -146,11 +146,11 @@ impl Ability {
     const fn get_config(&self) -> Config {
         match self {
             Self::StrongAgainst => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::Knockback { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: true,
             },
             Self::Freeze { .. } => Config {
@@ -158,11 +158,11 @@ impl Ability {
                 is_cursable: true,
             },
             Self::Slow { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: true,
             },
             Self::Resist => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::MassiveDamage => Config {
@@ -170,7 +170,7 @@ impl Ability {
                 is_cursable: true,
             },
             Self::Crit { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::TargetsOnly => Config {
@@ -186,11 +186,11 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Wave(_) => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::Weaken { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: true,
             },
             Self::Strengthen { .. } => Config {
@@ -198,7 +198,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Survives { .. } => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Metal => Config {
@@ -206,31 +206,31 @@ impl Ability {
                 is_cursable: false,
             },
             Self::ImmuneToWave => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::WaveBlocker => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToKB => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToFreeze => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToSlow => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToWeaken => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ZombieKiller => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::WitchKiller1 => Config {
@@ -238,7 +238,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::ImmuneToBossShockwave => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Kamikaze => Config {
@@ -246,11 +246,11 @@ impl Ability {
                 is_cursable: false,
             },
             Self::BarrierBreaker { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::ImmuneToWarp => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::WitchKiller2 => Config {
@@ -258,11 +258,11 @@ impl Ability {
                 is_cursable: false,
             },
             Self::ImmuneToCurse => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::InsaneResist => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::InsaneDamage => Config {
@@ -274,19 +274,19 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Dodge { .. } => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: true,
             },
             Self::Surge(_) => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::ImmuneToToxic => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::ImmuneToSurge => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Curse { .. } => Config {
@@ -298,7 +298,7 @@ impl Ability {
                 is_cursable: false,
             },
             Self::ColossusSlayer => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
             Self::Soulstrike => Config {
@@ -326,11 +326,11 @@ impl Ability {
                 is_cursable: false,
             },
             Self::Explosion { .. } => Config {
-                is_general: todo!(),
+                is_general: false,
                 is_cursable: false,
             },
             Self::ImmuneToExplosion => Config {
-                is_general: todo!(),
+                is_general: true,
                 is_cursable: false,
             },
         }
