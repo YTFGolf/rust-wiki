@@ -134,7 +134,7 @@ pub enum Ability {
     /// Zombie killer.
     ZombieKiller,
     /// Witch killer.
-    WitchKiller1,
+    WitchKiller,
     /// Immune to boss shockwave.
     ImmuneToBossShockwave,
     /// Kamikaze.
@@ -146,8 +146,8 @@ pub enum Ability {
     },
     /// Immune to warp.
     ImmuneToWarp,
-    /// Witch killer, but it appears twice for some reason.
-    WitchKiller2,
+    /// Eva Angel killer.
+    EvaAngelKiller,
     /// Immune to curse.
     ImmuneToCurse,
     /// Insane resist.
@@ -313,7 +313,7 @@ impl Ability {
                 is_general: true,
                 is_cursable: false,
             },
-            Self::WitchKiller1 => Config {
+            Self::WitchKiller => Config {
                 is_general: true,
                 is_cursable: false,
             },
@@ -333,7 +333,7 @@ impl Ability {
                 is_general: true,
                 is_cursable: false,
             },
-            Self::WitchKiller2 => Config {
+            Self::EvaAngelKiller => Config {
                 is_general: true,
                 is_cursable: false,
             },

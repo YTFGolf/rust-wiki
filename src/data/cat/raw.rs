@@ -81,7 +81,7 @@ pub struct CatCSV {
     weaken_multiplier: Percent,
 
     // 40
-    strengthen_chance: Percent,
+    strengthen_hp: Percent,
     strengthen_multiplier: Big,
     survives_chance: Percent,
     has_metal: Bool,
@@ -135,8 +135,7 @@ pub struct CatCSV2 {
     _uk74: Small,
     immune_warp: Bool,
     _uk76: Small,
-    witch_killer_2: Bool,
-    // ???
+    eva_angel_killer: Bool,
     targ_relic: Bool,
     immune_curse: Bool,
 
@@ -148,10 +147,10 @@ pub struct CatCSV2 {
     dodge_chance: Percent,
     dodge_duration: Big,
     surge_chance: Percent,
-    // like wave is dependent on `is_mini_surge`
-    surge_param_0: Big,
-    surge_param_1: Big,
-    // TODO figure out what these are
+    // like wave, this is dependent on `is_mini_surge`
+    surge_range_start: Big,
+    surge_range_len: Big,
+    // for some reason both are 4 * actual range
     surge_level: Small,
 
     // 90
@@ -185,6 +184,7 @@ pub struct CatCSV2 {
     metal_killer_percent: Percent,
     explosion_chance: Percent,
     explosion_range: Big,
+    // for some reason is 4 * actual range
     _uk115: Small,
     immune_explosion: Bool,
 
