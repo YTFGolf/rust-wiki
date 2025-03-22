@@ -516,8 +516,11 @@ impl Ability {
             });
         }
 
-        if todo!() {
-            abilities.push(Self::Strengthen);
+        if fixed.strengthen_hp > 0 {
+            abilities.push(Self::Strengthen {
+                hp: fixed.strengthen_hp,
+                multiplier: fixed.strengthen_multiplier,
+            });
         }
 
         if chance(fixed.survives_chance) {
@@ -643,24 +646,31 @@ impl Ability {
             abilities.push(Self::Soulstrike);
         }
 
-        if todo!() {
-            abilities.push(Self::BehemothSlayer);
+        if bool(variable.has_behemoth_slayer) {
+            abilities.push(Self::BehemothSlayer {
+                dodge_chance: variable.bslayer_dodge_chance,
+                dodge_duration: variable.bslayer_dodge_duration,
+            });
         }
 
         if bool(variable.counter_surge) {
             abilities.push(Self::CounterSurge);
         }
 
-        if todo!() {
-            abilities.push(Self::ConjureUnit);
+        if variable.conjure_unit > 0 {
+            abilities.push(Self::ConjureUnit {
+                id: variable.conjure_unit as u16,
+            });
         }
 
         if bool(variable.has_sage_slayer) {
             abilities.push(Self::SageSlayer);
         }
 
-        if todo!() {
-            abilities.push(Self::MetalKiller);
+        if variable.metal_killer_percent > 0 {
+            abilities.push(Self::MetalKiller {
+                damage: variable.metal_killer_percent,
+            });
         }
 
         if chance(variable.explosion_chance) {
@@ -677,3 +687,32 @@ impl Ability {
         todo!()
     }
 }
+
+/*
+Cat
+A. Bahamut
+no abilities
+
+Kasli -> level 3 surge
+Ultra Kaguya
+Dr. Nova
+Thaumaturge
+Li'l Valk
+Nobiluga
+GothMit
+Lasvoss
+Doron
+Iz of mourning
+Bombercat all forms
+Courier
+Cosmo ultra
+Matador
+soulstrike
+Colossus
+Jianghsi
+sblow
+Bora all forms
+Something with wave and mini wave
+Thief/cat jobs
+CGtG
+*/
