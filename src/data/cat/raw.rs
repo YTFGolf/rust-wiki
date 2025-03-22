@@ -148,8 +148,8 @@ pub struct CatCSV2 {
     pub dodge_duration: Big,
     pub surge_chance: Percent,
     // like wave, this is dependent on `is_mini_surge`
-    pub surge_range_start: Big,
-    pub surge_range_len: Big,
+    pub surge_spawn_quad: Big,
+    pub surge_range_quad: Big,
     // for some reason both are 4 * actual range
     pub surge_level: Small,
 

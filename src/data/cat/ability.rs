@@ -33,6 +33,22 @@ pub struct Wave {
     pub level: u8,
 }
 
+impl Wave {
+    fn from_combined((fixed, var): &CombinedCatData) -> Self {
+        let wtype = match var.is_mini_wave {
+            0 => WaveType::Wave,
+            1 => WaveType::MiniWave,
+            x => panic!("Mini wave flag should be 0 or 1, got {x}"),
+        };
+
+        Self {
+            wtype,
+            chance: fixed.wave_chance,
+            level: fixed.wave_level,
+        }
+    }
+}
+
 #[derive(Debug)]
 /// Possible type of surge attack.
 pub enum SurgeType {
@@ -48,13 +64,31 @@ pub struct Surge {
     /// Type of surge.
     pub stype: SurgeType,
     /// Chance for surge to proc.
-    pub surge_chance: Percent,
+    pub chance: Percent,
     /// Surge range min bound (* 4 for some reason).
-    pub spawn: u16,
+    pub spawn_quad: u16,
     /// Surge range distance (once again * 4).
-    pub range: u16,
+    pub range_quad: u16,
     /// Level of surge (20f per level),
     pub level: u8,
+}
+
+impl Surge {
+    fn from_combined((_, var): &CombinedCatData) -> Self {
+        let stype = match var.is_mini_surge {
+            0 => SurgeType::Surge,
+            1 => SurgeType::MiniSurge,
+            x => panic!("Mini surge flag should be 0 or 1, got {x}"),
+        };
+
+        Self {
+            stype,
+            chance: var.surge_chance,
+            spawn_quad: var.surge_spawn_quad,
+            range_quad: var.surge_range_quad,
+            level: var.surge_level,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -450,8 +484,9 @@ fn chance(value: Percent) -> bool {
 }
 
 impl Ability {
-    #[allow(unreachable_code)]
-    pub fn get_all_abilities((fixed, variable): &CombinedCatData) -> Vec<Ability> {
+    /// Get the cat form's abilities as a vec.
+    pub fn get_all_abilities(combined: &CombinedCatData) -> Vec<Ability> {
+        let (fixed, variable) = combined;
         let mut abilities = vec![];
 
         if bool(fixed.has_strong) {
@@ -504,8 +539,8 @@ impl Ability {
             abilities.push(Self::BaseDestroyer);
         }
 
-        if chance(todo!()) {
-            abilities.push(Self::Wave(_));
+        if chance(fixed.wave_chance) {
+            abilities.push(Self::Wave(Wave::from_combined(combined)));
         }
 
         if chance(fixed.weaken_chance) {
@@ -614,7 +649,7 @@ impl Ability {
         }
 
         if chance(variable.surge_chance) {
-            abilities.push(Self::Surge(todo!()));
+            abilities.push(Self::Surge(Surge::from_combined(combined)));
         }
 
         if bool(variable.immune_toxic) {
@@ -684,7 +719,7 @@ impl Ability {
             abilities.push(Self::ImmuneToExplosion);
         }
 
-        todo!()
+        abilities
     }
 }
 
