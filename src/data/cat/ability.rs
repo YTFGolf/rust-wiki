@@ -1028,15 +1028,87 @@ mod tests {
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Doron() {
-        let Doron = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_doron() {
+        let doron = get_unit(613);
 
-        for (form, ans) in zip(Doron, form_abilities) {
-            assert_eq!(form, ans);
+        let form_abilities = [
+            vec![
+                A::Kamikaze,
+                A::Freeze {
+                    chance: 100,
+                    duration: 150,
+                },
+                A::Surge(Surge {
+                    stype: SurgeType::Surge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 2400,
+                    level: 1,
+                }),
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToSurge,
+            ],
+            vec![
+                A::Kamikaze,
+                A::Freeze {
+                    chance: 100,
+                    duration: 200,
+                },
+                A::Surge(Surge {
+                    stype: SurgeType::Surge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 2400,
+                    level: 3,
+                }),
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToSurge,
+            ],
+            vec![
+                A::Kamikaze,
+                A::Knockback { chance: 100 },
+                A::Freeze {
+                    chance: 100,
+                    duration: 200,
+                },
+                A::Surge(Surge {
+                    stype: SurgeType::Surge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 2400,
+                    level: 3,
+                }),
+                A::ColossusSlayer,
+                A::BehemothSlayer {
+                    dodge_chance: 5,
+                    dodge_duration: 30,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToSurge,
+            ],
+        ];
+
+        for (form, ans) in zip(doron, form_abilities) {
+            assert_eq!(form, sorted(ans));
         }
-        todo!()
     }
 
     #[test]
