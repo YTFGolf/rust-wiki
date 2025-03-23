@@ -604,7 +604,7 @@ impl Ability {
             abilities.push(Self::ImmuneToBossShockwave);
         }
 
-        if bool(variable.kamikaze).unwrap() {
+        if variable.kamikaze > 0 {
             abilities.push(Self::Kamikaze);
         }
 

@@ -112,7 +112,8 @@ pub struct CatCSV2 {
     // "loop", appears to be something to do with multihit
     pub immune_boss_shockwave: Bool,
     _uk57: i8,
-    pub kamikaze: Bool,
+    pub kamikaze: Small,
+    // TODO figure out this field
     pub mhit_atk2: Big,
 
     // 60
