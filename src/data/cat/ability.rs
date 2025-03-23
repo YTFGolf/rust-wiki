@@ -471,11 +471,11 @@ impl Ability {
     }
 }
 
-fn bool(value: Percent) -> bool {
+fn bool(value: Percent) -> Result<bool, String> {
     match value {
-        0 => false,
-        1 => true,
-        _ => panic!("{value} is not a boolean"),
+        0 => Ok(false),
+        1 => Ok(true),
+        x => Err(format!("{x} is not a valid boolean number!")),
     }
 }
 
@@ -489,7 +489,7 @@ impl Ability {
         let (fixed, variable) = combined;
         let mut abilities = vec![];
 
-        if bool(fixed.has_strong) {
+        if bool(fixed.has_strong).unwrap() {
             abilities.push(Self::StrongAgainst);
         }
 
@@ -513,11 +513,11 @@ impl Ability {
             });
         }
 
-        if bool(fixed.has_resist) {
+        if bool(fixed.has_resist).unwrap() {
             abilities.push(Self::Resist);
         }
 
-        if bool(fixed.has_massive_damage) {
+        if bool(fixed.has_massive_damage).unwrap() {
             abilities.push(Self::MassiveDamage);
         }
 
@@ -527,15 +527,15 @@ impl Ability {
             });
         }
 
-        if bool(fixed.has_targets_only) {
+        if bool(fixed.has_targets_only).unwrap() {
             abilities.push(Self::TargetsOnly);
         }
 
-        if bool(fixed.has_double_bounty) {
+        if bool(fixed.has_double_bounty).unwrap() {
             abilities.push(Self::DoubleBounty);
         }
 
-        if bool(fixed.has_double_bounty) {
+        if bool(fixed.has_double_bounty).unwrap() {
             abilities.push(Self::BaseDestroyer);
         }
 
@@ -564,47 +564,47 @@ impl Ability {
             });
         }
 
-        if bool(fixed.has_metal) {
+        if bool(fixed.has_metal).unwrap() {
             abilities.push(Self::Metal);
         }
 
-        if bool(fixed.immune_wave) {
+        if bool(fixed.immune_wave).unwrap() {
             abilities.push(Self::ImmuneToWave);
         }
 
-        if bool(fixed.has_wave_blocker) {
+        if bool(fixed.has_wave_blocker).unwrap() {
             abilities.push(Self::WaveBlocker);
         }
 
-        if bool(fixed.immune_kb) {
+        if bool(fixed.immune_kb).unwrap() {
             abilities.push(Self::ImmuneToKB);
         }
 
-        if bool(fixed.immune_freeze) {
+        if bool(fixed.immune_freeze).unwrap() {
             abilities.push(Self::ImmuneToFreeze);
         }
 
-        if bool(fixed.immune_slow) {
+        if bool(fixed.immune_slow).unwrap() {
             abilities.push(Self::ImmuneToSlow);
         }
 
-        if bool(fixed.immune_weaken) {
+        if bool(fixed.immune_weaken).unwrap() {
             abilities.push(Self::ImmuneToWeaken);
         }
 
-        if bool(variable.has_zombie_killer.unwrap_or_default()) {
+        if bool(variable.has_zombie_killer.unwrap_or_default()).unwrap() {
             abilities.push(Self::ZombieKiller);
         }
 
-        if bool(variable.has_witch_killer) {
+        if bool(variable.has_witch_killer).unwrap() {
             abilities.push(Self::WitchKiller);
         }
 
-        if bool(variable.immune_boss_shockwave) {
+        if bool(variable.immune_boss_shockwave).unwrap() {
             abilities.push(Self::ImmuneToBossShockwave);
         }
 
-        if bool(variable.kamikaze) {
+        if bool(variable.kamikaze).unwrap() {
             abilities.push(Self::Kamikaze);
         }
 
@@ -614,23 +614,23 @@ impl Ability {
             });
         }
 
-        if bool(variable.immune_warp) {
+        if bool(variable.immune_warp).unwrap() {
             abilities.push(Self::ImmuneToWarp);
         }
 
-        if bool(variable.has_eva_angel_killer) {
+        if bool(variable.has_eva_angel_killer).unwrap() {
             abilities.push(Self::EvaAngelKiller);
         }
 
-        if bool(variable.immune_curse) {
+        if bool(variable.immune_curse).unwrap() {
             abilities.push(Self::ImmuneToCurse);
         }
 
-        if bool(variable.has_insane_resist) {
+        if bool(variable.has_insane_resist).unwrap() {
             abilities.push(Self::InsaneResist);
         }
 
-        if bool(variable.has_insane_damage) {
+        if bool(variable.has_insane_damage).unwrap() {
             abilities.push(Self::InsaneDamage);
         }
 
@@ -652,11 +652,11 @@ impl Ability {
             abilities.push(Self::Surge(Surge::from_combined(combined)));
         }
 
-        if bool(variable.immune_toxic) {
+        if bool(variable.immune_toxic).unwrap() {
             abilities.push(Self::ImmuneToToxic);
         }
 
-        if bool(variable.immune_surge) {
+        if bool(variable.immune_surge).unwrap() {
             abilities.push(Self::ImmuneToSurge);
         }
 
@@ -673,22 +673,22 @@ impl Ability {
             });
         }
 
-        if bool(variable.has_colossus_slayer) {
+        if bool(variable.has_colossus_slayer).unwrap() {
             abilities.push(Self::ColossusSlayer);
         }
 
-        if bool(variable.has_soulstrike) {
+        if bool(variable.has_soulstrike).unwrap() {
             abilities.push(Self::Soulstrike);
         }
 
-        if bool(variable.has_behemoth_slayer) {
+        if bool(variable.has_behemoth_slayer).unwrap() {
             abilities.push(Self::BehemothSlayer {
                 dodge_chance: variable.bslayer_dodge_chance,
                 dodge_duration: variable.bslayer_dodge_duration,
             });
         }
 
-        if bool(variable.has_counter_surge) {
+        if bool(variable.has_counter_surge).unwrap() {
             abilities.push(Self::CounterSurge);
         }
 
@@ -698,7 +698,7 @@ impl Ability {
             });
         }
 
-        if bool(variable.has_sage_slayer) {
+        if bool(variable.has_sage_slayer).unwrap() {
             abilities.push(Self::SageSlayer);
         }
 
@@ -715,7 +715,7 @@ impl Ability {
             });
         }
 
-        if bool(variable.immune_explosion) {
+        if bool(variable.immune_explosion).unwrap() {
             abilities.push(Self::ImmuneToExplosion);
         }
 
