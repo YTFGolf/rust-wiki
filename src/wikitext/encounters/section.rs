@@ -333,7 +333,7 @@ mod tests {
 
     #[test]
     fn single_eoc_format() {
-        let korea = parse_stage_selector("eoc 0").unwrap();
+        let korea = StageID::from_components(T::MainChapters, 0, 0);
         let name = &STAGE_WIKI_DATA.stage(&korea).unwrap().name;
         const MAGS: &str = "";
 
@@ -346,7 +346,7 @@ mod tests {
 
     #[test]
     fn single_eoc_moon() {
-        let moon_ch2 = parse_stage_selector("eoc 49").unwrap();
+        let moon_ch2 = StageID::from_components(T::MainChapters, 0, 49);
         let name = &STAGE_WIKI_DATA.stage(&moon_ch2).unwrap().name;
         const MAGS: &str = "";
 
@@ -359,7 +359,7 @@ mod tests {
 
     #[test]
     fn single_itf_format() {
-        let great_abyss = parse_stage_selector("itf 1 23").unwrap();
+        let great_abyss = StageID::from_components(T::MainChapters, 3, 23);
         let name = &STAGE_WIKI_DATA.stage(&great_abyss).unwrap().name;
         const MAGS: &str = "(150%)";
 
@@ -372,7 +372,7 @@ mod tests {
 
     #[test]
     fn single_cotc_format() {
-        let sighter_star = parse_stage_selector("cotc 2 24").unwrap();
+        let sighter_star = StageID::from_components(T::MainChapters, 7, 24);
         let name = &STAGE_WIKI_DATA.stage(&sighter_star).unwrap().name;
         const MAGS: &str = "(150%)";
 
@@ -385,7 +385,7 @@ mod tests {
 
     #[test]
     fn single_filibuster_format() {
-        let mut filibuster = parse_stage_selector("filibuster").unwrap();
+        let mut filibuster = StageID::from_components(T::Filibuster, 0, 0);
         let name = &STAGE_WIKI_DATA.stage(&filibuster).unwrap().name;
         filibuster.set_map(8);
         filibuster.set_num(999);
@@ -402,7 +402,7 @@ mod tests {
 
     #[test]
     fn single_aku_realms() {
-        let korea = parse_stage_selector("aku 0").unwrap();
+        let korea = StageID::from_components(T::AkuRealms, 0, 0);
         let name = &STAGE_WIKI_DATA.stage(&korea).unwrap().name;
         const MAGS: &str = "(100%)";
 
@@ -415,7 +415,7 @@ mod tests {
 
     #[test]
     fn single_story_format() {
-        let torture_room = parse_stage_selector("sol 21 3").unwrap();
+        let torture_room = StageID::from_components(T::SoL, 21, 3);
         let name = &STAGE_WIKI_DATA.stage(&torture_room).unwrap().name;
         const MAGS: &str = "(400%)";
 
@@ -428,7 +428,7 @@ mod tests {
 
     #[test]
     fn single_normal_format() {
-        let xp_hard = parse_stage_selector("event 28 2").unwrap();
+        let xp_hard = StageID::from_components(T::Event, 28, 2);
         let name = &STAGE_WIKI_DATA.stage(&xp_hard).unwrap().name;
         const MAGS: &str = "(400%)";
 
@@ -441,7 +441,7 @@ mod tests {
 
     #[test]
     fn single_z_outbreak() {
-        let zoutbreak = parse_stage_selector("eocz 2 43").unwrap();
+        let zoutbreak = StageID::from_components(T::EocOutbreak, 2, 43);
         let name = &STAGE_WIKI_DATA.stage(&zoutbreak).unwrap().name;
         const MAGS: &str = "(600%)";
 
@@ -458,7 +458,7 @@ mod tests {
             .stage(&StageID::from_numbers(4, 42, 0))
             .unwrap()
             .name;
-        let mount_aku_repr = parse_stage_selector("aku 999").unwrap();
+        let mount_aku_repr = StageID::from_components(T::AkuRealms, 0, 999);
 
         const MAGS: &str = "(400%)";
 
@@ -475,7 +475,7 @@ mod tests {
             .stage(&StageID::from_numbers(4, 68, 0))
             .unwrap()
             .name;
-        let idi_invasion_repr = parse_stage_selector("sol 35 999").unwrap();
+        let idi_invasion_repr = StageID::from_components(T::SoL, 35, 999);
 
         const MAGS: &str = "(400%)";
 
@@ -488,7 +488,7 @@ mod tests {
 
     #[test]
     fn single_always_appeared_at() {
-        let xp_hard = parse_stage_selector("event 28 2").unwrap();
+        let xp_hard = StageID::from_components(T::Event, 28, 2);
         let name = &STAGE_WIKI_DATA.stage(&xp_hard).unwrap().name;
         const MAGS: &str = "";
 
@@ -511,17 +511,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &parse_stage_selector("event 0 0").unwrap(),
+                        &StageID::from_components(T::Event, 0, 0),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &parse_stage_selector("event 0 1").unwrap(),
+                        &StageID::from_components(T::Event, 0, 1),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &parse_stage_selector("event 0 2").unwrap(),
+                        &StageID::from_components(T::Event, 0, 2),
                     ),
                 ],
             ),
@@ -548,17 +548,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &parse_stage_selector("l 0 0").unwrap(),
+                        &StageID::from_components(T::Labyrinth, 0, 0),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &parse_stage_selector("l 0 1").unwrap(),
+                        &StageID::from_components(T::Labyrinth, 0, 1),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &parse_stage_selector("l 0 2").unwrap(),
+                        &StageID::from_components(T::Labyrinth, 0, 2),
                     ),
                 ],
             ),
@@ -584,17 +584,17 @@ mod tests {
                     Stage::new(
                         "Stage 1",
                         "(100%)".to_string(),
-                        &parse_stage_selector("sol 0 0").unwrap(),
+                        &StageID::from_components(T::SoL, 0, 0),
                     ),
                     Stage::new(
                         "Stage 2",
                         String::new(),
-                        &parse_stage_selector("sol 0 1").unwrap(),
+                        &StageID::from_components(T::SoL, 0, 1),
                     ),
                     Stage::new(
                         "Stage 3",
                         "(1,500% HP/2% AP)".to_string(),
-                        &parse_stage_selector("sol 0 2").unwrap(),
+                        &StageID::from_components(T::SoL, 0, 2),
                     ),
                 ],
             ),
