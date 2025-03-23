@@ -897,51 +897,134 @@ mod tests {
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Li_l_Valk() {
-        let Li_l_Valk = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_lil_valk() {
+        let lil_valk = get_unit(435);
 
-        for (form, ans) in zip(Li_l_Valk, form_abilities) {
+        let ans = vec![
+            A::ZombieKiller,
+            A::BarrierBreaker { chance: 30 },
+            A::ImmuneToWave,
+            A::ImmuneToKB,
+            A::ImmuneToFreeze,
+            A::ImmuneToSlow,
+            A::ImmuneToWeaken,
+            A::ImmuneToWarp,
+            A::ImmuneToCurse,
+        ];
+        let ans = sorted(ans);
+
+        for form in lil_valk {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Nobiluga() {
-        let Nobiluga = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_gothic_mitama() {
+        let goth_mit = get_unit(378);
 
-        for (form, ans) in zip(Nobiluga, form_abilities) {
-            assert_eq!(form, ans);
+        let form_abilities = [
+            vec![
+                A::Slow {
+                    chance: 100,
+                    duration: 100,
+                },
+                A::Resist,
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+            ],
+            vec![
+                A::Slow {
+                    chance: 100,
+                    duration: 100,
+                },
+                A::Resist,
+                A::Weaken {
+                    chance: 100,
+                    duration: 100,
+                    multiplier: 50,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+            ],
+        ];
+
+        for (form, ans) in zip(goth_mit, form_abilities) {
+            assert_eq!(form, sorted(ans));
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_GothMit() {
-        let GothMit = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_lasvoss() {
+        let lasvoss = get_unit(519);
 
-        for (form, ans) in zip(GothMit, form_abilities) {
-            assert_eq!(form, ans);
+        let form_abilities = [
+            vec![
+                A::Strengthen {
+                    hp: 1,
+                    multiplier: 50,
+                },
+                A::Survives { chance: 100 },
+                A::SavageBlow {
+                    chance: 30,
+                    damage: 200,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+            ],
+            vec![
+                A::Strengthen {
+                    hp: 1,
+                    multiplier: 50,
+                },
+                A::Survives { chance: 100 },
+                A::SavageBlow {
+                    chance: 30,
+                    damage: 200,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+            ],
+            vec![
+                A::Strengthen {
+                    hp: 30,
+                    multiplier: 50,
+                },
+                A::Survives { chance: 100 },
+                A::SavageBlow {
+                    chance: 30,
+                    damage: 200,
+                },
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToToxic,
+                A::ImmuneToSurge,
+            ],
+        ];
+
+        for (form, ans) in zip(lasvoss, form_abilities) {
+            assert_eq!(form, sorted(ans));
         }
-        todo!()
-    }
-
-    #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Lasvoss() {
-        let Lasvoss = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
-
-        for (form, ans) in zip(Lasvoss, form_abilities) {
-            assert_eq!(form, ans);
-        }
-        todo!()
     }
 
     #[test]
@@ -957,27 +1040,73 @@ mod tests {
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Iz_of_mourning() {
-        let Iz_of_mourning = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_iz_of_grief() {
+        let iz_of_grief = get_unit(657);
 
-        for (form, ans) in zip(Iz_of_mourning, form_abilities) {
-            assert_eq!(form, ans);
+        let form_abilities = [
+            vec![
+                A::MassiveDamage,
+                A::Strengthen {
+                    hp: 50,
+                    multiplier: 100,
+                },
+                A::ZombieKiller,
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToSurge,
+            ],
+            vec![
+                A::MassiveDamage,
+                A::Strengthen {
+                    hp: 50,
+                    multiplier: 150,
+                },
+                A::ZombieKiller,
+                A::BarrierBreaker { chance: 100 },
+                A::ShieldPierce { chance: 100 },
+                A::ColossusSlayer,
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToCurse,
+                A::ImmuneToToxic,
+                A::ImmuneToSurge,
+            ],
+        ];
+
+        for (form, ans) in zip(iz_of_grief, form_abilities) {
+            assert_eq!(form, sorted(ans));
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Bombercat_all_forms() {
-        let Bombercat_all_forms = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_freeze() {
+        let bombercat = get_unit(127);
 
-        for (form, ans) in zip(Bombercat_all_forms, form_abilities) {
+        let form_abilities = [
+            vec![A::Freeze {
+                chance: 20,
+                duration: 60,
+            }],
+            vec![A::Freeze {
+                chance: 20,
+                duration: 60,
+            }],
+            vec![A::Freeze {
+                chance: 100,
+                duration: 60,
+            }],
+        ];
+
+        for (form, ans) in zip(bombercat, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
