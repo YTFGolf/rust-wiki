@@ -89,7 +89,7 @@ mod tests {
     fn tmp() {
         #[allow(unused_variables)]
         let cond = true;
-        let cond = false;
+        // let cond = false;
         if cond {
             return;
         }
@@ -98,7 +98,7 @@ mod tests {
         panic!(
             "{:#?}",
             read_data_file(file_name, version)
-                // .map(|comb| Cat::from_combined(&comb))
+                .map(|comb| Cat::from_combined(&comb))
                 .collect::<Vec<_>>()
         )
     }

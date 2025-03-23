@@ -127,9 +127,7 @@ pub fn parse_map_ref(reference: &str) -> Result<MapID, StageTypeParseError> {
 /// Parse map selector to [`MapID`].
 pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> {
     let mut iter = selector.split(SELECTOR_SEPARATOR);
-    let compare = iter
-        .next()
-        .expect("Shouldn't panic on first next.");
+    let compare = iter.next().expect("Shouldn't panic on first next.");
 
     let variant = match get_variant_from_code(compare) {
         None => return Err(StageTypeParseError::UnknownMatcher),
