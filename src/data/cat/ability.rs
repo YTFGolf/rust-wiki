@@ -802,7 +802,7 @@ mod tests {
         ];
 
         for (form, ans) in zip(dasli, form_abilities) {
-            assert_eq!(sorted(form), sorted(ans));
+            assert_eq!(form, sorted(ans));
         }
     }
 
@@ -822,32 +822,88 @@ mod tests {
     }
 
     #[test]
-    #[allow(non_snake_case)]
 
-    fn test_aaaaaaaaaaa_Dr__Nova() {
-        let Dr__Nova = get_unit(25);
-        for form in Dr__Nova {
-            assert_eq!(form, vec![]);
+    fn test_explosion() {
+        let dr_nova = get_unit(771);
+
+        let ans = vec![
+            A::Slow {
+                chance: 100,
+                duration: 100,
+            },
+            A::Curse {
+                chance: 30,
+                duration: 120,
+            },
+            A::SageSlayer,
+            A::Explosion {
+                chance: 100,
+                spawn_quad: 1400,
+            },
+            A::ImmuneToCurse,
+        ];
+        let ans = sorted(ans);
+
+        for form in dr_nova {
+            assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Thaumaturge() {
-        let Thaumaturge = get_unit(25);
-        for form in Thaumaturge {
-            assert_eq!(form, vec![]);
+    fn test_basic_weaken() {
+        let thaumaturge = get_unit(198).nth(2).unwrap();
+        assert_eq!(
+            thaumaturge,
+            vec![
+                A::Weaken {
+                    chance: 100,
+                    duration: 200,
+                    multiplier: 50
+                },
+                A::ZombieKiller
+            ]
+        );
+    }
+
+    #[test]
+    fn test_max_weaken() {
+        let cat_jobs = get_unit(237);
+
+        const WEAKEN: Ability = A::Weaken {
+            chance: 100,
+            duration: 150,
+            multiplier: 1,
+        };
+
+        let form_abilities = [
+            vec![WEAKEN],
+            vec![WEAKEN],
+            vec![
+                WEAKEN,
+                A::Survives { chance: 100 },
+                A::Surge(Surge {
+                    stype: SurgeType::Surge,
+                    chance: 100,
+                    spawn_quad: 600,
+                    range_quad: 3600,
+                    level: 1,
+                }),
+            ],
+        ];
+
+        for (form, ans) in zip(cat_jobs, form_abilities) {
+            assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Li_l_Valk() {
         let Li_l_Valk = get_unit(25);
-        for form in Li_l_Valk {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Li_l_Valk, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -856,8 +912,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Nobiluga() {
         let Nobiluga = get_unit(25);
-        for form in Nobiluga {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Nobiluga, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -866,8 +924,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_GothMit() {
         let GothMit = get_unit(25);
-        for form in GothMit {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(GothMit, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -876,8 +936,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Lasvoss() {
         let Lasvoss = get_unit(25);
-        for form in Lasvoss {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Lasvoss, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -886,8 +948,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Doron() {
         let Doron = get_unit(25);
-        for form in Doron {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Doron, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -896,8 +960,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Iz_of_mourning() {
         let Iz_of_mourning = get_unit(25);
-        for form in Iz_of_mourning {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Iz_of_mourning, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -906,8 +972,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Bombercat_all_forms() {
         let Bombercat_all_forms = get_unit(25);
-        for form in Bombercat_all_forms {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Bombercat_all_forms, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -916,8 +984,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Courier() {
         let Courier = get_unit(25);
-        for form in Courier {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Courier, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -926,8 +996,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Cosmo_ultra() {
         let Cosmo_ultra = get_unit(25);
-        for form in Cosmo_ultra {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Cosmo_ultra, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -936,8 +1008,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Matador() {
         let Matador = get_unit(25);
-        for form in Matador {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Matador, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -946,8 +1020,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_soulstrike() {
         let soulstrike = get_unit(25);
-        for form in soulstrike {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(soulstrike, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -956,8 +1032,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Colossus() {
         let Colossus = get_unit(25);
-        for form in Colossus {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Colossus, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -966,8 +1044,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Jianghsi() {
         let Jianghsi = get_unit(25);
-        for form in Jianghsi {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Jianghsi, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -976,8 +1056,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_sblow() {
         let sblow = get_unit(25);
-        for form in sblow {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(sblow, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -986,8 +1068,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Bora_all_forms() {
         let Bora_all_forms = get_unit(25);
-        for form in Bora_all_forms {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Bora_all_forms, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -996,18 +1080,22 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_Something_with_wave_and_mini_wave() {
         let Something_with_wave_and_mini_wave = get_unit(25);
-        for form in Something_with_wave_and_mini_wave {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Something_with_wave_and_mini_wave, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
 
     #[test]
     #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Thief_or_cat_jobs() {
+    fn test_aaaaaaaaaaa_Thief_or_rich_cat() {
         let Thief_or_cat_jobs = get_unit(25);
-        for form in Thief_or_cat_jobs {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(Thief_or_cat_jobs, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
@@ -1016,8 +1104,10 @@ mod tests {
     #[allow(non_snake_case)]
     fn test_aaaaaaaaaaa_CGtG() {
         let CGtG = get_unit(25);
-        for form in CGtG {
-            assert_eq!(form, vec![]);
+        let form_abilities: [Vec<Ability>; 0] = [];
+
+        for (form, ans) in zip(CGtG, form_abilities) {
+            assert_eq!(form, ans);
         }
         todo!()
     }
