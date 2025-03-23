@@ -805,28 +805,193 @@ mod tests {
             assert_eq!(sorted(form), sorted(ans));
         }
     }
-}
 
-/*
-Ultra Kaguya
-Dr. Nova
-Thaumaturge
-Li'l Valk
-Nobiluga
-GothMit
-Lasvoss
-Doron
-Iz of mourning
-Bombercat all forms
-Courier
-Cosmo ultra
-Matador
-soulstrike
-Colossus
-Jianghsi
-sblow
-Bora all forms
-Something with wave and mini wave
-Thief/cat jobs
-CGtG
-*/
+    #[test]
+    fn test_aaaaaaaaaaa_Ultra_Kaguya() {
+        let Ultra_Kaguya = get_unit(25);
+        for form in Ultra_Kaguya {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Dr__Nova() {
+        let Dr__Nova = get_unit(25);
+        for form in Dr__Nova {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Thaumaturge() {
+        let Thaumaturge = get_unit(25);
+        for form in Thaumaturge {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Li_l_Valk() {
+        let Li_l_Valk = get_unit(25);
+        for form in Li_l_Valk {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Nobiluga() {
+        let Nobiluga = get_unit(25);
+        for form in Nobiluga {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_GothMit() {
+        let GothMit = get_unit(25);
+        for form in GothMit {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Lasvoss() {
+        let Lasvoss = get_unit(25);
+        for form in Lasvoss {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Doron() {
+        let Doron = get_unit(25);
+        for form in Doron {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Iz_of_mourning() {
+        let Iz_of_mourning = get_unit(25);
+        for form in Iz_of_mourning {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Bombercat_all_forms() {
+        let Bombercat_all_forms = get_unit(25);
+        for form in Bombercat_all_forms {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Courier() {
+        let Courier = get_unit(25);
+        for form in Courier {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Cosmo_ultra() {
+        let Cosmo_ultra = get_unit(25);
+        for form in Cosmo_ultra {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Matador() {
+        let Matador = get_unit(25);
+        for form in Matador {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_soulstrike() {
+        let soulstrike = get_unit(25);
+        for form in soulstrike {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Colossus() {
+        let Colossus = get_unit(25);
+        for form in Colossus {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Jianghsi() {
+        let Jianghsi = get_unit(25);
+        for form in Jianghsi {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_sblow() {
+        let sblow = get_unit(25);
+        for form in sblow {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Bora_all_forms() {
+        let Bora_all_forms = get_unit(25);
+        for form in Bora_all_forms {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Something_with_wave_and_mini_wave() {
+        let Something_with_wave_and_mini_wave = get_unit(25);
+        for form in Something_with_wave_and_mini_wave {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_Thief_or_cat_jobs() {
+        let Thief_or_cat_jobs = get_unit(25);
+        for form in Thief_or_cat_jobs {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_aaaaaaaaaaa_CGtG() {
+        let CGtG = get_unit(25);
+        for form in CGtG {
+            assert_eq!(form, vec![]);
+        }
+        todo!()
+    }
+}
