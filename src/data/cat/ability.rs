@@ -13,7 +13,7 @@ struct Config {
 
 type Percent = u8;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 /// Possible type of wave attack.
 pub enum WaveType {
     /// Normal wave.
@@ -22,7 +22,7 @@ pub enum WaveType {
     MiniWave,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 /// Wave ability.
 pub struct Wave {
     /// Type of wave.
@@ -49,7 +49,7 @@ impl Wave {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 /// Possible type of surge attack.
 pub enum SurgeType {
     /// Normal surge.
@@ -58,7 +58,7 @@ pub enum SurgeType {
     MiniSurge,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 /// Surge ability.
 pub struct Surge {
     /// Type of surge.
@@ -91,7 +91,7 @@ impl Surge {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 /// Cat or enemy ability.
 pub enum Ability {
     /// Strong against.
