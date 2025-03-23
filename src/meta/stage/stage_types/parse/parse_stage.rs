@@ -128,7 +128,7 @@ static DB_REFERENCE_STAGE: LazyLock<Regex> =
 // could possibly factor out the \d{2}\d{3} to be mapid
 
 /// Parse battle-cats.db reference into [`StageID`].
-pub fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
+fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
     let reference = DB_REFERENCE_FULL.replace(reference, "$1");
 
     match DB_REFERENCE_STAGE.captures(&reference) {
@@ -144,7 +144,7 @@ pub fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> 
 }
 
 /// Parse stage "selector" into [`StageID`].
-pub fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
+fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
     let map = parse_map_selector(selector)?;
 
     if is_single_stage(map.variant()) {

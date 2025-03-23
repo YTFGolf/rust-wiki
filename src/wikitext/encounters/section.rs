@@ -270,29 +270,6 @@ mod tests {
     use std::borrow::Cow;
     use strum::IntoEnumIterator;
 
-    fn parse_stage_selector(selector: &str) -> Option<StageID> {
-        use crate::meta::stage::stage_types::parse::parse_stage::parse_stage_selector;
-        let old = format!("parse_stage_selector({selector:?}).unwrap()");
-
-        let new = {
-            let parsed = parse_stage_selector(selector).unwrap();
-
-            let stage = format!(
-                "StageID::from_components(T::{:?}, {}, {})",
-                parsed.variant(),
-                parsed.map().num(),
-                parsed.num()
-            );
-
-            stage
-        };
-
-        // let repl = format!("'s/{old}/{new}/g'");
-        let repl = format!("'{old}' = {new:?}");
-
-        panic!("XXX_NEW_CURRENT_XXX: {repl}")
-    }
-
     #[test]
     fn assert_section_ref() {
         for sref in SectionRef::iter() {
