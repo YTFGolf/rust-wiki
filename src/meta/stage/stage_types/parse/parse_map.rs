@@ -129,7 +129,7 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
     let mut iter = selector.split(SELECTOR_SEPARATOR);
     let compare = iter
         .next()
-        .expect("I literally have no clue how this would fail.");
+        .expect("Shouldn't panic on first next.");
 
     let variant = match get_variant_from_code(compare) {
         None => return Err(StageTypeParseError::UnknownMatcher),

@@ -33,7 +33,8 @@ pub fn parse_info_format(format: &str) -> Vec<ParseNode> {
         }
         let n = n;
 
-        let end = format.find('}').expect("Invalid page info format!");
+        let end = format.find('}').expect("Error: invalid page info format.");
+        // TODO needs a trace with the actual format being printed
         let var_name = &format[n + 2..end];
         parsed.push(ParseNode {
             content: var_name,

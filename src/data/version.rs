@@ -132,7 +132,7 @@ impl Version {
             return file_data
                 .1
                 .downcast_ref::<T>()
-                .expect("Something went horribly wrong.");
+                .expect("Error when casting in `Version::get_cached_file`.");
         }
 
         let new_value: VersionDataContents = Box::pin(T::init_data(&self.location));
@@ -144,7 +144,7 @@ impl Version {
             return file_data
                 .1
                 .downcast_ref::<T>()
-                .expect("Something went horribly wrong.");
+                .expect("Error when casting in `Version::get_cached_file`.");
         }
 
         /*

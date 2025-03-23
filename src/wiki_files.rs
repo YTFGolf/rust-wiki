@@ -80,7 +80,7 @@ pub fn update_wiki_files(config: &Config) {
         let response = ureq::get(&uri)
             .header(USER_AGENT, &user_agent)
             .call()
-            .expect("Couldn't get the data from the wiki.");
+            .expect("Error: couldn't get the data from the wiki.");
         let mut res_str = response.into_body().read_to_string().unwrap();
         res_str.push('\n');
         let content = strip_pre(&res_str);

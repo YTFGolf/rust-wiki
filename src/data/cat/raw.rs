@@ -198,6 +198,7 @@ fn read_form_line(line: &str) -> CombinedCatData {
         .collect::<ByteRecord>()
         .deserialize(None)
         .expect("Error when converting to fixed cat data");
+    // TODO evaluate if this needs to have a trace
     // println!("{len} {cat:?}", len = record.len());
 
     // println!("{:?}", record.iter().skip(52).collect::<Vec<_>>());
