@@ -146,7 +146,7 @@ impl EncountersSection {
                 if chapter.stages.len() == 1 {
                     write!(buf, "*{chap}: ", chap = chapter.chapter_name).unwrap();
                     let stage = &chapter.stages[0];
-                    self.fmt_encounter(buf, stage.id, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, stage.id(), stage.stage_name, &stage.mags);
 
                     return;
                 }
@@ -154,7 +154,7 @@ impl EncountersSection {
                 write!(buf, "*{chap}:", chap = chapter.chapter_name).unwrap();
                 for stage in chapter.stages {
                     *buf += "\n**";
-                    self.fmt_encounter(buf, stage.id, stage.stage_name, &stage.mags);
+                    self.fmt_encounter(buf, stage.id(), stage.stage_name, &stage.mags);
                 }
             }
             D::Story | D::Flat | D::Custom => {
@@ -163,15 +163,18 @@ impl EncountersSection {
                 for stage in chapter.stages {
                     *buf += "*";
 
-                    let stage_id = match stage.id.variant() {
+                    let stage_id = match stage.id().variant() {
                         T::Extra => &{
-                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.id.map().num()) {
+                            if let Some(ids) = STAGE_WIKI_DATA.continue_id(stage.id().map().num()) {
                                 StageID::from_numbers(ids.0, ids.1, 999)
                             } else {
-                                panic!("Extra stage not listed in continue stages: {:?}", stage.id);
+                                panic!(
+                                    "Extra stage not listed in continue stages: {:?}",
+                                    stage.id()
+                                );
                             }
                         },
-                        _ => stage.id,
+                        _ => stage.id(),
                     };
                     // Get correct numbers for continue stages.
 

@@ -12,7 +12,7 @@ pub struct Stage<'a> {
     /// Enemy magnifications in stage.
     pub mags: String,
     /// Stage ID.
-    pub id: &'a StageID,
+    id: &'a StageID,
 }
 impl<'a> Stage<'a> {
     /// Create new Stage.
@@ -22,6 +22,12 @@ impl<'a> Stage<'a> {
             mags,
             id,
         }
+    }
+}
+impl Stage<'_> {
+    /// Get stage's ID.
+    pub fn id(&self) -> &StageID {
+        &self.id
     }
 }
 
