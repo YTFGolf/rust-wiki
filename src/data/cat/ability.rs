@@ -1182,75 +1182,129 @@ mod tests {
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Courier() {
-        let Courier = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_courier() {
+        let courier = get_unit(658);
 
-        for (form, ans) in zip(Courier, form_abilities) {
+        let form_abilities = [
+            vec![],
+            vec![A::MassiveDamage],
+            vec![
+                A::MassiveDamage,
+                A::BehemothSlayer {
+                    dodge_chance: 5,
+                    dodge_duration: 30,
+                },
+            ],
+        ];
+
+        for (form, ans) in zip(courier, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Cosmo_ultra() {
-        let Cosmo_ultra = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_cosmo() {
+        let cosmo = get_unit(135);
 
-        for (form, ans) in zip(Cosmo_ultra, form_abilities) {
+        let form_abilities = [
+            vec![A::Knockback { chance: 20 }],
+            vec![A::Knockback { chance: 100 }],
+            vec![
+                A::Knockback { chance: 100 },
+                A::Freeze {
+                    chance: 100,
+                    duration: 150,
+                },
+            ],
+            vec![
+                A::Knockback { chance: 100 },
+                A::Freeze {
+                    chance: 100,
+                    duration: 150,
+                },
+                A::Wave(Wave {
+                    wtype: WaveType::Wave,
+                    chance: 100,
+                    level: 10,
+                }),
+                A::SageSlayer,
+            ],
+        ];
+
+        for (form, ans) in zip(cosmo, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Matador() {
-        let Matador = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_dodge() {
+        let matador = get_unit(495);
 
-        for (form, ans) in zip(Matador, form_abilities) {
+        let ans = vec![A::Dodge {
+            chance: 30,
+            duration: 60,
+        }];
+
+        for form in matador {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_soulstrike() {
-        let soulstrike = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_soulstrike() {
+        let mighty_sphinx = get_unit(715);
 
-        for (form, ans) in zip(soulstrike, form_abilities) {
+        let ans = vec![
+            A::Resist,
+            A::Weaken {
+                chance: 50,
+                duration: 120,
+                multiplier: 50,
+            },
+            A::ZombieKiller,
+            A::Soulstrike,
+        ];
+
+        for form in mighty_sphinx {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Colossus() {
-        let Colossus = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_colossus_slayer() {
+        let sirius = get_unit(686);
 
-        for (form, ans) in zip(Colossus, form_abilities) {
+        let ans = vec![
+            A::StrongAgainst,
+            A::ColossusSlayer,
+            A::ImmuneToKB,
+            A::ImmuneToFreeze,
+            A::ImmuneToSlow,
+            A::ImmuneToWeaken,
+            A::ImmuneToWarp,
+            A::ImmuneToCurse,
+            A::ImmuneToToxic,
+        ];
+        let ans = sorted(ans);
+
+        for form in sirius {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Jianghsi() {
-        let Jianghsi = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_survivor() {
+        let jianghsi = get_unit(37);
 
-        for (form, ans) in zip(Jianghsi, form_abilities) {
+        let form_abilities = [
+            vec![A::Survives { chance: 50 }],
+            vec![A::Survives { chance: 50 }],
+            vec![A::Survives { chance: 100 }],
+        ];
+
+        for (form, ans) in zip(jianghsi, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
@@ -1312,4 +1366,6 @@ mod tests {
         }
         todo!()
     }
+
+    // dark phono
 }
