@@ -88,11 +88,12 @@ pub enum RuleType {
     RestrictPriceOrCd2(Rarity),
     /// Param is max units that can be spawned in battle.
     DeployLimit(Single),
-    /// Speculative.
+    /// Spawn extra cats automatically.
     ///
-    /// Only used in the context of `[16, 1, 60]`. Based on what is known this
-    /// is probably `[bitmask, extra_spawned, delayf]`.
+    /// Params are `[rarity_bitmask, extra_cats_spawned, spawn_delay_f]`.
     AwesomeCatSpawn(AwesomeCatSpawn),
+    /// Increase Cat Cannon damage. Param is a percentage value.
+    AwesomeCatCannon(Single),
 }
 /// Item in [RawRuleData::rule_type].
 type RawRuleItem = (RuleKeySize, RawRuleType);
@@ -109,6 +110,7 @@ impl From<RawRuleItem> for RuleType {
             6 => Self::RestrictPriceOrCd2(Self::to_arr(params)),
             7 => Self::DeployLimit(Self::to_arr(params)),
             8 => Self::AwesomeCatSpawn(Self::to_arr(params)),
+            9 => Self::AwesomeCatCannon(Self::to_arr(params)),
             id => panic!("Unknown SpecialRule id: {id}"),
         }
         // unfortunately using a match is probably the only way to do this since

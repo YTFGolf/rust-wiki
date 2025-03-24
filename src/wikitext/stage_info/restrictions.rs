@@ -303,6 +303,7 @@ pub fn rules(stage: &Stage) -> String {
             "SpecialRuleName005" => "Deploy Limit",
             "SpecialRuleName006" => "Special Clearance",
             "SpecialRuleName007" => "Plus One: Uber",
+            "SpecialRuleName008" => "にゃんこ砲超強化",
             _ => panic!("Error: unknown label {name:?}"),
         };
         // TODO file
