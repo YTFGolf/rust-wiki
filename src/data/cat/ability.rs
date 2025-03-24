@@ -1308,64 +1308,139 @@ mod tests {
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_sblow() {
-        let sblow = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_bora() {
+        let bora = get_unit(359);
 
-        for (form, ans) in zip(sblow, form_abilities) {
+        let form_abilities = [
+            vec![A::MassiveDamage, A::ImmuneToWarp],
+            vec![
+                A::Resist,
+                A::MassiveDamage,
+                A::BarrierBreaker { chance: 100 },
+                A::ImmuneToWarp,
+            ],
+            vec![
+                A::Resist,
+                A::MassiveDamage,
+                A::BarrierBreaker { chance: 100 },
+                A::ImmuneToWarp,
+            ],
+            vec![
+                A::Resist,
+                A::MassiveDamage,
+                A::Weaken {
+                    chance: 100,
+                    duration: 120,
+                    multiplier: 50,
+                },
+                A::BarrierBreaker { chance: 100 },
+                A::ImmuneToWarp,
+            ],
+        ];
+
+        for (form, ans) in zip(bora, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Bora_all_forms() {
-        let Bora_all_forms = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_mini_wave() {
+        let moneko = get_unit(16);
 
-        for (form, ans) in zip(Bora_all_forms, form_abilities) {
+        let form_abilities = [
+            vec![A::Crit { chance: 15 }],
+            vec![A::Crit { chance: 15 }],
+            vec![
+                A::Crit { chance: 20 },
+                A::Wave(Wave {
+                    wtype: WaveType::MiniWave,
+                    chance: 100,
+                    level: 3,
+                }),
+            ],
+        ];
+
+        for (form, ans) in zip(moneko, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Something_with_wave_and_mini_wave() {
-        let Something_with_wave_and_mini_wave = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_different_hits() {
+        let god = get_unit(437);
 
-        for (form, ans) in zip(Something_with_wave_and_mini_wave, form_abilities) {
+        let form_abilities = [
+            vec![A::Knockback { chance: 100 }],
+            vec![A::Knockback { chance: 100 }],
+            vec![A::Knockback { chance: 100 }, A::DoubleBounty],
+        ];
+
+        for (form, ans) in zip(god, form_abilities) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_Thief_or_rich_cat() {
-        let Thief_or_cat_jobs = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_mini_surge() {
+        let dphono = get_unit(705);
 
-        for (form, ans) in zip(Thief_or_cat_jobs, form_abilities) {
-            assert_eq!(form, ans);
+        let form_abilities = [
+            vec![
+                A::Slow {
+                    chance: 100,
+                    duration: 60,
+                },
+                A::Surge(Surge {
+                    stype: SurgeType::MiniSurge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 2800,
+                    level: 1,
+                }),
+                A::ImmuneToWave,
+                A::ImmuneToSurge,
+            ],
+            vec![
+                A::Slow {
+                    chance: 100,
+                    duration: 60,
+                },
+                A::Surge(Surge {
+                    stype: SurgeType::MiniSurge,
+                    chance: 100,
+                    spawn_quad: 1600,
+                    range_quad: 2800,
+                    level: 1,
+                }),
+                A::ImmuneToWave,
+                A::ImmuneToCurse,
+                A::ImmuneToSurge,
+            ],
+        ];
+
+        for (form, ans) in zip(dphono, form_abilities) {
+            assert_eq!(form, sorted(ans));
         }
-        todo!()
     }
 
     #[test]
-    #[allow(non_snake_case)]
-    fn test_aaaaaaaaaaa_CGtG() {
-        let CGtG = get_unit(25);
-        let form_abilities: [Vec<Ability>; 0] = [];
+    fn test_base_destroyer() {
+        let warlock_pierre = get_unit(226);
 
-        for (form, ans) in zip(CGtG, form_abilities) {
-            assert_eq!(form, ans);
+        let form_abilities = [
+            vec![A::TargetsOnly, A::BaseDestroyer],
+            vec![A::TargetsOnly, A::DoubleBounty],
+            vec![
+                A::TargetsOnly,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+            ],
+        ];
+
+        for (form, ans) in zip(warlock_pierre, form_abilities) {
+            assert_eq!(form, sorted(ans));
         }
-        todo!()
     }
-
-    // dark phono
 }
