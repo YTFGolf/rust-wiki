@@ -3,7 +3,7 @@
 use crate::data::version::Version;
 use home::home_dir;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::{fmt::Display, path::PathBuf};
 
 /// Default language.
 #[allow(missing_docs)]
@@ -13,6 +13,18 @@ pub enum Lang {
     EN,
     #[default]
     JP,
+}
+
+impl Display for Lang {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let lang = match self {
+            Self::EN => "en",
+            Self::JP => "ja",
+        };
+        f.write_str(lang)?;
+
+        Ok(())
+    }
 }
 
 const TOTAL_VERSIONS: usize = 2;
@@ -87,6 +99,11 @@ impl VersionConfig {
     pub fn current_version(&self) -> &Version {
         self.try_current_version()
             .expect("Error: config has not been properly initialised.")
+    }
+
+    /// Get configured language.
+    pub fn lang(&self) -> &Lang {
+        &self.lang
     }
 }
 

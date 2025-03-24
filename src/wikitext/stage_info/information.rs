@@ -1,6 +1,7 @@
 //! Deals with basic stage information in the infobox.
 
 use crate::{
+    config::version_config::Lang,
     data::stage::parsed::stage::Stage,
     meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},
     wikitext::{
@@ -13,7 +14,7 @@ use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
 /// Get the `|stage name` parameter.
-pub fn stage_name(stage: &Stage) -> TemplateParameter {
+pub fn stage_name(stage: &Stage, lang: &Lang) -> TemplateParameter {
     let mut buf = String::new();
 
     match stage.anim_base_id {
@@ -33,7 +34,7 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
 
     write!(
         buf,
-        "\n[[File:Mapsn{map_num:03} {stage_num:02} {type_code} en.png]]",
+        "\n[[File:Mapsn{map_num:03} {stage_num:02} {type_code} {lang}.png]]",
         map_num = stage.id.map().num(),
         stage_num = stage.id.num(),
         type_code = map_img_code(stage.id.map()),
@@ -45,9 +46,9 @@ pub fn stage_name(stage: &Stage) -> TemplateParameter {
 }
 
 /// Get the `|stage location` parameter.
-pub fn stage_location(stage: &Stage) -> TemplateParameter {
+pub fn stage_location(stage: &Stage, lang: &Lang) -> TemplateParameter {
     let buf = format!(
-        "[[File:Mapname{map_num:03} {type_code} en.png]]",
+        "[[File:Mapname{map_num:03} {type_code} {lang}.png]]",
         map_num = stage.id.map().num(),
         type_code = map_img_code(stage.id.map())
     );
@@ -204,10 +205,10 @@ mod tests {
         let great_escaper =
             Stage::from_id_current(StageID::from_components(T::SoL, 17, 5)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&great_escaper).to_string())
+        buf.write_str(&stage_name(&great_escaper, &Lang::EN).to_string())
             .unwrap();
         buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&great_escaper).to_string())
+        buf.write_str(&stage_location(&great_escaper, &Lang::EN).to_string())
             .unwrap();
         assert_eq!(
             buf,
@@ -221,9 +222,10 @@ mod tests {
         let red_summit =
             Stage::from_id_current(StageID::from_components(T::Enigma, 10, 0)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&red_summit).to_string()).unwrap();
+        buf.write_str(&stage_name(&red_summit, &Lang::EN).to_string())
+            .unwrap();
         buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&red_summit).to_string())
+        buf.write_str(&stage_location(&red_summit, &Lang::EN).to_string())
             .unwrap();
         assert_eq!(
             buf,
@@ -236,9 +238,11 @@ mod tests {
 
         let finale = Stage::from_id_current(StageID::from_components(T::Collab, 209, 0)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&finale).to_string()).unwrap();
+        buf.write_str(&stage_name(&finale, &Lang::EN).to_string())
+            .unwrap();
         buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&finale).to_string()).unwrap();
+        buf.write_str(&stage_location(&finale, &Lang::EN).to_string())
+            .unwrap();
         assert_eq!(
             buf,
             "\
@@ -251,7 +255,7 @@ mod tests {
         let relay_1600m =
             Stage::from_id_current(StageID::from_components(T::Extra, 61, 2)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&relay_1600m).to_string())
+        buf.write_str(&stage_name(&relay_1600m, &Lang::EN).to_string())
             .unwrap();
         assert_eq!(
             buf,

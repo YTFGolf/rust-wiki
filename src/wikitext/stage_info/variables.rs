@@ -63,8 +63,8 @@ pub fn get_stage_variable(
     match variable_name {
         "enemies_appearing" => enemies_appearing(stage),
         "intro" => intro(stage, stage_wiki_data),
-        "stage_name" => stage_name(stage).to_string(),
-        "stage_location" => stage_location(stage).to_string(),
+        "stage_name" => stage_name(stage, config.version.lang()).to_string(),
+        "stage_location" => stage_location(stage, config.version.lang()).to_string(),
         "energy" => energy(stage)
             .map(|param| param.to_string())
             .unwrap_or_default(),
