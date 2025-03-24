@@ -71,6 +71,10 @@ impl GameMapData {
             .expect("Shouldn't panic on first next.")
             .trim_matches(|c: char| c.is_whitespace() || c == ',');
 
+        if split_line.is_empty() {
+            return None;
+        }
+
         let stage_line = split_line.split(',').collect::<ByteRecord>();
         // assuming that there is no quoting
 
@@ -80,7 +84,9 @@ impl GameMapData {
     fn parse_stage_line(record: &ByteRecord) -> StageDataCSV {
         // https://github.com/battlecatsultimate/BCU_java_util_common/blob/slow_kotlin/util/stage/info/DefStageInfo.java#L36
 
-        let fixed_data: StageInfoCSVFixed = record.deserialize(None).unwrap();
+        let fixed_data: StageInfoCSVFixed = record
+            .deserialize(None)
+            .expect("Couldn't deserialise stage line.");
 
         let _once = &record[record.len() - 1];
         // what does this actually do
