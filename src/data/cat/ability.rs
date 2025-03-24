@@ -535,7 +535,7 @@ impl Ability {
             abilities.push(Self::DoubleBounty);
         }
 
-        if bool(fixed.has_double_bounty).unwrap() {
+        if bool(fixed.has_base_destroyer).unwrap() {
             abilities.push(Self::BaseDestroyer);
         }
 
