@@ -102,6 +102,21 @@ pub enum AttackHits {
     Triple([AttackHit; 3]),
 }
 impl AttackHits {
+    fn from_combined(combined: &CombinedCatData) -> AttackHits {
+        let (_, var) = combined;
+        if var.mhit_atk2 == 0 {
+            Self::Single(Self::single(combined))
+        } else if var.mhit_atk3 == 0 {
+            Self::Double([Self::get_hit1(combined), Self::get_hit2(combined)])
+        } else {
+            Self::Triple([
+                Self::get_hit1(combined),
+                Self::get_hit2(combined),
+                Self::get_hit3(combined),
+            ])
+        }
+    }
+
     /// Only one attack hit.
     fn single(combined: &CombinedCatData) -> AttackHit {
         let (fixed, _) = combined;
@@ -110,7 +125,6 @@ impl AttackHits {
         let damage = fixed.atk;
         let range = AttackRange::new(fixed.ld_base, fixed.ld_range);
         let foreswing = fixed.foreswing;
-
         AttackHit {
             active_ability,
             damage,
@@ -149,6 +163,20 @@ impl AttackHits {
             foreswing,
         }
     }
+
+    fn get_hit3(combined: &CombinedCatData) -> AttackHit {
+        let (_, variable) = combined;
+        let active_ability = bool(variable.proc_on_hit3).unwrap();
+        let damage = variable.mhit_atk3;
+        let range = AttackRange::new(variable.third_ld_base, variable.third_ld_range);
+        let foreswing = variable.mhit_atk3_fswing;
+        AttackHit {
+            active_ability,
+            damage,
+            range,
+            foreswing,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -168,6 +196,24 @@ pub struct Attack {
     // this is an interval, so cycle is foreswing + max(backswing, 2 * tba - 1)
     // backswing is not a stat, it is the length of the unit's animation
 }
+impl Attack {
+    fn from_combined(combined: &CombinedCatData) -> Self {
+        let (fixed, _) = combined;
+        let aoe = match fixed.is_area {
+            0 => AreaOfEffect::SingleAttack,
+            1 => AreaOfEffect::AreaAttack,
+            _ => unreachable!(),
+        };
+        Self {
+            abilities: Ability::get_all_abilities(combined).into(),
+            targets: EnemyType::get_all_targets(combined).into(),
+            hits: AttackHits::from_combined(combined),
+            aoe,
+            standing_range: fixed.range,
+            tba: fixed.tba,
+        }
+    }
+}
 
 #[derive(Debug)]
 struct CatStats {
@@ -181,8 +227,17 @@ struct CatStats {
 }
 
 impl CatStats {
-    fn from_combined(_data: &CombinedCatData) -> Self {
-        todo!()
+    fn from_combined(combined: &CombinedCatData) -> Self {
+        let (fixed, var) = combined;
+        Self {
+            base_hp: fixed.hp,
+            kb: fixed.kb,
+            death_anim: var.death,
+            speed: fixed.speed,
+            price: fixed.price,
+            respawn: fixed.respawn,
+            attack: Attack::from_combined(combined),
+        }
     }
 }
 
@@ -204,7 +259,7 @@ mod tests {
         panic!(
             "{:#?}",
             read_data_file(file_name, version)
-                // .map(|comb| Cat::from_combined(&comb))
+                .map(|comb| CatStats::from_combined(&comb))
                 .collect::<Vec<_>>()
         )
     }
