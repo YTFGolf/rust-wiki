@@ -85,8 +85,8 @@ pub struct CatCSV {
     pub strengthen_multiplier: Big,
     pub survives_chance: Percent,
     pub has_metal: Bool,
-    pub ld_base: Big,
-    pub ld_range: i32,
+    pub ld_base: i16,
+    pub ld_range: i16,
     // if ld_range is neg then is omnistrike, need to consult the hitbox page
     pub immune_wave: Bool,
     pub has_wave_blocker: Bool,
@@ -109,7 +109,7 @@ pub struct CatCSV2 {
     pub has_witch_killer: Bool,
     _uk54: Small,
     _uk55: i8,
-    // "loop", appears to be something to do with multihit
+    // "loop" according to BCU, what that means is unclear
     pub immune_boss_shockwave: Bool,
     _uk57: i8,
     pub kamikaze: Small,
