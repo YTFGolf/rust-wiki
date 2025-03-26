@@ -114,10 +114,10 @@ pub struct CatCSV2 {
     _uk57: i8,
     pub kamikaze: Small,
     // TODO figure out this field
-    pub mhit_atk2: Big,
+    pub mhit_atk2: Massive,
 
     // 60
-    pub mhit_atk3: Big,
+    pub mhit_atk3: Massive,
     pub mhit_atk2_fswing: Big,
     pub mhit_atk3_fswing: Big,
     pub proc_on_hit1: Bool,
@@ -167,11 +167,11 @@ pub struct CatCSV2 {
     pub second_ld_is_different: Bool,
 
     // 100
-    pub second_ld_base: i32,
-    pub second_ld_range: i32,
+    pub second_ld_base: i16,
+    pub second_ld_range: i16,
     pub third_ld_is_different: Bool,
-    pub third_ld_base: Big,
-    pub third_ld_range: i32,
+    pub third_ld_base: i16,
+    pub third_ld_range: i16,
     pub has_behemoth_slayer: Bool,
     pub bslayer_dodge_chance: Percent,
     pub bslayer_dodge_duration: Big,

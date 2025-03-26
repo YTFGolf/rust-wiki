@@ -69,6 +69,23 @@ pub enum AttackRange {
     LD { base: i16, distance: i16 },
     Omni { base: i16, distance: i16 },
 }
+impl AttackRange {
+    fn new(base: i16, distance: i16) -> Self {
+        if base == 0 {
+            AttackRange::Normal
+        } else if distance > 0 {
+            AttackRange::LD {
+                base,
+                distance: base + distance,
+            }
+        } else {
+            AttackRange::Omni {
+                base,
+                distance: base + distance,
+            }
+        }
+    }
+}
 
 #[derive(Debug)]
 pub struct AttackHit {
@@ -91,28 +108,45 @@ impl AttackHits {
         let active_ability = true;
         // assumption that it doesn't really matter here, might do some logging
         let damage = fixed.atk;
-
-        let range = if fixed.ld_base == 0 {
-            AttackRange::Normal
-        } else if fixed.ld_range > 0 {
-            AttackRange::LD {
-                base: fixed.ld_base,
-                distance: fixed.ld_base + fixed.ld_range,
-            }
-        } else {
-            AttackRange::Omni {
-                base: fixed.ld_base,
-                distance: fixed.ld_base + fixed.ld_range,
-            }
-        };
-
+        let range = AttackRange::new(fixed.ld_base, fixed.ld_range);
         let foreswing = fixed.foreswing;
 
         AttackHit {
             active_ability,
             damage,
-            foreswing,
             range,
+            foreswing,
+        }
+    }
+
+    /// Get the first attack hit. This is almost exactly the same as
+    /// [`Self::single`], but it also takes into account the `proc_on_hit1`
+    /// flag.
+    fn get_hit1(combined: &CombinedCatData) -> AttackHit {
+        let (fixed, variable) = combined;
+        let active_ability = bool(variable.proc_on_hit1).unwrap();
+        let damage = fixed.atk;
+        let range = AttackRange::new(fixed.ld_base, fixed.ld_range);
+        let foreswing = fixed.foreswing;
+        AttackHit {
+            active_ability,
+            damage,
+            range,
+            foreswing,
+        }
+    }
+
+    fn get_hit2(combined: &CombinedCatData) -> AttackHit {
+        let (_, variable) = combined;
+        let active_ability = bool(variable.proc_on_hit2).unwrap();
+        let damage = variable.mhit_atk2;
+        let range = AttackRange::new(variable.second_ld_base, variable.second_ld_range);
+        let foreswing = variable.mhit_atk2_fswing;
+        AttackHit {
+            active_ability,
+            damage,
+            range,
+            foreswing,
         }
     }
 }
