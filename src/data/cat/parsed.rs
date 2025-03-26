@@ -63,12 +63,21 @@ fn bool(value: u8) -> Result<bool, String> {
 
 #[derive(Debug)]
 pub enum AttackRange {
+    /// Range is standing range.
     Normal,
-    LD { base: i16, distance: i16 },
-    Omni { base: i16, distance: i16 },
+    LD {
+        base: i16,
+        distance: i16,
+    },
+    Omni {
+        base: i16,
+        distance: i16,
+    },
+    /// Same as hit 1.
+    Unchanged,
 }
 impl AttackRange {
-    fn new(base: i16, distance: i16) -> Self {
+    const fn new(base: i16, distance: i16) -> Self {
         if base == 0 {
             AttackRange::Normal
         } else if distance > 0 {
@@ -117,18 +126,10 @@ impl AttackHits {
 
     /// Only one attack hit.
     fn single(combined: &CombinedCatData) -> AttackHit {
-        let (fixed, _) = combined;
-        let active_ability = true;
+        let mut hit = Self::get_hit1(combined);
+        hit.active_ability = true;
         // assumption that it doesn't really matter here, might do some logging
-        let damage = fixed.atk;
-        let range = AttackRange::new(fixed.ld_base, fixed.ld_range);
-        let foreswing = fixed.foreswing;
-        AttackHit {
-            active_ability,
-            damage,
-            range,
-            foreswing,
-        }
+        hit
     }
 
     /// Get the first attack hit. This is almost exactly the same as
@@ -152,7 +153,11 @@ impl AttackHits {
         let (_, variable) = combined;
         let active_ability = bool(variable.proc_on_hit2).unwrap();
         let damage = variable.mhit_atk2;
-        let range = AttackRange::new(variable.second_ld_base, variable.second_ld_range);
+
+        let range = match bool(variable.second_ld_is_different).unwrap() {
+            true => AttackRange::new(variable.second_ld_base, variable.second_ld_range),
+            false => AttackRange::Unchanged,
+        };
         let foreswing = variable.mhit_atk2_fswing;
         AttackHit {
             active_ability,
@@ -166,7 +171,11 @@ impl AttackHits {
         let (_, variable) = combined;
         let active_ability = bool(variable.proc_on_hit3).unwrap();
         let damage = variable.mhit_atk3;
-        let range = AttackRange::new(variable.third_ld_base, variable.third_ld_range);
+
+        let range = match bool(variable.third_ld_is_different).unwrap() {
+            true => AttackRange::new(variable.third_ld_base, variable.third_ld_range),
+            false => AttackRange::Unchanged,
+        };
         let foreswing = variable.mhit_atk3_fswing;
         AttackHit {
             active_ability,
