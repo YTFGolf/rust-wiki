@@ -1,5 +1,3 @@
-#![allow(missing_docs, unused_imports, dead_code, unreachable_code)]
-
 use super::{ability::Ability, raw::CombinedCatData};
 use std::rc::Rc;
 
@@ -187,8 +185,6 @@ pub enum AreaOfEffect {
 
 #[derive(Debug)]
 pub struct Attack {
-    abilities: Rc<[Ability]>,
-    targets: Rc<[EnemyType]>,
     hits: AttackHits,
     aoe: AreaOfEffect,
     standing_range: u16,
@@ -205,8 +201,6 @@ impl Attack {
             _ => unreachable!(),
         };
         Self {
-            abilities: Ability::get_all_abilities(combined).into(),
-            targets: EnemyType::get_all_targets(combined).into(),
             hits: AttackHits::from_combined(combined),
             aoe,
             standing_range: fixed.range,
@@ -216,27 +210,42 @@ impl Attack {
 }
 
 #[derive(Debug)]
-struct CatStats {
-    base_hp: u32,
-    kb: u16,
-    death_anim: i8,
-    speed: u8,
-    price: u16,
-    respawn: u16,
-    attack: Attack,
+/// Stats at level 1 with no treasures.
+pub struct CatStats {
+    /// Unit HP.
+    pub hp: u32,
+    /// HP knockbacks.
+    pub kb: u16,
+    /// Death soul animation, more testing needs to be done.
+    pub death_anim: i8,
+    /// Speed (distance travelled every frame).
+    pub speed: u8,
+    /// EoC1 cost.
+    pub price: u16,
+    /// Respawn frames / 2.
+    pub respawn_half: u16,
+    /// Unit attack.
+    pub attack: Attack,
+    /// All unit's abilities.
+    pub abilities: Rc<[Ability]>,
+    /// Enemy types the unit targets.
+    pub targets: Rc<[EnemyType]>,
 }
 
 impl CatStats {
-    fn from_combined(combined: &CombinedCatData) -> Self {
+    /// Get unit stats from the combined stat data.
+    pub fn from_combined(combined: &CombinedCatData) -> Self {
         let (fixed, var) = combined;
         Self {
-            base_hp: fixed.hp,
+            hp: fixed.hp,
             kb: fixed.kb,
             death_anim: var.death,
             speed: fixed.speed,
             price: fixed.price,
-            respawn: fixed.respawn,
+            respawn_half: fixed.respawn,
             attack: Attack::from_combined(combined),
+            abilities: Ability::get_all_abilities(combined).into(),
+            targets: EnemyType::get_all_targets(combined).into(),
         }
     }
 }
@@ -254,7 +263,7 @@ mod tests {
         if cond {
             return;
         }
-        let file_name = "unit026.csv";
+        let file_name = "unit136.csv";
         let version = TEST_CONFIG.version.current_version();
         panic!(
             "{:#?}",
