@@ -292,7 +292,7 @@ mod tests {
     use crate::{
         config::TEST_CONFIG,
         data::cat::{
-            ability::{Surge, SurgeType},
+            ability::{Surge, SurgeType, Wave, WaveType},
             raw::read_data_file,
         },
     };
@@ -558,62 +558,458 @@ mod tests {
 
     #[test]
     fn test_dark_iz() {
-        let bahamut = get_unit(25);
+        let dark_iz = get_unit(657);
 
-        let forms = [];
+        let forms = [
+            CatStats {
+                hp: 3200,
+                kb: 2,
+                death_anim: None,
+                speed: 20,
+                price: 2100,
+                respawn_half: 920,
+                attack: Attack {
+                    hits: AttackHits::Triple([
+                        AttackHit {
+                            active_ability: true,
+                            damage: 280,
+                            range: AttackRange::Omni {
+                                base: 350,
+                                distance: -700,
+                            },
+                            foreswing: 40,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 280,
+                            range: AttackRange::Unchanged,
+                            foreswing: 60,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 280,
+                            range: AttackRange::Unchanged,
+                            foreswing: 80,
+                        },
+                    ]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 300,
+                    tba: 0,
+                },
+                abilities: sorted(vec![
+                    A::MassiveDamage,
+                    A::Strengthen {
+                        hp: 50,
+                        multiplier: 100,
+                    },
+                    A::ZombieKiller,
+                    A::ImmuneToWave,
+                    A::ImmuneToKB,
+                    A::ImmuneToFreeze,
+                    A::ImmuneToSlow,
+                    A::ImmuneToWeaken,
+                    A::ImmuneToSurge,
+                ])
+                .into(),
+                targets: [E::Traitless].into(),
+            },
+            CatStats {
+                hp: 4500,
+                kb: 2,
+                death_anim: None,
+                speed: 20,
+                price: 2100,
+                respawn_half: 920,
+                attack: Attack {
+                    hits: AttackHits::Triple([
+                        AttackHit {
+                            active_ability: true,
+                            damage: 340,
+                            range: AttackRange::Omni {
+                                base: 350,
+                                distance: -700,
+                            },
+                            foreswing: 40,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 340,
+                            range: AttackRange::Unchanged,
+                            foreswing: 60,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 340,
+                            range: AttackRange::Unchanged,
+                            foreswing: 80,
+                        },
+                    ]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 300,
+                    tba: 0,
+                },
+                abilities: sorted(vec![
+                    A::MassiveDamage,
+                    A::Strengthen {
+                        hp: 50,
+                        multiplier: 150,
+                    },
+                    A::ZombieKiller,
+                    A::BarrierBreaker { chance: 100 },
+                    A::ShieldPierce { chance: 100 },
+                    A::ColossusSlayer,
+                    A::ImmuneToWave,
+                    A::ImmuneToKB,
+                    A::ImmuneToFreeze,
+                    A::ImmuneToSlow,
+                    A::ImmuneToWeaken,
+                    A::ImmuneToWarp,
+                    A::ImmuneToCurse,
+                    A::ImmuneToToxic,
+                    A::ImmuneToSurge,
+                ])
+                .into(),
+                targets: [E::Traitless].into(),
+            },
+        ];
 
-        for (form, ans) in zip(bahamut, forms) {
+        for (form, ans) in zip(dark_iz, forms) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
     fn test_death_anim() {
-        let bahamut = get_unit(25);
-        // moneko
+        let moneko = get_unit(16);
 
-        let forms = [];
+        let forms = [
+            CatStats {
+                hp: 600,
+                kb: 4,
+                death_anim: NonZero::new(1),
+                speed: 5,
+                price: 99,
+                respawn_half: 999,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 400,
+                        range: AttackRange::Normal,
+                        foreswing: 28,
+                    }]),
+                    aoe: AreaOfEffect::SingleAttack,
+                    standing_range: 160,
+                    tba: 50,
+                },
+                abilities: [A::Crit { chance: 15 }].into(),
+                targets: [].into(),
+            },
+            CatStats {
+                hp: 1000,
+                kb: 4,
+                death_anim: NonZero::new(1),
+                speed: 5,
+                price: 99,
+                respawn_half: 999,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 400,
+                        range: AttackRange::Normal,
+                        foreswing: 28,
+                    }]),
+                    aoe: AreaOfEffect::SingleAttack,
+                    standing_range: 160,
+                    tba: 50,
+                },
+                abilities: [A::Crit { chance: 15 }].into(),
+                targets: [].into(),
+            },
+            CatStats {
+                hp: 1250,
+                kb: 4,
+                death_anim: NonZero::new(16),
+                speed: 5,
+                price: 99,
+                respawn_half: 666,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 400,
+                        range: AttackRange::Normal,
+                        foreswing: 28,
+                    }]),
+                    aoe: AreaOfEffect::SingleAttack,
+                    standing_range: 160,
+                    tba: 50,
+                },
+                abilities: [
+                    A::Crit { chance: 20 },
+                    A::Wave(Wave {
+                        wtype: WaveType::MiniWave,
+                        chance: 100,
+                        level: 3,
+                    }),
+                ]
+                .into(),
+                targets: [].into(),
+            },
+        ];
 
-        for (form, ans) in zip(bahamut, forms) {
+        for (form, ans) in zip(moneko, forms) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
     fn test_eva_02() {
-        let bahamut = get_unit(25);
+        let eva_02 = get_unit(414);
 
-        let forms = [];
+        let forms = [
+            CatStats {
+                hp: 3900,
+                kb: 3,
+                death_anim: NonZero::new(14),
+                speed: 15,
+                price: 3000,
+                respawn_half: 2250,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 2200,
+                        range: AttackRange::LD {
+                            base: 200,
+                            distance: 450,
+                        },
+                        foreswing: 76,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 400,
+                    tba: 86,
+                },
+                abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
+                targets: [E::Red].into(),
+            },
+            CatStats {
+                hp: 3900,
+                kb: 3,
+                death_anim: NonZero::new(14),
+                speed: 15,
+                price: 3000,
+                respawn_half: 2250,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 2200,
+                        range: AttackRange::LD {
+                            base: 200,
+                            distance: 450,
+                        },
+                        foreswing: 76,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 400,
+                    tba: 86,
+                },
+                abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
+                targets: [E::Red].into(),
+            },
+            CatStats {
+                hp: 3900,
+                kb: 3,
+                death_anim: NonZero::new(14),
+                speed: 15,
+                price: 3000,
+                respawn_half: 2250,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 2200,
+                        range: AttackRange::LD {
+                            base: 200,
+                            distance: 450,
+                        },
+                        foreswing: 61,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 400,
+                    tba: 72,
+                },
+                abilities: [
+                    A::MassiveDamage,
+                    A::Strengthen {
+                        hp: 33,
+                        multiplier: 100,
+                    },
+                    A::EvaAngelKiller,
+                ]
+                .into(),
+                targets: [E::Red].into(),
+            },
+        ];
 
-        for (form, ans) in zip(bahamut, forms) {
+        for (form, ans) in zip(eva_02, forms) {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
     fn test_kamikaze() {
-        let bahamut = get_unit(25);
+        let stone = get_unit(581);
 
-        let forms = [];
+        let ans = CatStats {
+            hp: 20_000,
+            kb: 1,
+            death_anim: NonZero::new(-1),
+            speed: 84,
+            price: 240,
+            respawn_half: 205,
+            attack: Attack {
+                hits: AttackHits::Single([AttackHit {
+                    active_ability: true,
+                    damage: 280,
+                    range: AttackRange::Normal,
+                    foreswing: 1,
+                }]),
+                aoe: AreaOfEffect::SingleAttack,
+                standing_range: 140,
+                tba: 0,
+            },
+            abilities: sorted(vec![
+                A::Kamikaze,
+                A::ImmuneToWave,
+                A::ImmuneToKB,
+                A::ImmuneToFreeze,
+                A::ImmuneToSlow,
+                A::ImmuneToWeaken,
+                A::ImmuneToWarp,
+                A::ImmuneToSurge,
+            ])
+            .into(),
+            targets: [].into(),
+        };
 
-        for (form, ans) in zip(bahamut, forms) {
+        for form in stone {
             assert_eq!(form, ans);
         }
-        todo!()
     }
 
     #[test]
     fn test_omni() {
-        let bahamut = get_unit(25);
+        let cosmo = get_unit(135);
 
-        let forms = [];
+        let forms = [
+            CatStats {
+                hp: 555,
+                kb: 3,
+                death_anim: None,
+                speed: 4,
+                price: 555,
+                respawn_half: 230,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 240,
+                        range: AttackRange::Normal,
+                        foreswing: 5,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 200,
+                    tba: 10,
+                },
+                abilities: [A::Knockback { chance: 20 }].into(),
+                targets: [E::Float, E::Angel].into(),
+            },
+            CatStats {
+                hp: 1600,
+                kb: 4,
+                death_anim: None,
+                speed: 54,
+                price: 3900,
+                respawn_half: 2100,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 2350,
+                        range: AttackRange::Normal,
+                        foreswing: 321,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 850,
+                    tba: 150,
+                },
+                abilities: [A::Knockback { chance: 100 }].into(),
+                targets: [E::Float, E::Angel].into(),
+            },
+            CatStats {
+                hp: 1600,
+                kb: 4,
+                death_anim: None,
+                speed: 54,
+                price: 3900,
+                respawn_half: 2100,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 3350,
+                        range: AttackRange::Normal,
+                        foreswing: 321,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 850,
+                    tba: 150,
+                },
+                abilities: [
+                    A::Knockback { chance: 100 },
+                    A::Freeze {
+                        chance: 100,
+                        duration: 150,
+                    },
+                ]
+                .into(),
+                targets: [E::Float, E::Angel].into(),
+            },
+            CatStats {
+                hp: 2000,
+                kb: 4,
+                death_anim: None,
+                speed: 54,
+                price: 3000,
+                respawn_half: 2100,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 3350,
+                        range: AttackRange::Omni {
+                            base: 1050,
+                            distance: -1350,
+                        },
+                        foreswing: 321,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 850,
+                    tba: 150,
+                },
+                abilities: [
+                    A::Knockback { chance: 100 },
+                    A::Freeze {
+                        chance: 100,
+                        duration: 150,
+                    },
+                    A::Wave(Wave {
+                        wtype: WaveType::Wave,
+                        chance: 100,
+                        level: 10,
+                    }),
+                    A::SageSlayer,
+                ]
+                .into(),
+                targets: [E::Float, E::Angel].into(),
+            },
+        ];
 
-        for (form, ans) in zip(bahamut, forms) {
+        for (form, ans) in zip(cosmo, forms) {
             assert_eq!(form, ans);
         }
-        todo!("cosmo")
     }
 }
