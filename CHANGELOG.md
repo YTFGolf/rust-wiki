@@ -12,9 +12,14 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Added
 
+- Cat data.
+
 ### Fixed
 
 ### Changed
+
+- Images now use the language's file name rather than en.
+- Special rule names use an enum rather than having to do manual matching.
 
 ### Removed
 
