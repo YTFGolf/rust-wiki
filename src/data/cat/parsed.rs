@@ -93,15 +93,9 @@ impl AttackRange {
         if base == 0 {
             AttackRange::Normal
         } else if distance > 0 {
-            AttackRange::LD {
-                base,
-                distance: base + distance,
-            }
+            AttackRange::LD { base, distance }
         } else {
-            AttackRange::Omni {
-                base,
-                distance: base + distance,
-            }
+            AttackRange::Omni { base, distance }
         }
     }
 }
@@ -295,7 +289,15 @@ impl CatStats {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, data::cat::raw::read_data_file};
+    use crate::{
+        config::TEST_CONFIG,
+        data::cat::{
+            ability::{Surge, SurgeType},
+            raw::read_data_file,
+        },
+    };
+    use Ability as A;
+    use EnemyType as E;
     use std::iter::zip;
 
     fn get_unit(wiki_id: usize) -> impl Iterator<Item = CatStats> {
@@ -399,10 +401,219 @@ mod tests {
         }
     }
 
-    // bahamut
-    // dark phono
-    // iz
-    // moneko
-    // eva 02
-    // doron
+    #[test]
+    fn test_dark_phono() {
+        let dark_phono = get_unit(705);
+
+        let forms = [
+            CatStats {
+                hp: 2600,
+                kb: 5,
+                death_anim: None,
+                speed: 30,
+                price: 3400,
+                respawn_half: 2200,
+                attack: Attack {
+                    hits: AttackHits::Triple([
+                        AttackHit {
+                            active_ability: true,
+                            damage: 700,
+                            range: AttackRange::LD {
+                                base: 200,
+                                distance: 350,
+                            },
+                            foreswing: 70,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 700,
+                            range: AttackRange::LD {
+                                base: 400,
+                                distance: 350,
+                            },
+                            foreswing: 80,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 700,
+                            range: AttackRange::LD {
+                                base: 490,
+                                distance: 410,
+                            },
+                            foreswing: 90,
+                        },
+                    ]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 500,
+                    tba: 0,
+                },
+                abilities: sorted(vec![
+                    A::Slow {
+                        chance: 100,
+                        duration: 60,
+                    },
+                    A::Surge(Surge {
+                        stype: SurgeType::MiniSurge,
+                        chance: 100,
+                        spawn_quad: 1600,
+                        range_quad: 2800,
+                        level: 1,
+                    }),
+                    A::ImmuneToWave,
+                    A::ImmuneToSurge,
+                ])
+                .into(),
+                targets: [
+                    E::Red,
+                    E::Float,
+                    E::Black,
+                    E::Metal,
+                    E::Traitless,
+                    E::Angel,
+                    E::Alien,
+                    E::Zombie,
+                    E::Relic,
+                    E::Aku,
+                ]
+                .into(),
+            },
+            CatStats {
+                hp: 3400,
+                kb: 5,
+                death_anim: None,
+                speed: 30,
+                price: 3400,
+                respawn_half: 2200,
+                attack: Attack {
+                    hits: AttackHits::Triple([
+                        AttackHit {
+                            active_ability: true,
+                            damage: 1000,
+                            range: AttackRange::LD {
+                                base: 200,
+                                distance: 350,
+                            },
+                            foreswing: 70,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 1000,
+                            range: AttackRange::LD {
+                                base: 400,
+                                distance: 350,
+                            },
+                            foreswing: 80,
+                        },
+                        AttackHit {
+                            active_ability: true,
+                            damage: 1000,
+                            range: AttackRange::LD {
+                                base: 490,
+                                distance: 410,
+                            },
+                            foreswing: 90,
+                        },
+                    ]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 500,
+                    tba: 0,
+                },
+                abilities: sorted(vec![
+                    A::Slow {
+                        chance: 100,
+                        duration: 60,
+                    },
+                    A::Surge(Surge {
+                        stype: SurgeType::MiniSurge,
+                        chance: 100,
+                        spawn_quad: 1600,
+                        range_quad: 2800,
+                        level: 1,
+                    }),
+                    A::ImmuneToWave,
+                    A::ImmuneToCurse,
+                    A::ImmuneToSurge,
+                ])
+                .into(),
+                targets: [
+                    E::Red,
+                    E::Float,
+                    E::Black,
+                    E::Metal,
+                    E::Traitless,
+                    E::Angel,
+                    E::Alien,
+                    E::Zombie,
+                    E::Relic,
+                    E::Aku,
+                ]
+                .into(),
+            },
+        ];
+
+        for (form, ans) in zip(dark_phono, forms) {
+            assert_eq!(form, ans);
+        }
+    }
+
+    #[test]
+    fn test_dark_iz() {
+        let bahamut = get_unit(25);
+
+        let forms = [];
+
+        for (form, ans) in zip(bahamut, forms) {
+            assert_eq!(form, ans);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_death_anim() {
+        let bahamut = get_unit(25);
+        // moneko
+
+        let forms = [];
+
+        for (form, ans) in zip(bahamut, forms) {
+            assert_eq!(form, ans);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_eva_02() {
+        let bahamut = get_unit(25);
+
+        let forms = [];
+
+        for (form, ans) in zip(bahamut, forms) {
+            assert_eq!(form, ans);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_kamikaze() {
+        let bahamut = get_unit(25);
+
+        let forms = [];
+
+        for (form, ans) in zip(bahamut, forms) {
+            assert_eq!(form, ans);
+        }
+        todo!()
+    }
+
+    #[test]
+    fn test_omni() {
+        let bahamut = get_unit(25);
+
+        let forms = [];
+
+        for (form, ans) in zip(bahamut, forms) {
+            assert_eq!(form, ans);
+        }
+        todo!("cosmo")
+    }
 }
