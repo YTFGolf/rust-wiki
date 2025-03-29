@@ -113,7 +113,7 @@ pub struct CatCSV2 {
     pub immune_boss_shockwave: Bool,
     _uk57: i8,
     pub kamikaze: Small,
-    // TODO figure out this field
+    // for some reason is like a bool but 2 is the true value
     pub mhit_atk2: Massive,
 
     // 60
@@ -271,13 +271,16 @@ mod tests {
 
             #[allow(clippy::used_underscore_binding)]
             for (fixed, var) in forms {
-                if var.proc_on_hit1 == 0 && (var.proc_on_hit2 + var.proc_on_hit3 > 0) {
-                    println!("{fixed:?}, {var:?}");
-                }
+                // if var.proc_on_hit1 == 0 && (var.proc_on_hit2 + var.proc_on_hit3 > 0) {
+                //     println!("{fixed:?}, {var:?}");
+                // }
                 // if var.mhit_atk2 > 0 || var.mhit_atk3_fswing > 0 {
                 //     println!("{}, {var:?}", var.proc_on_hit1 + var.proc_on_hit2 + var.proc_on_hit3);
                 // }
                 assert_eq!(fixed._width, 320);
+                if var.kamikaze != 0 {
+                    assert_eq!(var.kamikaze, 2);
+                }
                 assert!(
                     var.rest.is_empty(),
                     "Remaining fields not empty, found {:?}",
