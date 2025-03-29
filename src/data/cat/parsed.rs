@@ -1,7 +1,11 @@
+//! High-level container for cat data.
+
 use super::{ability::Ability, raw::CombinedCatData};
 use std::rc::Rc;
 
 #[derive(Debug)]
+#[allow(missing_docs)]
+/// Enemy types that can be targeted.
 pub enum EnemyType {
     Red,
     Float,
@@ -15,6 +19,7 @@ pub enum EnemyType {
     Aku,
 }
 impl EnemyType {
+    /// Get all of the cat's targets.
     pub fn get_all_targets(combined: &CombinedCatData) -> Vec<EnemyType> {
         let (fixed, variable) = combined;
         let mut targets = vec![];
@@ -62,15 +67,22 @@ fn bool(value: u8) -> Result<bool, String> {
 }
 
 #[derive(Debug)]
+/// Range of an attack.
 pub enum AttackRange {
     /// Range is standing range.
     Normal,
+    /// LD.
     LD {
+        /// Distance to base.
         base: i16,
+        /// Area of effect.
         distance: i16,
     },
+    /// Omnistrike.
     Omni {
+        /// Distance to base.
         base: i16,
+        /// Area of effect.
         distance: i16,
     },
     /// Same as hit 1.
@@ -95,24 +107,33 @@ impl AttackRange {
 }
 
 #[derive(Debug)]
+/// Single hit of the unit's attack.
 pub struct AttackHit {
-    active_ability: bool,
-    damage: u32,
-    range: AttackRange,
-    foreswing: u16,
+    /// Is the ability active on this hit.
+    pub active_ability: bool,
+    /// Base damage of this hit.
+    pub damage: u32,
+    /// Range of this hit.
+    pub range: AttackRange,
+    /// Foreswing of this hit.
+    pub foreswing: u16,
 }
 
 #[derive(Debug)]
+/// The unit's attacks.
 pub enum AttackHits {
-    Single(AttackHit),
+    /// One attack.
+    Single([AttackHit; 1]),
+    /// Two attack.
     Double([AttackHit; 2]),
+    /// Three attack.
     Triple([AttackHit; 3]),
 }
 impl AttackHits {
     fn from_combined(combined: &CombinedCatData) -> AttackHits {
         let (_, var) = combined;
         if var.mhit_atk2 == 0 {
-            Self::Single(Self::single(combined))
+            Self::Single([Self::single(combined)])
         } else if var.mhit_atk3 == 0 {
             Self::Double([Self::get_hit1(combined), Self::get_hit2(combined)])
         } else {
@@ -159,6 +180,7 @@ impl AttackHits {
             false => AttackRange::Unchanged,
         };
         let foreswing = variable.mhit_atk2_fswing;
+
         AttackHit {
             active_ability,
             damage,
@@ -177,6 +199,7 @@ impl AttackHits {
             false => AttackRange::Unchanged,
         };
         let foreswing = variable.mhit_atk3_fswing;
+
         AttackHit {
             active_ability,
             damage,
@@ -187,23 +210,33 @@ impl AttackHits {
 }
 
 #[derive(Debug)]
+/// Area of the unit's hits.
 pub enum AreaOfEffect {
+    /// First enemy in range.
     SingleAttack,
+    /// All enemies in range.
     AreaAttack,
 }
 
 #[derive(Debug)]
+/// Unit's attack.
 pub struct Attack {
-    hits: AttackHits,
-    aoe: AreaOfEffect,
-    standing_range: u16,
-    tba: u16,
-    // this is an interval, so cycle is foreswing + max(backswing, 2 * tba - 1)
-    // backswing is not a stat, it is the length of the unit's animation
+    /// All hits of the unit's attack.
+    pub hits: AttackHits,
+    /// Attack area of effect.
+    pub aoe: AreaOfEffect,
+    /// Standing range before attack.
+    pub standing_range: u16,
+    /// Time between attacks.
+    ///
+    /// This is an interval, so cycle is `foreswing + max(backswing, 2 * tba -
+    /// 1)`. Backswing is not a stat, it is the length of the unit's animation.
+    pub tba: u16,
 }
 impl Attack {
     fn from_combined(combined: &CombinedCatData) -> Self {
         let (fixed, _) = combined;
+        // could possibly use strum here
         let aoe = match fixed.is_area {
             0 => AreaOfEffect::SingleAttack,
             1 => AreaOfEffect::AreaAttack,
@@ -272,7 +305,7 @@ mod tests {
         if cond {
             return;
         }
-        let file_name = "unit136.csv";
+        let file_name = "unit706.csv";
         let version = TEST_CONFIG.version.current_version();
         panic!(
             "{:#?}",
