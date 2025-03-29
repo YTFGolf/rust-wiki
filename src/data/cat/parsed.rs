@@ -1,9 +1,9 @@
 //! High-level container for cat data.
 
 use super::{ability::Ability, raw::CombinedCatData};
-use std::rc::Rc;
+use std::{num::NonZero, rc::Rc};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[allow(missing_docs)]
 /// Enemy types that can be targeted.
 pub enum EnemyType {
@@ -66,7 +66,7 @@ fn bool(value: u8) -> Result<bool, String> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Range of an attack.
 pub enum AttackRange {
     /// Range is standing range.
@@ -106,7 +106,7 @@ impl AttackRange {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Single hit of the unit's attack.
 pub struct AttackHit {
     /// Is the ability active on this hit.
@@ -119,7 +119,7 @@ pub struct AttackHit {
     pub foreswing: u16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// The unit's attacks.
 pub enum AttackHits {
     /// One attack.
@@ -209,7 +209,7 @@ impl AttackHits {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Area of the unit's hits.
 pub enum AreaOfEffect {
     /// First enemy in range.
@@ -218,7 +218,7 @@ pub enum AreaOfEffect {
     AreaAttack,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Unit's attack.
 pub struct Attack {
     /// All hits of the unit's attack.
@@ -251,7 +251,7 @@ impl Attack {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Stats at level 1 with no treasures.
 pub struct CatStats {
     /// Unit HP.
@@ -259,7 +259,7 @@ pub struct CatStats {
     /// HP knockbacks.
     pub kb: u16,
     /// Death soul animation, more testing needs to be done.
-    pub death_anim: i8,
+    pub death_anim: Option<NonZero<i8>>,
     /// Speed (distance travelled every frame).
     pub speed: u8,
     /// EoC1 cost.
@@ -281,7 +281,7 @@ impl CatStats {
         Self {
             hp: fixed.hp,
             kb: fixed.kb,
-            death_anim: var.death,
+            death_anim: NonZero::new(var.death),
             speed: fixed.speed,
             price: fixed.price,
             respawn_half: fixed.respawn,
@@ -296,22 +296,113 @@ impl CatStats {
 mod tests {
     use super::*;
     use crate::{config::TEST_CONFIG, data::cat::raw::read_data_file};
+    use std::iter::zip;
+
+    fn get_unit(wiki_id: usize) -> impl Iterator<Item = CatStats> {
+        let abs_id = wiki_id + 1;
+        let file_name = format!("unit{abs_id:03}.csv");
+        let combined_iter = read_data_file(&file_name, TEST_CONFIG.version.current_version());
+        combined_iter.map(|combined| CatStats::from_combined(&combined))
+    }
+
+    fn sorted<T: Ord>(mut v: Vec<T>) -> Vec<T> {
+        v.sort();
+        v
+    }
 
     #[test]
-    fn tmp() {
-        #[allow(unused_variables)]
-        let cond = true;
-        let cond = false;
-        if cond {
-            return;
+    fn test_bahamut() {
+        let bahamut = get_unit(25);
+
+        let forms = [
+            CatStats {
+                hp: 1500,
+                kb: 3,
+                death_anim: None,
+                speed: 6,
+                price: 3000,
+                respawn_half: 2400,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 5000,
+                        range: AttackRange::Normal,
+                        foreswing: 121,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 450,
+                    tba: 240,
+                },
+                abilities: [].into(),
+                targets: [].into(),
+            },
+            CatStats {
+                hp: 1500,
+                kb: 3,
+                death_anim: None,
+                speed: 6,
+                price: 3000,
+                respawn_half: 2400,
+                attack: Attack {
+                    hits: AttackHits::Single([AttackHit {
+                        active_ability: true,
+                        damage: 5000,
+                        range: AttackRange::Normal,
+                        foreswing: 121,
+                    }]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 450,
+                    tba: 240,
+                },
+                abilities: [].into(),
+                targets: [].into(),
+            },
+            CatStats {
+                hp: 1500,
+                kb: 6,
+                death_anim: None,
+                speed: 60,
+                price: 3000,
+                respawn_half: 1600,
+                attack: Attack {
+                    hits: AttackHits::Triple([
+                        AttackHit {
+                            active_ability: true,
+                            damage: 5000,
+                            range: AttackRange::Normal,
+                            foreswing: 5,
+                        },
+                        AttackHit {
+                            active_ability: false,
+                            damage: 200,
+                            range: AttackRange::Unchanged,
+                            foreswing: 10,
+                        },
+                        AttackHit {
+                            active_ability: false,
+                            damage: 300,
+                            range: AttackRange::Unchanged,
+                            foreswing: 20,
+                        },
+                    ]),
+                    aoe: AreaOfEffect::AreaAttack,
+                    standing_range: 200,
+                    tba: 0,
+                },
+                abilities: [].into(),
+                targets: [].into(),
+            },
+        ];
+
+        for (form, ans) in zip(bahamut, forms) {
+            assert_eq!(form, ans);
         }
-        let file_name = "unit706.csv";
-        let version = TEST_CONFIG.version.current_version();
-        panic!(
-            "{:#?}",
-            read_data_file(file_name, version)
-                .map(|comb| CatStats::from_combined(&comb))
-                .collect::<Vec<_>>()
-        )
     }
+
+    // bahamut
+    // dark phono
+    // iz
+    // moneko
+    // eva 02
+    // doron
 }
