@@ -1,6 +1,7 @@
 //! Deals with command-line arguments.
 
 pub mod base;
+pub mod cat_cli;
 mod cli_util;
 pub mod commands;
 pub mod encounters_cli;
