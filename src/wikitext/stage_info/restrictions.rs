@@ -294,22 +294,8 @@ pub fn rules(stage: &Stage) -> String {
         return String::new();
     };
     if let Some(name) = &rules.rule_name_label {
-        let rule_desc = match name.as_str() {
-            "SpecialRuleName000" => "Trust Fund",
-            "SpecialRuleName001" => "Cooldown Equality",
-            "SpecialRuleName002" => "Only One Rarity",
-            "SpecialRuleName003" => "Cheap Labor",
-            "SpecialRuleName004" => "Super Rare Sale",
-            "SpecialRuleName005" => "Deploy Limit",
-            "SpecialRuleName006" => "Special Clearance",
-            "SpecialRuleName007" => "Plus One: Uber",
-            "SpecialRuleName008" => "にゃんこ砲超強化",
-            _ => panic!("Error: unknown label {name:?}"),
-        };
-        // TODO file
-
         let mut buf = "{{ColosseumRule|".to_string();
-        buf += rule_desc;
+        buf += name.as_str();
         buf += "}}";
         return buf;
     }

@@ -128,6 +128,53 @@ impl RuleType {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[allow(missing_docs)]
+/// Possible rule name label value.
+pub enum RuleNameLabel {
+    TrustFund,
+    CooldownEquality,
+    OnlyOneRarity,
+    CheapLabor,
+    SuperRareSale,
+    DeployLimit,
+    SpecialClearance,
+    PlusOneUber,
+    にゃんこ砲超強化,
+}
+impl<T: AsRef<str>> From<T> for RuleNameLabel {
+    fn from(value: T) -> Self {
+        match value.as_ref() {
+            "SpecialRuleName000" => Self::TrustFund,
+            "SpecialRuleName001" => Self::CooldownEquality,
+            "SpecialRuleName002" => Self::OnlyOneRarity,
+            "SpecialRuleName003" => Self::CheapLabor,
+            "SpecialRuleName004" => Self::SuperRareSale,
+            "SpecialRuleName005" => Self::DeployLimit,
+            "SpecialRuleName006" => Self::SpecialClearance,
+            "SpecialRuleName007" => Self::PlusOneUber,
+            "SpecialRuleName008" => Self::にゃんこ砲超強化,
+            label => panic!("Error: unknown special rule label {label:?}"),
+        }
+    }
+}
+impl RuleNameLabel {
+    /// Get string representation of rule name label.
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            RuleNameLabel::TrustFund => "Trust Fund",
+            RuleNameLabel::CooldownEquality => "Cooldown Equality",
+            RuleNameLabel::OnlyOneRarity => "Only One Rarity",
+            RuleNameLabel::CheapLabor => "Cheap Labor",
+            RuleNameLabel::SuperRareSale => "Super Rare Sale",
+            RuleNameLabel::DeployLimit => "Deploy Limit",
+            RuleNameLabel::SpecialClearance => "Special Clearance",
+            RuleNameLabel::PlusOneUber => "Plus One: Uber",
+            RuleNameLabel::にゃんこ砲超強化 => "にゃんこ砲超強化",
+        }
+    }
+}
+
 /// Represents all special rules for an individual map.
 #[derive(Debug, Clone, PartialEq)]
 pub struct SpecialRule {
@@ -136,7 +183,7 @@ pub struct SpecialRule {
     /// All of the map's rules.
     pub rule_type: Vec<RuleType>,
     /// `"ResLocal/localizable"` name label
-    pub rule_name_label: Option<String>,
+    pub rule_name_label: Option<RuleNameLabel>,
     // rule_explanation_label: Option<String>,
 }
 impl From<RawRuleData> for SpecialRule {
@@ -152,7 +199,7 @@ impl From<RawRuleData> for SpecialRule {
         Self {
             contents_type,
             rule_type,
-            rule_name_label: value.rule_name_label,
+            rule_name_label: value.rule_name_label.map(RuleNameLabel::from),
         }
     }
 }
