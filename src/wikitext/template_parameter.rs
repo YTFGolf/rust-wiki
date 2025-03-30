@@ -10,6 +10,19 @@ pub struct Template {
     name: StringValue,
     params: Vec<TemplateParameter>,
 }
+impl Display for Template {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("{{")?;
+        write!(f, "{}", self.name)?;
+
+        for param in self.params.iter() {
+            f.write_str("\n")?;
+            Display::fmt(param, f)?;
+        }
+
+        f.write_str("\n}}")
+    }
+}
 
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template parameter.
@@ -32,12 +45,7 @@ impl TemplateParameter {
 }
 impl Display for TemplateParameter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Ok(write!(
-            f,
-            "|{key} = {value}",
-            key = self.key,
-            value = self.value
-        )?)
+        write!(f, "|{key} = {value}", key = self.key, value = self.value)
     }
 }
 
