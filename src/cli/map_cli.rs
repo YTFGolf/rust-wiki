@@ -33,7 +33,7 @@ impl ConfigMerge for MapInfoOptions {
 impl CommandExec for MapInfoOptions {
     fn exec(&self, config: &Config) {
         let selector = match self.selector.len() {
-            1 => self.selector[0].to_string(),
+            1 => self.selector[0].clone(),
             0 => input("Input selector: "),
             _ => self.selector.join(" "),
         };

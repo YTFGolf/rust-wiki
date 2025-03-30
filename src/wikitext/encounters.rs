@@ -392,7 +392,8 @@ fn always_appeared_at(buf: &mut String) {
         return;
     }
 
-    let mag = (*map.iter().next().unwrap()).to_string();
+    let mag = (*map.iter().next().unwrap()).to_owned();
+    // map borrows buf so this needs to be cloned
     if mag[1..].contains(' ') {
         // if is like "(10%, 100%)"
         return;
@@ -535,7 +536,7 @@ mod tests {
         *This stage: this map
         </div>";
 
-        let f = &mut constant.to_string();
+        let f = &mut constant.to_owned();
         always_appeared_at(f);
         assert_eq!(f, correct);
     }

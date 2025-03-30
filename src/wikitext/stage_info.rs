@@ -5,7 +5,7 @@ use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use regex::Regex;
-use std::fmt::Write;
+use std::fmt::{Display, Write};
 use variables::{DEFAULT_FORMAT, get_stage_variable};
 mod battlegrounds;
 mod beginning;
@@ -23,7 +23,7 @@ struct StageWikiDataContainer {
 }
 
 /// Get full stage info.
-pub fn get_stage_info(stage: &Stage, config: &Config) -> String {
+pub fn get_stage_info(stage: &Stage, config: &Config) -> impl Display {
     get_stage_info_formatted(stage, DEFAULT_FORMAT, config)
 }
 
@@ -58,7 +58,9 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
     let buf = Regex::new(r"\n+(\||\}\})")
         .unwrap()
         .replace_all(&buf, "\n$1");
+    // Replace multiple newlines before `|` or `}` with single newline.
     let buf = Regex::new(r"\n==.*==\n\n").unwrap().replace_all(&buf, "");
+    // Remove empty sections.
 
-    buf.to_string()
+    buf.into_owned()
 }
