@@ -2,18 +2,27 @@
 
 use std::{borrow::Cow, fmt::Display};
 
+type StringValue = Cow<'static, str>;
+
+#[derive(Debug, PartialEq)]
+/// Representation of a wikitext template.
+pub struct Template {
+    name: StringValue,
+    params: Vec<TemplateParameter>,
+}
+
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
-    key: Cow<'static, str>,
-    value: Cow<'static, str>,
+    key: StringValue,
+    value: StringValue,
 }
 impl TemplateParameter {
     /// Create a parameter.
     pub fn new<T, U>(key: T, value: U) -> Self
     where
-        T: Into<Cow<'static, str>>,
-        U: Into<Cow<'static, str>>,
+        T: Into<StringValue>,
+        U: Into<StringValue>,
     {
         Self {
             key: key.into(),
@@ -53,8 +62,8 @@ lines = get_lines()
 for key, value in re.findall(r'\|([\w ]+) = ((?:.|\n)*?)(?=\n\||$)', lines):
     value = value.replace('\n', "\\n\\" + f"\n{' ' * indent * 4}")
     if type == "opt":
-        print(f'Some(TemplateParameter::new("{key}", "{value}".into()))')
+        print(f'Some(TemplateParameter::new("{key}", "{value}"))')
     else:
-        print(f'TemplateParameter::new("{key}", "{value}".into()),')
+        print(f'TemplateParameter::new("{key}", "{value}"),')
 
 */
