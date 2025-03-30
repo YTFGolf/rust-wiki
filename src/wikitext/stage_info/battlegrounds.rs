@@ -11,7 +11,7 @@ use crate::{
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use regex::Regex;
-use std::{fmt::Write, num::NonZeroU32};
+use std::fmt::Write;
 
 /// Write the given spawn time in seconds;
 fn write_single_spawn_s(buf: &mut String, time_f: u32) {
@@ -95,7 +95,7 @@ fn get_single_enemy_line(
         }
     };
 
-    let is_single_enemy: bool = enemy.amount == EnemyAmount::Limit(NonZeroU32::new(1).unwrap());
+    let is_single_enemy: bool = enemy.amount.is_singular();
     if is_single_enemy {
         write!(buf, " {}", ENEMY_DATA.get_names(enemy.id).name).unwrap();
     } else {

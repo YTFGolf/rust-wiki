@@ -1,4 +1,6 @@
 //! Module that deals with getting information about enemies in stages.
+use std::num::NonZeroU32;
+
 use crate::data::stage::raw::stage_data::csv_types::StageEnemyCSV;
 use either::Either::{self, Left, Right};
 use strum::FromRepr;
@@ -27,6 +29,16 @@ pub enum EnemyAmount {
     Infinite,
     /// Limited.
     Limit(std::num::NonZeroU32),
+}
+impl EnemyAmount {
+    /// Is the enemy a singular enemy?
+    pub fn is_singular(&self) -> bool {
+        const ONE: EnemyAmount = EnemyAmount::Limit(match NonZeroU32::new(1) {
+            Some(n) => n,
+            None => unreachable!(),
+        });
+        self == &ONE
+    }
 }
 impl From<u32> for EnemyAmount {
     fn from(value: u32) -> Self {
