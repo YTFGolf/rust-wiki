@@ -6,13 +6,15 @@ use serde::{Deserialize, Serialize};
 use std::{fmt::Display, path::PathBuf};
 
 /// Default language.
-#[allow(missing_docs)]
 #[derive(Debug, Default, Deserialize, Serialize, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum Lang {
+    /// English.
     EN,
     #[default]
+    /// Japanese.
     JP,
+    // should this be JA?
 }
 
 impl Display for Lang {

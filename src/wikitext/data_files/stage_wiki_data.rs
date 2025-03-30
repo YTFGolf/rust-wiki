@@ -62,7 +62,6 @@ pub struct StageWikiDataContainer {
     stage_difficulty_map: LazyLock<StageDifficultyMap>,
 }
 
-#[allow(missing_docs)]
 impl StageWikiDataContainer {
     /// Get stage type.
     pub fn stage_type(&self, id: StageVariantID) -> Option<&StageVariantWikiData> {

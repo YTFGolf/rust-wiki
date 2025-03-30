@@ -4,7 +4,6 @@ use super::template_parameter::TemplateParameter;
 use crate::config::Config;
 use std::borrow::Cow;
 
-#[allow(dead_code)]
 struct Template {
     name: Cow<'static, str>,
     params: [TemplateParameter],

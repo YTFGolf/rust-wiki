@@ -4,10 +4,12 @@ use super::variant::{StageVariantID, VariantSize};
 use std::fmt::Display;
 
 /// Type of main chapter.
-#[allow(missing_docs)]
 pub enum MainType {
+    /// EoC.
     EoC,
+    /// ItF.
     ItF,
+    /// CotC.
     CotC,
 }
 

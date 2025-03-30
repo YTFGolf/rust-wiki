@@ -1,5 +1,4 @@
 //! Deals with raw CSV cat data.
-#![allow(dead_code)]
 
 use crate::data::version::Version;
 use csv::ByteRecord;
