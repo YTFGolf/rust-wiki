@@ -13,15 +13,21 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 ### Added
 
 - Cat data.
+- `Display` impl for map and stage ID.
 
 ### Fixed
 
 ### Changed
 
 - Images now use the language's file name rather than en.
-- Special rule names use an enum rather than having to do manual matching.
+- Special rule names use an enum rather than having to do manual string
+  matching.
+- `TemplateParameter` now uses `Cow`s instead of hardcoded types.
+- Use `strum` derive methods rather than manual number matching.
 
 ### Removed
+
+- Internal: CSV-reading in `GameMapData`.
 
 ## [0.5.1] - 2025-03-14
 
