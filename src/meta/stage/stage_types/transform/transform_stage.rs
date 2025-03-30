@@ -11,7 +11,7 @@ use crate::meta::stage::{
 fn custom_stage_data_file(stage_id: &StageID) -> String {
     let variant: T = stage_id.variant().into();
     match variant {
-        T::Filibuster => "stageSpace09_Invasion_00.csv".to_string(),
+        T::Filibuster => "stageSpace09_Invasion_00.csv".into(),
         T::EocOutbreak | T::ItfOutbreak | T::CotcOutbreak => {
             let map = match variant {
                 T::EocOutbreak => stage_id.map().num(),

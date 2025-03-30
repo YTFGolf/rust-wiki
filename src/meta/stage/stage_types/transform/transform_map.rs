@@ -16,14 +16,14 @@ pub fn map_data_file(map_id: &MapID) -> String {
     let variant: T = stype.variant_id.into();
 
     match variant {
-        T::Filibuster => "stageNormal2_2_Invasion.csv".to_string(),
+        T::Filibuster => "stageNormal2_2_Invasion.csv".into(),
         T::MainChapters => {
             let main = map_id
                 .main_type()
                 .unwrap_or_else(|| panic!("Main chapter {n} out of bounds!", n = map_id.num()));
 
             match main {
-                MainType::EoC => "stageNormal0.csv".to_string(),
+                MainType::EoC => "stageNormal0.csv".into(),
                 MainType::ItF => format!("stageNormal1_{num}.csv", num = map_id.num() - 3),
                 MainType::CotC => format!("stageNormal2_{num}.csv", num = map_id.num() - 6),
             }

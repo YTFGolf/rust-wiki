@@ -49,8 +49,8 @@ lines = get_lines()
 for key, value in re.findall(r'\|([\w ]+) = ((?:.|\n)*?)(?=\n\||$)', lines):
     value = value.replace('\n', "\\n\\" + f"\n{' ' * indent * 4}")
     if type == "opt":
-        print(f'Some(TemplateParameter::new("{key}", "{value}".to_string()))')
+        print(f'Some(TemplateParameter::new("{key}", "{value}".into()))')
     else:
-        print(f'TemplateParameter::new("{key}", "{value}".to_string()),')
+        print(f'TemplateParameter::new("{key}", "{value}".into()),')
 
 */

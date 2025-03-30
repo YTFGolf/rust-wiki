@@ -487,7 +487,7 @@ mod tests {
                 vec![
                     Stage::new(
                         "Stage 1",
-                        "(100%)".to_string(),
+                        "(100%)".into(),
                         &StageID::from_components(T::Event, 0, 0),
                     ),
                     Stage::new(
@@ -497,7 +497,7 @@ mod tests {
                     ),
                     Stage::new(
                         "Stage 3",
-                        "(1,500% HP/2% AP)".to_string(),
+                        "(1,500% HP/2% AP)".into(),
                         &StageID::from_components(T::Event, 0, 2),
                     ),
                 ],
@@ -524,7 +524,7 @@ mod tests {
                 vec![
                     Stage::new(
                         "Stage 1",
-                        "(100%)".to_string(),
+                        "(100%)".into(),
                         &StageID::from_components(T::Labyrinth, 0, 0),
                     ),
                     Stage::new(
@@ -534,7 +534,7 @@ mod tests {
                     ),
                     Stage::new(
                         "Stage 3",
-                        "(1,500% HP/2% AP)".to_string(),
+                        "(1,500% HP/2% AP)".into(),
                         &StageID::from_components(T::Labyrinth, 0, 2),
                     ),
                 ],
@@ -560,7 +560,7 @@ mod tests {
                 vec![
                     Stage::new(
                         "Stage 1",
-                        "(100%)".to_string(),
+                        "(100%)".into(),
                         &StageID::from_components(T::SoL, 0, 0),
                     ),
                     Stage::new(
@@ -570,7 +570,7 @@ mod tests {
                     ),
                     Stage::new(
                         "Stage 3",
-                        "(1,500% HP/2% AP)".to_string(),
+                        "(1,500% HP/2% AP)".into(),
                         &StageID::from_components(T::SoL, 0, 2),
                     ),
                 ],
