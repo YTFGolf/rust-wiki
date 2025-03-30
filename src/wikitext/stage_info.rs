@@ -35,21 +35,10 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
 
     let stage_map = STAGE_WIKI_DATA
         .stage_map(stage.id.map())
-        .unwrap_or_else(|| {
-            panic!(
-                "Couldn't find map name: {:03}-{:03}",
-                stage.id.variant().num(),
-                stage.id.map().num()
-            )
-        });
-    let stage_name = stage_map.get(stage.id.num()).unwrap_or_else(|| {
-        panic!(
-            "Couldn't find stage name: {:03}-{:03}-{:03}",
-            stage.id.variant().num(),
-            stage.id.map().num(),
-            stage.id.num()
-        )
-    });
+        .unwrap_or_else(|| panic!("Couldn't find map name: {}", stage.id.map()));
+    let stage_name = stage_map
+        .get(stage.id.num())
+        .unwrap_or_else(|| panic!("Couldn't find stage name: {}", stage.id));
 
     let stage_wiki_data = StageWikiDataContainer {
         stage_map,

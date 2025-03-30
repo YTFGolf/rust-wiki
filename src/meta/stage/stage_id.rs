@@ -4,6 +4,7 @@ use super::{
     map_id::{MapID, MapSize},
     variant::{StageVariantID, VariantSize},
 };
+use std::fmt::Display;
 
 /// Size of stage number.
 pub type StageSize = u32;
@@ -65,5 +66,17 @@ impl StageID {
     /// Set stage ID number.
     pub fn set_num(&mut self, num: StageSize) {
         self.num = num;
+    }
+}
+
+impl Display for StageID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{:03}-{:03}-{:03}",
+            self.variant().num(),
+            self.map().num(),
+            self.num
+        )
     }
 }

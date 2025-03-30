@@ -345,13 +345,9 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
 
 /// Get map's wiki data.
 fn get_map_wiki_data(map: &MapID) -> &'static MapWikiData {
-    STAGE_WIKI_DATA.stage_map(map).unwrap_or_else(|| {
-        panic!(
-            "Couldn't find map name: {:03}-{:03}",
-            map.variant().num(),
-            map.num()
-        )
-    })
+    STAGE_WIKI_DATA
+        .stage_map(map)
+        .unwrap_or_else(|| panic!("Couldn't find map name: {}", map))
 }
 
 /// Get map data for legend stages.

@@ -1,6 +1,7 @@
 //! ID for a stage map.
 
 use super::variant::{StageVariantID, VariantSize};
+use std::fmt::Display;
 
 /// Type of main chapter.
 #[allow(missing_docs)]
@@ -74,5 +75,11 @@ impl MapID {
     /// Set map ID number.
     pub fn set_num(&mut self, num: MapSize) {
         self.num = num;
+    }
+}
+
+impl Display for MapID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:03}-{:03}", self.variant.num(), self.num)
     }
 }

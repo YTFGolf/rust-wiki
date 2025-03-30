@@ -271,11 +271,7 @@ fn get_group<'a: 'b, 'b>(
         }
         // Add to removed and skip.
         if stage_map.name == "PLACEHOLDER" && stage_map.is_empty() {
-            log::info!(
-                "Map {:03}-{:03} is a placeholder.",
-                stage.id.variant().num(),
-                stage.id.map().num()
-            );
+            log::info!("Map {} is a placeholder.", stage.id.map());
             continue;
         }
         // Remove placeholder maps. Technically doesn't need to happen since the
@@ -283,12 +279,7 @@ fn get_group<'a: 'b, 'b>(
         // error message.
 
         let Some(stage_data) = stage_map.get(stage.id.num()) else {
-            log::info!(
-                "Stage {:03}-{:03}-{:03} has no name.",
-                stage.id.variant().num(),
-                stage.id.map().num(),
-                stage.id.num()
-            );
+            log::info!("Stage {} has no name.", stage.id);
             continue;
         };
         let stage_name = &stage_data.name;
