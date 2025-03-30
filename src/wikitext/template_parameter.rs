@@ -1,17 +1,20 @@
 //! Defines a template parameter class.
 
-use std::fmt::Display;
+use std::{borrow::Cow, fmt::Display};
 
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
-    key: &'static str,
+    key: Cow<'static, str>,
     value: String,
 }
 impl TemplateParameter {
     /// Create a parameter.
-    pub fn new(key: &'static str, value: String) -> TemplateParameter {
-        Self { key, value }
+    pub fn new<T: Into<Cow<'static, str>>>(key: T, value: String) -> Self {
+        Self {
+            key: key.into(),
+            value,
+        }
     }
 }
 impl Display for TemplateParameter {
