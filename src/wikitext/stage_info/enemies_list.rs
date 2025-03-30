@@ -203,12 +203,12 @@ mod tests {
         assert_eq!(
             enemies_list(&aac, true),
             vec![
-                TemplateParameter::new("enemies", "{{Magnification|Relic Doge|100%}}".to_string()),
-                TemplateParameter::new("boss", "{{Magnification|Relic Bun-Bun|100%}}".to_string()),
-                TemplateParameter::new("enemies2", "{{Magnification|Relic Doge|150%}}".to_string()),
-                TemplateParameter::new("boss2", "{{Magnification|Relic Bun-Bun|150%}}".to_string()),
-                TemplateParameter::new("enemies3", "{{Magnification|Relic Doge|200%}}".to_string()),
-                TemplateParameter::new("boss3", "{{Magnification|Relic Bun-Bun|200%}}".to_string()),
+                TemplateParameter::new("enemies", "{{Magnification|Relic Doge|100%}}"),
+                TemplateParameter::new("boss", "{{Magnification|Relic Bun-Bun|100%}}"),
+                TemplateParameter::new("enemies2", "{{Magnification|Relic Doge|150%}}"),
+                TemplateParameter::new("boss2", "{{Magnification|Relic Bun-Bun|150%}}"),
+                TemplateParameter::new("enemies3", "{{Magnification|Relic Doge|200%}}"),
+                TemplateParameter::new("boss3", "{{Magnification|Relic Bun-Bun|200%}}"),
             ]
         );
     }
@@ -240,9 +240,8 @@ mod tests {
                     |Gabriel|900%\n\
                     |Gabriel|1,000%\n\
                     |Gabriel|2,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|Le'boin|10,000%}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|Le'boin|10,000%}}"),
                 TemplateParameter::new(
                     "enemies2",
                     "{{Magnification|Doge|3,600%\n\
@@ -254,9 +253,8 @@ mod tests {
                     |Gabriel|1,080%\n\
                     |Gabriel|1,200%\n\
                     |Gabriel|2,400%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss2", "{{Magnification|Le'boin|12,000%}}".to_string()),
+                TemplateParameter::new("boss2", "{{Magnification|Le'boin|12,000%}}"),
                 TemplateParameter::new(
                     "enemies3",
                     "{{Magnification|Doge|4,200%\n\
@@ -268,9 +266,8 @@ mod tests {
                     |Gabriel|1,260%\n\
                     |Gabriel|1,400%\n\
                     |Gabriel|2,800%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss3", "{{Magnification|Le'boin|14,000%}}".to_string()),
+                TemplateParameter::new("boss3", "{{Magnification|Le'boin|14,000%}}"),
             ]
         );
     }
@@ -289,7 +286,6 @@ mod tests {
                 |Berserkory|200%\n\
                 |Heavy Assault C.A.T.|100/150%\n\
                 |Mr. Angel|300%}}"
-                    .to_string()
             )]
         );
 
@@ -303,13 +299,11 @@ mod tests {
                     "{{Magnification|Celeboodle|1,000%\n\
                     |Relic Doge|150%\n\
                     |Sir Rel|150%}}"
-                        .to_string()
                 ),
                 TemplateParameter::new(
                     "boss",
                     "{{Magnification|Ururun Wolf|300/500%\n\
                     |Mystic Mask Yulala|100%}}"
-                        .to_string()
                 )
             ]
         );
@@ -329,9 +323,8 @@ mod tests {
                     |Gory|400%\n\
                     |Hippoe|400%\n\
                     |Doge Dark|100%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|Squire Rel|100%}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|Squire Rel|100%}}"),
                 TemplateParameter::new(
                     "enemies2",
                     "{{Magnification|Doge|600%\n\
@@ -340,9 +333,8 @@ mod tests {
                     |Gory|600%\n\
                     |Hippoe|600%\n\
                     |Doge Dark|150%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss2", "{{Magnification|Squire Rel|150%}}".to_string()),
+                TemplateParameter::new("boss2", "{{Magnification|Squire Rel|150%}}"),
                 TemplateParameter::new(
                     "enemies3",
                     "{{Magnification|Doge|800%\n\
@@ -351,9 +343,8 @@ mod tests {
                     |Gory|800%\n\
                     |Hippoe|800%\n\
                     |Doge Dark|200%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss3", "{{Magnification|Squire Rel|200%}}".to_string()),
+                TemplateParameter::new("boss3", "{{Magnification|Squire Rel|200%}}"),
                 TemplateParameter::new(
                     "enemies4",
                     "{{Magnification|Doge|1,200%\n\
@@ -362,9 +353,8 @@ mod tests {
                     |Gory|1,200%\n\
                     |Hippoe|1,200%\n\
                     |Doge Dark|300%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss4", "{{Magnification|Squire Rel|300%}}".to_string()),
+                TemplateParameter::new("boss4", "{{Magnification|Squire Rel|300%}}"),
             ]
         );
     }
@@ -386,9 +376,8 @@ mod tests {
                     |Doge Dark|1,000%\n\
                     |Doge Dark|1,200%\n\
                     |Doge Dark|2,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|H. Nah|200%}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|H. Nah|200%}}"),
                 TemplateParameter::new(
                     "enemies2",
                     "{{Magnification|Doge|3,000%\n\
@@ -400,9 +389,8 @@ mod tests {
                     |Doge Dark|1,500%\n\
                     |Doge Dark|1,800%\n\
                     |Doge Dark|3,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss2", "{{Magnification|H. Nah|300%}}".to_string()),
+                TemplateParameter::new("boss2", "{{Magnification|H. Nah|300%}}"),
                 TemplateParameter::new(
                     "enemies3",
                     "{{Magnification|Doge|4,000%\n\
@@ -414,9 +402,8 @@ mod tests {
                     |Doge Dark|2,000%\n\
                     |Doge Dark|2,400%\n\
                     |Doge Dark|4,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss3", "{{Magnification|H. Nah|400%}}".to_string()),
+                TemplateParameter::new("boss3", "{{Magnification|H. Nah|400%}}"),
                 TemplateParameter::new(
                     "enemies4",
                     "{{Magnification|Doge|4,000%\n\
@@ -428,9 +415,8 @@ mod tests {
                     |Doge Dark|2,000%\n\
                     |Doge Dark|2,400%\n\
                     |Doge Dark|4,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss4", "{{Magnification|H. Nah|400%}}".to_string()),
+                TemplateParameter::new("boss4", "{{Magnification|H. Nah|400%}}"),
             ]
         );
     }
@@ -442,49 +428,33 @@ mod tests {
         assert_eq!(
             enemies_list(&kugel_schreiber, true),
             vec![
-                TemplateParameter::new(
-                    "enemies",
-                    "{{Magnification|Assassin Bear|200%}}".to_string()
-                ),
+                TemplateParameter::new("enemies", "{{Magnification|Assassin Bear|200%}}"),
                 TemplateParameter::new(
                     "boss",
                     "{{Magnification|Dober P.D|100%\n\
                     |R.Ost|100%\n\
                     |THE SLOTH|200%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new(
-                    "enemies2",
-                    "{{Magnification|Assassin Bear|240%}}".to_string()
-                ),
+                TemplateParameter::new("enemies2", "{{Magnification|Assassin Bear|240%}}"),
                 TemplateParameter::new(
                     "boss2",
                     "{{Magnification|Dober P.D|120%\n\
                     |R.Ost|120%\n\
                     |THE SLOTH|240%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new(
-                    "enemies3",
-                    "{{Magnification|Assassin Bear|280%}}".to_string()
-                ),
+                TemplateParameter::new("enemies3", "{{Magnification|Assassin Bear|280%}}"),
                 TemplateParameter::new(
                     "boss3",
                     "{{Magnification|Dober P.D|140%\n\
                     |R.Ost|140%\n\
                     |THE SLOTH|280%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new(
-                    "enemies4",
-                    "{{Magnification|Assassin Bear|220%}}".to_string()
-                ),
+                TemplateParameter::new("enemies4", "{{Magnification|Assassin Bear|220%}}"),
                 TemplateParameter::new(
                     "boss4",
                     "{{Magnification|Dober P.D|110%\n\
                     |R.Ost|110%\n\
                     |THE SLOTH|220%}}"
-                        .to_string()
                 )
             ]
         );
@@ -501,25 +471,22 @@ mod tests {
                     "{{Magnification|Doge|120,000%\n\
                     |Snache|120,000%\n\
                     |Those Guys|120,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|Hippoe|120,000%}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|Hippoe|120,000%}}"),
                 TemplateParameter::new(
                     "enemies2",
                     "{{Magnification|Doge|144,000%\n\
                     |Snache|144,000%\n\
                     |Those Guys|144,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss2", "{{Magnification|Hippoe|144,000%}}".to_string()),
+                TemplateParameter::new("boss2", "{{Magnification|Hippoe|144,000%}}"),
                 TemplateParameter::new(
                     "enemies3",
                     "{{Magnification|Doge|156,000%\n\
                     |Snache|156,000%\n\
                     |Those Guys|156,000%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss3", "{{Magnification|Hippoe|156,000%}}".to_string()),
+                TemplateParameter::new("boss3", "{{Magnification|Hippoe|156,000%}}"),
             ]
         );
     }
@@ -539,12 +506,8 @@ mod tests {
                     |Zigge|200%\n\
                     |Zomboe|200%\n\
                     |B.B.Bunny|2,800%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new(
-                    "boss",
-                    "{{Magnification|Teacher Bun Bun|1,500%}}".to_string()
-                ),
+                TemplateParameter::new("boss", "{{Magnification|Teacher Bun Bun|1,500%}}"),
                 TemplateParameter::new(
                     "enemies2",
                     "{{Magnification|Zroco|240%\n\
@@ -552,12 +515,8 @@ mod tests {
                     |Zigge|240%\n\
                     |Zomboe|240%\n\
                     |B.B.Bunny|3,360%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new(
-                    "boss2",
-                    "{{Magnification|Teacher Bun Bun|1,800%}}".to_string()
-                ),
+                TemplateParameter::new("boss2", "{{Magnification|Teacher Bun Bun|1,800%}}"),
                 TemplateParameter::new(
                     "enemies3",
                     "{{Magnification|Zroco|280%\n\
@@ -565,12 +524,8 @@ mod tests {
                     |Zigge|280%\n\
                     |Zomboe|280%\n\
                     |B.B.Bunny|3,920%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new(
-                    "boss3",
-                    "{{Magnification|Teacher Bun Bun|2,100%}}".to_string()
-                ),
+                TemplateParameter::new("boss3", "{{Magnification|Teacher Bun Bun|2,100%}}"),
             ]
         );
     }
@@ -582,7 +537,7 @@ mod tests {
             enemies_list(&finale, true),
             vec![TemplateParameter::new(
                 "base",
-                "{{Magnification|Finale Base|100%}}".to_string()
+                "{{Magnification|Finale Base|100%}}"
             ),]
         );
     }
@@ -594,10 +549,7 @@ mod tests {
         assert_eq!(
             enemies_list(&relay_1600m, true),
             vec![
-                TemplateParameter::new(
-                    "base",
-                    "{{Magnification|Relay Base|7,500,000%}}".to_string()
-                ),
+                TemplateParameter::new("base", "{{Magnification|Relay Base|7,500,000%}}"),
                 TemplateParameter::new(
                     "enemies",
                     "{{Magnification|White Wind|700%\n\
@@ -607,9 +559,8 @@ mod tests {
                     |Black Wind|700%\n\
                     |R.Ost|100%\n\
                     |Bore|200%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|Le'noir|150%}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|Le'noir|150%}}"),
             ]
         );
     }
@@ -621,42 +572,30 @@ mod tests {
         assert_eq!(
             enemies_list(&pile_of_guts, true),
             vec![
-                TemplateParameter::new(
-                    "base",
-                    "{{Magnification|Relic Doge Base|40,000%}}".to_string()
-                ),
+                TemplateParameter::new("base", "{{Magnification|Relic Doge Base|40,000%}}"),
                 TemplateParameter::new(
                     "enemies",
                     "{{Magnification|Bore Jr.|100%\n\
                     |Celeboodle|1,000%\n\
                     |R.Ost|300%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|THE SLOTH|400%}}".to_string()),
-                TemplateParameter::new(
-                    "base2",
-                    "{{Magnification|Relic Doge Base|52,000%}}".to_string()
-                ),
+                TemplateParameter::new("boss", "{{Magnification|THE SLOTH|400%}}"),
+                TemplateParameter::new("base2", "{{Magnification|Relic Doge Base|52,000%}}"),
                 TemplateParameter::new(
                     "enemies2",
                     "{{Magnification|Bore Jr.|130%\n\
                     |Celeboodle|1,300%\n\
                     |R.Ost|390%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss2", "{{Magnification|THE SLOTH|520%}}".to_string()),
-                TemplateParameter::new(
-                    "base3",
-                    "{{Magnification|Relic Doge Base|68,000%}}".to_string()
-                ),
+                TemplateParameter::new("boss2", "{{Magnification|THE SLOTH|520%}}"),
+                TemplateParameter::new("base3", "{{Magnification|Relic Doge Base|68,000%}}"),
                 TemplateParameter::new(
                     "enemies3",
                     "{{Magnification|Bore Jr.|170%\n\
                     |Celeboodle|1,700%\n\
                     |R.Ost|510%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss3", "{{Magnification|THE SLOTH|680%}}".to_string()),
+                TemplateParameter::new("boss3", "{{Magnification|THE SLOTH|680%}}"),
             ]
         );
     }
@@ -676,9 +615,8 @@ mod tests {
                     |Zory|0\n\
                     |Shadow Boxer K|0\n\
                     |Zang Roo|0}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|Baron Seal|0}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|Baron Seal|0}}"),
             ]
         );
     }
@@ -698,9 +636,8 @@ mod tests {
                     |Zory|100%\n\
                     |Shadow Boxer K|150%\n\
                     |Zang Roo|100%}}"
-                        .to_string()
                 ),
-                TemplateParameter::new("boss", "{{Magnification|Baron Seal|6,000%}}".to_string()),
+                TemplateParameter::new("boss", "{{Magnification|Baron Seal|6,000%}}"),
             ]
         );
     }
@@ -712,7 +649,7 @@ mod tests {
         assert_eq!(
             enemies_list(&wanderer_trial, true),
             vec![
-                TemplateParameter::new("base", "{{Magnification|Scarecrow|0}}".to_string()),
+                TemplateParameter::new("base", "{{Magnification|Scarecrow|0}}"),
                 TemplateParameter::new(
                     "enemies",
                     "{{Magnification|One Horn|0\n\
@@ -723,7 +660,6 @@ mod tests {
                     |Shadow Boxer K|0\n\
                     |Dagshund|0\n\
                     |Le'boin|0}}"
-                        .to_string()
                 ),
                 TemplateParameter::new(
                     "boss",
@@ -732,7 +668,6 @@ mod tests {
                     |R.Ost|0\n\
                     |St. Pigge the 2nd|0\n\
                     |Le'boin|0}}"
-                        .to_string()
                 ),
             ]
         );

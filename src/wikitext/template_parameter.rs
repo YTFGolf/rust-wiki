@@ -6,14 +6,18 @@ use std::{borrow::Cow, fmt::Display};
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
     key: Cow<'static, str>,
-    value: String,
+    value: Cow<'static, str>,
 }
 impl TemplateParameter {
     /// Create a parameter.
-    pub fn new<T: Into<Cow<'static, str>>>(key: T, value: String) -> Self {
+    pub fn new<T, U>(key: T, value: U) -> Self
+    where
+        T: Into<Cow<'static, str>>,
+        U: Into<Cow<'static, str>>,
+    {
         Self {
             key: key.into(),
-            value,
+            value: value.into(),
         }
     }
 }
