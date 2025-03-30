@@ -205,11 +205,10 @@ mod tests {
         let great_escaper =
             Stage::from_id_current(StageID::from_components(T::SoL, 17, 5)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&great_escaper, &Lang::EN).to_string())
-            .unwrap();
-        buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&great_escaper, &Lang::EN).to_string())
-            .unwrap();
+
+        write!(buf, "{}", stage_name(&great_escaper, &Lang::EN)).unwrap();
+        buf += "\n";
+        write!(buf, "{}", stage_location(&great_escaper, &Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
@@ -222,11 +221,10 @@ mod tests {
         let red_summit =
             Stage::from_id_current(StageID::from_components(T::Enigma, 10, 0)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&red_summit, &Lang::EN).to_string())
-            .unwrap();
-        buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&red_summit, &Lang::EN).to_string())
-            .unwrap();
+
+        write!(buf, "{}", stage_name(&red_summit, &Lang::EN)).unwrap();
+        buf += "\n";
+        write!(buf, "{}", stage_location(&red_summit, &Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
@@ -238,11 +236,10 @@ mod tests {
 
         let finale = Stage::from_id_current(StageID::from_components(T::Collab, 209, 0)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&finale, &Lang::EN).to_string())
-            .unwrap();
-        buf.write_str("\n").unwrap();
-        buf.write_str(&stage_location(&finale, &Lang::EN).to_string())
-            .unwrap();
+
+        write!(buf, "{}", stage_name(&finale, &Lang::EN)).unwrap();
+        buf += "\n";
+        write!(buf, "{}", stage_location(&finale, &Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
@@ -255,8 +252,8 @@ mod tests {
         let relay_1600m =
             Stage::from_id_current(StageID::from_components(T::Extra, 61, 2)).unwrap();
         let mut buf = String::new();
-        buf.write_str(&stage_name(&relay_1600m, &Lang::EN).to_string())
-            .unwrap();
+
+        write!(buf, "{}", stage_name(&relay_1600m, &Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
