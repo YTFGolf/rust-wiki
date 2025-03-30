@@ -114,7 +114,7 @@ mod tests {
             cli,
             Cli {
                 command: Command::StageInfo(StageInfoOptions {
-                    selector: ["l 0 0".to_string()].to_vec(),
+                    selector: ["l 0 0".into()].into(),
                     suppress: Default::default(),
                     base: Default::default(),
                     version: Default::default(),
@@ -137,7 +137,7 @@ mod tests {
             cli,
             Cli {
                 command: Command::StageInfo(StageInfoOptions {
-                    selector: ["l".to_string(), "0".to_string(), "0".to_string()].to_vec(),
+                    selector: ["l".into(), "0".into(), "0".into()].into(),
                     suppress: Default::default(),
                     base: Default::default(),
                     version: Default::default(),
@@ -160,7 +160,7 @@ mod tests {
             cli,
             Cli {
                 command: Command::StageInfo(StageInfoOptions {
-                    selector: ["filibuster".to_string()].to_vec(),
+                    selector: ["filibuster".into()].into(),
                     suppress: Default::default(),
                     base: Default::default(),
                     version: Default::default(),

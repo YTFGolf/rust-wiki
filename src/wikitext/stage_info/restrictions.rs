@@ -633,7 +633,7 @@ mod tests {
             max_cost: None,
             charagroup: Some(CharaGroup {
                 group_type: CharaGroupType::CannotUse,
-                units: [440].to_vec(),
+                units: [440].into(),
             }),
         }
     }
@@ -672,8 +672,8 @@ mod tests {
     #[should_panic = "Crown 1 is duplicated in vec [1, 1, 1, 1]."]
     fn test_assert_all_restrictions_unique() {
         let restrictions: &[(std::string::String, Vec<u8>)] = &[
-            ("Rarity: Short lines".to_string(), [1, 1, 1, 1].to_vec()),
-            ("Max # of Deployable Cats: 10".to_string(), [4].to_vec()),
+            ("Rarity: Short lines".to_string(), [1, 1, 1, 1].into()),
+            ("Max # of Deployable Cats: 10".to_string(), [4].into()),
         ];
         assert_all_restrictions_unique(restrictions);
     }
