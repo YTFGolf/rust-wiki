@@ -26,7 +26,7 @@ pub fn star(stage: &Stage) -> TemplateParameter {
 /// Get the `event`, `event-chapter` or `sub-chapter` items.
 pub fn chapter(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplateParameter> {
     fn get_map_name(map: &MapWikiData) -> String {
-        OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1").to_string()
+        OLD_OR_REMOVED_SUB.replace_all(&map.name, "$1").into_owned()
     }
 
     match stage.id.variant() {

@@ -309,7 +309,7 @@ fn nav(map: &GameMap) -> String {
 }
 
 /// Footer (templates/categories).
-fn footer(map: &GameMap) -> String {
+fn footer(map: &GameMap) -> &'static str {
     match map.id.variant().into() {
         LegendSubset::SoL => {
             "{{LegendStages}}\n\
@@ -324,7 +324,6 @@ fn footer(map: &GameMap) -> String {
             [[Category:Zero Legends Chapters]]"
         }
     }
-    .to_string()
 }
 
 /// Get variable defined in format.
@@ -338,7 +337,8 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
         "materials" => materials(map, version),
         "ref" => reference(map),
         "nav" => nav(map),
-        "footer" => footer(map),
+        "footer" => footer(map).to_string(),
+        // TODO replace with better template function
         invalid => panic!("Variable {invalid:?} is not recognised!"),
     }
 }
