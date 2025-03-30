@@ -201,27 +201,24 @@ mod tests {
     fn test_single_stage() {
         let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
         let data = get_stage_wiki_data(&earthshaker);
-        assert_eq!(
-            star(&earthshaker),
-            TemplateParameter::new("star", "4".to_string())
-        );
+        assert_eq!(star(&earthshaker), TemplateParameter::new("star", "4"));
         assert_eq!(
             chapter(&earthshaker, &data),
             vec![TemplateParameter::new(
                 "sub-chapter",
-                "[[The Legend Begins]]".to_string()
+                "[[The Legend Begins]]"
             )]
         );
         assert_eq!(max_clears(&earthshaker), None);
         assert_eq!(
             difficulty(&earthshaker),
-            Some(TemplateParameter::new("difficulty", "★1".to_string()))
+            Some(TemplateParameter::new("difficulty", "★1"))
         );
         assert_eq!(
             stage_nav(&earthshaker, &data),
             vec![
-                TemplateParameter::new("prev stage", "N/A".to_string()),
-                TemplateParameter::new("next stage", "[[Return of Terror]]".to_string())
+                TemplateParameter::new("prev stage", "N/A"),
+                TemplateParameter::new("next stage", "[[Return of Terror]]")
             ]
         );
     }
@@ -234,7 +231,7 @@ mod tests {
             chapter(&wanderer, &data),
             vec![TemplateParameter::new(
                 "dojo-chapter",
-                "[[Catclaw Dojo|Hall of Initiates]]".to_string()
+                "[[Catclaw Dojo|Hall of Initiates]]"
             )]
         );
 
@@ -243,10 +240,7 @@ mod tests {
         let data = get_stage_wiki_data(&crimson_trial_arena);
         assert_eq!(
             chapter(&crimson_trial_arena, &data),
-            vec![TemplateParameter::new(
-                "dojo-chapter",
-                "[[Arena of Honor]]".to_string()
-            )]
+            vec![TemplateParameter::new("dojo-chapter", "[[Arena of Honor]]")]
         );
 
         let rankup1 =
@@ -256,7 +250,7 @@ mod tests {
             chapter(&rankup1, &data),
             vec![TemplateParameter::new(
                 "dojo-chapter",
-                "[[Catclaw Championships#Catclaw Championships Rank 1|Catclaw Championships Rank 1]]".to_string()
+                "[[Catclaw Championships#Catclaw Championships Rank 1|Catclaw Championships Rank 1]]"
             )]
         );
     }
@@ -275,7 +269,6 @@ mod tests {
             vec![TemplateParameter::new(
                 "event-chapter",
                 "[[Autumn = Sports Day! (Monthly Event)#Autumn Sports Day|Autumn Sports Day]]"
-                    .to_string()
             )]
         );
     }
@@ -286,7 +279,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Event, 78, 0)).unwrap();
         assert_eq!(
             max_clears(&steel_visage),
-            Some(TemplateParameter::new("max clears", "1".to_string()))
+            Some(TemplateParameter::new("max clears", "1"))
         );
     }
 
@@ -298,10 +291,10 @@ mod tests {
         assert_eq!(
             stage_nav(&spectrum_of_truth, &data),
             vec![
-                TemplateParameter::new("prev stage", "N/A".to_string()),
+                TemplateParameter::new("prev stage", "N/A"),
                 TemplateParameter::new(
                     "next stage",
-                    "[[Miracle Iris (Deadly)]] (''Continuation Stage'', 40%)".to_string()
+                    "[[Miracle Iris (Deadly)]] (''Continuation Stage'', 40%)"
                 ),
             ]
         );
@@ -315,13 +308,12 @@ mod tests {
         assert_eq!(
             stage_nav(&green_envy_3, &data),
             vec![
-                TemplateParameter::new("prev stage", "[[Green Envy (Expert)]]".to_string()),
+                TemplateParameter::new("prev stage", "[[Green Envy (Expert)]]"),
                 TemplateParameter::new(
                     "next stage",
                     "[[Catfruit Jubilee]] (''Continuation Stage'', 5%)<br>\n\
                     [[Catfruit Jubilee]] (''Continuation Stage'', 5%)<br>\n\
                     [[Catfruit Jubilee]] (''Continuation Stage'', 5%)"
-                        .to_string()
                 )
             ]
         );
@@ -334,17 +326,16 @@ mod tests {
         let data = get_stage_wiki_data(&proving_grounds);
         assert_eq!(
             max_clears(&proving_grounds),
-            Some(TemplateParameter::new("max clears", "1".to_string()))
+            Some(TemplateParameter::new("max clears", "1"))
         );
         assert_eq!(
             stage_nav(&proving_grounds, &data),
             vec![
-                TemplateParameter::new("prev stage", "[[First Round (Expert)]]".to_string()),
+                TemplateParameter::new("prev stage", "[[First Round (Expert)]]"),
                 TemplateParameter::new(
                     "next stage",
                     "[[2nd Round: Dawn (Deadly)]] (''Continuation Stage'')<br>\n\
                     [[2nd Round: Dusk (Deadly)]] (''Continuation Stage'')"
-                        .to_string()
                 )
             ]
         );
@@ -358,12 +349,11 @@ mod tests {
         assert_eq!(
             stage_nav(&sweet_potato_province, &data),
             vec![
-                TemplateParameter::new("prev stage", "N/A".to_string()),
+                TemplateParameter::new("prev stage", "N/A"),
                 TemplateParameter::new(
                     "next stage",
                     "[[Volcano Province]]<br>\n\
                     [[Doge Disturbance (Sweet Potato Province)|Doge Disturbance]] (''Invasion Stage'')"
-                        .to_string()
                 )
             ]
         );

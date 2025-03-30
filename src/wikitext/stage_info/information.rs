@@ -90,7 +90,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     const PARAM_NAME_4: &str = "enemy castle hp4";
 
     if stage.time_limit.is_some() {
-        return vec![TemplateParameter::new(PARAM_NAME, "Unlimited".to_string())];
+        return vec![TemplateParameter::new(PARAM_NAME, "Unlimited")];
     }
     // Dojo
     if stage.anim_base_id.is_none() {
@@ -266,10 +266,7 @@ mod tests {
     #[test]
     fn test_energy_normal() {
         let aac = Stage::from_id_current(StageID::from_components(T::UL, 0, 0)).unwrap();
-        assert_eq!(
-            energy(&aac),
-            Some(TemplateParameter::new("energy", "200".to_string()))
-        );
+        assert_eq!(energy(&aac), Some(TemplateParameter::new("energy", "200")));
     }
 
     #[test]
@@ -278,7 +275,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Challenge, 0, 0)).unwrap();
         assert_eq!(
             energy(&challenge),
-            Some(TemplateParameter::new("energy", "0".to_string()))
+            Some(TemplateParameter::new("energy", "0"))
         );
     }
 
@@ -287,7 +284,7 @@ mod tests {
         let door_opens = Stage::from_id_current(StageID::from_components(T::Extra, 47, 0)).unwrap();
         assert_eq!(
             energy(&door_opens),
-            Some(TemplateParameter::new("energy", "N/A".to_string()))
+            Some(TemplateParameter::new("energy", "N/A"))
         );
     }
 
@@ -297,10 +294,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Catamin, 5, 0)).unwrap();
         assert_eq!(
             energy(&facing_danger),
-            Some(TemplateParameter::new(
-                "catamins",
-                "[[Catamin]] [C] x2".to_string()
-            ))
+            Some(TemplateParameter::new("catamins", "[[Catamin]] [C] x2"))
         );
     }
 
@@ -310,7 +304,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Event, 326, 0)).unwrap();
         assert_eq!(
             energy(&mining_epic),
-            Some(TemplateParameter::new("energy", "1,000".to_string()))
+            Some(TemplateParameter::new("energy", "1,000"))
         );
     }
 
@@ -326,10 +320,7 @@ mod tests {
         let ht30 = Stage::from_id_current(StageID::from_components(T::Tower, 0, 29)).unwrap();
         assert_eq!(
             base_hp(&ht30),
-            vec![TemplateParameter::new(
-                "enemy castle hp",
-                "1,000,000 HP".to_string()
-            )]
+            vec![TemplateParameter::new("enemy castle hp", "1,000,000 HP")]
         );
     }
 
@@ -338,10 +329,7 @@ mod tests {
         let dojo = Stage::from_id_current(StageID::from_components(T::Dojo, 0, 0)).unwrap();
         assert_eq!(
             base_hp(&dojo),
-            vec![TemplateParameter::new(
-                "enemy castle hp",
-                "Unlimited".to_string()
-            )]
+            vec![TemplateParameter::new("enemy castle hp", "Unlimited")]
         );
     }
 
@@ -353,20 +341,14 @@ mod tests {
         assert_eq!(just_friends.base_hp, 10);
         assert_eq!(
             base_hp(&just_friends),
-            vec![TemplateParameter::new(
-                "enemy castle hp",
-                "30,000 HP".to_string()
-            )]
+            vec![TemplateParameter::new("enemy castle hp", "30,000 HP")]
         );
 
         let finale = Stage::from_id_current(StageID::from_components(T::Collab, 209, 0)).unwrap();
         assert_eq!(finale.base_hp, 1_000);
         assert_eq!(
             base_hp(&finale),
-            vec![TemplateParameter::new(
-                "enemy castle hp",
-                "50 HP".to_string()
-            )]
+            vec![TemplateParameter::new("enemy castle hp", "50 HP")]
         );
     }
 
@@ -378,10 +360,10 @@ mod tests {
         assert_eq!(
             base_hp(&rongorongo),
             vec![
-                TemplateParameter::new("enemy castle hp", "300,000 HP".to_string()),
-                TemplateParameter::new("enemy castle hp2", "450,000 HP".to_string()),
-                TemplateParameter::new("enemy castle hp3", "600,000 HP".to_string()),
-                TemplateParameter::new("enemy castle hp4", "900,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp", "300,000 HP"),
+                TemplateParameter::new("enemy castle hp2", "450,000 HP"),
+                TemplateParameter::new("enemy castle hp3", "600,000 HP"),
+                TemplateParameter::new("enemy castle hp4", "900,000 HP"),
             ]
         );
     }
@@ -393,9 +375,9 @@ mod tests {
         assert_eq!(
             base_hp(&pile_of_guts),
             vec![
-                TemplateParameter::new("enemy castle hp", "1,200,000 HP".to_string()),
-                TemplateParameter::new("enemy castle hp2", "1,560,000 HP".to_string()),
-                TemplateParameter::new("enemy castle hp3", "2,040,000 HP".to_string()),
+                TemplateParameter::new("enemy castle hp", "1,200,000 HP"),
+                TemplateParameter::new("enemy castle hp2", "1,560,000 HP"),
+                TemplateParameter::new("enemy castle hp3", "2,040,000 HP"),
             ]
         );
         // As of 13.6 this is the only stage where base hp != actual stat and
@@ -408,17 +390,17 @@ mod tests {
         assert_eq!(earthshaker.xp, Some(950));
         assert_eq!(
             xp(&earthshaker),
-            Some(TemplateParameter::new("XP", "950 XP".to_string()))
+            Some(TemplateParameter::new("XP", "950 XP"))
         );
         assert_eq!(earthshaker.width, 4_200);
         assert_eq!(
             width(&earthshaker),
-            TemplateParameter::new("width", "4,200".to_string())
+            TemplateParameter::new("width", "4,200")
         );
         assert_eq!(earthshaker.max_enemies, 7);
         assert_eq!(
             max_enemies(&earthshaker),
-            TemplateParameter::new("max enemies", "7".to_string())
+            TemplateParameter::new("max enemies", "7")
         );
 
         let labyrinth_67 =
@@ -428,12 +410,12 @@ mod tests {
         assert_eq!(labyrinth_67.width, 3_900);
         assert_eq!(
             width(&labyrinth_67),
-            TemplateParameter::new("width", "3,900".to_string())
+            TemplateParameter::new("width", "3,900")
         );
         assert_eq!(labyrinth_67.max_enemies, 30);
         assert_eq!(
             max_enemies(&labyrinth_67),
-            TemplateParameter::new("max enemies", "30".to_string())
+            TemplateParameter::new("max enemies", "30")
         );
     }
 }

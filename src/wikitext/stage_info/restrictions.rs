@@ -336,10 +336,7 @@ mod tests {
         assert_eq!(realm_of_carnage.restrictions, None);
         assert_eq!(
             restrictions_info(&realm_of_carnage),
-            Some(TemplateParameter::new(
-                "restriction",
-                "[[No Continues]]".to_string()
-            ))
+            Some(TemplateParameter::new("restriction", "[[No Continues]]"))
         );
         assert_eq!(&restrictions_section(&realm_of_carnage), "");
     }
@@ -359,7 +356,13 @@ mod tests {
     fn restriction_rarity_1() {
         let sighter_star =
             Stage::from_id_current(StageID::from_components(T::MainChapters, 8, 24)).unwrap();
-        assert_eq!( restrictions_info (&sighter_star), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]".to_string() )) );
+        assert_eq!(
+            restrictions_info(&sighter_star),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]"
+            ))
+        );
         assert_eq!(
             &restrictions_section(&sighter_star),
             "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]"
@@ -370,7 +373,13 @@ mod tests {
     fn restriction_rarity_2() {
         let babies_first =
             Stage::from_id_current(StageID::from_components(T::Event, 375, 0)).unwrap();
-        assert_eq!( restrictions_info (&babies_first), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]".to_string() )) );
+        assert_eq!(
+            restrictions_info(&babies_first),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]<br>\n[[No Continues]]"
+            ))
+        );
         assert_eq!(
             &restrictions_section(&babies_first),
             "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]"
@@ -385,7 +394,7 @@ mod tests {
             restrictions_info(&somolon),
             Some(TemplateParameter::new(
                 "restriction",
-                "Rarity: Only [[:Category:Special Cats|Special]]".to_string()
+                "Rarity: Only [[:Category:Special Cats|Special]]"
             ))
         );
         assert_eq!(
@@ -397,7 +406,13 @@ mod tests {
     #[test]
     fn restriction_rarity_4() {
         let wahwah = Stage::from_id_current(StageID::from_components(T::Event, 158, 0)).unwrap();
-        assert_eq!( restrictions_info (&wahwah), Some(TemplateParameter::new( "restriction", "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]".to_string() )) );
+        assert_eq!(
+            restrictions_info(&wahwah),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]<br>\n[[No Continues]]"
+            ))
+        );
         assert_eq!(
             &restrictions_section(&wahwah),
             "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]"
@@ -412,7 +427,7 @@ mod tests {
             restrictions_info(&wrath_w_cyclone),
             Some(TemplateParameter::new(
                 "restriction",
-                "Max # of Deployable Cats: 10".to_string()
+                "Max # of Deployable Cats: 10"
             ))
         );
         assert_eq!(
@@ -429,7 +444,7 @@ mod tests {
             restrictions_info(&uranus),
             Some(TemplateParameter::new(
                 "restriction",
-                "Deploy from Row 1 only".to_string()
+                "Deploy from Row 1 only"
             ))
         );
         assert_eq!(&restrictions_section(&uranus), "Deploy from Row 1 only");
@@ -443,7 +458,7 @@ mod tests {
             restrictions_info(&saturn),
             Some(TemplateParameter::new(
                 "restriction",
-                "Cat Deploy Cost: Only 300¢ or more".to_string()
+                "Cat Deploy Cost: Only 300¢ or more"
             ))
         );
         assert_eq!(
@@ -460,7 +475,7 @@ mod tests {
             restrictions_info(&skelling),
             Some(TemplateParameter::new(
                 "restriction",
-                "Cat Deploy Cost: Only 1,200¢ or more".to_string()
+                "Cat Deploy Cost: Only 1,200¢ or more"
             ))
         );
         assert_eq!(
@@ -477,7 +492,7 @@ mod tests {
             restrictions_info(&buutara),
             Some(TemplateParameter::new(
                 "restriction",
-                "Cat Deploy Cost: Only 1,200¢ or less".to_string()
+                "Cat Deploy Cost: Only 1,200¢ or less"
             ))
         );
         assert_eq!(
@@ -494,7 +509,7 @@ mod tests {
             restrictions_info(&catseye_nebula),
             Some(TemplateParameter::new(
                 "restriction",
-                "Cat Deploy Cost: Only 4,000¢ or less".to_string()
+                "Cat Deploy Cost: Only 4,000¢ or less"
             ))
         );
         assert_eq!(
@@ -510,7 +525,7 @@ mod tests {
             restrictions_info(&finale),
             Some(TemplateParameter::new(
                 "restriction",
-                "Unit Restriction: Only [[Cat (Normal Cat)|Cat]]".to_string()
+                "Unit Restriction: Only [[Cat (Normal Cat)|Cat]]"
             ))
         );
         assert_eq!(
@@ -527,7 +542,7 @@ mod tests {
             restrictions_info(&final_race),
             Some(TemplateParameter::new(
                 "restriction",
-                "Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]".to_string()
+                "Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]"
             ))
         );
         assert_eq!(
@@ -543,7 +558,7 @@ mod tests {
             restrictions_info(&sorry),
             Some(TemplateParameter::new(
                 "restriction",
-                "Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]<br>\n[[No Continues]]".to_string()
+                "Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]<br>\n[[No Continues]]"
             ))
         );
         assert_eq!(
@@ -564,7 +579,6 @@ mod tests {
                 [[:Category:Uber Rare Cats|Uber Rare]] and \
                 [[:Category:Legend Rare Cats|Legend Rare]]<br>\n\
                 Max # of Deployable Cats: 10"
-                    .to_string()
             ))
         );
         assert_eq!(
@@ -584,7 +598,6 @@ mod tests {
                 "restriction",
                 "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Special Cats|Special]] and [[:Category:Rare Cats|Rare]]<br>\n\
                 4-Crown: Max # of Deployable Cats: 10"
-                    .to_string()
             )),
         );
         assert_eq!(
@@ -613,7 +626,7 @@ mod tests {
             restrictions_info(&vanguard_veteran),
             Some(TemplateParameter::new(
                 "restriction",
-                "Max # of Deployable Cats: 1".to_string()
+                "Max # of Deployable Cats: 1"
             ))
         );
         assert_eq!(
@@ -659,7 +672,7 @@ mod tests {
             restrictions_info(&afraid_nothing),
             Some(TemplateParameter::new(
                 "restriction",
-                "Unit Restriction: Cannot use [[Bebe (Uber Rare Cat)|Bebe]]".to_string()
+                "Unit Restriction: Cannot use [[Bebe (Uber Rare Cat)|Bebe]]"
             ))
         );
         assert_eq!(
