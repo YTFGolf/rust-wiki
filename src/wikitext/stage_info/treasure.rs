@@ -293,7 +293,7 @@ mod tests {
             treasure(&ht30),
             Some(TemplateParameter::new(
                 "treasure",
-                "- [[Cat Capsule#Rare Cat Capsule|Rare Ticket]] +3 (100%, 1 time)".to_string()
+                "- [[Cat Capsule#Rare Cat Capsule|Rare Ticket]] +3 (100%, 1 time)"
             ))
         );
         assert_eq!(score_rewards(&ht30), None);
@@ -307,7 +307,7 @@ mod tests {
             treasure(&dark_souls),
             Some(TemplateParameter::new(
                 "treasure",
-                "- [[Crazed Cat (Super Rare Cat)|Crazed Cat]] (100%, 1 time)".to_string()
+                "- [[Crazed Cat (Super Rare Cat)|Crazed Cat]] (100%, 1 time)"
             ))
         );
         assert_eq!(score_rewards(&dark_souls), None);
@@ -325,7 +325,6 @@ mod tests {
                 "- 2,030,000 XP (10%, 1 time)<br>\n\
                 - 1,020,000 XP (30%, unlimited)<br>\n\
                 - 510,000 XP (70%, unlimited)"
-                    .to_string()
             ))
         );
         assert_eq!(score_rewards(&merciless_xp), None);
@@ -342,7 +341,6 @@ mod tests {
                 "- [[Catfruit|Epic Catfruit]] +1 (70%, unlimited)<br>\n\
                 - [[Catfruit|Purple Catfruit]] +1 (25.5%, unlimited)<br>\n\
                 - [[Catfruit|Purple Catfruit Seed]] +1 (4.5%, unlimited)"
-                    .to_string()
             ))
         );
         assert_eq!(score_rewards(&jubilee_night), None);
@@ -376,7 +374,7 @@ mod tests {
             treasure(&it30),
             Some(TemplateParameter::new(
                 "treasure",
-                "- [[Catfruit|Gold Catfruit Seed]] +1 (100%, 1 time)".to_string()
+                "- [[Catfruit|Gold Catfruit Seed]] +1 (100%, 1 time)"
             ))
         );
         assert_eq!(score_rewards(&it30), None);
@@ -399,7 +397,6 @@ mod tests {
                 - Meteorite +5 (13%)<br>\n\
                 - Beast Bones +5 (13%)<br>\n\
                 - Ammonite +5 (9%)"
-                    .to_string()
             ))
         );
         assert_eq!(score_rewards(&it29), None);
@@ -417,7 +414,6 @@ mod tests {
                 - [[Catamin]] [A] +3 (34%)<br>\n\
                 - [[Catamin]] [B] +3 (33%)<br>\n\
                 - [[Catamin]] [C] +3 (33%)"
-                    .to_string()
             ))
         );
     }
@@ -436,7 +432,6 @@ mod tests {
                 - [[Battle Items#Cat CPU|Cat CPU]] +1<br>\n\
                 - [[Battle Items#Cat Jobs|Cat Jobs]] +1<br>\n\
                 - [[Battle Items#Sniper the Cat|Sniper the Cat]] +1"
-                    .to_string()
             ))
         );
     }
@@ -450,7 +445,7 @@ mod tests {
             treasure(&afternoon_bug_hunt),
             Some(TemplateParameter::new(
                 "treasure",
-                "- [[Summer Break Cats (Event Gacha)|Legend Net]] +1 (100%, unlimited)".to_string()
+                "- [[Summer Break Cats (Event Gacha)|Legend Net]] +1 (100%, unlimited)"
             ))
         );
     }
@@ -471,7 +466,6 @@ mod tests {
                 - [[Battle Items#Cat CPU|Cat CPU]] +4<br>\n\
                 - [[Battle Items#Cat Jobs|Cat Jobs]] +2<br>\n\
                 - [[Battle Items#Sniper the Cat|Sniper the Cat]] +2"
-                    .to_string()
             ))
         );
         assert_eq!(score_rewards(&sakura_dance), None);
@@ -498,7 +492,6 @@ mod tests {
                 "score reward",
                 "'''8,500''': [[Cat Food]] +10<br>\n\
                 '''5,000''': 25,000 XP"
-                    .to_string()
             ))
         );
     }
@@ -537,7 +530,6 @@ mod tests {
                 - Meteorite +2 (11.5%)<br>\n\
                 - Bricks +1 (38.5%)<br>\n\
                 - Meteorite +1 (38.5%)"
-                    .to_string()
             )),
         );
     }
@@ -552,7 +544,6 @@ mod tests {
             Some(TemplateParameter::new(
                 "treasure",
                 "- [[Shinji & Cat (Rare Cat)|Shinji & Cat]]'s [[True Form]] (5%, 1 time)"
-                    .to_string()
             ))
         );
     }
@@ -577,7 +568,7 @@ mod tests {
             treasure(&incompetent_watchman),
             Some(TemplateParameter::new(
                 "treasure",
-                "- [[Battle Items#Sniper the Cat|Sniper the Cat]] +1 (1%, unlimited)".to_string()
+                "- [[Battle Items#Sniper the Cat|Sniper the Cat]] +1 (1%, unlimited)"
             ))
         );
     }
