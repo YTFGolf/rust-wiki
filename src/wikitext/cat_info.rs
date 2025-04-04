@@ -16,6 +16,9 @@ xp cost
 evolutions
 combos
 desc (will need to make other parts better)
+----
+anim is most important to get backswing
+growth curve is second to get stats working
 */
 
 /*

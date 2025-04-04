@@ -52,7 +52,7 @@ fn si_template(
         .add_params(xp(stage))
         .add_params(width(stage))
         .add_params(max_enemies(stage))
-        // .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+        .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
         .add_params(star(stage))
         .add_params(chapter(stage, stage_wiki_data))
         .add_params(max_clears(stage))

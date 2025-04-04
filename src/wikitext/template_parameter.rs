@@ -37,7 +37,13 @@ impl Template {
     }
 
     pub fn add_params<P: AutoParam>(mut self, params: P) -> Self {
-        params.extend_params(&mut self.params);
+        AutoParam::extend_params(params, &mut self.params);
+        self
+    }
+
+    pub fn add_const(mut self, params: &[(&'static str, &'static str)]) -> Self {
+        let params = params.iter().map(|(k, v)| TemplateParameter::new(*k, *v));
+        self.params.extend(params);
         self
     }
 }
