@@ -56,7 +56,7 @@ fn get_stage_wiki_data(stage: &StageID) -> StageWikiDataContainer {
         .unwrap_or_else(|| panic!("Couldn't find map name: {}", stage.map()));
     let stage_name = stage_map
         .get(stage.num())
-        .unwrap_or_else(|| panic!("Couldn't find stage name: {}", stage));
+        .unwrap_or_else(|| panic!("Couldn't find stage name: {stage}"));
 
     StageWikiDataContainer {
         stage_map,
