@@ -172,7 +172,7 @@ fn info_earthshaker() {
 
 #[test]
 fn info_finale() {
-    let finale = StageID::from_components(T::Collab, 209, 00);
+    let finale = StageID::from_components(T::Collab, 209, 0);
     let wik = get_stage_wiki_data(&finale);
     let stage = get_stage_variable(
         "si_template",
@@ -185,7 +185,7 @@ fn info_finale() {
 
 #[test]
 fn info_baron_mags() {
-    let baron = StageID::from_components(T::Gauntlet, 000, 19);
+    let baron = StageID::from_components(T::Gauntlet, 0, 19);
     let wik = get_stage_wiki_data(&baron);
 
     let mut config = get_config();
@@ -202,7 +202,7 @@ fn info_baron_mags() {
 
 #[test]
 fn info_baron_nomags() {
-    let baron = StageID::from_components(T::Gauntlet, 000, 19);
+    let baron = StageID::from_components(T::Gauntlet, 0, 19);
     let wik = get_stage_wiki_data(&baron);
 
     let mut config = get_config();
@@ -219,7 +219,7 @@ fn info_baron_nomags() {
 
 #[test]
 fn info_dojo() {
-    let dojo = StageID::from_components(T::Dojo, 00, 000);
+    let dojo = StageID::from_components(T::Dojo, 0, 0);
     let wik = get_stage_wiki_data(&dojo);
     let stage = get_stage_variable(
         "si_template",
