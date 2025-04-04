@@ -40,7 +40,7 @@ fn si_template(
     stage_wiki_data: &StageWikiDataContainer,
     config: &Config,
 ) -> Template {
-    let mut t = Template::named("Stage Info")
+    Template::named("Stage Info")
         .add_params(stage_name(stage, config.version.lang()))
         .add_params(stage_location(stage, config.version.lang()))
         .add_params(energy(stage))
@@ -57,9 +57,7 @@ fn si_template(
         .add_params(chapter(stage, stage_wiki_data))
         .add_params(max_clears(stage))
         .add_params(difficulty(stage))
-        .add_params(stage_nav(stage, stage_wiki_data));
-
-    t
+        .add_params(stage_nav(stage, stage_wiki_data))
 }
 
 /// Get the content of a format
