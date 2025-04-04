@@ -11,7 +11,7 @@ use variables::{DEFAULT_FORMAT, get_stage_variable};
 mod battlegrounds;
 mod beginning;
 mod enemies_list;
-mod info_test;
+mod tests;
 mod information;
 mod misc_information;
 mod restrictions;
