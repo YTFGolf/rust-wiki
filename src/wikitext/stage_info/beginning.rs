@@ -86,9 +86,9 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::super::test_util::get_stage_wiki_data;
     use super::*;
     use crate::meta::stage::{stage_id::StageID, variant::StageVariantID as T};
+    use crate::wikitext::stage_info::get_stage_wiki_data;
 
     #[test]
     fn test_enemies_appearing() {
@@ -127,7 +127,7 @@ mod tests {
     #[test]
     fn test_intro() {
         let ht30 = Stage::from_id_current(StageID::from_components(T::Tower, 0, 29)).unwrap();
-        let stage_wiki_data = get_stage_wiki_data(&ht30);
+        let stage_wiki_data = get_stage_wiki_data(&ht30.id);
         let buf = intro(&ht30, &stage_wiki_data);
         assert_eq!(
             &buf,
@@ -136,7 +136,7 @@ mod tests {
         // tower; no continues
 
         let whole_new = Stage::from_id_current(StageID::from_components(T::ZL, 0, 0)).unwrap();
-        let stage_wiki_data = get_stage_wiki_data(&whole_new);
+        let stage_wiki_data = get_stage_wiki_data(&whole_new.id);
         let buf = intro(&whole_new, &stage_wiki_data);
         assert_eq!(
             &buf,
@@ -145,7 +145,7 @@ mod tests {
         // only
 
         let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
-        let stage_wiki_data = get_stage_wiki_data(&earthshaker);
+        let stage_wiki_data = get_stage_wiki_data(&earthshaker.id);
         let buf = intro(&earthshaker, &stage_wiki_data);
         assert_eq!(
             &buf,
@@ -155,7 +155,7 @@ mod tests {
 
         let refusal_type =
             Stage::from_id_current(StageID::from_components(T::Collab, 206, 1)).unwrap();
-        let stage_wiki_data = get_stage_wiki_data(&refusal_type);
+        let stage_wiki_data = get_stage_wiki_data(&refusal_type.id);
         let buf = intro(&refusal_type, &stage_wiki_data);
         assert_eq!(
             &buf,
@@ -165,7 +165,7 @@ mod tests {
 
         let crimson_trial =
             Stage::from_id_current(StageID::from_components(T::RankingDojo, 20, 0)).unwrap();
-        let stage_wiki_data = get_stage_wiki_data(&crimson_trial);
+        let stage_wiki_data = get_stage_wiki_data(&crimson_trial.id);
         let buf = intro(&crimson_trial, &stage_wiki_data);
         assert_eq!(
             &buf,

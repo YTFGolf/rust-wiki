@@ -194,13 +194,13 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePa
 
 #[cfg(test)]
 mod tests {
-    use super::super::test_util::get_stage_wiki_data;
+    use crate::wikitext::stage_info::get_stage_wiki_data;
     use super::*;
 
     #[test]
     fn test_single_stage() {
         let earthshaker = Stage::from_id_current(StageID::from_components(T::SoL, 0, 0)).unwrap();
-        let data = get_stage_wiki_data(&earthshaker);
+        let data = get_stage_wiki_data(&earthshaker.id);
         assert_eq!(star(&earthshaker), TemplateParameter::new("star", "4"));
         assert_eq!(
             chapter(&earthshaker, &data),
@@ -226,7 +226,7 @@ mod tests {
     #[test]
     fn test_dojo() {
         let wanderer = Stage::from_id_current(StageID::from_components(T::Dojo, 0, 0)).unwrap();
-        let data = get_stage_wiki_data(&wanderer);
+        let data = get_stage_wiki_data(&wanderer.id);
         assert_eq!(
             chapter(&wanderer, &data),
             vec![TemplateParameter::new(
@@ -237,7 +237,7 @@ mod tests {
 
         let crimson_trial_arena =
             Stage::from_id_current(StageID::from_components(T::RankingDojo, 0, 0)).unwrap();
-        let data = get_stage_wiki_data(&crimson_trial_arena);
+        let data = get_stage_wiki_data(&crimson_trial_arena.id);
         assert_eq!(
             chapter(&crimson_trial_arena, &data),
             vec![TemplateParameter::new("dojo-chapter", "[[Arena of Honor]]")]
@@ -245,7 +245,7 @@ mod tests {
 
         let rankup1 =
             Stage::from_id_current(StageID::from_components(T::Championships, 0, 0)).unwrap();
-        let data = get_stage_wiki_data(&rankup1);
+        let data = get_stage_wiki_data(&rankup1.id);
         assert_eq!(
             chapter(&rankup1, &data),
             vec![TemplateParameter::new(
@@ -259,7 +259,7 @@ mod tests {
     fn test_old_map() {
         let athletic_meet =
             Stage::from_id_current(StageID::from_components(T::Event, 8, 0)).unwrap();
-        let data = get_stage_wiki_data(&athletic_meet);
+        let data = get_stage_wiki_data(&athletic_meet.id);
         assert_eq!(
             data.stage_map.name,
             "[[Autumn = Sports Day! (Monthly Event)#Autumn Sports Day|Autumn Sports Day]] (Removed)"
@@ -287,7 +287,7 @@ mod tests {
     fn test_conditional_continue_single() {
         let spectrum_of_truth =
             Stage::from_id_current(StageID::from_components(T::Event, 222, 0)).unwrap();
-        let data = get_stage_wiki_data(&spectrum_of_truth);
+        let data = get_stage_wiki_data(&spectrum_of_truth.id);
         assert_eq!(
             stage_nav(&spectrum_of_truth, &data),
             vec![
@@ -304,7 +304,7 @@ mod tests {
     fn test_conditional_continue_multiple() {
         let green_envy_3 =
             Stage::from_id_current(StageID::from_components(T::Event, 97, 2)).unwrap();
-        let data = get_stage_wiki_data(&green_envy_3);
+        let data = get_stage_wiki_data(&green_envy_3.id);
         assert_eq!(
             stage_nav(&green_envy_3, &data),
             vec![
@@ -323,7 +323,7 @@ mod tests {
     fn test_continue_stage_nav() {
         let proving_grounds =
             Stage::from_id_current(StageID::from_components(T::Event, 250, 2)).unwrap();
-        let data = get_stage_wiki_data(&proving_grounds);
+        let data = get_stage_wiki_data(&proving_grounds.id);
         assert_eq!(
             max_clears(&proving_grounds),
             Some(TemplateParameter::new("max clears", "1"))
@@ -345,7 +345,7 @@ mod tests {
     fn test_ex_invasion() {
         let sweet_potato_province =
             Stage::from_id_current(StageID::from_components(T::Event, 385, 0)).unwrap();
-        let data = get_stage_wiki_data(&sweet_potato_province);
+        let data = get_stage_wiki_data(&sweet_potato_province.id);
         assert_eq!(
             stage_nav(&sweet_potato_province, &data),
             vec![
