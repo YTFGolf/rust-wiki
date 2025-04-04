@@ -8,6 +8,8 @@ use crate::{
     meta::stage::{stage_id::StageID, variant::StageVariantID as T},
 };
 
+// these were all generated on a different branch.
+
 pub const EARTHSHAKER: &str = "{{Stage Info
 |stage name = [[File:rc000.png]]
 [[File:Mapsn000 00 n en.png]]
@@ -170,24 +172,52 @@ fn info_earthshaker() {
 
 #[test]
 fn info_finale() {
-    // get stage info when doing finale
-    todo!()
+    let finale = StageID::from_components(T::Collab, 209, 00);
+    let wik = get_stage_wiki_data(&finale);
+    let stage = get_stage_variable(
+        "si_template",
+        &Stage::from_id_current(finale).unwrap(),
+        &wik,
+        &get_config(),
+    );
+    assert_eq!(stage, FINALE)
 }
 
 #[test]
 fn info_baron_mags() {
-    // get stage info when doing finale
-    todo!()
+    let baron = StageID::from_components(T::Gauntlet, 000, 19);
+    let wik = get_stage_wiki_data(&baron);
+    let stage = get_stage_variable(
+        "si_template",
+        &Stage::from_id_current(baron).unwrap(),
+        &wik,
+        &get_config(),
+    );
+    assert_eq!(stage, SEAL_MAGS)
 }
 
 #[test]
 fn info_baron_nomags() {
-    // get stage info when doing finale
-    todo!()
+    let baron = StageID::from_components(T::Gauntlet, 000, 19);
+    let wik = get_stage_wiki_data(&baron);
+    let stage = get_stage_variable(
+        "si_template",
+        &Stage::from_id_current(baron).unwrap(),
+        &wik,
+        &get_config(),
+    );
+    assert_eq!(stage, SEAL_NOMAG)
 }
 
 #[test]
 fn info_dojo() {
-    // get stage info when doing finale
-    todo!()
+    let dojo = StageID::from_components(T::Dojo, 00, 000);
+    let wik = get_stage_wiki_data(&dojo);
+    let stage = get_stage_variable(
+        "si_template",
+        &Stage::from_id_current(dojo).unwrap(),
+        &wik,
+        &get_config(),
+    );
+    assert_eq!(stage, DOJO)
 }

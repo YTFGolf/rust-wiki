@@ -11,10 +11,10 @@ use variables::{DEFAULT_FORMAT, get_stage_variable};
 mod battlegrounds;
 mod beginning;
 mod enemies_list;
-mod tests;
 mod information;
 mod misc_information;
 mod restrictions;
+mod tests;
 mod treasure;
 mod variables;
 
