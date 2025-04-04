@@ -695,6 +695,8 @@ impl Ability {
         }
 
         if variable.conjure_unit_id > 0 {
+            #[allow(clippy::cast_sign_loss)]
+            // can cast as id > 0 when i16
             abilities.push(Self::ConjureUnit {
                 id: variable.conjure_unit_id as u16,
             });
