@@ -11,7 +11,7 @@ pub trait AutoParam {
 }
 impl<P: IntoIterator<Item = TemplateParameter>> AutoParam for P {
     fn add_self_to(self, params: &mut Vec<TemplateParameter>) {
-        params.extend(self.into_iter());
+        params.extend(self);
     }
 }
 impl AutoParam for TemplateParameter {
@@ -58,7 +58,7 @@ impl Display for Template {
         f.write_str("{{")?;
         write!(f, "{}", self.name)?;
 
-        for param in self.params.iter() {
+        for param in &self.params {
             f.write_str("\n")?;
             Display::fmt(param, f)?;
         }

@@ -27,7 +27,7 @@ impl<'a> Stage<'a> {
 impl Stage<'_> {
     /// Get stage's ID.
     pub fn id(&self) -> &StageID {
-        &self.id
+        self.id
     }
 }
 
