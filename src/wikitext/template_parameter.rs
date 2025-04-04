@@ -40,12 +40,14 @@ impl Template {
         Self::new(name, vec![])
     }
 
+    #[must_use]
     /// Add parameters to template.
     pub fn add_params<P: AutoParam>(mut self, params: P) -> Self {
         params.add_self_to(&mut self.params);
         self
     }
 
+    #[must_use]
     /// Add constant parameters to template.
     pub fn add_const(mut self, params: &[(&'static str, &'static str)]) -> Self {
         let params = params.iter().map(|(k, v)| TemplateParameter::new(*k, *v));
