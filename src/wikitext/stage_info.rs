@@ -4,12 +4,14 @@ use super::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWiki
 use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
+use crate::meta::stage::stage_id::StageID;
 use regex::Regex;
 use std::fmt::{Display, Write};
 use variables::{DEFAULT_FORMAT, get_stage_variable};
 mod battlegrounds;
 mod beginning;
 mod enemies_list;
+mod info_test;
 mod information;
 mod misc_information;
 mod restrictions;
@@ -30,20 +32,8 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> impl Display {
 /// Get stage info based on specified format.
 pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
     let parsed = parse_info_format(format);
-
-    let stage_map = STAGE_WIKI_DATA
-        .stage_map(stage.id.map())
-        .unwrap_or_else(|| panic!("Couldn't find map name: {}", stage.id.map()));
-    let stage_name = stage_map
-        .get(stage.id.num())
-        .unwrap_or_else(|| panic!("Couldn't find stage name: {}", stage.id));
-
-    let stage_wiki_data = StageWikiDataContainer {
-        stage_map,
-        stage_name,
-    };
-
     let mut buf = String::new();
+    let stage_wiki_data = get_stage_wiki_data(&stage.id);
 
     for node in parsed {
         if node.ptype == ParseType::Text {
@@ -61,34 +51,16 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
     buf.into_owned()
 }
 
-mod tests {
-    #[test]
-    fn info_earthshaker() {
-        // get stage info when doing earthshaker
-        todo!()
-    }
+fn get_stage_wiki_data(stage: &StageID) -> StageWikiDataContainer {
+    let stage_map = STAGE_WIKI_DATA
+        .stage_map(stage.map())
+        .unwrap_or_else(|| panic!("Couldn't find map name: {}", stage.map()));
+    let stage_name = stage_map
+        .get(stage.num())
+        .unwrap_or_else(|| panic!("Couldn't find stage name: {}", stage));
 
-    #[test]
-    fn info_finale() {
-        // get stage info when doing finale
-        todo!()
-    }
-
-    #[test]
-    fn info_baron_mags() {
-        // get stage info when doing finale
-        todo!()
-    }
-
-    #[test]
-    fn info_baron_nomags() {
-        // get stage info when doing finale
-        todo!()
-    }
-
-    #[test]
-    fn info_dojo() {
-        // get stage info when doing finale
-        todo!()
+    StageWikiDataContainer {
+        stage_map,
+        stage_name,
     }
 }
