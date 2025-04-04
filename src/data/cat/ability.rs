@@ -259,6 +259,8 @@ pub enum Ability {
 }
 
 impl Ability {
+    // TODO just inline each thing, no reason it has to be like this.
+    #[allow(clippy::match_same_arms)]
     const fn get_config(&self) -> Config {
         match self {
             Self::StrongAgainst => Config {
