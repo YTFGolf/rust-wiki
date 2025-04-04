@@ -4,16 +4,18 @@ use std::{borrow::Cow, fmt::Display};
 
 type StringValue = Cow<'static, str>;
 
-trait AutoParam {
-    fn extend_params(self, params: &mut Vec<TemplateParameter>);
+/// Trait for [`add_params`][Template::add_params].
+pub trait AutoParam {
+    /// Extend `params` by adding all items in `self` to it.
+    fn add_self_to(self, params: &mut Vec<TemplateParameter>);
 }
 impl<P: IntoIterator<Item = TemplateParameter>> AutoParam for P {
-    fn extend_params(self, params: &mut Vec<TemplateParameter>) {
+    fn add_self_to(self, params: &mut Vec<TemplateParameter>) {
         params.extend(self.into_iter());
     }
 }
 impl AutoParam for TemplateParameter {
-    fn extend_params(self, params: &mut Vec<TemplateParameter>) {
+    fn add_self_to(self, params: &mut Vec<TemplateParameter>) {
         params.push(self);
     }
 }
@@ -25,6 +27,7 @@ pub struct Template {
     params: Vec<TemplateParameter>,
 }
 impl Template {
+    /// Create new [`Template`].
     pub fn new<T: Into<StringValue>>(name: T, params: Vec<TemplateParameter>) -> Self {
         Self {
             name: name.into(),
@@ -32,15 +35,18 @@ impl Template {
         }
     }
 
+    /// Create new [`Template`] with empty vec.
     pub fn named<T: Into<StringValue>>(name: T) -> Self {
         Self::new(name, vec![])
     }
 
+    /// Add parameters to template.
     pub fn add_params<P: AutoParam>(mut self, params: P) -> Self {
-        AutoParam::extend_params(params, &mut self.params);
+        params.add_self_to(&mut self.params);
         self
     }
 
+    /// Add constant parameters to template.
     pub fn add_const(mut self, params: &[(&'static str, &'static str)]) -> Self {
         let params = params.iter().map(|(k, v)| TemplateParameter::new(*k, *v));
         self.params.extend(params);
