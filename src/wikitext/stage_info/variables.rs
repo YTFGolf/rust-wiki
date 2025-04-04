@@ -10,31 +10,14 @@ use super::restrictions::{restrictions_info, restrictions_section, rules};
 use super::treasure::{score_rewards, treasure};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
+use crate::wikitext::template_parameter::Template;
 
 /// Default format for stage info.
 pub const DEFAULT_FORMAT: &str = "\
 ${enemies_appearing}
 ${intro}
 
-{{Stage Info
-${stage_name}
-${stage_location}
-${energy}
-${base_hp}
-${enemies_list}
-${treasure}
-${restrictions_info}
-${score_rewards}
-${xp}
-${width}
-${max_enemies}
-|jpname = ?\n|script = ?\n|romaji = ?
-${star}
-${chapter}
-${max_clears}
-${difficulty}
-${stage_nav}
-}}
+${si_template}
 
 ==Rules==
 ${rules}
@@ -52,6 +35,33 @@ ${battlegrounds}
 *${reference}\
 ";
 
+fn si_template(
+    stage: &Stage,
+    stage_wiki_data: &StageWikiDataContainer,
+    config: &Config,
+) -> Template {
+    let mut t = Template::named("Stage Info")
+        .add_params(stage_name(stage, config.version.lang()))
+        .add_params(stage_location(stage, config.version.lang()))
+        .add_params(energy(stage))
+        .add_params(base_hp(stage))
+        .add_params(enemies_list(stage, config.stage_info.suppress()))
+        .add_params(treasure(stage))
+        .add_params(restrictions_info(stage))
+        .add_params(score_rewards(stage))
+        .add_params(xp(stage))
+        .add_params(width(stage))
+        .add_params(max_enemies(stage))
+        // .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+        .add_params(star(stage))
+        .add_params(chapter(stage, stage_wiki_data))
+        .add_params(max_clears(stage))
+        .add_params(difficulty(stage))
+        .add_params(stage_nav(stage, stage_wiki_data));
+
+    t
+}
+
 /// Get the content of a format
 /// [`Variable`][super::super::format_parser::ParseType::Variable].
 pub fn get_stage_variable(
@@ -63,50 +73,7 @@ pub fn get_stage_variable(
     match variable_name {
         "enemies_appearing" => enemies_appearing(stage),
         "intro" => intro(stage, stage_wiki_data),
-        "stage_name" => stage_name(stage, config.version.lang()).to_string(),
-        "stage_location" => stage_location(stage, config.version.lang()).to_string(),
-        "energy" => energy(stage)
-            .map(|param| param.to_string())
-            .unwrap_or_default(),
-        "base_hp" => base_hp(stage)
-            .into_iter()
-            .map(|p| p.to_string())
-            .collect::<Vec<String>>()
-            .join("\n"),
-        "enemies_list" => enemies_list(stage, config.stage_info.suppress())
-            .into_iter()
-            .map(|p| p.to_string())
-            .collect::<Vec<String>>()
-            .join("\n"),
-        "treasure" => treasure(stage)
-            .map(|param| param.to_string())
-            .unwrap_or_default(),
-        "restrictions_info" => restrictions_info(stage)
-            .map(|param| param.to_string())
-            .unwrap_or_default(),
-        "score_rewards" => score_rewards(stage)
-            .map(|param| param.to_string())
-            .unwrap_or_default(),
-        "xp" => xp(stage).map(|param| param.to_string()).unwrap_or_default(),
-        "width" => width(stage).to_string(),
-        "max_enemies" => max_enemies(stage).to_string(),
-        "star" => star(stage).to_string(),
-        "chapter" => chapter(stage, stage_wiki_data)
-            .into_iter()
-            .map(|p| p.to_string())
-            .collect::<Vec<String>>()
-            .join("\n"),
-        "max_clears" => max_clears(stage)
-            .map(|param| param.to_string())
-            .unwrap_or_default(),
-        "difficulty" => difficulty(stage)
-            .map(|param| param.to_string())
-            .unwrap_or_default(),
-        "stage_nav" => stage_nav(stage, stage_wiki_data)
-            .into_iter()
-            .map(|p| p.to_string())
-            .collect::<Vec<String>>()
-            .join("\n"),
+        "si_template" => si_template(stage, stage_wiki_data, config).to_string(),
         "restrictions_section" => restrictions_section(stage),
         "rules" => rules(stage),
         "battlegrounds" => battlegrounds(stage),
@@ -125,3 +92,5 @@ fn reference(stage: &Stage) -> String {
         incremented_stage = stage.id.num() + 1,
     )
 }
+
+// TODO tests
