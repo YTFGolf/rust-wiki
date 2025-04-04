@@ -187,11 +187,15 @@ fn info_finale() {
 fn info_baron_mags() {
     let baron = StageID::from_components(T::Gauntlet, 000, 19);
     let wik = get_stage_wiki_data(&baron);
+
+    let mut config = get_config();
+    config.stage_info.set_suppress(false);
+
     let stage = get_stage_variable(
         "si_template",
         &Stage::from_id_current(baron).unwrap(),
         &wik,
-        &get_config(),
+        &config,
     );
     assert_eq!(stage, SEAL_MAGS)
 }
@@ -200,11 +204,15 @@ fn info_baron_mags() {
 fn info_baron_nomags() {
     let baron = StageID::from_components(T::Gauntlet, 000, 19);
     let wik = get_stage_wiki_data(&baron);
+
+    let mut config = get_config();
+    config.stage_info.set_suppress(true);
+
     let stage = get_stage_variable(
         "si_template",
         &Stage::from_id_current(baron).unwrap(),
         &wik,
-        &get_config(),
+        &config,
     );
     assert_eq!(stage, SEAL_NOMAG)
 }
