@@ -167,7 +167,7 @@ fn info_earthshaker() {
         &wik,
         &get_config(),
     );
-    assert_eq!(stage, EARTHSHAKER)
+    assert_eq!(stage, EARTHSHAKER);
 }
 
 #[test]
@@ -180,7 +180,7 @@ fn info_finale() {
         &wik,
         &get_config(),
     );
-    assert_eq!(stage, FINALE)
+    assert_eq!(stage, FINALE);
 }
 
 #[test]
@@ -197,7 +197,7 @@ fn info_baron_mags() {
         &wik,
         &config,
     );
-    assert_eq!(stage, SEAL_MAGS)
+    assert_eq!(stage, SEAL_MAGS);
 }
 
 #[test]
@@ -214,7 +214,7 @@ fn info_baron_nomags() {
         &wik,
         &config,
     );
-    assert_eq!(stage, SEAL_NOMAG)
+    assert_eq!(stage, SEAL_NOMAG);
 }
 
 #[test]
@@ -227,5 +227,5 @@ fn info_dojo() {
         &wik,
         &get_config(),
     );
-    assert_eq!(stage, DOJO)
+    assert_eq!(stage, DOJO);
 }

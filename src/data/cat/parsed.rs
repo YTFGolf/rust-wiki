@@ -25,34 +25,34 @@ impl EnemyType {
         let mut targets = vec![];
 
         if bool(fixed.targ_red).unwrap() {
-            targets.push(Self::Red)
+            targets.push(Self::Red);
         }
         if bool(fixed.targ_float).unwrap() {
-            targets.push(Self::Float)
+            targets.push(Self::Float);
         }
         if bool(fixed.targ_black).unwrap() {
-            targets.push(Self::Black)
+            targets.push(Self::Black);
         }
         if bool(fixed.targ_metal).unwrap() {
-            targets.push(Self::Metal)
+            targets.push(Self::Metal);
         }
         if bool(fixed.targ_traitless).unwrap() {
-            targets.push(Self::Traitless)
+            targets.push(Self::Traitless);
         }
         if bool(fixed.targ_angel).unwrap() {
-            targets.push(Self::Angel)
+            targets.push(Self::Angel);
         }
         if bool(fixed.targ_alien).unwrap() {
-            targets.push(Self::Alien)
+            targets.push(Self::Alien);
         }
         if bool(fixed.targ_zombie).unwrap() {
-            targets.push(Self::Zombie)
+            targets.push(Self::Zombie);
         }
         if bool(variable.targ_relic).unwrap() {
-            targets.push(Self::Relic)
+            targets.push(Self::Relic);
         }
         if bool(variable.targ_aku).unwrap() {
-            targets.push(Self::Aku)
+            targets.push(Self::Aku);
         }
 
         targets
