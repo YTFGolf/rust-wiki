@@ -6,7 +6,7 @@ use crate::{
     wikitext::{
         data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
         stage_info::StageWikiDataContainer,
-        template_parameter::TemplateParameter,
+        template::TemplateParameter,
         wiki_utils::OLD_OR_REMOVED_SUB,
     },
 };

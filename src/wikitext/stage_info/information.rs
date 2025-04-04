@@ -6,7 +6,7 @@ use crate::{
     meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},
     wikitext::{
         data_files::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
-        template_parameter::TemplateParameter,
+        template::TemplateParameter,
     },
 };
 use either::Either::{Left, Right};

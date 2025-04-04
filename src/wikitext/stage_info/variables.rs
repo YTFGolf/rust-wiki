@@ -10,7 +10,7 @@ use super::restrictions::{restrictions_info, restrictions_section, rules};
 use super::treasure::{score_rewards, treasure};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
-use crate::wikitext::template_parameter::Template;
+use crate::wikitext::template::Template;
 
 /// Default format for stage info.
 pub const DEFAULT_FORMAT: &str = "\

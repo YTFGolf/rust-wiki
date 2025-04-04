@@ -8,7 +8,7 @@ use crate::{
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
         },
     },
-    wikitext::{data_files::cat_data::CAT_DATA, template_parameter::TemplateParameter},
+    wikitext::{data_files::cat_data::CAT_DATA, template::TemplateParameter},
 };
 use num_format::{Locale, WriteFormatted};
 use std::{

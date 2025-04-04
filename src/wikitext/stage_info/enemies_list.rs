@@ -6,7 +6,7 @@ use crate::{
         stage_enemy::{BossType, StageEnemy},
     },
     meta::stage::variant::StageVariantID as T,
-    wikitext::{data_files::enemy_data::ENEMY_DATA, template_parameter::TemplateParameter},
+    wikitext::{data_files::enemy_data::ENEMY_DATA, template::TemplateParameter},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
