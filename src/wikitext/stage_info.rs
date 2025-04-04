@@ -31,8 +31,6 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> impl Display {
 pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
     let parsed = parse_info_format(format);
 
-    let mut buf = String::new();
-
     let stage_map = STAGE_WIKI_DATA
         .stage_map(stage.id.map())
         .unwrap_or_else(|| panic!("Couldn't find map name: {}", stage.id.map()));
@@ -45,6 +43,8 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
         stage_name,
     };
 
+    let mut buf = String::new();
+
     for node in parsed {
         if node.ptype == ParseType::Text {
             buf.write_str(node.content).unwrap();
@@ -55,10 +55,6 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
         buf.write_str(&new_buf).unwrap();
     }
 
-    let buf = Regex::new(r"\n+(\||\}\})")
-        .unwrap()
-        .replace_all(&buf, "\n$1");
-    // Replace multiple newlines before `|` or `}` with single newline.
     let buf = Regex::new(r"\n==.*==\n\n").unwrap().replace_all(&buf, "");
     // Remove empty sections.
 
