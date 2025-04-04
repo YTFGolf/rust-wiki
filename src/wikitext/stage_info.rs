@@ -15,7 +15,6 @@ mod info_test;
 mod information;
 mod misc_information;
 mod restrictions;
-mod test_util;
 mod treasure;
 mod variables;
 

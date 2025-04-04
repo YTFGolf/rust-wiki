@@ -194,8 +194,8 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePa
 
 #[cfg(test)]
 mod tests {
-    use crate::wikitext::stage_info::get_stage_wiki_data;
     use super::*;
+    use crate::wikitext::stage_info::get_stage_wiki_data;
 
     #[test]
     fn test_single_stage() {
