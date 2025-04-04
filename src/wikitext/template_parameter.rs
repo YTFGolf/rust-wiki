@@ -4,11 +4,42 @@ use std::{borrow::Cow, fmt::Display};
 
 type StringValue = Cow<'static, str>;
 
+trait AutoParam {
+    fn extend_params(self, params: &mut Vec<TemplateParameter>);
+}
+impl<P: IntoIterator<Item = TemplateParameter>> AutoParam for P {
+    fn extend_params(self, params: &mut Vec<TemplateParameter>) {
+        params.extend(self.into_iter());
+    }
+}
+impl AutoParam for TemplateParameter {
+    fn extend_params(self, params: &mut Vec<TemplateParameter>) {
+        params.push(self);
+    }
+}
+
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template.
 pub struct Template {
     name: StringValue,
     params: Vec<TemplateParameter>,
+}
+impl Template {
+    pub fn new<T: Into<StringValue>>(name: T, params: Vec<TemplateParameter>) -> Self {
+        Self {
+            name: name.into(),
+            params,
+        }
+    }
+
+    pub fn named<T: Into<StringValue>>(name: T) -> Self {
+        Self::new(name, vec![])
+    }
+
+    pub fn add_params<P: AutoParam>(mut self, params: P) -> Self {
+        params.extend_params(&mut self.params);
+        self
+    }
 }
 impl Display for Template {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
