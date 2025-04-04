@@ -60,3 +60,35 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
 
     buf.into_owned()
 }
+
+mod tests {
+    #[test]
+    fn info_earthshaker() {
+        // get stage info when doing earthshaker
+        todo!()
+    }
+
+    #[test]
+    fn info_finale() {
+        // get stage info when doing finale
+        todo!()
+    }
+
+    #[test]
+    fn info_baron_mags() {
+        // get stage info when doing finale
+        todo!()
+    }
+
+    #[test]
+    fn info_baron_nomags() {
+        // get stage info when doing finale
+        todo!()
+    }
+
+    #[test]
+    fn info_dojo() {
+        // get stage info when doing finale
+        todo!()
+    }
+}
