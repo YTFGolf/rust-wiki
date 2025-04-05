@@ -4,7 +4,12 @@ use crate::{
     config::Config,
     data::stage::parsed::stage::Stage,
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
-    wikitext::stage_info::get_stage_wiki_data,
+    wikitext::stage_info::{
+        battlegrounds::battlegrounds,
+        beginning::enemies_appearing,
+        get_stage_wiki_data,
+        restrictions::{restrictions_section, rules},
+    },
 };
 
 use super::{
@@ -18,11 +23,7 @@ use super::{
     template::Template,
 };
 
-fn template_check(
-    stage: &Stage,
-    stage_wiki_data: &StageWikiDataContainer,
-    config: &Config,
-) -> Template {
+fn template_check(stage: &Stage) -> Template {
     Template::named("Stage Info")
         // .add_params(stage_name(stage, config.version.lang()))
         // .add_params(stage_location(stage, config.version.lang()))
@@ -35,20 +36,44 @@ fn template_check(
         // .add_params(xp(stage))
         .add_params(width(stage))
         .add_params(max_enemies(stage))
-        .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
-        .add_params(star(stage))
-        .add_params(chapter(stage, stage_wiki_data))
-        .add_params(max_clears(stage))
+    // .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+    // .add_params(star(stage))
+    // .add_params(chapter(stage, stage_wiki_data))
+    // .add_params(max_clears(stage))
     // .add_params(difficulty(stage))
     // .add_params(stage_nav(stage, stage_wiki_data))
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+struct Container {
+    enemies_appearing: String,
+    info: String,
+    rules: String,
+    restrictions: String,
+    battlegrounds: String,
+}
+
 pub fn do_thing(config: &Config) {
     let map_id = MapID::from_components(T::Gauntlet, 0);
+    let mut stages = vec![];
     for i in 0..20 {
         let id = StageID::from_map(map_id.clone(), i);
-        let gauntlet = Stage::from_id(id, config.version.current_version()).unwrap();
-        let data = get_stage_wiki_data(&gauntlet.id);
+        let stage = Stage::from_id(id, config.version.current_version()).unwrap();
+        // let data = get_stage_wiki_data(&stage.id);
+
+        let container = Container {
+            enemies_appearing: enemies_appearing(&stage),
+            info: template_check(&stage).to_string(),
+            rules: rules(&stage),
+            restrictions: restrictions_section(&stage),
+            battlegrounds: battlegrounds(&stage),
+        };
+
+        let pos = stages.iter().position(|item| *item == container);
+        if pos.is_none() {
+            stages.push(container);
+        }
     }
-    panic!("End")
+
+    panic!("{stages:#?}")
 }
