@@ -53,16 +53,25 @@ struct Container {
     battlegrounds: String,
 }
 
-fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
-    let mut stages: Vec<(Vec<u32>, Container)> = vec![];
+fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
+    let mut stages = vec![];
     for i in 0..100 {
         let id = StageID::from_map(map_id.clone(), i);
         let stage = match Stage::from_id(id, config.version.current_version()) {
             Some(stage) => stage,
             None => break,
         };
+        stages.push(stage);
         // let data = get_stage_wiki_data(&stage.id);
+    }
 
+    stages
+}
+
+fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
+    let mut stages: Vec<(Vec<u32>, Container)> = vec![];
+
+    for stage in get_stages(map_id, config) {
         let container = Container {
             enemies_appearing: enemies_appearing(&stage),
             info: template_check(&stage).to_string(),
@@ -71,6 +80,7 @@ fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Cont
             battlegrounds: battlegrounds(&stage),
         };
 
+        let i = stage.id.num();
         match stages.iter_mut().find(|item| (**item).1 == container) {
             Some(cont) => cont.0.push(i),
             None => stages.push((vec![i], container)),
