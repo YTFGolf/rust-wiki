@@ -53,7 +53,7 @@ struct Container {
     battlegrounds: String,
 }
 
-fn get_containers(map_id: &MapID, config: &Config) -> Vec<Container> {
+fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<Container>> {
     let mut stages = vec![];
     let mut len = 0;
     for i in 0..100 {
@@ -61,7 +61,7 @@ fn get_containers(map_id: &MapID, config: &Config) -> Vec<Container> {
         let stage = match Stage::from_id(id, config.version.current_version()) {
             Some(stage) => stage,
             None => {
-                len = i;
+                len = i as usize;
                 break;
             }
         };
@@ -81,9 +81,11 @@ fn get_containers(map_id: &MapID, config: &Config) -> Vec<Container> {
         }
     }
 
-    println!("{len}");
-
-    stages
+    if len == stages.len() {
+        None
+    } else {
+        Some(stages)
+    }
 }
 
 pub fn do_thing(config: &Config) {
