@@ -53,17 +53,14 @@ struct Container {
     battlegrounds: String,
 }
 
-fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<Container>> {
-    let mut stages = vec![];
-    let mut len = 0;
+const MAX_STAGES: usize = 5;
+fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
+    let mut stages: Vec<(Vec<u32>, Container)> = vec![];
     for i in 0..100 {
         let id = StageID::from_map(map_id.clone(), i);
         let stage = match Stage::from_id(id, config.version.current_version()) {
             Some(stage) => stage,
-            None => {
-                len = i as usize;
-                break;
-            }
+            None => break,
         };
         // let data = get_stage_wiki_data(&stage.id);
 
@@ -75,13 +72,13 @@ fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<Container>> {
             battlegrounds: battlegrounds(&stage),
         };
 
-        let pos = stages.iter().position(|item| *item == container);
-        if pos.is_none() {
-            stages.push(container);
+        match stages.iter_mut().find(|item| (**item).1 == container) {
+            Some(cont) => cont.0.push(i),
+            None => stages.push((vec![i], container)),
         }
     }
 
-    if len == stages.len() {
+    if stages.len() > MAX_STAGES {
         None
     } else {
         Some(stages)
