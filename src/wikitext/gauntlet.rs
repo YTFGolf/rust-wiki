@@ -125,5 +125,12 @@ pub fn do_thing(config: &Config) {
         .iter()
         .flat_map(|map_id| get_containers(&map_id, config))
         .collect::<Vec<_>>();
-    panic!("{stages:#?}");
+    for stage in stages.iter() {
+        // println!("{:?}", stage);
+        for tab in stage {
+            println!("{:?}", get_ranges(&tab.0));
+        }
+    }
+    // panic!("{stages:#?}");
+    panic!("{stages:?}");
 }
