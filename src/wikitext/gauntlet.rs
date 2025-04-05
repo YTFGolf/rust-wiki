@@ -53,7 +53,6 @@ struct Container {
     battlegrounds: String,
 }
 
-const MAX_STAGES: usize = 5;
 fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
     let mut stages: Vec<(Vec<u32>, Container)> = vec![];
     for i in 0..100 {
@@ -78,7 +77,7 @@ fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Cont
         }
     }
 
-    if stages.len() > MAX_STAGES {
+    if stages.iter().all(|s| s.0.len() == 1) {
         None
     } else {
         Some(stages)
