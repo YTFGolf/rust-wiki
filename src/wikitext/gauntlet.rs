@@ -53,8 +53,7 @@ struct Container {
     battlegrounds: String,
 }
 
-pub fn do_thing(config: &Config) {
-    let map_id = MapID::from_components(T::Gauntlet, 0);
+fn get_containers(map_id: &MapID, config: &Config) -> Vec<Container> {
     let mut stages = vec![];
     for i in 0..20 {
         let id = StageID::from_map(map_id.clone(), i);
@@ -75,5 +74,21 @@ pub fn do_thing(config: &Config) {
         }
     }
 
-    panic!("{stages:#?}")
+    stages
+}
+
+pub fn do_thing(config: &Config) {
+    let map_ids = [
+        MapID::from_components(T::Gauntlet, 0),
+        // baron
+        MapID::from_components(T::Gauntlet, 19),
+        // sbc
+        MapID::from_components(T::CollabGauntlet, 22),
+        // baki gauntlet
+    ];
+    let stages = map_ids
+        .iter()
+        .map(|map_id| get_containers(&map_id, config))
+        .collect::<Vec<_>>();
+    panic!("{stages:#?}");
 }
