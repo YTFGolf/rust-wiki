@@ -55,11 +55,15 @@ struct Container {
 
 fn get_containers(map_id: &MapID, config: &Config) -> Vec<Container> {
     let mut stages = vec![];
+    let mut len = 0;
     for i in 0..100 {
         let id = StageID::from_map(map_id.clone(), i);
-        let stage = match Stage::from_id(id.clone(), config.version.current_version()) {
+        let stage = match Stage::from_id(id, config.version.current_version()) {
             Some(stage) => stage,
-            None => break,
+            None => {
+                len = i;
+                break;
+            }
         };
         // let data = get_stage_wiki_data(&stage.id);
 
@@ -76,6 +80,8 @@ fn get_containers(map_id: &MapID, config: &Config) -> Vec<Container> {
             stages.push(container);
         }
     }
+
+    println!("{len}");
 
     stages
 }
