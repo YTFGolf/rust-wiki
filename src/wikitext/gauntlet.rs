@@ -90,12 +90,14 @@ pub fn do_thing(config: &Config) {
         // baron
         MapID::from_components(T::Gauntlet, 19),
         // sbc
+        MapID::from_components(T::CollabGauntlet, 7),
+        // heralds of the end
         MapID::from_components(T::CollabGauntlet, 22),
         // baki gauntlet
     ];
     let stages = map_ids
         .iter()
-        .map(|map_id| get_containers(&map_id, config))
+        .flat_map(|map_id| get_containers(&map_id, config))
         .collect::<Vec<_>>();
     panic!("{stages:#?}");
 }
