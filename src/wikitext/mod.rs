@@ -2,6 +2,7 @@
 
 #![allow(clippy::unused_io_amount)]
 pub mod cat_info;
+pub mod gauntlet;
 pub mod data_files;
 pub mod encounters;
 pub mod format_parser;

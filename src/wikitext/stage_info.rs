@@ -8,17 +8,18 @@ use crate::meta::stage::stage_id::StageID;
 use regex::Regex;
 use std::fmt::{Display, Write};
 use variables::{DEFAULT_FORMAT, get_stage_variable};
-mod battlegrounds;
-mod beginning;
-mod enemies_list;
-mod information;
-mod misc_information;
-mod restrictions;
+pub mod battlegrounds;
+pub mod beginning;
+pub mod enemies_list;
+pub mod information;
+pub mod misc_information;
+pub mod restrictions;
 mod tests;
-mod treasure;
-mod variables;
+pub mod treasure;
+pub mod variables;
 
-struct StageWikiDataContainer {
+/// Contains wiki data about a stage.
+pub struct StageWikiDataContainer {
     stage_map: &'static MapWikiData,
     stage_name: &'static StageWikiData,
 }
@@ -50,7 +51,8 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
     buf.into_owned()
 }
 
-fn get_stage_wiki_data(stage: &StageID) -> StageWikiDataContainer {
+/// Get the stage's corresponding wiki data.
+pub fn get_stage_wiki_data(stage: &StageID) -> StageWikiDataContainer {
     let stage_map = STAGE_WIKI_DATA
         .stage_map(stage.map())
         .unwrap_or_else(|| panic!("Couldn't find map name: {}", stage.map()));
