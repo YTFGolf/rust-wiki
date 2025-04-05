@@ -85,23 +85,19 @@ fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Cont
 }
 
 fn get_ranges(ids: &[u32]) -> Vec<(u32, u32)> {
-    let mut range_min = 0;
+    let mut range_min = ids[0];
     let mut ranges = vec![];
 
     let mut iter = ids.iter().peekable();
     while let Some(id) = iter.next() {
-        if range_min == 0 {
-            range_min = *id
-        }
-
         match iter.peek() {
             None => {
                 ranges.push((range_min, *id));
                 continue;
             }
-            Some(i) if **i != id + 1 => {
+            Some(&&i) if i != id + 1 => {
                 ranges.push((range_min, *id));
-                range_min = 0
+                range_min = i
             }
             Some(_) => (),
         }
