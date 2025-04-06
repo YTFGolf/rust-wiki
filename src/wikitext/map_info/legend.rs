@@ -1,3 +1,4 @@
+use super::reference;
 use crate::{
     config::Config,
     data::{
@@ -248,12 +249,6 @@ fn materials(map_data: &GameMap, version: &Version) -> String {
     buf.write_str("|hidenormal=").unwrap();
 
     format_material(100 - total, &buf)
-}
-
-/// battlecats-db reference.
-pub fn reference(map: &MapID) -> String {
-    let mapid = map.mapid();
-    format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
 /// Format navigation.

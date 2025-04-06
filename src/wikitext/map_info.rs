@@ -1,10 +1,16 @@
 //! Get info about a map.
 
-pub mod legend;
+ mod legend;
 use crate::{
-    config::Config, data::map::parsed::map::GameMap, meta::stage::variant::StageVariantID,
+    config::Config, data::map::parsed::map::GameMap, meta::stage::{map_id::MapID, variant::StageVariantID},
 };
 use legend::get_legend_map;
+
+/// battlecats-db reference.
+pub fn reference(map: &MapID) -> String {
+    let mapid = map.mapid();
+    format!("https://battlecats-db.com/stage/s{mapid:05}.html")
+}
 
 /// Types of map that map info is implemented for.
 enum Preset {

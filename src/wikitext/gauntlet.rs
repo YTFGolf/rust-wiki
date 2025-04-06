@@ -5,7 +5,6 @@ use num_format::{Locale, WriteFormatted};
 
 use super::{
     stage_info::{
-        StageWikiDataContainer,
         enemies_list::enemies_list,
         information::{max_enemies, stage_location, stage_name, width},
         misc_information::{chapter, max_clears, star},
@@ -15,14 +14,11 @@ use super::{
 };
 use crate::{
     config::Config,
-    data::stage::{
-        self,
-        parsed::{stage::Stage, stage_enemy::Magnification},
-    },
+    data::stage::parsed::{stage::Stage, stage_enemy::Magnification},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     wikitext::{
-        data_files::{enemy_data::ENEMY_DATA, rewards},
-        map_info::legend::reference,
+        data_files::enemy_data::ENEMY_DATA,
+        map_info::reference,
         stage_info::{
             battlegrounds::battlegrounds,
             beginning::enemies_appearing,
@@ -31,7 +27,6 @@ use crate::{
             restrictions::{restrictions_section, rules},
             treasure::treasure,
         },
-        template::TemplateParameter,
     },
 };
 use std::fmt::{Display, Write};
