@@ -87,6 +87,10 @@ impl TemplateParameter {
             value: value.into(),
         }
     }
+
+    pub fn content(&self) -> &str {
+        &self.value
+    }
 }
 impl Display for TemplateParameter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

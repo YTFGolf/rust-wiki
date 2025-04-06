@@ -21,13 +21,16 @@ use crate::{
     },
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     wikitext::{
-        data_files::enemy_data::ENEMY_DATA,
+        data_files::{enemy_data::ENEMY_DATA, rewards},
         stage_info::{
             battlegrounds::battlegrounds,
             beginning::enemies_appearing,
             get_stage_wiki_data,
+            information::{base_hp, energy, xp},
             restrictions::{restrictions_section, rules},
+            treasure::treasure,
         },
+        template::TemplateParameter,
     },
 };
 use std::fmt::{Display, Write};
@@ -308,11 +311,34 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
                 }
                 table.write_str("\n").unwrap();
             }
+
+            let rewards = match treasure(stage) {
+                Some(t) => {
+                    let mut c = t.content();
+                    c = c.strip_prefix("- ").unwrap();
+                    c = c.strip_suffix(" (100%, 1 time)").unwrap();
+                    c.to_string()
+                }
+                None => "None".to_string(),
+            };
+            write!(
+                table,
+                "|{base_hp}\n|{energy}\n|{rewards}\n|{xp}\n",
+                base_hp = base_hp(stage)[0].content(),
+                energy = energy(stage).unwrap().content(),
+                rewards = rewards,
+                xp = xp(stage).unwrap().content(),
+            )
+            .unwrap();
+            // |80,000
+            // |70
+            // |XP +250,000
+            // |1,330
         }
     }
 
     table.write_str("|}").unwrap();
-    todo!("{table}")
+    table
 }
 
 fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
