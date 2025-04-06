@@ -225,7 +225,7 @@ fn get_range_repr(range: (u32, u32)) -> String {
 
 fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
-    let containers = get_containers(&stages);
+    let containers = get_containers(&stages).unwrap_or_default();
     let stage1 = &stages[0];
     let data = get_stage_wiki_data(&stage1.id);
 
@@ -238,60 +238,77 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
         content: vec![],
     };
 
-    for container in containers {
-        for tab in container {
-            let ranges = get_ranges(&tab.0);
-            let stage_first = &stages[ranges[0].0 as usize];
-            let template = Template::named("Stage Info")
-                .add_params(sname.clone())
-                .add_params(sloc.clone())
-                .add_params(enemies_list(stage_first, true))
-                .add_params(restrictions_info(stage_first))
-                .add_params(width(stage_first))
-                .add_params(max_enemies(stage_first))
-                .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
-                .add_params(star(stage_first))
-                .add_params(schap.clone())
-                .add_params(max_clears(stage_first));
+    for tab in containers {
+        let ranges = get_ranges(&tab.0);
+        let stage_first = &stages[ranges[0].0 as usize];
+        let template = Template::named("Stage Info")
+            .add_params(sname.clone())
+            .add_params(sloc.clone())
+            .add_params(enemies_list(stage_first, true))
+            .add_params(restrictions_info(stage_first))
+            .add_params(width(stage_first))
+            .add_params(max_enemies(stage_first))
+            .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+            .add_params(star(stage_first))
+            .add_params(schap.clone())
+            .add_params(max_clears(stage_first));
 
-            let range_str = match ranges.len() {
-                1 => get_range_repr(ranges[0]),
-                _ => ranges
-                    .iter()
-                    .map(|range: &(u32, u32)| get_range_repr(*range))
-                    .collect::<Vec<_>>()
-                    .join(", "),
-            };
+        let range_str = match ranges.len() {
+            1 => get_range_repr(ranges[0]),
+            _ => ranges
+                .iter()
+                .map(|range: &(u32, u32)| get_range_repr(*range))
+                .collect::<Vec<_>>()
+                .join(", "),
+        };
 
-            let cont = tab.1;
-            let sections = [
-                Section::blank(cont.enemies_appearing),
-                Section::blank(template.to_string()),
-                Section::h2("Rules".into(), cont.rules),
-                Section::h2("Restrictions".into(), cont.restrictions),
-                Section::h2("Battleground".into(), cont.battlegrounds),
-            ];
+        let cont = tab.1;
+        let sections = [
+            Section::blank(cont.enemies_appearing),
+            Section::blank(template.to_string()),
+            Section::h2("Rules".into(), cont.rules),
+            Section::h2("Restrictions".into(), cont.restrictions),
+            Section::h2("Battleground".into(), cont.battlegrounds),
+        ];
 
-            let tab = TabberTab {
-                title: format!("Level {range_str}"),
-                content: sections
-                    .iter()
-                    .filter_map(|s| {
-                        if s.content.is_empty() {
-                            None
-                        } else {
-                            Some(s.to_string())
-                        }
-                    })
-                    .collect::<Vec<_>>()
-                    .join("\n\n"),
-            };
+        let tab = TabberTab {
+            title: format!("Level {range_str}"),
+            content: sections
+                .iter()
+                .filter_map(|s| {
+                    if s.content.is_empty() {
+                        None
+                    } else {
+                        Some(s.to_string())
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\n\n"),
+        };
 
-            tabber.content.push(tab)
-        }
+        tabber.content.push(tab)
     }
     tabber
 }
+
+/*
+{| class="article-table" border="0" cellpadding="1" cellspacing="1"
+|-
+! rowspan="2" style="text-align: center;" |Stage
+! colspan="5" style="text-align: center;" |Strength Magnifications
+! rowspan="2" style="text-align: center;" |Base HP
+! rowspan="2" style="text-align: center;" |Energy Cost
+! colspan="2" style="text-align: center;" |Rewards
+|-
+! scope="col" |[[Aoshi Shinomori (Enemy)|Aoshi Shinomori]]
+! scope="col" |[[Baa Baa]]
+! scope="col" |[[Sir Seal]]
+! scope="col" |[[B.B.Bunny]]
+! scope="col" |[[One Horn]]
+! style="text-align: center;" |Treasure
+! style="text-align: center;" |Base XP
+|-
+*/
 
 pub fn do_thing(config: &Config) {
     let map_ids = [
