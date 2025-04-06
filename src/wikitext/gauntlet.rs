@@ -68,10 +68,10 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     stages
 }
 
-fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
-    let mut stages: Vec<(Vec<u32>, Container)> = vec![];
+fn get_containers(stages: &[Stage]) -> Option<Vec<(Vec<u32>, Container)>> {
+    let mut containers: Vec<(Vec<u32>, Container)> = vec![];
 
-    for stage in get_stages(map_id, config) {
+    for stage in stages {
         let container = Container {
             enemies_appearing: enemies_appearing(&stage),
             info: template_check(&stage).to_string(),
@@ -81,16 +81,16 @@ fn get_containers(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Cont
         };
 
         let i = stage.id.num();
-        match stages.iter_mut().find(|item| (**item).1 == container) {
+        match containers.iter_mut().find(|item| (**item).1 == container) {
             Some(cont) => cont.0.push(i),
-            None => stages.push((vec![i], container)),
+            None => containers.push((vec![i], container)),
         }
     }
 
-    if stages.iter().all(|s| s.0.len() == 1) {
+    if containers.iter().all(|s| s.0.len() == 1) {
         None
     } else {
-        Some(stages)
+        Some(containers)
     }
 }
 
@@ -116,6 +116,17 @@ fn get_ranges(ids: &[u32]) -> Vec<(u32, u32)> {
     ranges
 }
 
+fn do_thing_single(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
+    let stages = get_stages(map_id, config);
+    let containers = get_containers(&stages);
+    for container in containers.iter() {
+        for tab in container {
+            println!("{:?}", get_ranges(&tab.0));
+        }
+    }
+    containers
+}
+
 pub fn do_thing(config: &Config) {
     let map_ids = [
         MapID::from_components(T::Gauntlet, 0),
@@ -127,16 +138,10 @@ pub fn do_thing(config: &Config) {
         MapID::from_components(T::CollabGauntlet, 22),
         // baki gauntlet
     ];
-    let stages = map_ids
+    let stages2 = map_ids
         .iter()
-        .flat_map(|map_id| get_containers(&map_id, config))
+        .flat_map(|map_id| do_thing_single(map_id, config))
         .collect::<Vec<_>>();
-    for stage in stages.iter() {
-        // println!("{:?}", stage);
-        for tab in stage {
-            println!("{:?}", get_ranges(&tab.0));
-        }
-    }
     // panic!("{stages:#?}");
-    panic!("{stages:?}");
+    panic!("{stages2:?}");
 }
