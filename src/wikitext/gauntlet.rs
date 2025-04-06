@@ -1,5 +1,7 @@
 #![allow(missing_docs)]
 
+use std::fmt::Display;
+
 use crate::{
     config::Config,
     data::stage::parsed::stage::Stage,
@@ -126,11 +128,36 @@ struct TabberTab {
     title: String,
     content: String,
 }
+impl Display for TabberTab {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}=\n{}", self.title, self.content)
+    }
+}
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 struct Tabber {
     ttype: TabberType,
     content: Vec<TabberTab>,
+}
+impl Display for Tabber {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let (open, mid, close) = match self.ttype {
+            TabberType::Tabber => ("<tabber>", "|-|", "</tabber>"),
+            TabberType::SubTabber => ("{{#tag:tabber", "{{!}}-{{!}}", "}}"),
+        };
+
+        write!(f, "{open}\n")?;
+
+        let mut iter = self.content.iter().peekable();
+        while let Some(tab) = iter.next() {
+            write!(f, "{tab}\n")?;
+            if iter.peek().is_some() {
+                write!(f, "\n{mid}\n")?;
+            }
+        }
+
+        write!(f, "{close}")
+    }
 }
 
 fn template_final(stage: &Stage) -> Template {
@@ -224,10 +251,15 @@ pub fn do_thing(config: &Config) {
         MapID::from_components(T::CollabGauntlet, 22),
         // baki gauntlet
     ];
-    let stages2 = map_ids
+    let stages = map_ids
         .iter()
         .map(|map_id| do_thing_single(map_id, config))
         .collect::<Vec<_>>();
-    panic!("{stages2:#?}");
+
+    for stage in stages {
+        println!("{stage}")
+    }
+
+    panic!();
     // panic!("{stages2:?}");
 }
