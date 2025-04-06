@@ -4,6 +4,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 
 use super::{
+    section::{Tabber, TabberTab, TabberType},
     stage_info::{
         enemies_list::enemies_list,
         information::{max_enemies, stage_location, stage_name, width},
@@ -19,6 +20,7 @@ use crate::{
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         map_info::reference,
+        section::Section,
         stage_info::{
             battlegrounds::battlegrounds,
             beginning::enemies_appearing,
@@ -29,7 +31,7 @@ use crate::{
         },
     },
 };
-use std::fmt::{Display, Write};
+use std::fmt::Write;
 
 fn template_check(stage: &Stage) -> Template {
     Template::named("Stage Info")
@@ -121,83 +123,6 @@ fn get_ranges(ids: &[u32]) -> Vec<(u32, u32)> {
     }
 
     ranges
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-enum TabberType {
-    Tabber,
-    SubTabber,
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct TabberTab {
-    title: String,
-    content: String,
-}
-impl Display for TabberTab {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}=\n{}", self.title, self.content)
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct Tabber {
-    ttype: TabberType,
-    content: Vec<TabberTab>,
-}
-impl Display for Tabber {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let (open, mid, close) = match self.ttype {
-            TabberType::Tabber => ("<tabber>", "|-|", "</tabber>"),
-            TabberType::SubTabber => ("{{#tag:tabber", "{{!}}-{{!}}", "}}"),
-        };
-
-        write!(f, "{open}\n")?;
-
-        let mut iter = self.content.iter().peekable();
-        while let Some(tab) = iter.next() {
-            write!(f, "{tab}\n")?;
-            if iter.peek().is_some() {
-                write!(f, "\n{mid}\n")?;
-            }
-        }
-
-        write!(f, "{close}")
-    }
-}
-
-enum SectionTitle {
-    Blank,
-    H2(String),
-}
-
-struct Section {
-    title: SectionTitle,
-    content: String,
-}
-impl Section {
-    fn blank(content: String) -> Self {
-        Self {
-            title: SectionTitle::Blank,
-            content,
-        }
-    }
-
-    fn h2(title: String, content: String) -> Self {
-        Self {
-            title: SectionTitle::H2(title),
-            content,
-        }
-    }
-}
-impl Display for Section {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.title {
-            SectionTitle::Blank => (),
-            SectionTitle::H2(title) => writeln!(f, "=={title}==")?,
-        };
-        f.write_str(&self.content)
-    }
 }
 
 fn get_range_repr(range: (u32, u32)) -> String {
@@ -347,10 +272,7 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
     let sloc = stage_location(stage1, config.version.lang());
     let schap = chapter(stage1, &data);
 
-    let mut tabber = Tabber {
-        ttype: TabberType::Tabber,
-        content: vec![],
-    };
+    let mut tabber = Tabber::new(TabberType::Tabber, vec![]);
 
     for tab in containers {
         let ranges = get_ranges(&tab.0);
