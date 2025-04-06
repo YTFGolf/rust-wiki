@@ -72,8 +72,8 @@ impl Display for Template {
 #[derive(Debug, PartialEq, Clone)]
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
-    key: StringValue,
-    value: StringValue,
+    pub key: StringValue,
+    pub value: StringValue,
 }
 impl TemplateParameter {
     /// Create a parameter.
@@ -86,10 +86,6 @@ impl TemplateParameter {
             key: key.into(),
             value: value.into(),
         }
-    }
-
-    pub fn content(&self) -> &str {
-        &self.value
     }
 }
 impl Display for TemplateParameter {

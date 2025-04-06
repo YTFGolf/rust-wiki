@@ -235,7 +235,7 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
 
             let rewards = match treasure(stage) {
                 Some(t) => {
-                    let mut c = t.content();
+                    let mut c = t.value.as_ref();
                     c = c.strip_prefix("- ").unwrap();
                     c = c.strip_suffix(" (100%, 1 time)").unwrap();
                     c.to_string()
@@ -245,10 +245,10 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
             write!(
                 table,
                 "|{base_hp}\n|{energy}\n|{rewards}\n|{xp}\n",
-                base_hp = base_hp(stage)[0].content(),
-                energy = energy(stage).unwrap().content(),
+                base_hp = base_hp(stage)[0].value,
+                energy = energy(stage).unwrap().value,
                 rewards = rewards,
-                xp = xp(stage).unwrap().content(),
+                xp = xp(stage).unwrap().value,
             )
             .unwrap();
             // |80,000
