@@ -4,13 +4,13 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 
 use super::{
-    section::{Tabber, TabberTab, TabberType},
     stage_info::{
         enemies_list::enemies_list,
         information::{max_enemies, stage_location, stage_name, width},
         misc_information::{chapter, max_clears, star},
         restrictions::restrictions_info,
     },
+    tabber::{Tabber, TabberTab, TabberType},
     template::Template,
 };
 use crate::{
@@ -350,9 +350,8 @@ pub fn do_thing(config: &Config) {
             _ => tabber.to_string(),
         };
 
-        let dbref = Section::h2("Reference".into(), reference(&map_id));
-        write!(buf, "\n\n*{dbref}").unwrap();
-        // TODO `*` should really not be here
+        let dbref = Section::h2("Reference".into(), format!("*{}", reference(&map_id)));
+        write!(buf, "\n\n{dbref}").unwrap();
 
         println!("{buf}");
     }
