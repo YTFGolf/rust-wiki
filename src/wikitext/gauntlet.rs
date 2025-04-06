@@ -22,6 +22,7 @@ use crate::{
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     wikitext::{
         data_files::{enemy_data::ENEMY_DATA, rewards},
+        map_info::legend::reference,
         stage_info::{
             battlegrounds::battlegrounds,
             beginning::enemies_appearing,
@@ -424,17 +425,19 @@ pub fn do_thing(config: &Config) {
         MapID::from_components(T::CollabGauntlet, 22),
         // baki gauntlet
     ];
-    let tabbers = map_ids
-        .iter()
-        .map(|map_id| do_thing_single(map_id, config))
-        .collect::<Vec<_>>();
+    for map_id in map_ids {
+        let tabber = do_thing_single(&map_id, config);
+        let mut buf = match tabber.content.len() {
+            // 0 => panic!(),
+            1 => tabber.content[0].content.clone(),
+            _ => tabber.to_string(),
+        };
 
-    for tabber in tabbers {
-        match tabber.content.len() {
-            0 => (),
-            1 => println!("{}", tabber.content[0].content),
-            _ => println!("{tabber}"),
-        }
+        let dbref = Section::h2("Reference".into(), reference(&map_id));
+        write!(buf, "\n\n*{dbref}").unwrap();
+        // TODO `*` should really not be here
+
+        println!("{buf}");
     }
 
     panic!();

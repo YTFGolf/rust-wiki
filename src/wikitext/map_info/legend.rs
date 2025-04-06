@@ -251,8 +251,8 @@ fn materials(map_data: &GameMap, version: &Version) -> String {
 }
 
 /// battlecats-db reference.
-fn reference(map: &GameMap) -> String {
-    let mapid = map.id.mapid();
+pub fn reference(map: &MapID) -> String {
+    let mapid = map.mapid();
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }
 
@@ -335,7 +335,7 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
         "difficulty" => difficulty(map),
         "stage_table" => stage_table(map, map_data, version),
         "materials" => materials(map, version),
-        "ref" => reference(map),
+        "ref" => reference(&map.id),
         "nav" => nav(map),
         "footer" => footer(map).to_string(),
         // TODO replace with better template function
@@ -400,7 +400,7 @@ mod tests {
             "{{Materials|61|13|0|13|13|0|0|0|0}}"
         );
         assert_eq!(
-            reference(&leg_begins),
+            reference(&leg_begins.id),
             "https://battlecats-db.com/stage/s00000.html"
         );
         assert_eq!(

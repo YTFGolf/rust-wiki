@@ -1,6 +1,6 @@
 //! Get info about a map.
 
-mod legend;
+pub mod legend;
 use crate::{
     config::Config, data::map::parsed::map::GameMap, meta::stage::variant::StageVariantID,
 };
