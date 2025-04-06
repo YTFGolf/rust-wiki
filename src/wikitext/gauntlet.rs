@@ -260,8 +260,8 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
 
     writeln!(
         table,
-        "| style={CENTER} |Treasure\n\
-        | style={CENTER} |Base XP"
+        "! style={CENTER} |Treasure\n\
+        ! style={CENTER} |Base XP"
     )
     .unwrap();
 
@@ -381,6 +381,7 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
             Section::h2("Restrictions".into(), cont.restrictions),
             Section::h2("Battleground".into(), cont.battlegrounds),
             Section::h2("Details".into(), table),
+            Section::h2("Strategy".into(), "-".into()),
         ];
 
         let range_str = match ranges.len() {
