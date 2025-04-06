@@ -293,32 +293,32 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     stages
 }
 
-pub fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
+fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
-    let containers = stages_tab_info(&stages).unwrap_or_default();
-    let stage1 = &stages[0];
-    let data = get_stage_wiki_data(&stage1.id);
+    let gauntlet_tabs = stages_tab_info(&stages).unwrap_or_default();
+    let stage0 = &stages[0];
+    let data = get_stage_wiki_data(&stage0.id);
 
-    let sname = stage_name(stage1, config.version.lang());
-    let sloc = stage_location(stage1, config.version.lang());
-    let schap = chapter(stage1, &data);
+    let sname = stage_name(stage0, config.version.lang());
+    let sloc = stage_location(stage0, config.version.lang());
+    let schap = chapter(stage0, &data);
 
     let mut tabber = Tabber::new(TabberType::Tabber, vec![]);
 
-    for tab in containers {
+    for tab in gauntlet_tabs {
         let ranges = get_ranges(&tab.0);
-        let stage_first = &stages[ranges[0].0 as usize];
+        let tab_stage0 = &stages[ranges[0].0 as usize];
         let template = Template::named("Stage Info")
             .add_params(sname.clone())
             .add_params(sloc.clone())
-            .add_params(enemies_list(stage_first, true))
-            .add_params(restrictions_info(stage_first))
-            .add_params(width(stage_first))
-            .add_params(max_enemies(stage_first))
+            .add_params(enemies_list(tab_stage0, true))
+            .add_params(restrictions_info(tab_stage0))
+            .add_params(width(tab_stage0))
+            .add_params(max_enemies(tab_stage0))
             .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
-            .add_params(star(stage_first))
+            .add_params(star(tab_stage0))
             .add_params(schap.clone())
-            .add_params(max_clears(stage_first));
+            .add_params(max_clears(tab_stage0));
 
         let table = get_table(&stages, &ranges);
 
@@ -362,6 +362,21 @@ pub fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     tabber
 }
 
+/// Get all gauntlet stages for a map.
+pub fn map_gauntlet(config: &Config, map_id: MapID) -> String {
+    let tabber = map_tabber(&map_id, config);
+    let mut buf = match tabber.content.len() {
+        // 0 => panic!(),
+        1 => tabber.content[0].content.clone(),
+        _ => tabber.to_string(),
+    };
+
+    let dbref = Section::h2("Reference", format!("*{}", reference(&map_id)));
+    write!(buf, "\n\n{dbref}").unwrap();
+
+    buf
+}
+
 pub fn do_thing(config: &Config) {
     let map_ids = [
         MapID::from_components(T::Gauntlet, 0),
@@ -374,17 +389,8 @@ pub fn do_thing(config: &Config) {
         // baki gauntlet
     ];
     for map_id in map_ids {
-        let tabber = map_tabber(&map_id, config);
-        let mut buf = match tabber.content.len() {
-            // 0 => panic!(),
-            1 => tabber.content[0].content.clone(),
-            _ => tabber.to_string(),
-        };
-
-        let dbref = Section::h2("Reference", format!("*{}", reference(&map_id)));
-        write!(buf, "\n\n{dbref}").unwrap();
-
-        println!("{buf}");
+        let g = map_gauntlet(config, map_id);
+        println!("{g}");
     }
 
     panic!();
