@@ -363,36 +363,16 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
 }
 
 /// Get all gauntlet stages for a map.
-pub fn map_gauntlet(config: &Config, map_id: MapID) -> String {
-    let tabber = map_tabber(&map_id, config);
+pub fn map_gauntlet(map_id: &MapID, config: &Config) -> String {
+    let tabber = map_tabber(map_id, config);
     let mut buf = match tabber.content.len() {
         // 0 => panic!(),
         1 => tabber.content[0].content.clone(),
         _ => tabber.to_string(),
     };
 
-    let dbref = Section::h2("Reference", format!("*{}", reference(&map_id)));
+    let dbref = Section::h2("Reference", format!("*{}", reference(map_id)));
     write!(buf, "\n\n{dbref}").unwrap();
 
     buf
-}
-
-pub fn do_thing(config: &Config) {
-    let map_ids = [
-        MapID::from_components(T::Gauntlet, 0),
-        // baron
-        MapID::from_components(T::Gauntlet, 19),
-        // sbc
-        MapID::from_components(T::CollabGauntlet, 7),
-        // heralds of the end
-        MapID::from_components(T::CollabGauntlet, 22),
-        // baki gauntlet
-    ];
-    for map_id in map_ids {
-        let g = map_gauntlet(config, map_id);
-        println!("{g}");
-    }
-
-    panic!();
-    // panic!("{stages2:?}");
 }

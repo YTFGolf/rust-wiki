@@ -2,7 +2,8 @@
 
 use super::{
     cat_cli::CatInfoOptions, cli_util::CliCommand, encounters_cli::EncountersOptions,
-    map_cli::MapInfoOptions, stage_cli::StageInfoOptions, wiki_cli::ReadWikiOptions,
+    gauntlet_cli::GauntletOptions, map_cli::MapInfoOptions, stage_cli::StageInfoOptions,
+    wiki_cli::ReadWikiOptions,
 };
 use crate::config::Config;
 use clap::{Parser, Subcommand};
@@ -30,6 +31,12 @@ pub enum Command {
     #[command(visible_aliases(["cat"]), hide=true)]
     /// Get information about a cat.
     CatInfo(CatInfoOptions),
+
+    /// Get most boilerplate for a gauntlet map.
+    ///
+    /// See https://battlecats.miraheze.org/wiki/?diff=207495 for a list of
+    /// additional stuff you may need to do. This is only a helper.
+    Gauntlet(GauntletOptions),
 }
 
 #[derive(Parser, Debug, PartialEq)]
@@ -50,6 +57,7 @@ impl Cli {
             Command::ReadWiki(options) => options.run(config),
             Command::MapInfo(options) => options.run(config),
             Command::CatInfo(options) => options.run(config),
+            Command::Gauntlet(options) => options.run(config),
         }
     }
 }
