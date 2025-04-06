@@ -152,7 +152,7 @@ fn write_single_mag(buf: &mut String, mag: &Magnification) {
     }
 }
 
-fn fun_name(buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
+fn write_table_line(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
     let mut mags = vec![Vec::new(); enemies_by_id.len()];
     for enemy in &stage.enemies {
         let pos = enemies_by_id
@@ -170,15 +170,15 @@ fn fun_name(buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
     }
 
     for mag1 in mags {
-        buf.write_str("|").unwrap();
+        line_buf.write_str("|").unwrap();
 
         let mut mag_iter = mag1.iter();
-        write_single_mag(buf, mag_iter.next().unwrap());
+        write_single_mag(line_buf, mag_iter.next().unwrap());
         for mag in mag_iter {
-            *buf += ", ";
-            write_single_mag(buf, mag);
+            *line_buf += ", ";
+            write_single_mag(line_buf, mag);
         }
-        buf.write_str("\n").unwrap();
+        line_buf.write_str("\n").unwrap();
     }
 
     let rewards = match treasure(stage) {
@@ -191,8 +191,8 @@ fn fun_name(buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
         None => "None".to_string(),
     };
     write!(
-        buf,
-        "|{base_hp}\n|{energy}\n|{rewards}\n|{xp}\n",
+        line_buf,
+        "|{base_hp}\n|{energy}\n|{rewards}\n|{xp}",
         base_hp = base_hp(stage)[0].value,
         energy = energy(stage).unwrap().value,
         rewards = rewards,
@@ -237,67 +237,8 @@ fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
         for i in range.0..=range.1 {
             writeln!(table, "|-\n! scope=\"row\" |{}", i + 1).unwrap();
             let stage = &stages[i as usize];
-            let mut mags = vec![Vec::new(); colspan];
-            for enemy in &stage.enemies {
-                let pos = enemies_by_id
-                    .iter()
-                    .position(|eid| *eid == enemy.id)
-                    .unwrap();
-
-                if mags[pos]
-                    .iter()
-                    .position(|mag| enemy.magnification == *mag)
-                    .is_none()
-                {
-                    mags[pos].push(enemy.magnification);
-                }
-            }
-
-            for mag1 in mags {
-                table.write_str("|").unwrap();
-
-                fn write_single_mag(buf: &mut String, mag: &Magnification) {
-                    match mag {
-                        Left(n) => {
-                            buf.write_formatted(n, &Locale::en).unwrap();
-                            buf.write_str("%").unwrap();
-                        }
-                        Right((hp, ap)) => {
-                            buf.write_formatted(hp, &Locale::en).unwrap();
-                            buf.write_str("% HP/").unwrap();
-                            buf.write_formatted(ap, &Locale::en).unwrap();
-                            buf.write_str("% AP").unwrap();
-                        }
-                    }
-                }
-
-                let mut mag_iter = mag1.iter();
-                write_single_mag(&mut table, mag_iter.next().unwrap());
-                for mag in mag_iter {
-                    table += ", ";
-                    write_single_mag(&mut table, mag);
-                }
-                table.write_str("\n").unwrap();
-            }
-
-            let rewards = match treasure(stage) {
-                Some(t) => {
-                    let mut c = t.value.as_ref();
-                    c = c.strip_prefix("- ").unwrap();
-                    c = c.strip_suffix(" (100%, 1 time)").unwrap();
-                    c.to_string()
-                }
-                None => "None".to_string(),
-            };
-            write!(
-                table,
-                "|{base_hp}\n|{energy}\n|{rewards}\n|{xp}\n",
-                base_hp = base_hp(stage)[0].value,
-                energy = energy(stage).unwrap().value,
-                rewards = rewards,
-                xp = xp(stage).unwrap().value,
-            )
-            .unwrap();
+            write_table_line(&mut table, &enemies_by_id, stage);
+            table.write_str("\n").unwrap();
         }
     }
 
