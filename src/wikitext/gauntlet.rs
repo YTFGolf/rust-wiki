@@ -62,7 +62,6 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
             None => break,
         };
         stages.push(stage);
-        // let data = get_stage_wiki_data(&stage.id);
     }
 
     stages
@@ -116,15 +115,102 @@ fn get_ranges(ids: &[u32]) -> Vec<(u32, u32)> {
     ranges
 }
 
-fn do_thing_single(map_id: &MapID, config: &Config) -> Option<Vec<(Vec<u32>, Container)>> {
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+enum TabberType {
+    Tabber,
+    SubTabber,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+struct TabberTab {
+    title: String,
+    content: String,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+struct Tabber {
+    ttype: TabberType,
+    content: Vec<TabberTab>,
+}
+
+fn template_final(stage: &Stage) -> Template {
+    Template::named("Stage Info")
+        // .add_params(stage_name(stage, config.version.lang()))
+        // .add_params(stage_location(stage, config.version.lang()))
+        // .add_params(energy(stage))
+        // .add_params(base_hp(stage))
+        .add_params(enemies_list(stage, true))
+        // .add_params(treasure(stage))
+        .add_params(restrictions_info(stage))
+        // .add_params(score_rewards(stage))
+        // .add_params(xp(stage))
+        .add_params(width(stage))
+        .add_params(max_enemies(stage))
+    // .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+    // .add_params(star(stage))
+    // .add_params(chapter(stage, stage_wiki_data))
+    // .add_params(max_clears(stage))
+    // .add_params(difficulty(stage))
+    // .add_params(stage_nav(stage, stage_wiki_data))
+}
+
+fn get_range_repr(range: (u32, u32)) -> String {
+    if range.0 == range.1 {
+        (range.0 + 1).to_string()
+    } else {
+        format!("{}~{}", range.0 + 1, range.1 + 1)
+    }
+}
+
+fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
     let containers = get_containers(&stages);
+    let stage1 = &stages[0];
+    let data = get_stage_wiki_data(&stage1.id);
+
+    let param1 = stage_name(stage1, config.version.lang());
+    let param2 = stage_location(stage1, config.version.lang());
+    let param3 = chapter(stage1, &data);
+
+    let mut tabber = Tabber {
+        ttype: TabberType::Tabber,
+        content: vec![],
+    };
+
     for container in containers.iter() {
         for tab in container {
-            println!("{:?}", get_ranges(&tab.0));
+            let ranges = get_ranges(&tab.0);
+            let stage_first = &stages[ranges[0].0 as usize];
+            let template = Template::named("Stage Info")
+                .add_params(param1.clone())
+                .add_params(param2.clone())
+                .add_params(enemies_list(stage_first, true))
+                .add_params(restrictions_info(stage_first))
+                .add_params(width(stage_first))
+                .add_params(max_enemies(stage_first))
+                .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+                .add_params(star(stage_first))
+                .add_params(param3.clone())
+                .add_params(max_clears(stage_first));
+
+            let range_str = match ranges.len() {
+                1 => get_range_repr(ranges[0]),
+                _ => ranges
+                    .iter()
+                    .map(|range: &(u32, u32)| get_range_repr(*range))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+            };
+
+            let tab = TabberTab {
+                title: format!("Level {range_str}"),
+                content: template.to_string(),
+            };
+
+            tabber.content.push(tab)
         }
     }
-    containers
+    tabber
 }
 
 pub fn do_thing(config: &Config) {
@@ -140,8 +226,8 @@ pub fn do_thing(config: &Config) {
     ];
     let stages2 = map_ids
         .iter()
-        .flat_map(|map_id| do_thing_single(map_id, config))
+        .map(|map_id| do_thing_single(map_id, config))
         .collect::<Vec<_>>();
-    // panic!("{stages:#?}");
-    panic!("{stages2:?}");
+    panic!("{stages2:#?}");
+    // panic!("{stages2:?}");
 }

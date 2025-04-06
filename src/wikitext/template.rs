@@ -69,7 +69,7 @@ impl Display for Template {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
     key: StringValue,
