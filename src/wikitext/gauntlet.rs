@@ -1,18 +1,7 @@
 #![allow(missing_docs)]
 
-use std::fmt::Display;
-
-use crate::{
-    config::Config,
-    data::stage::parsed::stage::Stage,
-    meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
-    wikitext::stage_info::{
-        battlegrounds::battlegrounds,
-        beginning::enemies_appearing,
-        get_stage_wiki_data,
-        restrictions::{restrictions_section, rules},
-    },
-};
+use either::Either::{Left, Right};
+use num_format::{Locale, WriteFormatted};
 
 use super::{
     stage_info::{
@@ -24,6 +13,24 @@ use super::{
     },
     template::Template,
 };
+use crate::{
+    config::Config,
+    data::stage::{
+        self,
+        parsed::{stage::Stage, stage_enemy::Magnification},
+    },
+    meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
+    wikitext::{
+        data_files::enemy_data::ENEMY_DATA,
+        stage_info::{
+            battlegrounds::battlegrounds,
+            beginning::enemies_appearing,
+            get_stage_wiki_data,
+            restrictions::{restrictions_section, rules},
+        },
+    },
+};
+use std::fmt::{Display, Write};
 
 fn template_check(stage: &Stage) -> Template {
     Template::named("Stage Info")
@@ -194,33 +201,118 @@ impl Display for Section {
     }
 }
 
-fn template_final(stage: &Stage) -> Template {
-    Template::named("Stage Info")
-        // .add_params(stage_name(stage, config.version.lang()))
-        // .add_params(stage_location(stage, config.version.lang()))
-        // .add_params(energy(stage))
-        // .add_params(base_hp(stage))
-        .add_params(enemies_list(stage, true))
-        // .add_params(treasure(stage))
-        .add_params(restrictions_info(stage))
-        // .add_params(score_rewards(stage))
-        // .add_params(xp(stage))
-        .add_params(width(stage))
-        .add_params(max_enemies(stage))
-    // .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
-    // .add_params(star(stage))
-    // .add_params(chapter(stage, stage_wiki_data))
-    // .add_params(max_clears(stage))
-    // .add_params(difficulty(stage))
-    // .add_params(stage_nav(stage, stage_wiki_data))
-}
-
 fn get_range_repr(range: (u32, u32)) -> String {
     if range.0 == range.1 {
         (range.0 + 1).to_string()
     } else {
         format!("{}~{}", range.0 + 1, range.1 + 1)
     }
+}
+
+fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
+    let stage1 = &stages[ranges[0].0 as usize];
+
+    // if let Some(rewards) = stage1.rewards
+    if stage1.rewards.is_some() && stage1.rewards.as_ref().unwrap().score_rewards.len() != 0 {
+        todo!(
+            "Stage {id} has score rewards which are currently not supported with gauntlets",
+            id = stage1.id
+        );
+        // TODO something about score rewards
+    }
+
+    let mut enemies_by_id = vec![];
+    for enemy in stage1.enemies.iter() {
+        if enemies_by_id
+            .iter()
+            .position(|eid| *eid == enemy.id)
+            .is_none()
+        {
+            enemies_by_id.push(enemy.id)
+        }
+    }
+
+    let colspan = enemies_by_id.len();
+
+    const CENTER: &str = "\"text-align: center;\"";
+    const START: &str =
+        "{| class=\"article-table\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"";
+
+    let mut table = format!(
+        "{START}\n|-\n\
+        ! rowspan=\"2\" style={CENTER} |Stage\n\
+        ! colspan=\"{colspan}\" style={CENTER} |Strength Magnifications\n\
+        ! rowspan=\"2\" style={CENTER} |Base HP\n\
+        ! rowspan=\"2\" style={CENTER} |Energy Cost\n\
+        ! colspan=\"2\" style={CENTER} |Rewards\n\
+        |-\n\
+        "
+    );
+
+    const SCOPE: &str = "scope=\"col\"";
+    for enemy in &enemies_by_id {
+        let name = &ENEMY_DATA.get_names(*enemy).name;
+        writeln!(table, "! {SCOPE} |{name}").unwrap();
+    }
+
+    writeln!(
+        table,
+        "| style={CENTER} |Treasure\n\
+        | style={CENTER} |Base XP"
+    )
+    .unwrap();
+
+    for range in ranges {
+        for i in range.0..=range.1 {
+            writeln!(table, "|-\n! scope=\"row\" |{}", i + 1).unwrap();
+            let stage = &stages[i as usize];
+            let mut mags = vec![Vec::new(); colspan];
+            for enemy in &stage.enemies {
+                let pos = enemies_by_id
+                    .iter()
+                    .position(|eid| *eid == enemy.id)
+                    .unwrap();
+
+                if mags[pos]
+                    .iter()
+                    .position(|mag| enemy.magnification == *mag)
+                    .is_none()
+                {
+                    mags[pos].push(enemy.magnification);
+                }
+            }
+
+            for mag1 in mags {
+                table.write_str("|").unwrap();
+
+                fn write_single_mag(buf: &mut String, mag: &Magnification) {
+                    match mag {
+                        Left(n) => {
+                            buf.write_formatted(n, &Locale::en).unwrap();
+                            buf.write_str("%").unwrap();
+                        }
+                        Right((hp, ap)) => {
+                            buf.write_formatted(hp, &Locale::en).unwrap();
+                            buf.write_str("% HP/").unwrap();
+                            buf.write_formatted(ap, &Locale::en).unwrap();
+                            buf.write_str("% AP").unwrap();
+                        }
+                    }
+                }
+
+                let mut mag_iter = mag1.iter();
+                write_single_mag(&mut table, mag_iter.next().unwrap());
+                for mag in mag_iter {
+                    table += ", ";
+                    write_single_mag(&mut table, mag);
+                }
+                table.write_str("\n").unwrap();
+            }
+        }
+    }
+
+    table.write_str("|}").unwrap();
+    todo!("{table}")
 }
 
 fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
@@ -253,14 +345,7 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
             .add_params(schap.clone())
             .add_params(max_clears(stage_first));
 
-        let range_str = match ranges.len() {
-            1 => get_range_repr(ranges[0]),
-            _ => ranges
-                .iter()
-                .map(|range: &(u32, u32)| get_range_repr(*range))
-                .collect::<Vec<_>>()
-                .join(", "),
-        };
+        let table = get_table(&stages, &ranges);
 
         let cont = tab.1;
         let sections = [
@@ -269,7 +354,17 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
             Section::h2("Rules".into(), cont.rules),
             Section::h2("Restrictions".into(), cont.restrictions),
             Section::h2("Battleground".into(), cont.battlegrounds),
+            Section::h2("Details".into(), table),
         ];
+
+        let range_str = match ranges.len() {
+            1 => get_range_repr(ranges[0]),
+            _ => ranges
+                .iter()
+                .map(|range: &(u32, u32)| get_range_repr(*range))
+                .collect::<Vec<_>>()
+                .join(", "),
+        };
 
         let tab = TabberTab {
             title: format!("Level {range_str}"),
@@ -290,25 +385,6 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
     }
     tabber
 }
-
-/*
-{| class="article-table" border="0" cellpadding="1" cellspacing="1"
-|-
-! rowspan="2" style="text-align: center;" |Stage
-! colspan="5" style="text-align: center;" |Strength Magnifications
-! rowspan="2" style="text-align: center;" |Base HP
-! rowspan="2" style="text-align: center;" |Energy Cost
-! colspan="2" style="text-align: center;" |Rewards
-|-
-! scope="col" |[[Aoshi Shinomori (Enemy)|Aoshi Shinomori]]
-! scope="col" |[[Baa Baa]]
-! scope="col" |[[Sir Seal]]
-! scope="col" |[[B.B.Bunny]]
-! scope="col" |[[One Horn]]
-! style="text-align: center;" |Treasure
-! style="text-align: center;" |Base XP
-|-
-*/
 
 pub fn do_thing(config: &Config) {
     let map_ids = [
