@@ -13,7 +13,10 @@ use super::{
 };
 use crate::{
     config::Config,
-    data::stage::parsed::{stage::Stage, stage_enemy::Magnification},
+    data::stage::parsed::{
+        stage::Stage,
+        stage_enemy::{Magnification, StageEnemy},
+    },
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
@@ -152,9 +155,15 @@ fn write_single_mag(buf: &mut String, mag: &Magnification) {
     }
 }
 
-fn write_table_line(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
+/// Get a list of unique magnifications for each enemy.
+///
+/// If `enemies_by_id` is `[35, 42]` and `enemies` has enemy 35 at 300% and
+/// enemy 42 at 400% and 500% then this will give you `[[300], [400, 500]]`.
+/// Unfortunately [`StageEnemy`] does way too much for this to be a viable
+/// doctest.
+fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<Magnification>> {
     let mut mags = vec![Vec::new(); enemies_by_id.len()];
-    for enemy in &stage.enemies {
+    for enemy in enemies {
         let pos = enemies_by_id
             .iter()
             .position(|eid| *eid == enemy.id)
@@ -168,24 +177,31 @@ fn write_table_line(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Sta
             mags[pos].push(enemy.magnification);
         }
     }
+    mags
+}
 
-    for mag1 in mags {
+fn write_table_line(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
+    let mag_lines = enemy_mag_lines(enemies_by_id, &stage.enemies);
+
+    for mag_line in mag_lines {
         line_buf.write_str("|").unwrap();
 
-        let mut mag_iter = mag1.iter();
-        write_single_mag(line_buf, mag_iter.next().unwrap());
-        for mag in mag_iter {
+        let mut mags_iter = mag_line.iter();
+        write_single_mag(line_buf, mags_iter.next().unwrap());
+        for mag in mags_iter {
             *line_buf += ", ";
             write_single_mag(line_buf, mag);
         }
         line_buf.write_str("\n").unwrap();
     }
+    // |x%, y% HP/z% AP etc.
 
     let rewards = match treasure(stage) {
         Some(t) => {
             let mut c = t.value.as_ref();
             c = c.strip_prefix("- ").unwrap();
             c = c.strip_suffix(" (100%, 1 time)").unwrap();
+            // "- {} (100%, 1 time)", capture the "{}" bit
             c.to_string()
         }
         None => "None".to_string(),
@@ -208,6 +224,8 @@ fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
     const CENTER: &str = "\"text-align: center;\"";
     const START: &str =
         "{| class=\"article-table\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"";
+    // this could potentially use a proper struct but tables are so un-ergonomic
+    // anyway
 
     let mut table = format!(
         "{START}\n|-\n\
@@ -219,25 +237,39 @@ fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
         |-\n\
         "
     );
+    // row 1
+    // mags and rewards have sub-columns so have colspan but not rowspan, others
+    // have no sub-columns so no colspan but they need to take up 2 rows e.g.
+    /*
+    | Stage |           Mags          | HP  | Cost |    Rewards    |
+    |       | Enemy 1 | Enemy 2 | ... |     |      | Treasure | XP |
+
+    Stage, HP and cost take up 2 rows here, mags takes up 3 cols and rewards
+    takes up 2 cols.
+    */
 
     const SCOPE: &str = "scope=\"col\"";
     for enemy in &enemies_by_id {
         let name = &ENEMY_DATA.get_names(*enemy).name;
         writeln!(table, "! {SCOPE} |{name}").unwrap();
     }
+    // names of each enemy
 
-    writeln!(
+    write!(
         table,
         "! style={CENTER} |Treasure\n\
-        ! style={CENTER} |Base XP"
+        ! style={CENTER} |Base XP\n"
     )
     .unwrap();
+    // final two cols in second row
 
     for range in ranges {
         for i in range.0..=range.1 {
-            writeln!(table, "|-\n! scope=\"row\" |{}", i + 1).unwrap();
+            write!(table, "|-\n! scope=\"row\" |{}\n", i + 1).unwrap();
+            // new row, add stage number marker
             let stage = &stages[i as usize];
             write_table_line(&mut table, &enemies_by_id, stage);
+            // other cols in line
             table.write_str("\n").unwrap();
         }
     }
@@ -246,6 +278,7 @@ fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
     table
 }
 
+/// Get all valid stages in map.
 fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     let mut stages = vec![];
     for i in 0..100 {
@@ -260,7 +293,7 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     stages
 }
 
-fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
+pub fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
     let containers = stages_tab_info(&stages).unwrap_or_default();
     let stage1 = &stages[0];
@@ -341,7 +374,7 @@ pub fn do_thing(config: &Config) {
         // baki gauntlet
     ];
     for map_id in map_ids {
-        let tabber = do_thing_single(&map_id, config);
+        let tabber = map_tabber(&map_id, config);
         let mut buf = match tabber.content.len() {
             // 0 => panic!(),
             1 => tabber.content[0].content.clone(),
