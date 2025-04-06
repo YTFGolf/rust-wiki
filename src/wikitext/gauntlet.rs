@@ -160,6 +160,40 @@ impl Display for Tabber {
     }
 }
 
+enum SectionTitle {
+    Blank,
+    H2(String),
+}
+
+struct Section {
+    title: SectionTitle,
+    content: String,
+}
+impl Section {
+    fn blank(content: String) -> Self {
+        Self {
+            title: SectionTitle::Blank,
+            content,
+        }
+    }
+
+    fn h2(title: String, content: String) -> Self {
+        Self {
+            title: SectionTitle::H2(title),
+            content,
+        }
+    }
+}
+impl Display for Section {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self.title {
+            SectionTitle::Blank => (),
+            SectionTitle::H2(title) => writeln!(f, "=={title}==")?,
+        };
+        f.write_str(&self.content)
+    }
+}
+
 fn template_final(stage: &Stage) -> Template {
     Template::named("Stage Info")
         // .add_params(stage_name(stage, config.version.lang()))
@@ -195,29 +229,29 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
     let stage1 = &stages[0];
     let data = get_stage_wiki_data(&stage1.id);
 
-    let param1 = stage_name(stage1, config.version.lang());
-    let param2 = stage_location(stage1, config.version.lang());
-    let param3 = chapter(stage1, &data);
+    let sname = stage_name(stage1, config.version.lang());
+    let sloc = stage_location(stage1, config.version.lang());
+    let schap = chapter(stage1, &data);
 
     let mut tabber = Tabber {
         ttype: TabberType::Tabber,
         content: vec![],
     };
 
-    for container in containers.iter() {
+    for container in containers {
         for tab in container {
             let ranges = get_ranges(&tab.0);
             let stage_first = &stages[ranges[0].0 as usize];
             let template = Template::named("Stage Info")
-                .add_params(param1.clone())
-                .add_params(param2.clone())
+                .add_params(sname.clone())
+                .add_params(sloc.clone())
                 .add_params(enemies_list(stage_first, true))
                 .add_params(restrictions_info(stage_first))
                 .add_params(width(stage_first))
                 .add_params(max_enemies(stage_first))
                 .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
                 .add_params(star(stage_first))
-                .add_params(param3.clone())
+                .add_params(schap.clone())
                 .add_params(max_clears(stage_first));
 
             let range_str = match ranges.len() {
@@ -229,9 +263,28 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
                     .join(", "),
             };
 
+            let cont = tab.1;
+            let sections = [
+                Section::blank(cont.enemies_appearing),
+                Section::blank(template.to_string()),
+                Section::h2("Rules".into(), cont.rules),
+                Section::h2("Restrictions".into(), cont.restrictions),
+                Section::h2("Battleground".into(), cont.battlegrounds),
+            ];
+
             let tab = TabberTab {
                 title: format!("Level {range_str}"),
-                content: template.to_string(),
+                content: sections
+                    .iter()
+                    .filter_map(|s| {
+                        if s.content.is_empty() {
+                            None
+                        } else {
+                            Some(s.to_string())
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join("\n\n"),
             };
 
             tabber.content.push(tab)
