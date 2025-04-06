@@ -1,26 +1,35 @@
-use std::fmt::Display;
+use std::{borrow::Cow, fmt::Display};
+
+type StringValue = Cow<'static, str>;
 
 pub enum SectionTitle {
     Blank,
-    H2(String),
+    H2(StringValue),
 }
 
 pub struct Section {
     pub title: SectionTitle,
-    pub content: String,
+    pub content: StringValue,
 }
 impl Section {
-    pub fn blank(content: String) -> Self {
+    pub fn blank<T>(content: T) -> Self
+    where
+        T: Into<StringValue>,
+    {
         Self {
             title: SectionTitle::Blank,
-            content,
+            content: content.into(),
         }
     }
 
-    pub fn h2(title: String, content: String) -> Self {
+    pub fn h2<T, U>(title: T, content: U) -> Self
+    where
+        T: Into<StringValue>,
+        U: Into<StringValue>,
+    {
         Self {
-            title: SectionTitle::H2(title),
-            content,
+            title: SectionTitle::H2(title.into()),
+            content: content.into(),
         }
     }
 }

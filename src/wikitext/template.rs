@@ -20,12 +20,38 @@ impl AutoParam for TemplateParameter {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+/// Representation of a wikitext template parameter.
+pub struct TemplateParameter {
+    pub key: StringValue,
+    pub value: StringValue,
+}
+impl TemplateParameter {
+    /// Create a parameter.
+    pub fn new<T, U>(key: T, value: U) -> Self
+    where
+        T: Into<StringValue>,
+        U: Into<StringValue>,
+    {
+        Self {
+            key: key.into(),
+            value: value.into(),
+        }
+    }
+}
+impl Display for TemplateParameter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "|{key} = {value}", key = self.key, value = self.value)
+    }
+}
+
 #[derive(Debug, PartialEq)]
 /// Representation of a wikitext template.
 pub struct Template {
     name: StringValue,
     params: Vec<TemplateParameter>,
 }
+
 impl Template {
     /// Create new [`Template`].
     pub fn new<T: Into<StringValue>>(name: T, params: Vec<TemplateParameter>) -> Self {
@@ -55,6 +81,7 @@ impl Template {
         self
     }
 }
+
 impl Display for Template {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("{{")?;
@@ -66,31 +93,6 @@ impl Display for Template {
         }
 
         f.write_str("\n}}")
-    }
-}
-
-#[derive(Debug, PartialEq, Clone)]
-/// Representation of a wikitext template parameter.
-pub struct TemplateParameter {
-    pub key: StringValue,
-    pub value: StringValue,
-}
-impl TemplateParameter {
-    /// Create a parameter.
-    pub fn new<T, U>(key: T, value: U) -> Self
-    where
-        T: Into<StringValue>,
-        U: Into<StringValue>,
-    {
-        Self {
-            key: key.into(),
-            value: value.into(),
-        }
-    }
-}
-impl Display for TemplateParameter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "|{key} = {value}", key = self.key, value = self.value)
     }
 }
 

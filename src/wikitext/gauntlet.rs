@@ -295,11 +295,11 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
         let sections = [
             Section::blank(cont.enemies_appearing),
             Section::blank(template.to_string()),
-            Section::h2("Rules".into(), cont.rules),
-            Section::h2("Restrictions".into(), cont.restrictions),
-            Section::h2("Battleground".into(), cont.battlegrounds),
-            Section::h2("Details".into(), table),
-            Section::h2("Strategy".into(), "-".into()),
+            Section::h2("Rules", cont.rules),
+            Section::h2("Restrictions", cont.restrictions),
+            Section::h2("Battleground", cont.battlegrounds),
+            Section::h2("Details", table),
+            Section::h2("Strategy", "-"),
         ];
 
         let range_str = match ranges.len() {
@@ -350,7 +350,7 @@ pub fn do_thing(config: &Config) {
             _ => tabber.to_string(),
         };
 
-        let dbref = Section::h2("Reference".into(), format!("*{}", reference(&map_id)));
+        let dbref = Section::h2("Reference", format!("*{}", reference(&map_id)));
         write!(buf, "\n\n{dbref}").unwrap();
 
         println!("{buf}");
