@@ -251,13 +251,17 @@ pub fn do_thing(config: &Config) {
         MapID::from_components(T::CollabGauntlet, 22),
         // baki gauntlet
     ];
-    let stages = map_ids
+    let tabbers = map_ids
         .iter()
         .map(|map_id| do_thing_single(map_id, config))
         .collect::<Vec<_>>();
 
-    for stage in stages {
-        println!("{stage}")
+    for tabber in tabbers {
+        match tabber.content.len() {
+            0 => (),
+            1 => println!("{}", tabber.content[0].content),
+            _ => println!("{tabber}"),
+        }
     }
 
     panic!();
