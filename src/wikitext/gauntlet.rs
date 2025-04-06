@@ -1,5 +1,3 @@
-#![allow(missing_docs)]
-
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 
@@ -35,55 +33,32 @@ use std::fmt::Write;
 
 fn template_check(stage: &Stage) -> Template {
     Template::named("Stage Info")
-        // .add_params(stage_name(stage, config.version.lang()))
-        // .add_params(stage_location(stage, config.version.lang()))
-        // .add_params(energy(stage))
-        // .add_params(base_hp(stage))
         .add_params(enemies_list(stage, true))
-        // .add_params(treasure(stage))
         .add_params(restrictions_info(stage))
-        // .add_params(score_rewards(stage))
-        // .add_params(xp(stage))
         .add_params(width(stage))
         .add_params(max_enemies(stage))
-    // .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
-    // .add_params(star(stage))
-    // .add_params(chapter(stage, stage_wiki_data))
-    // .add_params(max_clears(stage))
-    // .add_params(difficulty(stage))
-    // .add_params(stage_nav(stage, stage_wiki_data))
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct Container {
+/// Container for a tab's info.
+struct TabInfo {
     enemies_appearing: String,
-    info: String,
+    infobox: String,
     rules: String,
     restrictions: String,
     battlegrounds: String,
 }
 
-fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
-    let mut stages = vec![];
-    for i in 0..100 {
-        let id = StageID::from_map(map_id.clone(), i);
-        let stage = match Stage::from_id(id, config.version.current_version()) {
-            Some(stage) => stage,
-            None => break,
-        };
-        stages.push(stage);
-    }
+/// Information about a tab with stage ids.
+type TabInfoWithStages = (Vec<u32>, TabInfo);
 
-    stages
-}
-
-fn get_containers(stages: &[Stage]) -> Option<Vec<(Vec<u32>, Container)>> {
-    let mut containers: Vec<(Vec<u32>, Container)> = vec![];
+fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
+    let mut containers: Vec<TabInfoWithStages> = vec![];
 
     for stage in stages {
-        let container = Container {
+        let container = TabInfo {
             enemies_appearing: enemies_appearing(&stage),
-            info: template_check(&stage).to_string(),
+            infobox: template_check(&stage).to_string(),
             rules: rules(&stage),
             restrictions: restrictions_section(&stage),
             battlegrounds: battlegrounds(&stage),
@@ -103,7 +78,10 @@ fn get_containers(stages: &[Stage]) -> Option<Vec<(Vec<u32>, Container)>> {
     }
 }
 
-fn get_ranges(ids: &[u32]) -> Vec<(u32, u32)> {
+/// Range of stage ids.
+type StageRange = (u32, u32);
+
+fn get_ranges(ids: &[u32]) -> Vec<StageRange> {
     let mut range_min = ids[0];
     let mut ranges = vec![];
 
@@ -125,7 +103,8 @@ fn get_ranges(ids: &[u32]) -> Vec<(u32, u32)> {
     ranges
 }
 
-fn get_range_repr(range: (u32, u32)) -> String {
+/// Get text representation of a range.
+fn get_range_repr(range: StageRange) -> String {
     if range.0 == range.1 {
         (range.0 + 1).to_string()
     } else {
@@ -133,7 +112,7 @@ fn get_range_repr(range: (u32, u32)) -> String {
     }
 }
 
-fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
+fn get_enemies_by_id(stages: &[Stage], ranges: &[(u32, u32)]) -> Vec<u32> {
     let stage1 = &stages[ranges[0].0 as usize];
 
     // if let Some(rewards) = stage1.rewards
@@ -155,9 +134,77 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
             enemies_by_id.push(enemy.id)
         }
     }
+    enemies_by_id
+}
+
+fn write_single_mag(buf: &mut String, mag: &Magnification) {
+    match mag {
+        Left(n) => {
+            buf.write_formatted(n, &Locale::en).unwrap();
+            buf.write_str("%").unwrap();
+        }
+        Right((hp, ap)) => {
+            buf.write_formatted(hp, &Locale::en).unwrap();
+            buf.write_str("% HP/").unwrap();
+            buf.write_formatted(ap, &Locale::en).unwrap();
+            buf.write_str("% AP").unwrap();
+        }
+    }
+}
+
+fn fun_name(buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
+    let mut mags = vec![Vec::new(); enemies_by_id.len()];
+    for enemy in &stage.enemies {
+        let pos = enemies_by_id
+            .iter()
+            .position(|eid| *eid == enemy.id)
+            .unwrap();
+
+        if mags[pos]
+            .iter()
+            .position(|mag| enemy.magnification == *mag)
+            .is_none()
+        {
+            mags[pos].push(enemy.magnification);
+        }
+    }
+
+    for mag1 in mags {
+        buf.write_str("|").unwrap();
+
+        let mut mag_iter = mag1.iter();
+        write_single_mag(buf, mag_iter.next().unwrap());
+        for mag in mag_iter {
+            *buf += ", ";
+            write_single_mag(buf, mag);
+        }
+        buf.write_str("\n").unwrap();
+    }
+
+    let rewards = match treasure(stage) {
+        Some(t) => {
+            let mut c = t.value.as_ref();
+            c = c.strip_prefix("- ").unwrap();
+            c = c.strip_suffix(" (100%, 1 time)").unwrap();
+            c.to_string()
+        }
+        None => "None".to_string(),
+    };
+    write!(
+        buf,
+        "|{base_hp}\n|{energy}\n|{rewards}\n|{xp}\n",
+        base_hp = base_hp(stage)[0].value,
+        energy = energy(stage).unwrap().value,
+        rewards = rewards,
+        xp = xp(stage).unwrap().value,
+    )
+    .unwrap();
+}
+
+fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
+    let enemies_by_id = get_enemies_by_id(stages, ranges);
 
     let colspan = enemies_by_id.len();
-
     const CENTER: &str = "\"text-align: center;\"";
     const START: &str =
         "{| class=\"article-table\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"";
@@ -251,10 +298,6 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
                 xp = xp(stage).unwrap().value,
             )
             .unwrap();
-            // |80,000
-            // |70
-            // |XP +250,000
-            // |1,330
         }
     }
 
@@ -262,9 +305,23 @@ fn get_table(stages: &[Stage], ranges: &[(u32, u32)]) -> String {
     table
 }
 
+fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
+    let mut stages = vec![];
+    for i in 0..100 {
+        let id = StageID::from_map(map_id.clone(), i);
+        let stage = match Stage::from_id(id, config.version.current_version()) {
+            Some(stage) => stage,
+            None => break,
+        };
+        stages.push(stage);
+    }
+
+    stages
+}
+
 fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
-    let containers = get_containers(&stages).unwrap_or_default();
+    let containers = stages_tab_info(&stages).unwrap_or_default();
     let stage1 = &stages[0];
     let data = get_stage_wiki_data(&stage1.id);
 
@@ -306,7 +363,7 @@ fn do_thing_single(map_id: &MapID, config: &Config) -> Tabber {
             1 => get_range_repr(ranges[0]),
             _ => ranges
                 .iter()
-                .map(|range: &(u32, u32)| get_range_repr(*range))
+                .map(|range: &StageRange| get_range_repr(*range))
                 .collect::<Vec<_>>()
                 .join(", "),
         };
