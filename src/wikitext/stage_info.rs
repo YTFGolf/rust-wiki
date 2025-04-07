@@ -20,8 +20,8 @@ pub mod variables;
 
 /// Contains wiki data about a stage.
 pub struct StageWikiDataContainer {
-    stage_map: &'static MapWikiData,
-    stage_name: &'static StageWikiData,
+    pub stage_map: &'static MapWikiData,
+    pub stage_name: &'static StageWikiData,
 }
 
 /// Get full stage info.

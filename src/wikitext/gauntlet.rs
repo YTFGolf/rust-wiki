@@ -30,6 +30,7 @@ use crate::{
             restrictions::{restrictions_section, rules},
             treasure::treasure,
         },
+        wiki_utils::extract_link,
     },
 };
 use std::fmt::Write;
@@ -296,6 +297,8 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
 fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
     let gauntlet_tabs = stages_tab_info(&stages).unwrap_or_default();
+    let len = gauntlet_tabs.len();
+    // amount of tabs, useful to know for the logging warning below
     let stage0 = &stages[0];
     let data = get_stage_wiki_data(&stage0.id);
 
@@ -308,6 +311,7 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     for tab in gauntlet_tabs {
         let ranges = get_ranges(&tab.0);
         let tab_stage0 = &stages[ranges[0].0 as usize];
+
         let template = Template::named("Stage Info")
             .add_params(sname.clone())
             .add_params(sloc.clone())
@@ -342,8 +346,23 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
                 .join(", "),
         };
 
+        let title = {
+            let map = data.stage_map.get(tab_stage0.id.num()).unwrap();
+            let link = extract_link(&map.name);
+
+            match link.find("#") {
+                Some(pos) => link[pos + 1..].to_string(),
+                None => {
+                    if len > 1 {
+                        log::warn!("`#` character not found in gauntlet name: {link:?}")
+                    }
+                    format!("Level {range_str}")
+                }
+            }
+        };
+
         let tab = TabberTab {
-            title: format!("Level {range_str}"),
+            title,
             content: sections
                 .iter()
                 .filter_map(|s| {
