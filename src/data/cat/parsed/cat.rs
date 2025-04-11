@@ -1,7 +1,7 @@
 //! Deals with cat data.
 
 use super::cat_stats::CatStats;
-use crate::data::{cat::raw::read_data_file, version::Version};
+use crate::data::{cat::raw::stats::read_data_file, version::Version};
 
 #[derive(Debug)]
 pub struct CatForm {
@@ -13,8 +13,7 @@ pub struct CatForm {
 #[derive(Debug)]
 pub struct Cat {
     pub forms: Vec<CatForm>,
-    // is ancient egg if last column of "unitbuy.csv" says so
-    // xp curve
+    // xp curve (unitbuy and unitexp)
     // growth curve
     // talents
     // evolutions
