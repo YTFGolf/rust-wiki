@@ -1,10 +1,14 @@
 //! Get info about a cat.
 
-use crate::config::Config;
+use crate::{config::Config, data::cat::parsed::cat::Cat};
 
 /// Do thing.
 pub fn do_thing(wiki_id: u32, config: &Config) {
     println!("{wiki_id:?} {config:?}");
+    println!(
+        "{cat:#?}",
+        cat = Cat::from_wiki_id(wiki_id, config.version.current_version())
+    );
 }
 
 /*

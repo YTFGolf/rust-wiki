@@ -293,15 +293,16 @@ mod tests {
         config::TEST_CONFIG,
         data::cat::{
             ability::{Surge, SurgeType, Wave, WaveType},
-            parsed::cat::get_unit,
+            parsed::cat::Cat,
         },
     };
     use Ability as A;
     use EnemyType as E;
     use std::iter::zip;
 
-    fn get_unit_current(id: usize) -> impl Iterator<Item = CatStats> {
-        get_unit(id, TEST_CONFIG.version.current_version())
+    fn get_unit_current(id: u32) -> impl Iterator<Item = CatStats> {
+        let version = TEST_CONFIG.version.current_version();
+        Cat::get_stats(id, version)
     }
 
     fn sorted<T: Ord>(mut v: Vec<T>) -> Vec<T> {

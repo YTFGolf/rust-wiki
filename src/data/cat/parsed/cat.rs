@@ -3,10 +3,37 @@
 use super::cat_stats::CatStats;
 use crate::data::{cat::raw::read_data_file, version::Version};
 
-/// Get cat unit.
-pub fn get_unit(wiki_id: usize, version: &Version) -> impl Iterator<Item = CatStats> {
-    let abs_id = wiki_id + 1;
-    let file_name = format!("unit{abs_id:03}.csv");
-    let combined_iter = read_data_file(&file_name, version);
-    combined_iter.map(|combined| CatStats::from_combined(&combined))
+#[derive(Debug)]
+pub struct CatForm {
+    pub stats: CatStats,
+    // anim
+    // desc
+}
+
+#[derive(Debug)]
+pub struct Cat {
+    pub forms: Vec<CatForm>,
+    // xp curve
+    // growth curve
+    // talents
+    // evolutions
+    // combos
+}
+
+impl Cat {
+    pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Self {
+        let forms = Self::get_stats(wiki_id, version)
+            .map(|stats| CatForm { stats })
+            .collect();
+        Self { forms }
+    }
+
+    /// Get stats for each form.
+    pub fn get_stats(wiki_id: u32, version: &Version) -> impl Iterator<Item = CatStats> {
+        // get_stats(wiki_id + 1, version)
+        let abs_id = wiki_id + 1;
+        let file_name = format!("unit{abs_id:03}.csv");
+        let combined_iter = read_data_file(&file_name, version);
+        combined_iter.map(|combined| CatStats::from_combined(&combined))
+    }
 }
