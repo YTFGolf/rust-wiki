@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use std::{fmt::Debug, path::Path};
 use csv::{ByteRecord, Error};
+use std::{fmt::Debug, path::Path};
 
 #[derive(Debug, serde::Deserialize)]
 #[allow(missing_docs)]
@@ -28,11 +28,23 @@ pub struct UnitBuy {
     // 2 for bahamut, 1 for actress, mr, panties, skirt, valk
     sell_xp: u32,
     _uk17: u8,
-    max_xp_upgrade: u8,
-    _uk19: u8,
+    max_xp_level_ch2: u8,
+    initial_max_plus: u8,
 
     // 20
-    _uk20: i8,
+    evol_level: i8,
+    // only exists for normal cats, 100 for sf and 30 for others. -1 for all
+    // other cats.
+    _uk21: u8,
+    // 2 for iron wall, 10 for everyone else
+    max_xp_level_ch1: u8,
+    tfnum: u32,
+    ufnum: u32,
+    tf_cf_evol_level: i8,
+    uf_cf_evol_level: i8,
+    evol_xp: u32,
+    _uk28: u8,
+    _uk29: u8,
     rest: Vec<i32>,
 }
 
