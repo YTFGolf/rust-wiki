@@ -16,16 +16,16 @@ pub struct DropItemRaw {
     pub star2: f64,
     pub star3: f64,
     pub star4: f64,
-    //
     pub stage1: StageSize,
     pub stage2: StageSize,
     pub stage3: StageSize,
     pub stage4: StageSize,
     pub stage5: StageSize,
+
+    // 10
     pub stage6: StageSize,
     pub stage7: StageSize,
     pub stage8: StageSize,
-    //
     pub nothing: ChanceSize,
     pub bricks: ChanceSize,
     pub feathers: ChanceSize,
@@ -33,6 +33,8 @@ pub struct DropItemRaw {
     pub sprockets: ChanceSize,
     pub gold: ChanceSize,
     pub meteorite: ChanceSize,
+
+    // 20
     pub beast_bones: ChanceSize,
     pub ammonite: ChanceSize,
     #[serde(default)]
@@ -51,6 +53,7 @@ pub struct DropItemRaw {
     pub beast_bones_z: Option<ChanceSize>,
     #[serde(default)]
     pub ammonite_z: Option<ChanceSize>,
+    // length = 30
 }
 
 type DropItemMap = HashMap<u32, DropItemRaw>;
