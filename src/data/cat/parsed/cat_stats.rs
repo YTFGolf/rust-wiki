@@ -1,6 +1,6 @@
-//! High-level container for cat data.
+//! Deals with cat stats.
 
-use super::{ability::Ability, raw::CombinedCatData};
+use super::super::{ability::Ability, raw::CombinedCatData};
 use std::{num::NonZero, rc::Rc};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
