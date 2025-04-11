@@ -25,7 +25,8 @@ pub struct UnitExp {
     until_200: u8,
 }
 
-const DEFAULT: UnitExp = UnitExp {
+/// Multipliers for nearly every enemy in the game.
+pub const DEFAULT: UnitExp = UnitExp {
     until_10: 10,
     until_20: 20,
     until_30: 30,
@@ -47,7 +48,9 @@ const DEFAULT: UnitExp = UnitExp {
     until_190: 110,
     until_200: 115,
 };
-const SUPERFELINE: UnitExp = UnitExp {
+
+/// Multipliers for superfeline.
+pub const SUPERFELINE: UnitExp = UnitExp {
     until_10: 10,
     until_20: 10,
     until_30: 10,
