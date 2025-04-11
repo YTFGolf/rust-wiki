@@ -1,8 +1,10 @@
 //! Get info about a map.
 
- mod legend;
+mod legend;
 use crate::{
-    config::Config, data::map::parsed::map::GameMap, meta::stage::{map_id::MapID, variant::StageVariantID},
+    config::Config,
+    data::map::parsed::map::GameMap,
+    meta::stage::{map_id::MapID, variant::StageVariantID},
 };
 use legend::get_legend_map;
 

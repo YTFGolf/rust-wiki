@@ -6,8 +6,7 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    cli::cli_util::input,
-    config::Config,
+    cli::cli_util::input, config::Config,
     meta::stage::stage_types::parse::parse_map::parse_general_map_id,
     wikitext::gauntlet::map_gauntlet,
 };

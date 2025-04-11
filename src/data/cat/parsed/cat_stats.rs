@@ -293,18 +293,15 @@ mod tests {
         config::TEST_CONFIG,
         data::cat::{
             ability::{Surge, SurgeType, Wave, WaveType},
-            raw::read_data_file,
+            parsed::cat::get_unit,
         },
     };
     use Ability as A;
     use EnemyType as E;
     use std::iter::zip;
 
-    fn get_unit(wiki_id: usize) -> impl Iterator<Item = CatStats> {
-        let abs_id = wiki_id + 1;
-        let file_name = format!("unit{abs_id:03}.csv");
-        let combined_iter = read_data_file(&file_name, TEST_CONFIG.version.current_version());
-        combined_iter.map(|combined| CatStats::from_combined(&combined))
+    fn get_unit_current(id: usize) -> impl Iterator<Item = CatStats> {
+        get_unit(id, TEST_CONFIG.version.current_version())
     }
 
     fn sorted<T: Ord>(mut v: Vec<T>) -> Vec<T> {
@@ -314,7 +311,7 @@ mod tests {
 
     #[test]
     fn test_bahamut() {
-        let bahamut = get_unit(25);
+        let bahamut = get_unit_current(25);
 
         let forms = [
             CatStats {
@@ -403,7 +400,7 @@ mod tests {
 
     #[test]
     fn test_dark_phono() {
-        let dark_phono = get_unit(705);
+        let dark_phono = get_unit_current(705);
 
         let forms = [
             CatStats {
@@ -558,7 +555,7 @@ mod tests {
 
     #[test]
     fn test_dark_iz() {
-        let dark_iz = get_unit(657);
+        let dark_iz = get_unit_current(657);
 
         let forms = [
             CatStats {
@@ -680,7 +677,7 @@ mod tests {
 
     #[test]
     fn test_death_anim() {
-        let moneko = get_unit(16);
+        let moneko = get_unit_current(16);
 
         let forms = [
             CatStats {
@@ -763,7 +760,7 @@ mod tests {
 
     #[test]
     fn test_eva_02() {
-        let eva_02 = get_unit(414);
+        let eva_02 = get_unit_current(414);
 
         let forms = [
             CatStats {
@@ -855,7 +852,7 @@ mod tests {
 
     #[test]
     fn test_kamikaze() {
-        let stone = get_unit(581);
+        let stone = get_unit_current(581);
 
         let ans = CatStats {
             hp: 20_000,
@@ -896,7 +893,7 @@ mod tests {
 
     #[test]
     fn test_omni() {
-        let cosmo = get_unit(135);
+        let cosmo = get_unit_current(135);
 
         let forms = [
             CatStats {
