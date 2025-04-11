@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use crate::data::version::version_data::CacheableVersionData;
 use csv::{ByteRecord, Error};
 use std::{fmt::Debug, path::Path};
 
@@ -125,6 +126,23 @@ fn get_unitbuy(path: &Path) -> Vec<UnitBuy> {
         .collect()
 }
 
+#[derive(Debug)]
+struct UnitBuyContainer {
+    units: Vec<UnitBuy>,
+}
+impl UnitBuyContainer {
+    pub fn get_unit(&self, id: u32) -> &UnitBuy {
+        &self.units[id as usize]
+    }
+}
+impl CacheableVersionData for UnitBuyContainer {
+    fn init_data(path: &Path) -> Self {
+        Self {
+            units: get_unitbuy(path),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -133,8 +151,8 @@ mod tests {
     #[test]
     fn test_file_reader() {
         let version = TEST_CONFIG.version.current_version();
-        let path = version.get_file_path("");
-        let units = get_unitbuy(&path);
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+        let units = &unitbuy.units;
 
         for unit in units {
             if unit.ancient_egg_id_norm != -1 || unit.ancient_egg_id_evo != -1 {
@@ -149,8 +167,7 @@ mod tests {
     fn test_units() {
         // temp
         let version = TEST_CONFIG.version.current_version();
-        let path = version.get_file_path("");
-        let units = get_unitbuy(&path);
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
 
         let test_units = [
             ("cat", 0),
@@ -165,7 +182,7 @@ mod tests {
             ("courier", 658),
         ];
         for (name, id) in test_units {
-            println!("{name} ({id}) = {:?}\n", units[id]);
+            println!("{name} ({id}) = {:?}\n", unitbuy.get_unit(id));
         }
     }
 }
