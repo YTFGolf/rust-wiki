@@ -1,3 +1,5 @@
+//! Gaunlet page script.
+
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 
@@ -17,7 +19,7 @@ use crate::{
         stage::Stage,
         stage_enemy::{Magnification, StageEnemy},
     },
-    meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
+    meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
         map_info::reference,

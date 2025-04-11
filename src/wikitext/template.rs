@@ -23,7 +23,9 @@ impl AutoParam for TemplateParameter {
 #[derive(Debug, PartialEq, Clone)]
 /// Representation of a wikitext template parameter.
 pub struct TemplateParameter {
+    /// Parameter key.
     pub key: StringValue,
+    /// Parameter value.
     pub value: StringValue,
 }
 impl TemplateParameter {

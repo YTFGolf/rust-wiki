@@ -18,9 +18,11 @@ mod tests;
 pub mod treasure;
 pub mod variables;
 
-/// Contains wiki data about a stage.
+/// Container for wiki data about a stage.
 pub struct StageWikiDataContainer {
+    /// Stage's map.
     pub stage_map: &'static MapWikiData,
+    /// Stage itself.
     pub stage_name: &'static StageWikiData,
 }
 
