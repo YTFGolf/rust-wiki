@@ -5,94 +5,94 @@ use std::{fmt::Debug, path::Path};
 #[derive(Debug, serde::Deserialize)]
 #[allow(missing_docs)]
 pub struct UnitBuy {
-    stage_available_after: u8,
-    unlock_cost: u16,
-    upgrade_to_1: u32,
-    upgrade_to_2: u32,
-    upgrade_to_3: u32,
-    upgrade_to_4: u32,
-    upgrade_to_5: u32,
-    upgrade_to_6: u32,
-    upgrade_to_7: u32,
-    upgrade_to_8: u32,
+    pub stage_available_after: u8,
+    pub unlock_cost: u16,
+    pub upgrade_to_1: u32,
+    pub upgrade_to_2: u32,
+    pub upgrade_to_3: u32,
+    pub upgrade_to_4: u32,
+    pub upgrade_to_5: u32,
+    pub upgrade_to_6: u32,
+    pub upgrade_to_7: u32,
+    pub upgrade_to_8: u32,
 
     // 10
-    upgrade_to_9: u32,
-    upgrade_to_10: u32,
-    unlock_method: u8,
+    pub upgrade_to_9: u32,
+    pub upgrade_to_10: u32,
+    pub unlock_method: u8,
     // appears to be 0 = xp, 1 = catfood, 2 = capsule/free
-    rarity: u8,
-    cro_order: i16,
+    pub rarity: u8,
+    pub cro_order: i16,
     _uk15: u8,
     // 2 for bahamut, 1 for actress, mr, panties, skirt, valk
-    sell_xp: u32,
+    pub sell_xp: u32,
     _uk17: u8,
-    max_xp_level_ch2: u8,
-    initial_max_plus: u8,
+    pub max_xp_level_ch2: u8,
+    pub initial_max_plus: u8,
 
     // 20
-    evol_level: i8,
+    pub evol_level: i8,
     // only exists for normal cats, 100 for sf and 30 for others. -1 for all
     // other cats.
     _uk21: u8,
     // 2 for iron wall, 10 for everyone else
-    max_xp_level_ch1: u8,
-    true_num: u32,
-    ultra_num: u32,
-    true_cf_evol_level: i8,
-    ultra_cf_evol_level: i8,
-    true_evol_xp: u32,
-    true_cf_item1: u8,
-    true_cf_cost1: u8,
+    pub max_xp_level_ch1: u8,
+    pub true_num: u32,
+    pub ultra_num: u32,
+    pub true_cf_evol_level: i8,
+    pub ultra_cf_evol_level: i8,
+    pub true_evol_xp: u32,
+    pub true_cf_item1: u8,
+    pub true_cf_cost1: u8,
 
     // 30
-    true_cf_item2: u8,
-    true_cf_cost2: u8,
-    true_cf_item3: u8,
-    true_cf_cost3: u8,
-    true_cf_item4: u8,
-    true_cf_cost4: u8,
-    true_cf_item5: u8,
-    true_cf_cost5: u8,
-    ultra_evol_xp: u32,
-    ultra_cf_item1: u8,
+    pub true_cf_item2: u8,
+    pub true_cf_cost2: u8,
+    pub true_cf_item3: u8,
+    pub true_cf_cost3: u8,
+    pub true_cf_item4: u8,
+    pub true_cf_cost4: u8,
+    pub true_cf_item5: u8,
+    pub true_cf_cost5: u8,
+    pub ultra_evol_xp: u32,
+    pub ultra_cf_item1: u8,
 
     // 40
-    ultra_cf_cost1: u8,
-    ultra_cf_item2: u8,
-    ultra_cf_cost2: u8,
-    ultra_cf_item3: u8,
-    ultra_cf_cost3: u8,
-    ultra_cf_item4: u8,
-    ultra_cf_cost4: u8,
-    ultra_cf_item5: u8,
-    ultra_cf_cost5: u8,
+    pub ultra_cf_cost1: u8,
+    pub ultra_cf_item2: u8,
+    pub ultra_cf_cost2: u8,
+    pub ultra_cf_item3: u8,
+    pub ultra_cf_cost3: u8,
+    pub ultra_cf_item4: u8,
+    pub ultra_cf_cost4: u8,
+    pub ultra_cf_item5: u8,
+    pub ultra_cf_cost5: u8,
     _uk49: i8,
     // -1 for normal cats, 30 for every cat that can go to 30. 31 for iron wall,
     // 21 for Metal, 2 for units with max level 1. Perhaps first catseye level?
 
     // 50
-    max_nat_level: u8,
-    max_plus_level: u8,
+    pub max_nat_level: u8,
+    pub max_plus_level: u8,
     _uk52: u8,
     _uk53: u16,
     _uk54: u16,
     _uk55: u8,
     _uk56: u8,
     // is 0 for normals and metal cat, 2 for everyone else
-    update_released: String,
+    pub update_released: String,
     // e.g. "90500" for 09.05.00 = 9.5.0
-    sell_np: u8,
+    pub sell_np: u8,
     _uk59: u32,
 
     // 60
     _uk60: u8,
     // is 1 if cat is superfeline
-    ancient_egg_id_norm: i8,
-    ancient_egg_id_evo: i8,
+    pub ancient_egg_id_norm: i8,
+    pub ancient_egg_id_evo: i8,
 
     #[serde(default)]
-    rest: Vec<i32>,
+    pub rest: Vec<i32>,
 }
 
 fn parse_unitbuy_error(e: &Error, result: &ByteRecord) -> impl Debug {
