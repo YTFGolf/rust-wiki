@@ -1,7 +1,7 @@
-use std::fmt::Debug;
+//! Deals with level-up cost multipliers.
 
 #[derive(Debug, serde::Deserialize, PartialEq, Eq, PartialOrd, Ord)]
-#[allow(missing_docs)]
+/// Level-up cost per 10 levels (multiplied by 10).
 pub struct UnitExp {
     until_10: u8,
     until_20: u8,
@@ -70,6 +70,7 @@ const SUPERFELINE: UnitExp = UnitExp {
     until_200: 10,
 };
 
+/// Get level cost growth for the cat.
 pub const fn get_levelling(id: u32) -> UnitExp {
     match id {
         643 => SUPERFELINE,
@@ -86,7 +87,6 @@ mod tests {
     fn get_unitexp(path: &Path) -> Vec<UnitExp> {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
-            .flexible(false)
             .from_path(path.join("DataLocal/unitexp.csv"))
             .unwrap();
 
