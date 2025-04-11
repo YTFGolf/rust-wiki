@@ -111,6 +111,23 @@ mod tests {
             // if ![0, 9].contains(&unit.initial_max_plus) { println!("{i}: {:?}", unit.initial_max_plus) }
             // if unit._uk22 != 10 { println!("{i}: {:?}", unit._uk22) }
             // if unit.max_xp_level_ch2 != 20 || unit.max_xp_level_ch1 != 10  { println!("{i}: {:?}, {:?}", unit.max_xp_level_ch2, unit.max_xp_level_ch1) }
+            // if unit._uk49 != 30 { println!("{i}: {:?}", unit._uk49) }
+            // if unit._uk52 != 0 { println!("{i}: {:?}", unit._uk52) }
+            // if unit._uk53 != 0 { println!("{i}: {:?}", unit._uk53) }
+            // if unit._uk54 != 0 { println!("{i}: {:?}", unit._uk54) }
+            // if unit._uk55 != 0 { println!("{i}: {:?} {:?}", unit._uk55, unit.ultra_evol_xp) }
+            // if unit._uk56 != 2 { println!("{i}: {:?}", unit._uk56) }
+            // if unit._uk59 != 0 { println!("{i}: {:?}", unit._uk59) }
+            // if unit._uk60 != 0 { println!("{i}: {:?}", unit._uk60) }
+            // if unit.ancient_egg_id_norm != -1 { println!("{i}: {:?}", unit.ancient_egg_id_norm); assert_ne!(unit.ancient_egg_id_evo, 0) }
+            // if unit.ancient_egg_id_evo != -1 { println!("{i}: {:?}", unit.ancient_egg_id_evo); assert_eq!(unit.ancient_egg_id_norm, 0) }
+            // if unit._uk61 != -1 { println!("{i}: {:?}", unit._uk61) }
+
+            if unit.ancient_egg_id_norm != -1 || unit.ancient_egg_id_evo != -1 {
+                assert_eq!(unit.ancient_egg_id_norm, 0);
+                assert_ne!(unit.ancient_egg_id_evo, 0);
+            }
+            assert!(unit.rest.is_empty());
         }
     }
 }
