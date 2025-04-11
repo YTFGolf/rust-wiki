@@ -1,6 +1,6 @@
 //! Deals with cat stats.
 
-use super::super::{ability::Ability, raw::CombinedCatData};
+use super::super::{ability::Ability, raw::stats::CombinedCatData};
 use std::{num::NonZero, rc::Rc};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]

@@ -1,6 +1,6 @@
 //! Deals with cat/enemy abilities.
 
-use super::raw::CombinedCatData;
+use super::raw::stats::CombinedCatData;
 
 /// Configuration values/modifiers for abilities.
 struct Config {
@@ -730,7 +730,7 @@ impl Ability {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, data::cat::raw::read_data_file};
+    use crate::{config::TEST_CONFIG, data::cat::raw::stats::read_data_file};
     use Ability as A;
     use std::iter::zip;
 
