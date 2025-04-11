@@ -4,15 +4,24 @@ use super::cat_stats::CatStats;
 use crate::data::{cat::raw::stats::read_data_file, version::Version};
 
 #[derive(Debug)]
+/// Individual form of a cat.
 pub struct CatForm {
+    /// Form's stats.
     pub stats: CatStats,
     // anim
     // desc
 }
 
+type CatForms = Vec<CatForm>;
+// might need to create an actual type for this; also needs unitbuy first.
+
 #[derive(Debug)]
+/// Parsed cat object.
 pub struct Cat {
-    pub forms: Vec<CatForm>,
+    /// CRO id.
+    pub id: u32,
+    /// Cat's forms.
+    pub forms: CatForms,
     // xp curve (unitbuy and unitexp)
     // growth curve
     // talents
@@ -21,11 +30,12 @@ pub struct Cat {
 }
 
 impl Cat {
+    /// Get cat from wiki id.
     pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Self {
         let forms = Self::get_stats(wiki_id, version)
             .map(|stats| CatForm { stats })
             .collect();
-        Self { forms }
+        Self { id: wiki_id, forms }
     }
 
     /// Get stats for each form.
