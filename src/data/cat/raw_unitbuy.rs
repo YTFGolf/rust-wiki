@@ -38,13 +38,61 @@ pub struct UnitBuy {
     _uk21: u8,
     // 2 for iron wall, 10 for everyone else
     max_xp_level_ch1: u8,
-    tfnum: u32,
-    ufnum: u32,
-    tf_cf_evol_level: i8,
-    uf_cf_evol_level: i8,
-    evol_xp: u32,
-    _uk28: u8,
-    _uk29: u8,
+    true_num: u32,
+    ultra_num: u32,
+    true_cf_evol_level: i8,
+    ultra_cf_evol_level: i8,
+    true_evol_xp: u32,
+    true_cf_item1: u8,
+    true_cf_cost1: u8,
+
+    // 30
+    true_cf_item2: u8,
+    true_cf_cost2: u8,
+    true_cf_item3: u8,
+    true_cf_cost3: u8,
+    true_cf_item4: u8,
+    true_cf_cost4: u8,
+    true_cf_item5: u8,
+    true_cf_cost5: u8,
+    ultra_evol_xp: u32,
+    ultra_cf_item1: u8,
+
+    // 40
+    ultra_cf_cost1: u8,
+    ultra_cf_item2: u8,
+    ultra_cf_cost2: u8,
+    ultra_cf_item3: u8,
+    ultra_cf_cost3: u8,
+    ultra_cf_item4: u8,
+    ultra_cf_cost4: u8,
+    ultra_cf_item5: u8,
+    ultra_cf_cost5: u8,
+    _uk49: i8,
+    // -1 for normal cats, 30 for every cat that can go to 30. 31 for iron wall,
+    // 21 for Metal, 2 for units with max level 1. Perhaps first catseye level?
+
+    // 50
+    max_nat_level: u8,
+    max_plus_level: u8,
+    _uk52: u8,
+    _uk53: u16,
+    _uk54: u16,
+    _uk55: u8,
+    _uk56: u8,
+    // is 0 for normals and metal cat, 2 for everyone else
+    update_released: String,
+    // e.g. "90500" for 09.05.00 = 9.5.0
+    sell_np: u8,
+    _uk59: u32,
+
+    // 60
+    _uk60: u8,
+    // is 1 if cat is superfeline
+    ancient_egg_id_norm: i8,
+    ancient_egg_id_evo: i8,
+
+    #[serde(default)]
     rest: Vec<i32>,
 }
 
