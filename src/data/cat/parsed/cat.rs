@@ -13,6 +13,7 @@ pub struct CatForm {
 #[derive(Debug)]
 pub struct Cat {
     pub forms: Vec<CatForm>,
+    // is ancient egg if last column of "unitbuy.csv" says so
     // xp curve
     // growth curve
     // talents
