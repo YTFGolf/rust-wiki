@@ -1,8 +1,8 @@
 //! Module that deals with getting information about enemies in stages.
-use std::num::NonZeroU32;
 
 use crate::data::stage::raw::stage_data::csv_types::StageEnemyCSV;
 use either::Either::{self, Left, Right};
+use std::num::NonZeroU32;
 use strum::FromRepr;
 
 #[repr(u32)]

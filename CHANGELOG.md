@@ -12,9 +12,18 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Added
 
+- Gauntlet script.
+- More cat raw and parsed data.
+- Tabber and Section wikitext features.
+- `stage_info` end-to-end tests.
+
 ### Fixed
 
 ### Changed
+
+- Split cat data module into raw and parsed.
+- Made most internals of the stage info script public.
+- Replaced old `format_parser` for stage info template.
 
 ### Removed
 
