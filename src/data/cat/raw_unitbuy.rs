@@ -1,8 +1,37 @@
+#![allow(dead_code)]
+
 use std::path::Path;
 
 #[derive(Debug, serde::Deserialize)]
 #[allow(missing_docs)]
 pub struct UnitBuy {
+    stage_available_after: u8,
+    unlock_cost: u16,
+    upgrade_to_1: u32,
+    upgrade_to_2: u32,
+    upgrade_to_3: u32,
+    upgrade_to_4: u32,
+    upgrade_to_5: u32,
+    upgrade_to_6: u32,
+    upgrade_to_7: u32,
+    upgrade_to_8: u32,
+
+    // 10
+    upgrade_to_9: u32,
+    upgrade_to_10: u32,
+    unlock_method: u8,
+    // appears to be 0 = xp, 1 = catfood, 2 = capsule/free
+    rarity: u8,
+    cro_order: i16,
+    _uk15: u8,
+    // 2 for bahamut, 1 for actress, mr, panties, skirt, valk
+    sell_xp: u32,
+    _uk17: u8,
+    max_xp_upgrade: u8,
+    _uk19: u8,
+
+    // 20
+    _uk20: i8,
     rest: Vec<i32>,
 }
 
