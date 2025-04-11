@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::data::version::version_data::CacheableVersionData;
 use csv::{ByteRecord, Error};
 use std::{fmt::Debug, path::Path};
