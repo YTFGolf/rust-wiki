@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
-use std::path::Path;
+use std::{fmt::Debug, path::Path};
+use csv::{ByteRecord, Error};
 
 #[derive(Debug, serde::Deserialize)]
 #[allow(missing_docs)]
@@ -35,6 +36,15 @@ pub struct UnitBuy {
     rest: Vec<i32>,
 }
 
+fn parse_unitbuy_error(e: &Error, result: &ByteRecord) -> impl Debug {
+    let index = match e.kind() {
+        csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
+        _ => unimplemented!(),
+    };
+
+    String::from_utf8(result[index as usize].into()).unwrap()
+}
+
 fn get_unitbuy(path: &Path) -> Vec<UnitBuy> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
@@ -44,9 +54,12 @@ fn get_unitbuy(path: &Path) -> Vec<UnitBuy> {
     rdr.byte_records()
         .map(|record| {
             let result = record.unwrap();
-            let unit: UnitBuy = result
-                .deserialize(None)
-                .unwrap_or_else(|e| panic!("Error when parsing record {result:?}: {e}"));
+            let unit: UnitBuy = result.deserialize(None).unwrap_or_else(|e| {
+                panic!(
+                    "Error when parsing record {result:?}: {e}. Item was {item:?}.",
+                    item = parse_unitbuy_error(&e, &result)
+                )
+            });
             unit
         })
         .collect()
@@ -63,15 +76,29 @@ mod tests {
         let path = version.get_file_path("");
         let units = get_unitbuy(&path);
 
-        let ids = [0, 8, 25, 177, 543, 626, 643, 658];
-        for id in ids {
-            println!("{:?}", units[id])
+        let test_units = [
+            ("cat", 0),
+            ("titan", 8),
+            ("bahamut", 25),
+            ("cancan", 32),
+            ("dio", 177),
+            ("metal", 200),
+            ("dasli", 543),
+            ("cat modoki", 626),
+            ("sfeline", 643),
+            ("courier", 658),
+        ];
+        for (name, id) in test_units {
+            println!("{name} ({id}) = {:?}\n", units[id]);
         }
 
         #[allow(unused)]
         for (i, unit) in units.iter().enumerate() {
             // if unit._uk12 != 0 { println!("{i}: {:?}", unit) }
             // if unit.max_xp_upgrade != 20 { println!("{i}: {:?}", unit.max_xp_upgrade) }
+            // if ![0, 9].contains(&unit.initial_max_plus) { println!("{i}: {:?}", unit.initial_max_plus) }
+            // if unit._uk22 != 10 { println!("{i}: {:?}", unit._uk22) }
+            // if unit.max_xp_level_ch2 != 20 || unit.max_xp_level_ch1 != 10  { println!("{i}: {:?}, {:?}", unit.max_xp_level_ch2, unit.max_xp_level_ch1) }
         }
     }
 }
