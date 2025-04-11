@@ -46,7 +46,7 @@ prepend = extra
 
 append = "\n{{SpecialStages List}}\n[[Category:Event Stages]]"
 
-stage = "l 0 0"
+stage = "l 0"
 result = subprocess.run(["rust-wiki.exe", "stage", stage], capture_output=True, text=True)
 if not (result.returncode == 0 and result.stderr == ""):
     print("Something went wrong...")
@@ -61,4 +61,4 @@ print(out)
 
 You can add in appropriate templates above the content, templates and categories below the content, replace all English stage/map name images with Japanese ones, and copy the output to your clipboard. With more modifications you could do things like automatically generating the stage selector or integrating the entire thing with Pywikibot!
 
-Example scripts are available in the [Archive](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/Archive?action=history), such as the [zl script](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/Archive?oldid=152115). You can write your own scripts in [scripts](../scripts).
+My personal scripts are available at [scripts](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/scripts). Other example scripts are available in the [Archive](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/Archive?action=history), such as the [zl script](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/Archive?oldid=152115). You can write your own scripts in your local [scripts](../scripts) folder.
