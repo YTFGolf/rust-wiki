@@ -134,7 +134,8 @@ impl Cat {
                 if count != ANIM_LINE_LEN {
                     return None;
                 };
-                line.split(',').next()?.parse::<usize>().ok()
+                let frame_no = line.split(',').next()?;
+                frame_no.parse::<usize>().ok()
             })
             .max()
             .unwrap();
@@ -179,5 +180,6 @@ mod tests {
             // println!("{name} ({id}) = {:?}\n", Cat::from_wiki_id(id, version));
             println!("{name} ({id}) = {:#?}\n", Cat::from_wiki_id(id, version));
         }
+        todo!()
     }
 }
