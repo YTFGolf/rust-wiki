@@ -1,19 +1,15 @@
 //! Deals with cat data.
 
-#![allow(dead_code, unused_variables, missing_docs, unused_imports)]
+#![allow(dead_code, unused_variables, missing_docs)]
 
 use super::{
     anim::{AnimData, get_anims},
     cat_stats::CatStats,
-    unitbuy::{self, AncientEggInfo, UnitBuyData},
+    unitbuy::{AncientEggInfo, UnitBuyData},
 };
 use crate::data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
     version::Version,
-};
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
 };
 
 #[derive(Debug)]
