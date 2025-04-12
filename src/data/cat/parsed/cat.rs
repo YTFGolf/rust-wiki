@@ -37,11 +37,11 @@ pub struct Cat {
 
 impl Cat {
     /// Get cat from wiki id.
-    pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Self {
+    pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Option<Self> {
         let id = wiki_id;
 
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
-        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).unwrap());
+        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id)?);
 
         let unitexp = Levelling::from_id(id);
 
@@ -53,7 +53,7 @@ impl Cat {
         let amt_forms = Self::get_amt_forms(id, is_summon, has_true, has_ultra);
         let forms = Self::get_forms(id, version, amt_forms, egg_data);
 
-        Self {
+        Some(Self {
             id,
             forms,
             unitbuy,
@@ -123,8 +123,23 @@ mod tests {
         ];
         for (name, id) in test_units {
             // println!("{name} ({id}) = {:?}\n", Cat::from_wiki_id(id, version));
-            println!("{name} ({id}) = {:#?}\n", Cat::from_wiki_id(id, version));
+            // println!("{name} ({id}) = {:#?}\n", Cat::from_wiki_id(id, version));
         }
         todo!()
+    }
+
+    #[test]
+    #[ignore]
+    fn test_all() {
+        let version = TEST_CONFIG.version.current_version();
+        for id in 0..u32::MAX {
+            if (740..=745).contains(&id) || id == 788 {
+                continue;
+            }
+            let cat = match Cat::from_wiki_id(id, version) {
+                Some(_) => (),
+                None => break,
+            };
+        }
     }
 }
