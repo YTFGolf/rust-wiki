@@ -2,9 +2,14 @@
 
 #![allow(dead_code, unused_variables, missing_docs, unused_imports)]
 
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+};
+
 use super::{
     cat_stats::CatStats,
-    unitbuy::{self, UnitBuyData},
+    unitbuy::{self, AncientEggInfo, UnitBuyData},
 };
 use crate::data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
@@ -12,16 +17,23 @@ use crate::data::{
 };
 
 #[derive(Debug)]
-/// Individual form of a cat.
-pub struct CatForm {
-    /// Form's stats.
-    pub stats: CatStats,
+pub struct AnimData {
+    length: usize, // right now all that's needed is the length of the animation
+}
+impl AnimData {
+    pub fn len(&self) -> usize {
+        self.length
+    }
+}
+
+#[derive(Debug)]
+pub struct CatForms {
+    amt_forms: usize,
+    stats: Vec<CatStats>,
+    anims: Vec<AnimData>,
     // anim
     // desc
 }
-
-type CatForms = Vec<CatForm>;
-// might need to create an actual type for this; also needs unitbuy first.
 
 #[derive(Debug)]
 /// Parsed cat object.
@@ -32,7 +44,6 @@ pub struct Cat {
     pub forms: CatForms,
     pub unitbuy: UnitBuyData,
     pub unitexp: Levelling,
-    // xp curve (unitbuy and unitexp)
     // growth curve
     // talents
     // evolutions
@@ -43,14 +54,18 @@ impl Cat {
     /// Get cat from wiki id.
     pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Self {
         let id = wiki_id;
-        let forms = Self::get_stats(id, version)
-            .map(|stats| CatForm { stats })
-            .collect();
 
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
         let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).unwrap());
 
         let unitexp = Levelling::from_id(id);
+
+        let has_true = unitbuy.true_evol.is_some();
+        let has_ultra = unitbuy.ultra_evol.is_some();
+        let egg_data = &unitbuy.misc.egg_info;
+
+        let amt_forms = 2 + has_true as usize + has_ultra as usize;
+        let forms = Self::get_forms(id, version, amt_forms, egg_data);
 
         Self {
             id,
@@ -58,6 +73,57 @@ impl Cat {
             unitbuy,
             unitexp,
         }
+    }
+
+    fn get_forms(
+        id: u32,
+        version: &Version,
+        amt_forms: usize,
+        egg_data: &AncientEggInfo,
+    ) -> CatForms {
+        let stats = Self::get_stats(id, version).collect();
+        let anims = Self::get_anims(id, version, amt_forms);
+
+        CatForms {
+            amt_forms,
+            stats,
+            anims,
+        }
+    }
+
+    pub fn get_anims(
+        wiki_id: u32,
+        version: &Version,
+        amt_forms: usize,
+        egg_data: &AncientEggInfo,
+    ) -> Vec<AnimData> {
+        let (form1, form2) = match egg_data {
+            AncientEggInfo::None => (
+                format!("{wiki_id:03}_f02.maanim"),
+                format!("{wiki_id:03}_c02.maanim"),
+            ),
+            AncientEggInfo::Egg { normal, evolved } => (
+                format!("{normal:03}_m02.maanim"),
+                format!("{evolved:03}_m02.maanim"),
+            ),
+        };
+
+        let mut anims = [form1, form2]
+            .iter()
+            .map(|path| {
+                const ANIM_LINE_LEN: usize = 4;
+                let qualified = version.get_file_path("ImageDataLocal").join(path);
+                let count = BufReader::new(File::open(&qualified).unwrap())
+                    .lines()
+                    .filter(|line| {
+                        line.as_ref().unwrap().chars().filter(|c| *c == ',').count()
+                            == ANIM_LINE_LEN
+                    })
+                    .count();
+                AnimData { length: count }
+            })
+            .collect();
+        anims
     }
 
     /// Get stats for each form.
