@@ -7,7 +7,7 @@ use std::{fmt::Debug, path::Path};
 #[derive(Debug, serde::Deserialize)]
 #[allow(missing_docs)]
 pub struct UnitBuy {
-    pub stage_available_after: u8,
+    pub stage_available: u8,
     pub unlock_cost: u16,
     pub upgrade_to_1: u32,
     pub upgrade_to_2: u32,

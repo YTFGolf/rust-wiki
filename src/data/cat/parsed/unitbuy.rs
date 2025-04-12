@@ -10,22 +10,31 @@ use strum::FromRepr;
 
 #[repr(u8)]
 #[derive(Debug, FromRepr)]
+/// Currency used to unlock a unit.
 enum UnlockCurrency {
+    /// XP unlock.
     XP = 0,
+    /// Catfood unlock.
     Catfood = 1,
+    /// Unlock only available with capsules.
     None = 2,
 }
 #[derive(Debug)]
 struct CatUnlock {
+    /// EoC stage the unit is available (cat is available before stage 0, tank
+    /// before stage 1, bahamut 48).
     stage_available: u8,
+    /// EoC chapter available (e.g. Bahamut = 2).
     chap_available: u8,
+    /// Cost of unlocking the unit.
     unlock_cost: u16,
+    /// Currency the unit is unlocked with.
     unlock_currency: UnlockCurrency,
 }
 impl CatUnlock {
     fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
         Self {
-            stage_available: unitbuy.stage_available_after,
+            stage_available: unitbuy.stage_available,
             chap_available: unitbuy.chap_available,
             unlock_cost: unitbuy.unlock_cost,
             unlock_currency: UnlockCurrency::from_repr(unitbuy.unlock_currency).unwrap(),
