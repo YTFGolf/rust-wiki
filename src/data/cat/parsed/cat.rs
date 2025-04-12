@@ -127,13 +127,18 @@ impl Cat {
         let qualified = version.get_file_path("ImageDataLocal").join(path);
         let count = BufReader::new(File::open(&qualified).unwrap())
             .lines()
-            .filter(|line| {
-                let line = line.as_ref().unwrap();
-                let count = line.chars().filter(|c| *c == ',').count();
-                count == ANIM_LINE_LEN
+            .filter_map(|line| {
+                let line = line.as_ref().ok()?;
+                let count = line.chars().filter(|c| *c == ',').count() + 1;
+                // if has 4 items then has 3 commas
+                if count != ANIM_LINE_LEN {
+                    return None;
+                };
+                line.split(',').next()?.parse::<usize>().ok()
             })
-            .count();
-        AnimData { length: count }
+            .max()
+            .unwrap();
+        AnimData { length: count + 1 }
     }
 
     /// Get stats for each form.
@@ -143,5 +148,36 @@ impl Cat {
         let file_name = format!("unit{abs_id:03}.csv");
         let combined_iter = read_data_file(&file_name, version);
         combined_iter.map(|combined| CatStats::from_combined(&combined))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{config::TEST_CONFIG, data::cat::raw::unitbuy::UnitBuyContainer};
+
+    #[test]
+    fn test_units() {
+        let version = TEST_CONFIG.version.current_version();
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+
+        let test_units = [
+            ("cat", 0),
+            ("tank", 1),
+            ("titan", 8),
+            ("actress", 9),
+            ("bahamut", 25),
+            ("cancan", 32),
+            ("dio", 177),
+            ("metal", 200),
+            ("dasli", 543),
+            ("cat modoki", 626),
+            ("sfeline", 643),
+            ("courier", 658),
+        ];
+        for (name, id) in test_units {
+            // println!("{name} ({id}) = {:?}\n", Cat::from_wiki_id(id, version));
+            println!("{name} ({id}) = {:#?}\n", Cat::from_wiki_id(id, version));
+        }
     }
 }
