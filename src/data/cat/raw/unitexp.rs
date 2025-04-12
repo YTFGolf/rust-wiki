@@ -102,6 +102,7 @@ const SUPERFELINE: UnitExp = UnitExp {
     until_200: 10,
 };
 
+#[derive(Debug)]
 /// Levelling enum to avoid using a big object.
 pub enum Levelling {
     /// Default level cost growth.

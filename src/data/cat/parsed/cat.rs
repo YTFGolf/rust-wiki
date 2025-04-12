@@ -1,7 +1,15 @@
 //! Deals with cat data.
 
-use super::cat_stats::CatStats;
-use crate::data::{cat::raw::stats::read_data_file, version::Version};
+#![allow(dead_code, unused_variables, missing_docs, unused_imports)]
+
+use super::{
+    cat_stats::CatStats,
+    unitbuy::{self, UnitBuyData},
+};
+use crate::data::{
+    cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
+    version::Version,
+};
 
 #[derive(Debug)]
 /// Individual form of a cat.
@@ -22,6 +30,8 @@ pub struct Cat {
     pub id: u32,
     /// Cat's forms.
     pub forms: CatForms,
+    pub unitbuy: UnitBuyData,
+    pub unitexp: Levelling,
     // xp curve (unitbuy and unitexp)
     // growth curve
     // talents
@@ -32,10 +42,22 @@ pub struct Cat {
 impl Cat {
     /// Get cat from wiki id.
     pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Self {
-        let forms = Self::get_stats(wiki_id, version)
+        let id = wiki_id;
+        let forms = Self::get_stats(id, version)
             .map(|stats| CatForm { stats })
             .collect();
-        Self { id: wiki_id, forms }
+
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).unwrap());
+
+        let unitexp = Levelling::from_id(id);
+
+        Self {
+            id,
+            forms,
+            unitbuy,
+            unitexp,
+        }
     }
 
     /// Get stats for each form.

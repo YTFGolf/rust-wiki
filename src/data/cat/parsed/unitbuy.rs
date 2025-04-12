@@ -156,7 +156,7 @@ impl Misc {
 }
 
 #[derive(Debug)]
-struct UnitBuyData {
+pub struct UnitBuyData {
     unlock: CatUnlock,
     true_evol: Option<EvolutionInfo>,
     ultra_evol: Option<EvolutionInfo>,
@@ -164,11 +164,8 @@ struct UnitBuyData {
     max_levels: MaxLevels,
 }
 
-// scale_type: Levelling,
-// scale_type:Levelling::from_id(unitbuy)
-
 impl UnitBuyData {
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+    pub fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
         let (true_evol, ultra_evol) = Self::get_evolutions(unitbuy);
         Self {
             unlock: CatUnlock::from_unitbuy(unitbuy),
