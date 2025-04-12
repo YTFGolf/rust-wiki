@@ -45,11 +45,12 @@ impl Cat {
 
         let unitexp = Levelling::from_id(id);
 
+        let is_summon = unitbuy.misc.is_summon();
         let has_true = unitbuy.true_evol.is_some();
         let has_ultra = unitbuy.ultra_evol.is_some();
         let egg_data = &unitbuy.misc.egg_info;
 
-        let amt_forms = Self::get_amt_forms(id, has_true, has_ultra);
+        let amt_forms = Self::get_amt_forms(id, is_summon, has_true, has_ultra);
         let forms = Self::get_forms(id, version, amt_forms, egg_data);
 
         Self {
@@ -77,6 +78,7 @@ impl Cat {
     ) -> CatForms {
         let stats = Self::get_stats(id, version).collect();
         let anims = get_anims(id, version, amt_forms, egg_data);
+        // TODO make sure these have same amount of forms.
 
         CatForms {
             amt_forms,

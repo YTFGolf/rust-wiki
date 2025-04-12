@@ -126,9 +126,32 @@ pub enum AncientEggInfo {
 }
 
 #[derive(Debug)]
+pub enum CatGuideOrder {
+    Unit(u16),
+    Summon,
+}
+impl CatGuideOrder {
+    fn is_summon(&self) -> bool {
+        match self {
+            CatGuideOrder::Unit(_) => false,
+            CatGuideOrder::Summon => true,
+        }
+    }
+}
+impl From<i16> for CatGuideOrder {
+    fn from(value: i16) -> Self {
+        match value {
+            x if x >= 0 => Self::Unit(x as u16),
+            -1 => Self::Summon,
+            _ => unreachable!(),
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct Misc {
     pub rarity: Rarity,
-    pub cro_order: i16,
+    pub guide_order: CatGuideOrder,
     pub sell_xp: u32,
     pub sell_np: u8,
     pub update_released: i64,
@@ -146,12 +169,16 @@ impl Misc {
         };
         Self {
             rarity: Rarity::from_repr(unitbuy.rarity).unwrap(),
-            cro_order: unitbuy.cro_order,
+            guide_order: unitbuy.cro_order.into(),
             sell_xp: unitbuy.sell_xp,
             update_released: unitbuy.update_released,
             sell_np: unitbuy.sell_np,
             egg_info,
         }
+    }
+
+    pub fn is_summon(&self) -> bool {
+        self.guide_order.is_summon()
     }
 }
 
