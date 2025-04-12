@@ -2,11 +2,6 @@
 
 #![allow(dead_code, unused_variables, missing_docs, unused_imports)]
 
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-};
-
 use super::{
     cat_stats::CatStats,
     unitbuy::{self, AncientEggInfo, UnitBuyData},
@@ -14,6 +9,10 @@ use super::{
 use crate::data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
     version::Version,
+};
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
 };
 
 #[derive(Debug)]
@@ -82,7 +81,7 @@ impl Cat {
         egg_data: &AncientEggInfo,
     ) -> CatForms {
         let stats = Self::get_stats(id, version).collect();
-        let anims = Self::get_anims(id, version, amt_forms);
+        let anims = Self::get_anims(id, version, amt_forms, egg_data);
 
         CatForms {
             amt_forms,
@@ -110,20 +109,31 @@ impl Cat {
 
         let mut anims = [form1, form2]
             .iter()
-            .map(|path| {
-                const ANIM_LINE_LEN: usize = 4;
-                let qualified = version.get_file_path("ImageDataLocal").join(path);
-                let count = BufReader::new(File::open(&qualified).unwrap())
-                    .lines()
-                    .filter(|line| {
-                        line.as_ref().unwrap().chars().filter(|c| *c == ',').count()
-                            == ANIM_LINE_LEN
-                    })
-                    .count();
-                AnimData { length: count }
-            })
-            .collect();
+            .map(|path| Self::get_anim_data(&path, version))
+            .collect::<Vec<_>>();
+        if amt_forms > 2 {
+            let tf = format!("{wiki_id:03}_s02.maanim");
+            anims.push(Self::get_anim_data(&tf, version))
+        }
+        if amt_forms > 3 {
+            let uf = format!("{wiki_id:03}_u02.maanim");
+            anims.push(Self::get_anim_data(&uf, version))
+        }
         anims
+    }
+
+    fn get_anim_data(path: &str, version: &Version) -> AnimData {
+        const ANIM_LINE_LEN: usize = 4;
+        let qualified = version.get_file_path("ImageDataLocal").join(path);
+        let count = BufReader::new(File::open(&qualified).unwrap())
+            .lines()
+            .filter(|line| {
+                let line = line.as_ref().unwrap();
+                let count = line.chars().filter(|c| *c == ',').count();
+                count == ANIM_LINE_LEN
+            })
+            .count();
+        AnimData { length: count }
     }
 
     /// Get stats for each form.
