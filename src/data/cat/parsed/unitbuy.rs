@@ -322,7 +322,7 @@ mod tests {
             ("courier", 658),
         ];
         for (name, id) in test_units {
-            let unit = unitbuy.get_unit(id);
+            let unit = unitbuy.get_unit(id).unwrap();
             println!("{name} ({id}) = {:?}", unit);
             println!("{:?}\n", UnitBuyData::from_unitbuy(unit));
         }

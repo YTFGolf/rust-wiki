@@ -133,8 +133,8 @@ pub struct UnitBuyContainer {
 }
 impl UnitBuyContainer {
     /// Get [`UnitBuy`] line for a unit.
-    pub fn get_unit(&self, id: u32) -> &UnitBuy {
-        &self.units[id as usize]
+    pub fn get_unit(&self, id: u32) -> Option<&UnitBuy> {
+        self.units.get(id as usize)
     }
 }
 impl CacheableVersionData for UnitBuyContainer {
