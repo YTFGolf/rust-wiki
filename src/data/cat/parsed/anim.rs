@@ -69,7 +69,23 @@ fn get_anim_data(path: &str, version: &Version) -> AnimData {
 
 #[cfg(test)]
 mod tests {
-    use crate::{config::TEST_CONFIG, data::cat::parsed::cat::Cat};
+    use super::*;
+    use crate::{
+        config::TEST_CONFIG,
+        data::cat::{parsed::unitbuy::UnitBuyData, raw::unitbuy::UnitBuyContainer},
+    };
+
+    fn get_egg_data(id: u32, version: &Version) -> (AncientEggInfo, usize) {
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).unwrap());
+
+        let has_true = unitbuy.true_evol.is_some();
+        let has_ultra = unitbuy.ultra_evol.is_some();
+        let egg_data = unitbuy.misc.egg_info;
+
+        let amt_forms = 2 + has_true as usize + has_ultra as usize;
+        (egg_data, amt_forms)
+    }
 
     #[test]
     fn test_units() {
@@ -90,8 +106,8 @@ mod tests {
             ("courier", 658),
         ];
         for (name, id) in test_units {
-            let cat = Cat::from_wiki_id(id, version);
-            println!("{name} ({id}) = {:#?}\n", cat.forms);
+            let (egg, amt) = get_egg_data(id, version);
+            println!("{name} ({id}) = {:#?}\n", get_anims(id, version, amt, &egg));
         }
         todo!()
     }
