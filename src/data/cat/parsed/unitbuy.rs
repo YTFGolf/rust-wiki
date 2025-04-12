@@ -65,10 +65,7 @@ struct EvolutionInfo {
     etype: EvolutionType,
 }
 
-// evolutions
-// egg data
-// misc
-
+#[derive(Debug)]
 struct UpgradeCost {
     costs: [u32; 10],
 }
@@ -92,10 +89,98 @@ impl UpgradeCost {
 }
 
 #[derive(Debug)]
+struct MaxLevels {
+    ch1: u8,
+    ch2: u8,
+    initial_plus: u8,
+    max_nat: u8,
+    max_plus: u8,
+}
+impl MaxLevels {
+    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+        Self {
+            ch1: unitbuy.max_xp_level_ch1,
+            ch2: unitbuy.max_xp_level_ch2,
+            initial_plus: unitbuy.initial_max_plus,
+            max_nat: unitbuy.max_nat_level,
+            max_plus: unitbuy.max_plus_level,
+        }
+    }
+}
+
+#[repr(u8)]
+#[derive(Debug, FromRepr)]
+pub enum Rarity {
+    Normal = 0,
+    Special = 1,
+    Rare = 2,
+    SuperRare = 3,
+    UberRare = 4,
+    LegendRare = 5,
+}
+
+pub enum AncientEggInfo {
+    None,
+    Egg { normal: u8, evolved: u8 },
+}
+
+// egg data
+// misc
+pub struct Misc {
+    rarity: Rarity,
+    cro_order: i16,
+    sell_xp: u32,
+    update_released: u64,
+    sell_np: u8,
+    egg_info: AncientEggInfo,
+}
+impl Misc {
+    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+        let egg_info = match (unitbuy.ancient_egg_id_norm, unitbuy.ancient_egg_id_evo) {
+            (-1, -1) => AncientEggInfo::None,
+            (0, n) if n > 0 => AncientEggInfo::Egg {
+                normal: 0,
+                evolved: n as u8,
+            },
+            _ => unreachable!(),
+        };
+        Self {
+            rarity: Rarity::from_repr(unitbuy.rarity).unwrap(),
+            cro_order: unitbuy.cro_order,
+            sell_xp: unitbuy.sell_xp,
+            update_released: unitbuy.update_released,
+            sell_np: unitbuy.sell_np,
+            egg_info,
+        }
+    }
+}
+
+// {
+//     pub rarity: u8,
+//     pub cro_order: i16,
+//     pub sell_xp: u32,
+
+//     // is 0 for normals and metal cat, 2 for everyone else
+//     pub update_released: String,
+//     // e.g. "90500" for 09.05.00 = 9.5.0
+//     pub sell_np: u8,
+
+//     // 60
+//     // is 1 if cat is superfeline
+//     pub ancient_egg_id_norm: i8,
+//     pub ancient_egg_id_evo: i8,
+
+//     #[serde(default)]
+//     pub rest: Vec<i32>,
+// }
+
+#[derive(Debug)]
 struct Temp {
     unlock: CatUnlock,
     true_evol: Option<EvolutionInfo>,
     ultra_evol: Option<EvolutionInfo>,
+    costs: UpgradeCost,
+    max_levels: MaxLevels,
 }
 
 // scale_type: Levelling,
@@ -108,6 +193,8 @@ impl Temp {
             unlock: CatUnlock::from_unitbuy(unitbuy),
             true_evol,
             ultra_evol,
+            costs: UpgradeCost::from_unitbuy(unitbuy),
+            max_levels: MaxLevels::from_unitbuy(unitbuy),
         }
     }
 
@@ -260,44 +347,3 @@ mod tests {
         }
     }
 }
-
-// {
-//     pub rarity: u8,
-//     pub cro_order: i16,
-//     pub sell_xp: u32,
-//     _uk17: u8,
-//     pub max_xp_level_ch2: u8,
-//     pub initial_max_plus: u8,
-
-//     // 20
-//     _uk21: u8,
-//     // 2 for iron wall, 10 for everyone else
-//     pub max_xp_level_ch1: u8,
-
-//     _uk49: i8,
-//     // -1 for normal cats, 30 for every cat that can go to 30. 31 for iron wall,
-//     // 21 for Metal, 2 for units with max level 1. Perhaps first catseye level?
-
-//     // 50
-//     pub max_nat_level: u8,
-//     pub max_plus_level: u8,
-//     _uk52: u8,
-//     _uk53: u16,
-//     _uk54: u16,
-//     _uk55: u8,
-//     _uk56: u8,
-//     // is 0 for normals and metal cat, 2 for everyone else
-//     pub update_released: String,
-//     // e.g. "90500" for 09.05.00 = 9.5.0
-//     pub sell_np: u8,
-//     _uk59: u32,
-
-//     // 60
-//     _uk60: u8,
-//     // is 1 if cat is superfeline
-//     pub ancient_egg_id_norm: i8,
-//     pub ancient_egg_id_evo: i8,
-
-//     #[serde(default)]
-//     pub rest: Vec<i32>,
-// }

@@ -82,8 +82,8 @@ pub struct UnitBuy {
     _uk55: u8,
     _uk56: u8,
     // is 0 for normals and metal cat, 2 for everyone else
-    pub update_released: String,
-    // e.g. "90500" for 09.05.00 = 9.5.0
+    pub update_released: u64,
+    // e.g. `90500` for 09.05.00 = 9.5.0
     pub sell_np: u8,
     _uk59: u32,
 
@@ -159,7 +159,7 @@ mod tests {
         for unit in units {
             if unit.ancient_egg_id_norm != -1 || unit.ancient_egg_id_evo != -1 {
                 assert_eq!(unit.ancient_egg_id_norm, 0);
-                assert_ne!(unit.ancient_egg_id_evo, 0);
+                assert!(unit.ancient_egg_id_evo > 0);
             }
             assert!(unit.rest.is_empty());
         }
