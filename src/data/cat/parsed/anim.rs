@@ -32,10 +32,10 @@ pub fn get_anims(
         ),
     };
 
-    let mut anims = [form1, form2]
-        .iter()
-        .map(|path| get_anim_data(&path, version))
-        .collect::<Vec<_>>();
+    let mut anims = vec![get_anim_data(&form1, version)];
+    if amt_forms > 1 {
+        anims.push(get_anim_data(&form2, version))
+    }
     if amt_forms > 2 {
         let tf = format!("{wiki_id:03}_s02.maanim");
         anims.push(get_anim_data(&tf, version))

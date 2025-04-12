@@ -49,7 +49,7 @@ impl Cat {
         let has_ultra = unitbuy.ultra_evol.is_some();
         let egg_data = &unitbuy.misc.egg_info;
 
-        let amt_forms = 2 + has_true as usize + has_ultra as usize;
+        let amt_forms = Self::get_amt_forms(id, has_true, has_ultra);
         let forms = Self::get_forms(id, version, amt_forms, egg_data);
 
         Self {
@@ -57,6 +57,15 @@ impl Cat {
             forms,
             unitbuy,
             unitexp,
+        })
+    }
+
+    fn get_amt_forms(id: u32, is_summon: bool, has_true: bool, has_ultra: bool) -> usize {
+        match id {
+            339 | 673 => 1,
+            // iron wall, cheetah
+            _ if is_summon => 1,
+            _ => 2 + has_true as usize + has_ultra as usize,
         }
     }
 
