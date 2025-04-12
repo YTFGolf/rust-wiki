@@ -1,5 +1,7 @@
 #![allow(dead_code, unused_variables, missing_docs, unused_imports)]
 
+use std::num::NonZero;
+
 use crate::data::cat::raw::unitbuy::{self, UnitBuy};
 use strum::FromRepr;
 
@@ -37,29 +39,10 @@ impl CatUnlock {
     }
 }
 
-//     pub evol_level: i8,
-//     // only exists for normal cats, 100 for sf and 30 for others. -1 for all
-//     // other cats.
-//     _uk21: u8,
-//     // 2 for iron wall, 10 for everyone else
-//     pub max_xp_level_ch1: u8,
-//     pub true_num: u32,
 //     pub ultra_num: u32,
-//     pub true_cf_evol_level: i8,
 //     pub ultra_cf_evol_level: i8,
-//     pub true_evol_xp: u32,
-//     pub true_cf_item1: u8,
-//     pub true_cf_cost1: u8,
 
 //     // 30
-//     pub true_cf_item2: u8,
-//     pub true_cf_cost2: u8,
-//     pub true_cf_item3: u8,
-//     pub true_cf_cost3: u8,
-//     pub true_cf_item4: u8,
-//     pub true_cf_cost4: u8,
-//     pub true_cf_item5: u8,
-//     pub true_cf_cost5: u8,
 //     pub ultra_evol_xp: u32,
 //     pub ultra_cf_item1: u8,
 
@@ -88,7 +71,15 @@ struct CatfruitEvolution {
 enum EvolutionType {
     XP { level: u8 },
     Catfruit(CatfruitEvolution),
+    Other,
 }
+
+#[derive(Debug)]
+struct EvolutionInfo {
+    evolution_id: NonZero<u32>,
+    etype: EvolutionType,
+}
+
 // evolutions
 // upgrade_cost
 // egg data
@@ -97,21 +88,67 @@ enum EvolutionType {
 #[derive(Debug)]
 struct Temp {
     unlock: CatUnlock,
-    true_evol: Option<EvolutionType>,
-    ultra_evol: Option<EvolutionType>,
+    true_evol: Option<EvolutionInfo>,
+    ultra_evol: Option<EvolutionInfo>,
 }
 
 impl Temp {
-    fn get_tf_evol(unitbuy: &UnitBuy) -> Option<EvolutionType> {
+    fn get_tf_evol(unitbuy: &UnitBuy) -> Option<EvolutionInfo> {
+        let tf_num = NonZero::new(unitbuy.true_num)?;
         if unitbuy.evol_level > -1 {
-            return Some(EvolutionType::XP {
-                level: unitbuy.evol_level as u8,
+            return Some(EvolutionInfo {
+                evolution_id: tf_num,
+                etype: EvolutionType::XP {
+                    level: unitbuy.evol_level as u8,
+                },
             });
         }
 
-        todo!()
+        if unitbuy.true_cf_evol_level <= 0 {
+            return Some(EvolutionInfo {
+                evolution_id: tf_num,
+                etype: EvolutionType::Other,
+            });
+        }
+
+        let level_required = unitbuy.true_cf_evol_level as u8;
+        let xp_cost = unitbuy.true_evol_xp;
+
+        let item_cost = [
+            EvolutionItem {
+                item_id: unitbuy.true_cf_item1,
+                item_amt: unitbuy.true_cf_cost1,
+            },
+            EvolutionItem {
+                item_id: unitbuy.true_cf_item2,
+                item_amt: unitbuy.true_cf_cost2,
+            },
+            EvolutionItem {
+                item_id: unitbuy.true_cf_item3,
+                item_amt: unitbuy.true_cf_cost3,
+            },
+            EvolutionItem {
+                item_id: unitbuy.true_cf_item4,
+                item_amt: unitbuy.true_cf_cost4,
+            },
+            EvolutionItem {
+                item_id: unitbuy.true_cf_item5,
+                item_amt: unitbuy.true_cf_cost5,
+            },
+        ];
+
+        let etype = EvolutionType::Catfruit(CatfruitEvolution {
+            item_cost,
+            xp_cost,
+            level_required,
+        });
+
+        Some(EvolutionInfo {
+            evolution_id: tf_num,
+            etype,
+        })
     }
-    fn get_evolutions(unitbuy: &UnitBuy) -> (Option<EvolutionType>, Option<EvolutionType>) {
+    fn get_evolutions(unitbuy: &UnitBuy) -> (Option<EvolutionInfo>, Option<EvolutionInfo>) {
         let tf = Self::get_tf_evol(unitbuy);
         let uf = todo!();
         (tf, uf)
@@ -180,6 +217,9 @@ mod tests {
 //     pub initial_max_plus: u8,
 
 //     // 20
+//     _uk21: u8,
+//     // 2 for iron wall, 10 for everyone else
+//     pub max_xp_level_ch1: u8,
 
 //     _uk49: i8,
 //     // -1 for normal cats, 30 for every cat that can go to 30. 31 for iron wall,
