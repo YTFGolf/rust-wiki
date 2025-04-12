@@ -1,7 +1,6 @@
 #![allow(dead_code, unused_variables, missing_docs, unused_imports)]
 
 use std::num::NonZero;
-
 use crate::data::cat::raw::unitbuy::{self, UnitBuy};
 use strum::FromRepr;
 
@@ -39,23 +38,6 @@ impl CatUnlock {
     }
 }
 
-//     pub ultra_num: u32,
-//     pub ultra_cf_evol_level: i8,
-
-//     // 30
-//     pub ultra_evol_xp: u32,
-//     pub ultra_cf_item1: u8,
-
-//     // 40
-//     pub ultra_cf_cost1: u8,
-//     pub ultra_cf_item2: u8,
-//     pub ultra_cf_cost2: u8,
-//     pub ultra_cf_item3: u8,
-//     pub ultra_cf_cost3: u8,
-//     pub ultra_cf_item4: u8,
-//     pub ultra_cf_cost4: u8,
-//     pub ultra_cf_item5: u8,
-//     pub ultra_cf_cost5: u8,
 #[derive(Debug)]
 struct EvolutionItem {
     item_id: u8,
@@ -148,9 +130,65 @@ impl Temp {
             etype,
         })
     }
+
+    fn get_uf_evol(unitbuy: &UnitBuy) -> Option<EvolutionInfo> {
+        let uf_num = NonZero::new(unitbuy.ultra_num)?;
+        if unitbuy.evol_level > -1 {
+            return Some(EvolutionInfo {
+                evolution_id: uf_num,
+                etype: EvolutionType::XP {
+                    level: unitbuy.evol_level as u8,
+                },
+            });
+        }
+
+        if unitbuy.ultra_cf_evol_level <= 0 {
+            return Some(EvolutionInfo {
+                evolution_id: uf_num,
+                etype: EvolutionType::Other,
+            });
+        }
+
+        let level_required = unitbuy.ultra_cf_evol_level as u8;
+        let xp_cost = unitbuy.ultra_evol_xp;
+
+        let item_cost = [
+            EvolutionItem {
+                item_id: unitbuy.ultra_cf_item1,
+                item_amt: unitbuy.ultra_cf_cost1,
+            },
+            EvolutionItem {
+                item_id: unitbuy.ultra_cf_item2,
+                item_amt: unitbuy.ultra_cf_cost2,
+            },
+            EvolutionItem {
+                item_id: unitbuy.ultra_cf_item3,
+                item_amt: unitbuy.ultra_cf_cost3,
+            },
+            EvolutionItem {
+                item_id: unitbuy.ultra_cf_item4,
+                item_amt: unitbuy.ultra_cf_cost4,
+            },
+            EvolutionItem {
+                item_id: unitbuy.ultra_cf_item5,
+                item_amt: unitbuy.ultra_cf_cost5,
+            },
+        ];
+
+        let etype = EvolutionType::Catfruit(CatfruitEvolution {
+            item_cost,
+            xp_cost,
+            level_required,
+        });
+
+        Some(EvolutionInfo {
+            evolution_id: uf_num,
+            etype,
+        })
+    }
     fn get_evolutions(unitbuy: &UnitBuy) -> (Option<EvolutionInfo>, Option<EvolutionInfo>) {
         let tf = Self::get_tf_evol(unitbuy);
-        let uf = todo!();
+        let uf = Self::get_uf_evol(unitbuy);
         (tf, uf)
     }
 
