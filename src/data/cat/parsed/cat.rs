@@ -3,6 +3,7 @@
 #![allow(dead_code, unused_variables, missing_docs, unused_imports)]
 
 use super::{
+    anim::{AnimData, get_anims},
     cat_stats::CatStats,
     unitbuy::{self, AncientEggInfo, UnitBuyData},
 };
@@ -16,21 +17,10 @@ use std::{
 };
 
 #[derive(Debug)]
-pub struct AnimData {
-    length: usize, // right now all that's needed is the length of the animation
-}
-impl AnimData {
-    pub fn len(&self) -> usize {
-        self.length
-    }
-}
-
-#[derive(Debug)]
 pub struct CatForms {
     amt_forms: usize,
     stats: Vec<CatStats>,
     anims: Vec<AnimData>,
-    // anim
     // desc
 }
 
@@ -81,65 +71,13 @@ impl Cat {
         egg_data: &AncientEggInfo,
     ) -> CatForms {
         let stats = Self::get_stats(id, version).collect();
-        let anims = Self::get_anims(id, version, amt_forms, egg_data);
+        let anims = get_anims(id, version, amt_forms, egg_data);
 
         CatForms {
             amt_forms,
             stats,
             anims,
         }
-    }
-
-    pub fn get_anims(
-        wiki_id: u32,
-        version: &Version,
-        amt_forms: usize,
-        egg_data: &AncientEggInfo,
-    ) -> Vec<AnimData> {
-        let (form1, form2) = match egg_data {
-            AncientEggInfo::None => (
-                format!("{wiki_id:03}_f02.maanim"),
-                format!("{wiki_id:03}_c02.maanim"),
-            ),
-            AncientEggInfo::Egg { normal, evolved } => (
-                format!("{normal:03}_m02.maanim"),
-                format!("{evolved:03}_m02.maanim"),
-            ),
-        };
-
-        let mut anims = [form1, form2]
-            .iter()
-            .map(|path| Self::get_anim_data(&path, version))
-            .collect::<Vec<_>>();
-        if amt_forms > 2 {
-            let tf = format!("{wiki_id:03}_s02.maanim");
-            anims.push(Self::get_anim_data(&tf, version))
-        }
-        if amt_forms > 3 {
-            let uf = format!("{wiki_id:03}_u02.maanim");
-            anims.push(Self::get_anim_data(&uf, version))
-        }
-        anims
-    }
-
-    fn get_anim_data(path: &str, version: &Version) -> AnimData {
-        const ANIM_LINE_LEN: usize = 4;
-        let qualified = version.get_file_path("ImageDataLocal").join(path);
-        let count = BufReader::new(File::open(&qualified).unwrap())
-            .lines()
-            .filter_map(|line| {
-                let line = line.as_ref().ok()?;
-                let count = line.chars().filter(|c| *c == ',').count() + 1;
-                // if has 4 items then has 3 commas
-                if count != ANIM_LINE_LEN {
-                    return None;
-                };
-                let frame_no = line.split(',').next()?;
-                frame_no.parse::<usize>().ok()
-            })
-            .max()
-            .unwrap();
-        AnimData { length: count + 1 }
     }
 
     /// Get stats for each form.
