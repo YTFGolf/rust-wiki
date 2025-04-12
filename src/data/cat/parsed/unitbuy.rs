@@ -156,25 +156,25 @@ impl Misc {
 }
 
 #[derive(Debug)]
-struct Temp {
+struct UnitBuyData {
     unlock: CatUnlock,
     true_evol: Option<EvolutionInfo>,
     ultra_evol: Option<EvolutionInfo>,
-    costs: UpgradeCost,
+    upgrade_costs: UpgradeCost,
     max_levels: MaxLevels,
 }
 
 // scale_type: Levelling,
 // scale_type:Levelling::from_id(unitbuy)
 
-impl Temp {
+impl UnitBuyData {
     fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
         let (true_evol, ultra_evol) = Self::get_evolutions(unitbuy);
         Self {
             unlock: CatUnlock::from_unitbuy(unitbuy),
             true_evol,
             ultra_evol,
-            costs: UpgradeCost::from_unitbuy(unitbuy),
+            upgrade_costs: UpgradeCost::from_unitbuy(unitbuy),
             max_levels: MaxLevels::from_unitbuy(unitbuy),
         }
     }
@@ -324,7 +324,7 @@ mod tests {
         for (name, id) in test_units {
             let unit = unitbuy.get_unit(id);
             println!("{name} ({id}) = {:?}", unit);
-            println!("{:?}\n", Temp::from_unitbuy(unit));
+            println!("{:?}\n", UnitBuyData::from_unitbuy(unit));
         }
     }
 }
