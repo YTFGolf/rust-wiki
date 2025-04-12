@@ -1,7 +1,10 @@
 #![allow(dead_code, unused_variables, missing_docs, unused_imports)]
 
+use crate::data::cat::raw::{
+    unitbuy::{self, UnitBuy},
+    unitexp::Levelling,
+};
 use std::num::NonZero;
-use crate::data::cat::raw::unitbuy::{self, UnitBuy};
 use strum::FromRepr;
 
 #[repr(u8)]
@@ -63,9 +66,30 @@ struct EvolutionInfo {
 }
 
 // evolutions
-// upgrade_cost
 // egg data
 // misc
+
+struct UpgradeCost {
+    costs: [u32; 10],
+}
+
+impl UpgradeCost {
+    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+        let costs = [
+            unitbuy.upgrade_to_1,
+            unitbuy.upgrade_to_2,
+            unitbuy.upgrade_to_3,
+            unitbuy.upgrade_to_4,
+            unitbuy.upgrade_to_5,
+            unitbuy.upgrade_to_6,
+            unitbuy.upgrade_to_7,
+            unitbuy.upgrade_to_8,
+            unitbuy.upgrade_to_9,
+            unitbuy.upgrade_to_10,
+        ];
+        Self { costs }
+    }
+}
 
 #[derive(Debug)]
 struct Temp {
@@ -74,7 +98,19 @@ struct Temp {
     ultra_evol: Option<EvolutionInfo>,
 }
 
+// scale_type: Levelling,
+// scale_type:Levelling::from_id(unitbuy)
+
 impl Temp {
+    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+        let (true_evol, ultra_evol) = Self::get_evolutions(unitbuy);
+        Self {
+            unlock: CatUnlock::from_unitbuy(unitbuy),
+            true_evol,
+            ultra_evol,
+        }
+    }
+
     fn get_tf_evol(unitbuy: &UnitBuy) -> Option<EvolutionInfo> {
         let tf_num = NonZero::new(unitbuy.true_num)?;
         if unitbuy.evol_level > -1 {
@@ -133,14 +169,14 @@ impl Temp {
 
     fn get_uf_evol(unitbuy: &UnitBuy) -> Option<EvolutionInfo> {
         let uf_num = NonZero::new(unitbuy.ultra_num)?;
-        if unitbuy.evol_level > -1 {
-            return Some(EvolutionInfo {
-                evolution_id: uf_num,
-                etype: EvolutionType::XP {
-                    level: unitbuy.evol_level as u8,
-                },
-            });
-        }
+        // if unitbuy.evol_level > -1 {
+        //     return Some(EvolutionInfo {
+        //         evolution_id: uf_num,
+        //         etype: EvolutionType::XP {
+        //             level: unitbuy.evol_level as u8,
+        //         },
+        //     });
+        // }
 
         if unitbuy.ultra_cf_evol_level <= 0 {
             return Some(EvolutionInfo {
@@ -191,15 +227,6 @@ impl Temp {
         let uf = Self::get_uf_evol(unitbuy);
         (tf, uf)
     }
-
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
-        let (true_evol, ultra_evol) = Self::get_evolutions(unitbuy);
-        Self {
-            unlock: CatUnlock::from_unitbuy(unitbuy),
-            true_evol,
-            ultra_evol,
-        }
-    }
 }
 
 #[cfg(test)]
@@ -235,18 +262,6 @@ mod tests {
 }
 
 // {
-//     pub upgrade_to_1: u32,
-//     pub upgrade_to_2: u32,
-//     pub upgrade_to_3: u32,
-//     pub upgrade_to_4: u32,
-//     pub upgrade_to_5: u32,
-//     pub upgrade_to_6: u32,
-//     pub upgrade_to_7: u32,
-//     pub upgrade_to_8: u32,
-
-//     // 10
-//     pub upgrade_to_9: u32,
-//     pub upgrade_to_10: u32,
 //     pub rarity: u8,
 //     pub cro_order: i16,
 //     pub sell_xp: u32,
