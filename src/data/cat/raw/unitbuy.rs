@@ -21,11 +21,11 @@ pub struct UnitBuy {
     // 10
     pub upgrade_to_9: u32,
     pub upgrade_to_10: u32,
-    pub unlock_method: u8,
+    pub unlock_currency: u8,
     // appears to be 0 = xp, 1 = catfood, 2 = capsule/free
     pub rarity: u8,
     pub cro_order: i16,
-    _uk15: u8,
+    pub chap_available: u8,
     // 2 for bahamut, 1 for actress, mr, panties, skirt, valk
     pub sell_xp: u32,
     _uk17: u8,
@@ -162,29 +162,6 @@ mod tests {
                 assert_ne!(unit.ancient_egg_id_evo, 0);
             }
             assert!(unit.rest.is_empty());
-        }
-    }
-
-    #[test]
-    fn test_units() {
-        // temp
-        let version = TEST_CONFIG.version.current_version();
-        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
-
-        let test_units = [
-            ("cat", 0),
-            ("titan", 8),
-            ("bahamut", 25),
-            ("cancan", 32),
-            ("dio", 177),
-            ("metal", 200),
-            ("dasli", 543),
-            ("cat modoki", 626),
-            ("sfeline", 643),
-            ("courier", 658),
-        ];
-        for (name, id) in test_units {
-            println!("{name} ({id}) = {:?}\n", unitbuy.get_unit(id));
         }
     }
 }

@@ -1,0 +1,151 @@
+// evolutions
+// upgrade_cost
+// egg data
+// misc
+
+#![allow(dead_code, unused_variables)]
+
+use crate::data::cat::raw::unitbuy::UnitBuy;
+use strum::FromRepr;
+
+#[repr(u8)]
+#[derive(Debug, FromRepr)]
+enum UnlockCurrency {
+    XP = 0,
+    Catfood = 1,
+    None = 2,
+}
+#[derive(Debug)]
+struct CatUnlock {
+    stage_available: u8,
+    chap_available: u8,
+    unlock_cost: u16,
+    unlock_currency: UnlockCurrency,
+}
+impl CatUnlock {
+    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+        Self {
+            stage_available: unitbuy.stage_available_after,
+            chap_available: unitbuy.chap_available,
+            unlock_cost: unitbuy.unlock_cost,
+            unlock_currency: UnlockCurrency::from_repr(unitbuy.unlock_currency).unwrap(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{config::TEST_CONFIG, data::cat::raw::unitbuy::UnitBuyContainer};
+
+    #[test]
+    fn test_units() {
+        let version = TEST_CONFIG.version.current_version();
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+
+        let test_units = [
+            ("cat", 0),
+            ("tank", 1),
+            ("titan", 8),
+            ("actress", 9),
+            ("bahamut", 25),
+            ("cancan", 32),
+            ("dio", 177),
+            ("metal", 200),
+            ("dasli", 543),
+            ("cat modoki", 626),
+            ("sfeline", 643),
+            ("courier", 658),
+        ];
+        for (name, id) in test_units {
+            let unit = unitbuy.get_unit(id);
+            println!("{name} ({id}) = {:?}", unit);
+            println!("{:?}\n", CatUnlock::from_unitbuy(unit));
+        }
+    }
+}
+
+// {
+//     pub upgrade_to_1: u32,
+//     pub upgrade_to_2: u32,
+//     pub upgrade_to_3: u32,
+//     pub upgrade_to_4: u32,
+//     pub upgrade_to_5: u32,
+//     pub upgrade_to_6: u32,
+//     pub upgrade_to_7: u32,
+//     pub upgrade_to_8: u32,
+
+//     // 10
+//     pub upgrade_to_9: u32,
+//     pub upgrade_to_10: u32,
+//     pub rarity: u8,
+//     pub cro_order: i16,
+//     pub sell_xp: u32,
+//     _uk17: u8,
+//     pub max_xp_level_ch2: u8,
+//     pub initial_max_plus: u8,
+
+//     // 20
+//     pub evol_level: i8,
+//     // only exists for normal cats, 100 for sf and 30 for others. -1 for all
+//     // other cats.
+//     _uk21: u8,
+//     // 2 for iron wall, 10 for everyone else
+//     pub max_xp_level_ch1: u8,
+//     pub true_num: u32,
+//     pub ultra_num: u32,
+//     pub true_cf_evol_level: i8,
+//     pub ultra_cf_evol_level: i8,
+//     pub true_evol_xp: u32,
+//     pub true_cf_item1: u8,
+//     pub true_cf_cost1: u8,
+
+//     // 30
+//     pub true_cf_item2: u8,
+//     pub true_cf_cost2: u8,
+//     pub true_cf_item3: u8,
+//     pub true_cf_cost3: u8,
+//     pub true_cf_item4: u8,
+//     pub true_cf_cost4: u8,
+//     pub true_cf_item5: u8,
+//     pub true_cf_cost5: u8,
+//     pub ultra_evol_xp: u32,
+//     pub ultra_cf_item1: u8,
+
+//     // 40
+//     pub ultra_cf_cost1: u8,
+//     pub ultra_cf_item2: u8,
+//     pub ultra_cf_cost2: u8,
+//     pub ultra_cf_item3: u8,
+//     pub ultra_cf_cost3: u8,
+//     pub ultra_cf_item4: u8,
+//     pub ultra_cf_cost4: u8,
+//     pub ultra_cf_item5: u8,
+//     pub ultra_cf_cost5: u8,
+//     _uk49: i8,
+//     // -1 for normal cats, 30 for every cat that can go to 30. 31 for iron wall,
+//     // 21 for Metal, 2 for units with max level 1. Perhaps first catseye level?
+
+//     // 50
+//     pub max_nat_level: u8,
+//     pub max_plus_level: u8,
+//     _uk52: u8,
+//     _uk53: u16,
+//     _uk54: u16,
+//     _uk55: u8,
+//     _uk56: u8,
+//     // is 0 for normals and metal cat, 2 for everyone else
+//     pub update_released: String,
+//     // e.g. "90500" for 09.05.00 = 9.5.0
+//     pub sell_np: u8,
+//     _uk59: u32,
+
+//     // 60
+//     _uk60: u8,
+//     // is 1 if cat is superfeline
+//     pub ancient_egg_id_norm: i8,
+//     pub ancient_egg_id_evo: i8,
+
+//     #[serde(default)]
+//     pub rest: Vec<i32>,
+// }
