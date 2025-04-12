@@ -130,8 +130,8 @@ pub struct Misc {
     rarity: Rarity,
     cro_order: i16,
     sell_xp: u32,
-    update_released: u64,
     sell_np: u8,
+    update_released: i64,
     egg_info: AncientEggInfo,
 }
 impl Misc {
@@ -154,25 +154,6 @@ impl Misc {
         }
     }
 }
-
-// {
-//     pub rarity: u8,
-//     pub cro_order: i16,
-//     pub sell_xp: u32,
-
-//     // is 0 for normals and metal cat, 2 for everyone else
-//     pub update_released: String,
-//     // e.g. "90500" for 09.05.00 = 9.5.0
-//     pub sell_np: u8,
-
-//     // 60
-//     // is 1 if cat is superfeline
-//     pub ancient_egg_id_norm: i8,
-//     pub ancient_egg_id_evo: i8,
-
-//     #[serde(default)]
-//     pub rest: Vec<i32>,
-// }
 
 #[derive(Debug)]
 struct Temp {
