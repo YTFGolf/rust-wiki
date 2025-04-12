@@ -55,7 +55,7 @@ pub struct UnitExp {
 }
 
 /// Multipliers for nearly every enemy in the game.
-pub const DEFAULT: UnitExp = UnitExp {
+const DEFAULT: UnitExp = UnitExp {
     until_10: 10,
     until_20: 20,
     until_30: 30,
@@ -79,7 +79,7 @@ pub const DEFAULT: UnitExp = UnitExp {
 };
 
 /// Multipliers for superfeline.
-pub const SUPERFELINE: UnitExp = UnitExp {
+const SUPERFELINE: UnitExp = UnitExp {
     until_10: 10,
     until_20: 10,
     until_30: 10,
@@ -102,11 +102,28 @@ pub const SUPERFELINE: UnitExp = UnitExp {
     until_200: 10,
 };
 
-/// Get level cost growth for the cat.
-pub const fn get_levelling(id: u32) -> UnitExp {
-    match id {
-        643 => SUPERFELINE,
-        _ => DEFAULT,
+/// Levelling enum to avoid using a big object.
+pub enum Levelling {
+    /// Default level cost growth.
+    Normal,
+    /// Superfeline level cost growth.
+    Superfeline,
+}
+impl Levelling {
+    /// Get levelling from unit id.
+    pub const fn from_id(id: u32) -> Self {
+        match id {
+            643 => Self::Superfeline,
+            _ => Self::Normal,
+        }
+    }
+
+    /// Get [`UnitExp`] levelling multipliers.
+    pub const fn get_levelling(&self) -> UnitExp {
+        match self {
+            Levelling::Normal => DEFAULT,
+            Levelling::Superfeline => SUPERFELINE,
+        }
     }
 }
 
@@ -139,7 +156,8 @@ mod tests {
         let units = get_unitexp(&version.get_file_path(""));
 
         for (i, unit) in units.into_iter().enumerate() {
-            assert_eq!(get_levelling(i as u32), unit);
+            let level = Levelling::from_id(i as u32);
+            assert_eq!(level.get_levelling(), unit);
         }
     }
 
