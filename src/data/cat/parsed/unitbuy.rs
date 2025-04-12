@@ -10,7 +10,7 @@ use strum::FromRepr;
 #[repr(u8)]
 #[derive(Debug, FromRepr)]
 /// Currency used to unlock a unit.
-enum UnlockCurrency {
+pub enum UnlockCurrency {
     /// XP unlock.
     XP = 0,
     /// Catfood unlock.
@@ -19,7 +19,7 @@ enum UnlockCurrency {
     None = 2,
 }
 #[derive(Debug)]
-struct CatUnlock {
+pub struct CatUnlock {
     /// EoC stage the unit is available (cat is available before stage 0, tank
     /// before stage 1, bahamut 48).
     stage_available: u8,
@@ -42,12 +42,12 @@ impl CatUnlock {
 }
 
 #[derive(Debug)]
-struct EvolutionItem {
+pub struct EvolutionItem {
     item_id: u8,
     item_amt: u8,
 }
 #[derive(Debug)]
-struct CatfruitEvolution {
+pub struct CatfruitEvolution {
     item_cost: [EvolutionItem; 5],
     xp_cost: u32,
     level_required: u8,
@@ -60,13 +60,13 @@ enum EvolutionType {
 }
 
 #[derive(Debug)]
-struct EvolutionInfo {
+pub struct EvolutionInfo {
     evolution_id: NonZero<u32>,
     etype: EvolutionType,
 }
 
 #[derive(Debug)]
-struct UpgradeCost {
+pub struct UpgradeCost {
     costs: [u32; 10],
 }
 
@@ -89,7 +89,7 @@ impl UpgradeCost {
 }
 
 #[derive(Debug)]
-struct MaxLevels {
+pub struct MaxLevels {
     ch1: u8,
     ch2: u8,
     initial_plus: u8,
@@ -119,20 +119,20 @@ pub enum Rarity {
     LegendRare = 5,
 }
 
+#[derive(Debug)]
 pub enum AncientEggInfo {
     None,
     Egg { normal: u8, evolved: u8 },
 }
 
-// egg data
-// misc
+#[derive(Debug)]
 pub struct Misc {
-    rarity: Rarity,
-    cro_order: i16,
-    sell_xp: u32,
-    sell_np: u8,
-    update_released: i64,
-    egg_info: AncientEggInfo,
+    pub rarity: Rarity,
+    pub cro_order: i16,
+    pub sell_xp: u32,
+    pub sell_np: u8,
+    pub update_released: i64,
+    pub egg_info: AncientEggInfo,
 }
 impl Misc {
     fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
@@ -157,11 +157,12 @@ impl Misc {
 
 #[derive(Debug)]
 pub struct UnitBuyData {
-    unlock: CatUnlock,
-    true_evol: Option<EvolutionInfo>,
-    ultra_evol: Option<EvolutionInfo>,
-    upgrade_costs: UpgradeCost,
-    max_levels: MaxLevels,
+    pub unlock: CatUnlock,
+    pub true_evol: Option<EvolutionInfo>,
+    pub ultra_evol: Option<EvolutionInfo>,
+    pub upgrade_costs: UpgradeCost,
+    pub max_levels: MaxLevels,
+    pub misc: Misc,
 }
 
 impl UnitBuyData {
@@ -173,6 +174,7 @@ impl UnitBuyData {
             ultra_evol,
             upgrade_costs: UpgradeCost::from_unitbuy(unitbuy),
             max_levels: MaxLevels::from_unitbuy(unitbuy),
+            misc: Misc::from_unitbuy(unitbuy),
         }
     }
 
@@ -323,5 +325,6 @@ mod tests {
             println!("{name} ({id}) = {:?}", unit);
             println!("{:?}\n", UnitBuyData::from_unitbuy(unit));
         }
+        todo!()
     }
 }
