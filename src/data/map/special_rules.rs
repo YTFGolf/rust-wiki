@@ -140,7 +140,7 @@ pub enum RuleNameLabel {
     DeployLimit,
     SpecialClearance,
     PlusOneUber,
-    にゃんこ砲超強化,
+    MegaCatCannon,
 }
 impl<T: AsRef<str>> From<T> for RuleNameLabel {
     fn from(value: T) -> Self {
@@ -153,7 +153,7 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName005" => Self::DeployLimit,
             "SpecialRuleName006" => Self::SpecialClearance,
             "SpecialRuleName007" => Self::PlusOneUber,
-            "SpecialRuleName008" => Self::にゃんこ砲超強化,
+            "SpecialRuleName008" => Self::MegaCatCannon,
             label => panic!("Error: unknown special rule label {label:?}"),
         }
     }
@@ -170,7 +170,7 @@ impl RuleNameLabel {
             RuleNameLabel::DeployLimit => "Deploy Limit",
             RuleNameLabel::SpecialClearance => "Special Clearance",
             RuleNameLabel::PlusOneUber => "Plus One: Uber",
-            RuleNameLabel::にゃんこ砲超強化 => "にゃんこ砲超強化",
+            RuleNameLabel::MegaCatCannon => "Mega Cat Cannon",
         }
     }
 }
