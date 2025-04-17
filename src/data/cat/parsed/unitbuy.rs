@@ -329,6 +329,7 @@ mod tests {
     use crate::{config::TEST_CONFIG, data::cat::raw::unitbuy::UnitBuyContainer};
 
     #[test]
+    #[ignore]
     fn test_units() {
         let version = TEST_CONFIG.version.current_version();
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();

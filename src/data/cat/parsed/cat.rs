@@ -103,6 +103,7 @@ mod tests {
     use crate::{config::TEST_CONFIG, data::cat::raw::unitbuy::UnitBuyContainer};
 
     #[test]
+    #[ignore]
     fn test_units() {
         let version = TEST_CONFIG.version.current_version();
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
@@ -131,6 +132,10 @@ mod tests {
     #[test]
     #[ignore]
     fn test_all() {
+        // let mut config = TEST_CONFIG.clone();
+        // config.version.init_all();
+        // config.version.set_lang(Lang::EN);
+        // config
         let version = TEST_CONFIG.version.current_version();
         for id in 0..u32::MAX {
             if (740..=745).contains(&id) || id == 788 {

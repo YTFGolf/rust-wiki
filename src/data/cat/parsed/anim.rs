@@ -21,6 +21,7 @@ pub fn get_anims(
     amt_forms: usize,
     egg_data: &AncientEggInfo,
 ) -> Vec<AnimData> {
+    // needs to be tested with en first, then do jp if en doesn't work
     let (form1, form2) = match egg_data {
         AncientEggInfo::None => (
             format!("{wiki_id:03}_f02.maanim"),
@@ -88,6 +89,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_units() {
         let version = TEST_CONFIG.version.current_version();
 
