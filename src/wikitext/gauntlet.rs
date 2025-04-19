@@ -135,20 +135,19 @@ impl Display for StageRange {
     }
 }
 
-fn get_enemies_by_id(stages: &[Stage], ranges: &[StageRange]) -> Vec<u32> {
-    let stage1 = &stages[ranges[0].min as usize];
-
+/// Get ids of all enemies in the stage.
+fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
     // if let Some(rewards) = stage1.rewards
-    if stage1.rewards.is_some() && stage1.rewards.as_ref().unwrap().score_rewards.len() != 0 {
+    if stage.rewards.is_some() && stage.rewards.as_ref().unwrap().score_rewards.len() != 0 {
         todo!(
             "Stage {id} has score rewards which are currently not supported with gauntlets",
-            id = stage1.id
+            id = stage.id
         );
         // TODO something about score rewards
     }
 
     let mut enemies_by_id = vec![];
-    for enemy in stage1.enemies.iter() {
+    for enemy in stage.enemies.iter() {
         // needs to be kept in line with `enemy_mag_lines`
         if enemy.id == MS_SIGN {
             continue;
@@ -164,27 +163,14 @@ fn get_enemies_by_id(stages: &[Stage], ranges: &[StageRange]) -> Vec<u32> {
     enemies_by_id
 }
 
-fn write_single_mag(buf: &mut String, mag: &Magnification) {
-    match mag {
-        Left(n) => {
-            buf.write_formatted(n, &Locale::en).unwrap();
-            buf.write_str("%").unwrap();
-        }
-        Right((hp, ap)) => {
-            buf.write_formatted(hp, &Locale::en).unwrap();
-            buf.write_str("% HP/").unwrap();
-            buf.write_formatted(ap, &Locale::en).unwrap();
-            buf.write_str("% AP").unwrap();
-        }
-    }
-}
-
 /// Get a list of unique magnifications for each enemy.
 ///
 /// If `enemies_by_id` is `[35, 42]` and `enemies` has enemy 35 at 300% and
 /// enemy 42 at 400% and 500% then this will give you `[[300], [400, 500]]`.
 /// Unfortunately [`StageEnemy`] does way too much for this to be a viable
 /// doctest.
+// TODO create a simpler subset of stageenemy that can be doctested, and fix
+// filter duplication.
 fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<Magnification>> {
     let mut mags = vec![Vec::new(); enemies_by_id.len()];
     for enemy in enemies {
@@ -208,10 +194,25 @@ fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<
     mags
 }
 
-fn write_table_line(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
-    let mag_lines = enemy_mag_lines(enemies_by_id, &stage.enemies);
+/// Write a single enemy magnification in the table.
+fn write_single_mag(buf: &mut String, mag: &Magnification) {
+    match mag {
+        Left(n) => {
+            buf.write_formatted(n, &Locale::en).unwrap();
+            buf.write_str("%").unwrap();
+        }
+        Right((hp, ap)) => {
+            buf.write_formatted(hp, &Locale::en).unwrap();
+            buf.write_str("% HP/").unwrap();
+            buf.write_formatted(ap, &Locale::en).unwrap();
+            buf.write_str("% AP").unwrap();
+        }
+    }
+}
 
-    for mag_line in mag_lines {
+/// Write a single data row to the table.
+fn write_table_row(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
+    for mag_line in enemy_mag_lines(enemies_by_id, &stage.enemies) {
         line_buf.write_str("|").unwrap();
 
         let mut mags_iter = mag_line.iter();
@@ -245,8 +246,10 @@ fn write_table_line(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Sta
     .unwrap();
 }
 
+/// Get gauntlet scale table.
 fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
-    let enemies_by_id = get_enemies_by_id(stages, ranges);
+    let stage1 = &stages[ranges[0].min as usize];
+    let enemies_by_id = get_enemies_by_id(stage1);
 
     let colspan = enemies_by_id.len();
     const CENTER: &str = "\"text-align: center;\"";
@@ -296,7 +299,7 @@ fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
             write!(table, "|-\n! scope=\"row\" |{}\n", i + 1).unwrap();
             // new row, add stage number marker
             let stage = &stages[i as usize];
-            write_table_line(&mut table, &enemies_by_id, stage);
+            write_table_row(&mut table, &enemies_by_id, stage);
             // other cols in line
             table.write_str("\n").unwrap();
         }
@@ -321,6 +324,7 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     stages
 }
 
+/// Get full tabber for gauntlet map.
 fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
     let gauntlet_tabs = stages_tab_info(&stages).unwrap_or_default();
