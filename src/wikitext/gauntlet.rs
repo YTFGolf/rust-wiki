@@ -37,6 +37,7 @@ use crate::{
 };
 use std::fmt::Write;
 
+/// Get the template used for comparing [`TabInfo`].
 fn template_check(stage: &Stage) -> Template {
     Template::named("Stage Info")
         .add_params(enemies_list(stage, true))
@@ -47,6 +48,9 @@ fn template_check(stage: &Stage) -> Template {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Container for a tab's info.
+///
+/// If two stages have equivalent [`TabInfo`] then they can be put together into
+/// one tab on the Gauntlet page.
 struct TabInfo {
     enemies_appearing: String,
     infobox: String,
@@ -55,9 +59,11 @@ struct TabInfo {
     battlegrounds: String,
 }
 
-/// Information about a tab with stage ids.
+/// Information about a tab on the Gauntlet page, and the ids of all the stages
+/// in that tab.
 type TabInfoWithStages = (Vec<u32>, TabInfo);
 
+/// Get tab info for all stages.
 fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
     let mut containers: Vec<TabInfoWithStages> = vec![];
 
@@ -74,6 +80,8 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
         match containers.iter_mut().find(|item| (**item).1 == container) {
             Some(cont) => cont.0.push(i),
             None => containers.push((vec![i], container)),
+            // add id to [`TabInfoWithStages`] or add new item to the container
+            // vec if tabinfo not found
         }
     }
 
@@ -84,9 +92,10 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
     }
 }
 
-/// Range of stage ids.
+/// Range of stage ids (min, max).
 type StageRange = (u32, u32);
 
+/// Convert stage id list to [`StageRange`] object.
 fn get_ranges(ids: &[u32]) -> Vec<StageRange> {
     let mut range_min = ids[0];
     let mut ranges = vec![];
