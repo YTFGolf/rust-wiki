@@ -92,38 +92,46 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
     }
 }
 
-/// Range of stage ids (min, max).
-type StageRange = (u32, u32);
-
-/// Convert stage id list to [`StageRange`] object.
-fn get_ranges(ids: &[u32]) -> Vec<StageRange> {
-    let mut range_min = ids[0];
-    let mut ranges = vec![];
-
-    let mut iter = ids.iter().peekable();
-    while let Some(id) = iter.next() {
-        match iter.peek() {
-            None => {
-                ranges.push((range_min, *id));
-                continue;
-            }
-            Some(&&i) if i != id + 1 => {
-                ranges.push((range_min, *id));
-                range_min = i
-            }
-            Some(_) => (),
-        }
+/// Range of stage ids.
+pub struct StageRange {
+    min: u32,
+    max: u32,
+}
+impl StageRange {
+    const fn new(min: u32, max: u32) -> Self {
+        Self { min, max }
     }
 
-    ranges
-}
+    /// Convert stage id list to [`StageRange`] list.
+    fn get_ranges(ids: &[u32]) -> Vec<Self> {
+        let mut range_min = ids[0];
+        let mut ranges = vec![];
 
-/// Get text representation of a range.
-fn get_range_repr(range: StageRange) -> String {
-    if range.0 == range.1 {
-        (range.0 + 1).to_string()
-    } else {
-        format!("{}~{}", range.0 + 1, range.1 + 1)
+        let mut iter = ids.iter().peekable();
+        while let Some(id) = iter.next() {
+            match iter.peek() {
+                None => {
+                    ranges.push(Self::new(range_min, *id));
+                    continue;
+                }
+                Some(&&i) if i != id + 1 => {
+                    ranges.push(Self::new(range_min, *id));
+                    range_min = i
+                }
+                Some(_) => (),
+            }
+        }
+
+        ranges
+    }
+}
+impl Display for StageRange {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.min == self.max {
+            write!(f, "{}", self.min + 1)
+        } else {
+            write!(f, "{}~{}", self.min + 1, self.max + 1)
+        }
     }
 }
 
