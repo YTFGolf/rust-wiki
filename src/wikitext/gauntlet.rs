@@ -17,7 +17,7 @@ use crate::{
     config::Config,
     data::stage::parsed::{
         stage::Stage,
-        stage_enemy::{Magnification, StageEnemy},
+        stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },
     meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{
@@ -132,6 +132,10 @@ fn get_enemies_by_id(stages: &[Stage], ranges: &[(u32, u32)]) -> Vec<u32> {
 
     let mut enemies_by_id = vec![];
     for enemy in stage1.enemies.iter() {
+        // needs to be kept in line with `enemy_mag_lines`
+        if enemy.id == MS_SIGN {
+            continue;
+        }
         if enemies_by_id
             .iter()
             .position(|eid| *eid == enemy.id)
@@ -167,6 +171,10 @@ fn write_single_mag(buf: &mut String, mag: &Magnification) {
 fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<Magnification>> {
     let mut mags = vec![Vec::new(); enemies_by_id.len()];
     for enemy in enemies {
+        // needs to be kept in line with `get_enemies_by_id`
+        if enemy.id == MS_SIGN {
+            continue;
+        }
         let pos = enemies_by_id
             .iter()
             .position(|eid| *eid == enemy.id)
@@ -397,3 +405,5 @@ pub fn map_gauntlet(map_id: &MapID, config: &Config) -> String {
 
     buf
 }
+
+// TODO test with Ms. Sign in stage
