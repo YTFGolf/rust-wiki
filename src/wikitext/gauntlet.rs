@@ -35,7 +35,7 @@ use crate::{
         wiki_utils::extract_link,
     },
 };
-use std::fmt::Write;
+use std::fmt::{Display, Write};
 
 /// Get the template used for comparing [`TabInfo`].
 fn template_check(stage: &Stage) -> Template {
@@ -135,8 +135,8 @@ impl Display for StageRange {
     }
 }
 
-fn get_enemies_by_id(stages: &[Stage], ranges: &[(u32, u32)]) -> Vec<u32> {
-    let stage1 = &stages[ranges[0].0 as usize];
+fn get_enemies_by_id(stages: &[Stage], ranges: &[StageRange]) -> Vec<u32> {
+    let stage1 = &stages[ranges[0].min as usize];
 
     // if let Some(rewards) = stage1.rewards
     if stage1.rewards.is_some() && stage1.rewards.as_ref().unwrap().score_rewards.len() != 0 {
@@ -292,7 +292,7 @@ fn get_table(stages: &[Stage], ranges: &[StageRange]) -> String {
     // final two cols in second row
 
     for range in ranges {
-        for i in range.0..=range.1 {
+        for i in range.min..=range.max {
             write!(table, "|-\n! scope=\"row\" |{}\n", i + 1).unwrap();
             // new row, add stage number marker
             let stage = &stages[i as usize];
@@ -336,8 +336,8 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let mut tabber = Tabber::new(TabberType::Tabber, vec![]);
 
     for tab in gauntlet_tabs {
-        let ranges = get_ranges(&tab.0);
-        let tab_stage0 = &stages[ranges[0].0 as usize];
+        let ranges = StageRange::get_ranges(&tab.0);
+        let tab_stage0 = &stages[ranges[0].min as usize];
 
         let template = Template::named("Stage Info")
             .add_params(sname.clone())
@@ -365,10 +365,11 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
         ];
 
         let range_str = match ranges.len() {
-            1 => get_range_repr(ranges[0]),
+            0 => unreachable!(),
+            1 => ranges[0].to_string(),
             _ => ranges
                 .iter()
-                .map(|range: &StageRange| get_range_repr(*range))
+                .map(|range: &StageRange| range.to_string())
                 .collect::<Vec<_>>()
                 .join(", "),
         };
