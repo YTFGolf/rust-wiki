@@ -3,7 +3,7 @@
 use crate::{
     data::stage::parsed::{
         stage::Stage,
-        stage_enemy::{BossType, EnemyAmount, StageEnemy},
+        stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
     },
     meta::stage::variant::StageVariantID as T,
     wikitext::{data_files::enemy_data::ENEMY_DATA, wiki_utils::extract_name},
@@ -234,7 +234,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
         enemies
             .iter()
             .filter_map(|e| {
-                if e.id == 21 && e.start_frame == 27_000 && e.boss_type == BossType::None {
+                if e.id == MS_SIGN && e.start_frame == 27_000 && e.boss_type == BossType::None {
                     None
                 } else {
                     Some(get_single_enemy_line(
@@ -544,7 +544,7 @@ mod tests {
         let hall_of_four_kings =
             Stage::from_id_current(StageID::from_components(T::UL, 36, 5)).unwrap();
         let ms_sign = &hall_of_four_kings.enemies[1];
-        assert_eq!(ms_sign.id, 21);
+        assert_eq!(ms_sign.id, MS_SIGN);
         assert_eq!(ms_sign.boss_type, BossType::Boss);
         assert_eq!(
             battlegrounds(&hall_of_four_kings),

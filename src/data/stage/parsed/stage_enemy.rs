@@ -49,6 +49,9 @@ impl From<u32> for EnemyAmount {
     }
 }
 
+/// ID of Ms. Sign.
+pub const MS_SIGN: u32 = 21;
+
 /// Enemy magnification.
 pub type Magnification = Either<u32, (u32, u32)>;
 #[derive(Debug)]

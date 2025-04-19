@@ -3,7 +3,7 @@
 use crate::{
     data::stage::parsed::{
         stage::Stage,
-        stage_enemy::{BossType, StageEnemy},
+        stage_enemy::{BossType, MS_SIGN, StageEnemy},
     },
     meta::stage::variant::StageVariantID as T,
     wikitext::{data_files::enemy_data::ENEMY_DATA, template::TemplateParameter},
@@ -53,13 +53,13 @@ pub fn enemies_list(
     let filtered_enemies = enemy_list
         .enemies
         .into_iter()
-        .filter(|e| e.id != 21 && enemy_list_seen.insert((e.id, mag_filter(e.magnification))))
+        .filter(|e| e.id != MS_SIGN && enemy_list_seen.insert((e.id, mag_filter(e.magnification))))
         .collect::<Vec<&StageEnemy>>();
     let mut boss_list_seen = HashSet::new();
     let filtered_boss = enemy_list
         .boss
         .into_iter()
-        .filter(|e| e.id != 21 && boss_list_seen.insert((e.id, mag_filter(e.magnification))))
+        .filter(|e| e.id != MS_SIGN && boss_list_seen.insert((e.id, mag_filter(e.magnification))))
         .collect::<Vec<&StageEnemy>>();
     // remove duplicates
 

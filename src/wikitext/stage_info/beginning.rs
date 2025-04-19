@@ -1,7 +1,7 @@
 //! Beginning of stage info i.e. EnemiesAppearing and intro.
 
 use crate::{
-    data::stage::parsed::stage::Stage,
+    data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
     meta::stage::variant::StageVariantID,
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
@@ -20,7 +20,7 @@ pub fn enemies_appearing(stage: &Stage) -> String {
     let enemies = stage
         .enemies
         .iter()
-        .filter(|e| e.id != 21 && displayed.insert(e.id));
+        .filter(|e| e.id != MS_SIGN && displayed.insert(e.id));
 
     for enemy in enemies {
         write!(buf, "|{}", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
