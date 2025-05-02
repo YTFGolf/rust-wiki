@@ -44,11 +44,6 @@ impl From<Lang> for VersionLanguage {
 }
 
 /// Holds any [CacheableVersionData] object.
-///
-/// For technical reasons, this cannot be a pointer to [CacheableVersionData].
-/// Based on compiler diagnostics the exact reason appears to be that trait
-/// objects need to be "object safe", although the exact meaning of this is
-/// unclear.
 type VersionDataContents = Pin<Box<dyn Any + Send + Sync>>;
 #[derive(Debug)]
 /// Represents a version of the game.
