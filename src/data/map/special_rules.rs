@@ -129,17 +129,25 @@ impl RuleType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[allow(missing_docs)]
 /// Possible rule name label value.
 pub enum RuleNameLabel {
+    /// Trust Fund.
     TrustFund,
+    /// Cooldown Equality.
     CooldownEquality,
+    /// Only One Rarity.
     OnlyOneRarity,
+    /// Cheap Labor.
     CheapLabor,
+    /// Super Rare Sale.
     SuperRareSale,
+    /// Deploy Limit.
     DeployLimit,
+    /// Special Clearance.
     SpecialClearance,
+    /// Plus One: Uber.
     PlusOneUber,
+    /// Mega Cat Cannon.
     MegaCatCannon,
 }
 impl<T: AsRef<str>> From<T> for RuleNameLabel {

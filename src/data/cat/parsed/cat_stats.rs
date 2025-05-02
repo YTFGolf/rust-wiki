@@ -4,18 +4,27 @@ use super::super::{ability::Ability, raw::stats::CombinedCatData};
 use std::{num::NonZero, rc::Rc};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-#[allow(missing_docs)]
 /// Enemy types that can be targeted.
 pub enum EnemyType {
+    /// Red.
     Red,
+    /// Float.
     Float,
+    /// Black.
     Black,
+    /// Metal.
     Metal,
+    /// Traitless.
     Traitless,
+    /// Angel.
     Angel,
+    /// Alien.
     Alien,
+    /// Zombie.
     Zombie,
+    /// Relic.
     Relic,
+    /// Aku.
     Aku,
 }
 impl EnemyType {
