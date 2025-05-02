@@ -29,7 +29,7 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
     type T = StageVariantID;
     match st {
         T::SoL | T::UL | T::ZL => Some(Preset::Legend),
-        T::Event | T::Collab => Some(Preset::Event),
+        T::Event | T::Collab | T::Enigma => Some(Preset::Event),
         T::Gauntlet | T::CollabGauntlet => Some(Preset::Gauntlet),
         T::Colosseum => Some(Preset::Colosseum),
         T::Dojo | T::RankingDojo | T::Championships => None,
@@ -42,8 +42,8 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
         // One-time
         T::Behemoth => None,
         // ???
-        T::Challenge | T::Enigma => None,
-        // Single stage per
+        T::Challenge => None,
+        // Single stage
         T::Extra | T::Catamin => None,
         // No point
     }
