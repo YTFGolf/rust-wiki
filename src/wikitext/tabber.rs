@@ -52,11 +52,11 @@ impl Display for Tabber {
             TabberType::SubTabber => ("{{#tag:tabber", "{{!}}-{{!}}", "}}"),
         };
 
-        write!(f, "{open}\n")?;
+        writeln!(f, "{open}")?;
 
         let mut iter = self.content.iter().peekable();
         while let Some(tab) = iter.next() {
-            write!(f, "{tab}\n")?;
+            writeln!(f, "{tab}")?;
             if iter.peek().is_some() {
                 write!(f, "\n{mid}\n")?;
             }

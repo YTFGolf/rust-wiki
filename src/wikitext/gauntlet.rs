@@ -138,12 +138,13 @@ impl Display for StageRange {
 /// Get ids of all enemies in the stage.
 fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
     // if let Some(rewards) = stage1.rewards
-    if stage.rewards.is_some() && stage.rewards.as_ref().unwrap().score_rewards.len() != 0 {
+    if stage.rewards.is_some() && !stage.rewards.as_ref().unwrap().score_rewards.is_empty() {
         todo!(
             "Stage {id} has score rewards which are currently not supported with gauntlets",
             id = stage.id
         );
         // TODO something about score rewards
+        // TODO if let chain
     }
 
     let mut enemies_by_id = vec![];
@@ -152,11 +153,7 @@ fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
         if enemy.id == MS_SIGN {
             continue;
         }
-        if enemies_by_id
-            .iter()
-            .position(|eid| *eid == enemy.id)
-            .is_none()
-        {
+        if !enemies_by_id.iter().any(|eid| *eid == enemy.id) {
             enemies_by_id.push(enemy.id)
         }
     }
@@ -183,11 +180,7 @@ fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<
             .position(|eid| *eid == enemy.id)
             .unwrap();
 
-        if mags[pos]
-            .iter()
-            .position(|mag| enemy.magnification == *mag)
-            .is_none()
-        {
+        if !mags[pos].iter().any(|mag| enemy.magnification == *mag) {
             mags[pos].push(enemy.magnification);
         }
     }
