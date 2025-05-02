@@ -69,15 +69,15 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
 
     for stage in stages {
         let container = TabInfo {
-            enemies_appearing: enemies_appearing(&stage),
-            infobox: template_check(&stage).to_string(),
-            rules: rules(&stage),
-            restrictions: restrictions_section(&stage),
-            battlegrounds: battlegrounds(&stage),
+            enemies_appearing: enemies_appearing(stage),
+            infobox: template_check(stage).to_string(),
+            rules: rules(stage),
+            restrictions: restrictions_section(stage),
+            battlegrounds: battlegrounds(stage),
         };
 
         let i = stage.id.num();
-        match containers.iter_mut().find(|item| (**item).1 == container) {
+        match containers.iter_mut().find(|item| item.1 == container) {
             Some(cont) => cont.0.push(i),
             None => containers.push((vec![i], container)),
             // add id to [`TabInfoWithStages`] or add new item to the container
