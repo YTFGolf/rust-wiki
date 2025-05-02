@@ -1,7 +1,5 @@
 //! Module that turns game information to wikitext.
 
-#![allow(clippy::unused_io_amount)]
-
 pub mod cat_info;
 pub mod encounters;
 pub mod gauntlet;
