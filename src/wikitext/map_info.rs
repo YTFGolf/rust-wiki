@@ -1,11 +1,13 @@
 //! Get info about a map.
 
+mod event;
 mod legend;
 use crate::{
     config::Config,
     data::map::parsed::map::GameMap,
     meta::stage::{map_id::MapID, variant::StageVariantID},
 };
+use event::get_event_map;
 use legend::get_legend_map;
 
 /// battlecats-db reference.
@@ -54,6 +56,7 @@ pub fn get_map_info(map: &GameMap, config: &Config) -> String {
     let preset = get_preset(map.id.variant()).unwrap();
     match preset {
         Preset::Legend => get_legend_map(map, config),
+        Preset::Event => get_event_map(map, config),
         _ => todo!(),
     }
 }

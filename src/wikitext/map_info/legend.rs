@@ -154,7 +154,8 @@ fn difficulty(map: &GameMap) -> String {
 }
 
 /// Table showing what stages are available in the map.
-fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Version) -> String {
+pub fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Version) -> String {
+    // TODO publicise
     let mapnum = map_data.id.num();
     let code = map_img_code(&map_data.id);
 
@@ -339,7 +340,8 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
 }
 
 /// Get map's wiki data.
-fn get_map_wiki_data(map: &MapID) -> &'static MapWikiData {
+pub fn get_map_wiki_data(map: &MapID) -> &'static MapWikiData {
+    // TODO publicise
     STAGE_WIKI_DATA
         .stage_map(map)
         .unwrap_or_else(|| panic!("Couldn't find map name: {map}"))
