@@ -1,8 +1,7 @@
 //! Deals with raw CSV cat data.
 
-use crate::data::version::Version;
+use crate::{data::version::Version, regex_handler::static_regex};
 use csv::ByteRecord;
-use regex::Regex;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -238,7 +237,7 @@ pub fn read_data_file(
 
 /// Get a list of all cat data files in the game.
 pub fn get_cat_files(version: &Version) -> impl Iterator<Item = String> {
-    let re = Regex::new(r"^unit\d").unwrap();
+    let re = static_regex(r"^unit\d");
     let dir = &version.get_file_path("DataLocal");
 
     let files = std::fs::read_dir(dir).unwrap();

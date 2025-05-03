@@ -5,7 +5,7 @@ use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use crate::meta::stage::stage_id::StageID;
-use regex::Regex;
+use crate::regex_handler::static_regex;
 use std::fmt::{Display, Write};
 use variables::{DEFAULT_FORMAT, get_stage_variable};
 pub mod battlegrounds;
@@ -47,7 +47,7 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
         buf.write_str(&new_buf).unwrap();
     }
 
-    let buf = Regex::new(r"\n==.*==\n\n").unwrap().replace_all(&buf, "");
+    let buf = static_regex(r"\n==.*==\n\n").replace_all(&buf, "");
     // Remove empty sections.
 
     buf.into_owned()

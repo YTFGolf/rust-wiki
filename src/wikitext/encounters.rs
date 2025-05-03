@@ -14,6 +14,7 @@ use crate::{
         stage_id::StageID,
         variant::StageVariantID as T,
     },
+    regex_handler::static_regex,
     wikitext::{
         data_files::stage_wiki_data::STAGE_WIKI_DATA,
         wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
@@ -364,7 +365,7 @@ fn get_section_map<'a>(
 /// names and replace with single message at top.
 fn always_appeared_at(buf: &mut String) {
     let percentage_pattern = r" \([\d,%\s]+%\)\n";
-    let re = Regex::new(percentage_pattern).unwrap();
+    let re = static_regex(percentage_pattern);
     // This should probably be done in the actual code but oh well
 
     let map = re
@@ -382,7 +383,7 @@ fn always_appeared_at(buf: &mut String) {
     // magnfications, which isn't always true e.g. Satanmaria. Empirically it
     // probably doesn't matter though.
     // let diff_mags = r"\(([\d,%\s]+% HP/[\d,%\s]+% AP(, )?)+\)\n";
-    let re = Regex::new(diff_mags).unwrap();
+    let re = static_regex(diff_mags);
 
     let diff_map = re
         .find_iter(buf)

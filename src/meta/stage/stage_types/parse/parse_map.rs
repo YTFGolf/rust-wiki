@@ -107,9 +107,8 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
 
 /// Captures `["s01001"]` from
 /// `"*https://battlecats-db.com/stage/s01001-999.html"`.
-static DB_REFERENCE_FULL: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*\.html").unwrap()
-});
+static DB_REFERENCE_FULL: LazyLock<Regex> =
+    LazyLock::new(|| static_regex(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*\.html"));
 /// Captures `["01001"]` in `"s01001-999"`.
 static DB_REFERENCE_MAP: LazyLock<Regex> = LazyLock::new(|| static_regex(r"^s(\d{5})[\-\d]*"));
 

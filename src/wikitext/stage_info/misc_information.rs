@@ -3,6 +3,7 @@
 use crate::{
     data::stage::parsed::stage::{ContinueStages, Stage},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
+    regex_handler::static_regex,
     wikitext::{
         data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
         stage_info::StageWikiDataContainer,
@@ -10,7 +11,6 @@ use crate::{
         wiki_utils::OLD_OR_REMOVED_SUB,
     },
 };
-use regex::Regex;
 use std::borrow::Cow;
 
 /// Get the max crown difficulty of a stage.
@@ -41,7 +41,7 @@ pub fn chapter(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePara
             get_map_name(data.stage_map),
         )],
         T::Collab | T::CollabGauntlet => {
-            let collab_name = Regex::new(r"\[\[(.*? Event)").unwrap();
+            let collab_name = static_regex(r"\[\[(.*? Event)");
             let collab_name = match collab_name.captures_iter(&data.stage_map.name).next() {
                 Some(c) => c.get(1).unwrap().as_str(),
                 None => "name",
