@@ -6,6 +6,7 @@ use crate::{
     meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},
     wikitext::{
         data_files::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
+        error_handler::InfallibleWrite,
         template::TemplateParameter,
     },
 };
@@ -74,7 +75,7 @@ pub fn energy(stage: &Stage) -> Option<TemplateParameter> {
         StageVariantID::Extra => "N/A".to_string(),
         _ => {
             let mut buf = String::new();
-            buf.write_formatted(&energy, &Locale::en).unwrap();
+            buf.write_formatted(&energy, &Locale::en).infallible_write();
             buf
         }
     };
@@ -95,8 +96,9 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     // Dojo
     if stage.anim_base_id.is_none() {
         let mut buf = String::new();
-        buf.write_formatted(&stage.base_hp, &Locale::en).unwrap();
-        buf.write_str(" HP").unwrap();
+        buf.write_formatted(&stage.base_hp, &Locale::en)
+            .infallible_write();
+        buf.write_str(" HP").infallible_write();
         return vec![TemplateParameter::new(PARAM_NAME, buf)];
     }
 
@@ -120,16 +122,17 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     let magnification_hp = mag * base_hp / 100;
     if stage.crown_data.is_none() {
         let mut buf = String::new();
-        buf.write_formatted(&magnification_hp, &Locale::en).unwrap();
-        buf.write_str(" HP").unwrap();
+        buf.write_formatted(&magnification_hp, &Locale::en)
+            .infallible_write();
+        buf.write_str(" HP").infallible_write();
         return vec![TemplateParameter::new(PARAM_NAME, buf)];
     }
 
     let mut params = vec![];
     let get_new_param = |key, value| {
         let mut buf = String::new();
-        buf.write_formatted(&value, &Locale::en).unwrap();
-        buf.write_str(" HP").unwrap();
+        buf.write_formatted(&value, &Locale::en).infallible_write();
+        buf.write_str(" HP").infallible_write();
         TemplateParameter::new(key, buf)
     };
 
@@ -171,8 +174,8 @@ pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
         return None;
     }
     let mut buf = String::new();
-    buf.write_formatted(&xp, &Locale::en).unwrap();
-    buf.write_str(" XP").unwrap();
+    buf.write_formatted(&xp, &Locale::en).infallible_write();
+    buf.write_str(" XP").infallible_write();
 
     Some(TemplateParameter::new("XP", buf))
 }
@@ -180,7 +183,8 @@ pub fn xp(stage: &Stage) -> Option<TemplateParameter> {
 /// Get the width of a stage.
 pub fn width(stage: &Stage) -> TemplateParameter {
     let mut buf = String::new();
-    buf.write_formatted(&stage.width, &Locale::en).unwrap();
+    buf.write_formatted(&stage.width, &Locale::en)
+        .infallible_write();
 
     TemplateParameter::new("width", buf)
 }

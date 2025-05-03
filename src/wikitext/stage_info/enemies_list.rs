@@ -6,7 +6,10 @@ use crate::{
         stage_enemy::{BossType, MS_SIGN, StageEnemy},
     },
     meta::stage::variant::StageVariantID as T,
-    wikitext::{data_files::enemy_data::ENEMY_DATA, template::TemplateParameter},
+    wikitext::{
+        data_files::enemy_data::ENEMY_DATA, error_handler::InfallibleWrite,
+        template::TemplateParameter,
+    },
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -70,15 +73,15 @@ pub fn enemies_list(
             Left(m) => {
                 buf.write_formatted(&(m * multiplier / 100), &Locale::en)
                     .unwrap();
-                buf.write_str("%").unwrap();
+                buf.write_str("%").infallible_write();
             }
             Right((hp, ap)) => {
                 buf.write_formatted(&(hp * multiplier / 100), &Locale::en)
                     .unwrap();
-                buf.write_str("/").unwrap();
+                buf.write_str("/").infallible_write();
                 buf.write_formatted(&(ap * multiplier / 100), &Locale::en)
                     .unwrap();
-                buf.write_str("%").unwrap();
+                buf.write_str("%").infallible_write();
             }
         };
     }
@@ -107,9 +110,9 @@ pub fn enemies_list(
     let mut param_vec: Vec<TemplateParameter> = vec![];
     let mut add_to_enemy_vec = |key: &'static str, list: String| {
         let mut buf = String::new();
-        buf.write_str("{{Magnification").unwrap();
-        buf.write_str(&list).unwrap();
-        buf.write_str("}}").unwrap();
+        buf.write_str("{{Magnification").infallible_write();
+        buf.write_str(&list).infallible_write();
+        buf.write_str("}}").infallible_write();
 
         param_vec.push(TemplateParameter::new(key, buf));
     };

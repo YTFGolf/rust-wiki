@@ -14,6 +14,7 @@ use crate::{
     },
     wikitext::{
         data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
+        error_handler::InfallibleWrite,
         format_parser::{ParseType, parse_info_format},
         wiki_utils::{extract_link, extract_name, get_ordinal},
     },
@@ -105,7 +106,7 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     }
     buf += ". ";
 
-    buf.write_str("It ").unwrap();
+    buf.write_str("It ").infallible_write();
     if config.map_info.version() {
         let mut ver = config.version.current_version().number();
         if let Some(s) = ver.strip_suffix(".0") {
@@ -137,19 +138,19 @@ fn difficulty(map: &GameMap) -> String {
     let mut buf = "{{LegendDiff".to_string();
 
     if let Some(mag) = data.crown_2 {
-        buf.write_char('|').unwrap();
-        buf.write_formatted(&mag, &Locale::en).unwrap();
+        buf.write_char('|').infallible_write();
+        buf.write_formatted(&mag, &Locale::en).infallible_write();
     }
     if let Some(mag) = data.crown_3 {
-        buf.write_char('|').unwrap();
-        buf.write_formatted(&mag, &Locale::en).unwrap();
+        buf.write_char('|').infallible_write();
+        buf.write_formatted(&mag, &Locale::en).infallible_write();
     }
     if let Some(mag) = data.crown_4 {
-        buf.write_char('|').unwrap();
-        buf.write_formatted(&mag, &Locale::en).unwrap();
+        buf.write_char('|').infallible_write();
+        buf.write_formatted(&mag, &Locale::en).infallible_write();
     }
 
-    buf.write_str("}}").unwrap();
+    buf.write_str("}}").infallible_write();
     buf
 }
 
@@ -197,7 +198,7 @@ pub fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Ve
 
         i += 1;
     }
-    buf.write_str("\n|}").unwrap();
+    buf.write_str("\n|}").infallible_write();
 
     buf
 }
@@ -247,7 +248,7 @@ fn materials(map_data: &GameMap, version: &Version) -> String {
         write!(buf, "|{chance}").unwrap();
         total += chance;
     }
-    buf.write_str("|hidenormal=").unwrap();
+    buf.write_str("|hidenormal=").infallible_write();
 
     format_material(100 - total, &buf)
 }
@@ -357,12 +358,12 @@ pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
     let mut buf = String::new();
     for node in parse_info_format(FORMAT) {
         if node.ptype == ParseType::Text {
-            buf.write_str(node.content).unwrap();
+            buf.write_str(node.content).infallible_write();
             continue;
         }
 
         let new_buf = get_map_variable(node.content, map, map_wiki_data, config);
-        buf.write_str(&new_buf).unwrap();
+        buf.write_str(&new_buf).infallible_write();
     }
 
     buf

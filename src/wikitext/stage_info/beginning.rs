@@ -5,6 +5,7 @@ use crate::{
     meta::stage::variant::StageVariantID,
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
+        error_handler::InfallibleWrite,
         stage_info::StageWikiDataContainer,
         wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
     },
@@ -14,7 +15,7 @@ use std::{collections::HashSet, fmt::Write};
 /// Get the enemies appearing line.
 pub fn enemies_appearing(stage: &Stage) -> String {
     let mut buf = String::new();
-    buf.write_str("{{EnemiesAppearing").unwrap();
+    buf.write_str("{{EnemiesAppearing").infallible_write();
 
     let mut displayed = HashSet::new();
     let enemies = stage
@@ -25,7 +26,7 @@ pub fn enemies_appearing(stage: &Stage) -> String {
     for enemy in enemies {
         write!(buf, "|{}", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
     }
-    buf.write_str("}}").unwrap();
+    buf.write_str("}}").infallible_write();
 
     buf
 }
@@ -51,7 +52,7 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
     let num = stage.id.num();
     match (num, data.stage_map.get(num + 1)) {
         (0, None) => {
-            buf.write_str("only").unwrap();
+            buf.write_str("only").infallible_write();
         }
         (n, None) => {
             write!(buf, "{ord} and final", ord = get_ordinal(n + 1)).unwrap();
@@ -78,7 +79,8 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
     .unwrap();
 
     if stage.is_no_continues {
-        buf.write_str(" This is a [[No Continues]] stage.").unwrap();
+        buf.write_str(" This is a [[No Continues]] stage.")
+            .infallible_write();
     }
 
     buf

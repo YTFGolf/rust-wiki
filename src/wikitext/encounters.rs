@@ -28,6 +28,8 @@ use regex::Regex;
 use section::{DisplayType, SectionRef};
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
 use zoutbreak::manual_zoutbreak_replace;
+
+use super::error_handler::InfallibleWrite;
 type Ref = SectionRef;
 
 mod order {
@@ -225,13 +227,13 @@ fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     for mag in mags {
         match mag {
             Left(n) => {
-                buf.write_formatted(&n, &Locale::en).unwrap();
+                buf.write_formatted(&n, &Locale::en).infallible_write();
                 buf += "%";
             }
             Right((hp, ap)) => {
-                buf.write_formatted(&hp, &Locale::en).unwrap();
+                buf.write_formatted(&hp, &Locale::en).infallible_write();
                 buf += "% HP/";
-                buf.write_formatted(&ap, &Locale::en).unwrap();
+                buf.write_formatted(&ap, &Locale::en).infallible_write();
                 buf += "% AP";
             }
         }

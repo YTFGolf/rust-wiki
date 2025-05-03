@@ -4,6 +4,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 
 use super::{
+    error_handler::InfallibleWrite,
     stage_info::{
         enemies_list::enemies_list,
         information::{max_enemies, stage_location, stage_name, width},
@@ -191,14 +192,14 @@ fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<
 fn write_single_mag(buf: &mut String, mag: &Magnification) {
     match mag {
         Left(n) => {
-            buf.write_formatted(n, &Locale::en).unwrap();
-            buf.write_str("%").unwrap();
+            buf.write_formatted(n, &Locale::en).infallible_write();
+            buf.write_str("%").infallible_write();
         }
         Right((hp, ap)) => {
-            buf.write_formatted(hp, &Locale::en).unwrap();
-            buf.write_str("% HP/").unwrap();
-            buf.write_formatted(ap, &Locale::en).unwrap();
-            buf.write_str("% AP").unwrap();
+            buf.write_formatted(hp, &Locale::en).infallible_write();
+            buf.write_str("% HP/").infallible_write();
+            buf.write_formatted(ap, &Locale::en).infallible_write();
+            buf.write_str("% AP").infallible_write();
         }
     }
 }
@@ -206,7 +207,7 @@ fn write_single_mag(buf: &mut String, mag: &Magnification) {
 /// Write a single data row to the table.
 fn write_table_row(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
     for mag_line in enemy_mag_lines(enemies_by_id, &stage.enemies) {
-        line_buf.write_str("|").unwrap();
+        line_buf.write_str("|").infallible_write();
 
         let mut mags_iter = mag_line.iter();
         write_single_mag(line_buf, mags_iter.next().unwrap());
@@ -214,7 +215,7 @@ fn write_table_row(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stag
             *line_buf += ", ";
             write_single_mag(line_buf, mag);
         }
-        line_buf.write_str("\n").unwrap();
+        line_buf.write_str("\n").infallible_write();
     }
     // |x%, y% HP/z% AP etc.
 

@@ -8,7 +8,9 @@ use crate::{
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
         },
     },
-    wikitext::{data_files::cat_data::CAT_DATA, template::TemplateParameter},
+    wikitext::{
+        data_files::cat_data::CAT_DATA, error_handler::InfallibleWrite, template::TemplateParameter,
+    },
 };
 use num_format::{Locale, WriteFormatted};
 use std::{
@@ -63,13 +65,13 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
 
     let mut buf = "Rarity: Only ".to_string();
     if rarities.len() == 1 {
-        buf.write_str(rarities[0]).unwrap();
+        buf.write_str(rarities[0]).infallible_write();
     } else {
         let (last, first) = rarities.split_last().unwrap();
         let grouped = first.join(", ");
-        buf.write_str(&grouped).unwrap();
-        buf.write_str(" and ").unwrap();
-        buf.write_str(last).unwrap();
+        buf.write_str(&grouped).infallible_write();
+        buf.write_str(" and ").infallible_write();
+        buf.write_str(last).infallible_write();
     }
     buf
 }
@@ -84,8 +86,8 @@ fn get_charagroup_restriction(group: &CharaGroup) -> String {
         CharaGroupType::OnlyUse => "Only",
         CharaGroupType::CannotUse => "Cannot use",
     };
-    buf.write_str(mode).unwrap();
-    buf.write_str(" ").unwrap();
+    buf.write_str(mode).infallible_write();
+    buf.write_str(" ").infallible_write();
     let groupunits: Vec<String> = group
         .units
         .iter()
@@ -93,13 +95,13 @@ fn get_charagroup_restriction(group: &CharaGroup) -> String {
         .collect();
 
     if groupunits.len() == 1 {
-        buf.write_str(&groupunits[0]).unwrap();
+        buf.write_str(&groupunits[0]).infallible_write();
     } else {
         let (last, first) = groupunits.split_last().unwrap();
         let grouped = first.join(", ");
-        buf.write_str(&grouped).unwrap();
-        buf.write_str(" and ").unwrap();
-        buf.write_str(last).unwrap();
+        buf.write_str(&grouped).infallible_write();
+        buf.write_str(" and ").infallible_write();
+        buf.write_str(last).infallible_write();
     }
 
     buf
@@ -124,16 +126,16 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
     }
     if let Some(min) = restriction.min_cost {
         let mut buf = String::new();
-        buf.write_str("Cat Deploy Cost: Only ").unwrap();
-        buf.write_formatted(&min, &Locale::en).unwrap();
-        buf.write_str("¢ or more").unwrap();
+        buf.write_str("Cat Deploy Cost: Only ").infallible_write();
+        buf.write_formatted(&min, &Locale::en).infallible_write();
+        buf.write_str("¢ or more").infallible_write();
         restrictions.push(buf);
     }
     if let Some(max) = restriction.max_cost {
         let mut buf = String::new();
-        buf.write_str("Cat Deploy Cost: Only ").unwrap();
-        buf.write_formatted(&max, &Locale::en).unwrap();
-        buf.write_str("¢ or less").unwrap();
+        buf.write_str("Cat Deploy Cost: Only ").infallible_write();
+        buf.write_formatted(&max, &Locale::en).infallible_write();
+        buf.write_str("¢ or less").infallible_write();
         restrictions.push(buf);
     }
     if let Some(group) = &restriction.charagroup {
@@ -260,7 +262,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 
     let mut buf = r.join("<br>\n");
     if stage.is_no_continues {
-        buf.write_str("<br>\n[[No Continues]]").unwrap();
+        buf.write_str("<br>\n[[No Continues]]").infallible_write();
     }
 
     Some(TemplateParameter::new(PARAM_NAME, buf))
@@ -280,9 +282,9 @@ pub fn restrictions_section(stage: &Stage) -> String {
 
     let mut buf = String::new();
     for restriction in restrictions {
-        buf.write_str("*").unwrap();
-        buf.write_str(&restriction).unwrap();
-        buf.write_str("\n").unwrap();
+        buf.write_str("*").infallible_write();
+        buf.write_str(&restriction).infallible_write();
+        buf.write_str("\n").infallible_write();
     }
     buf.truncate(buf.len() - "\n".len());
     buf

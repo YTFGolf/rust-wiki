@@ -1,6 +1,7 @@
 //! Get information about a stage.
 
 use super::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
+use super::error_handler::InfallibleWrite;
 use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
@@ -39,12 +40,12 @@ pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) ->
 
     for node in parsed {
         if node.ptype == ParseType::Text {
-            buf.write_str(node.content).unwrap();
+            buf.write_str(node.content).infallible_write();
             continue;
         }
 
         let new_buf = get_stage_variable(node.content, stage, &stage_wiki_data, config);
-        buf.write_str(&new_buf).unwrap();
+        buf.write_str(&new_buf).infallible_write();
     }
 
     let buf = static_regex(r"\n==.*==\n\n").replace_all(&buf, "");

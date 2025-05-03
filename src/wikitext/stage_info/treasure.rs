@@ -5,7 +5,10 @@ use crate::{
         map::raw::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
-    wikitext::{data_files::rewards::TREASURE_DATA, template::TemplateParameter},
+    wikitext::{
+        data_files::rewards::TREASURE_DATA, error_handler::InfallibleWrite,
+        template::TemplateParameter,
+    },
 };
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
@@ -27,7 +30,7 @@ fn drop_limit(id: u32) -> &'static str {
 fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
     if id == 6 {
         // XP is a special case from the rest
-        buf.write_formatted(&amt, &Locale::en).unwrap();
+        buf.write_formatted(&amt, &Locale::en).infallible_write();
         write!(buf, " {}", TREASURE_DATA.get_treasure_name(id)).unwrap();
         return;
     }
@@ -38,7 +41,7 @@ fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
     }
 
     write!(buf, "{} +", TREASURE_DATA.get_treasure_name(id)).unwrap();
-    buf.write_formatted(&amt, &Locale::en).unwrap();
+    buf.write_formatted(&amt, &Locale::en).infallible_write();
 }
 
 /// When treasure type is first item drops once then rest are all unlimited.
@@ -46,7 +49,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
     let mut buf = String::new();
     let t = &rewards.treasure_drop;
 
-    buf.write_str("- ").unwrap();
+    buf.write_str("- ").infallible_write();
     write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
     write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
 
@@ -55,7 +58,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
         if item.item_chance == 0 {
             continue;
         }
-        buf.write_str("<br>\n- ").unwrap();
+        buf.write_str("<br>\n- ").infallible_write();
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
@@ -77,7 +80,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
         if item.item_chance == 0 {
             continue;
         }
-        buf.write_str("- ").unwrap();
+        buf.write_str("- ").infallible_write();
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
@@ -85,7 +88,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
         let precision = if chance % 1.0 == 0.0 { 0 } else { 1 };
         let limit = drop_limit(item.item_id);
         write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
-        buf.write_str("<br>\n").unwrap();
+        buf.write_str("<br>\n").infallible_write();
     }
 
     if buf.is_empty() {
@@ -105,7 +108,7 @@ fn single_raw(rewards: &StageRewards) -> String {
     }
 
     let mut buf = String::new();
-    buf.write_str("- ").unwrap();
+    buf.write_str("- ").infallible_write();
     write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
 
     write!(
@@ -141,17 +144,18 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
     let mut buf = String::new();
     let t = &rewards.treasure_drop;
     if t.len() == 1 {
-        buf.write_str("- ").unwrap();
+        buf.write_str("- ").infallible_write();
         write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
-        buf.write_str(" (100%, 1 time)").unwrap();
+        buf.write_str(" (100%, 1 time)").infallible_write();
         return buf;
     };
 
     let (is_equal_chance, total) = get_total_chance(t);
 
-    buf.write_str("One of the following (1 time):").unwrap();
+    buf.write_str("One of the following (1 time):")
+        .infallible_write();
     for item in t {
-        buf.write_str("<br>\n- ").unwrap();
+        buf.write_str("<br>\n- ").infallible_write();
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
         if !is_equal_chance {
             let item_chance = f64::from(100 * item.item_chance) / total;
@@ -170,17 +174,18 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> String {
     let t = &rewards.treasure_drop;
 
     if t.len() == 1 {
-        buf.write_str("- ").unwrap();
+        buf.write_str("- ").infallible_write();
         write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
-        buf.write_str(" (100%, unlimited)").unwrap();
+        buf.write_str(" (100%, unlimited)").infallible_write();
         return buf;
     };
 
     let (is_equal_chance, total) = get_total_chance(t);
 
-    buf.write_str("One of the following (unlimited):").unwrap();
+    buf.write_str("One of the following (unlimited):")
+        .infallible_write();
     for item in t {
-        buf.write_str("<br>\n- ").unwrap();
+        buf.write_str("<br>\n- ").infallible_write();
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
         if !is_equal_chance {
             let item_chance = f64::from(100 * item.item_chance) / total;
@@ -222,9 +227,10 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
         .iter()
         .map(|r| {
             let mut buf = String::new();
-            buf.write_str("'''").unwrap();
-            buf.write_formatted(&r.score, &Locale::en).unwrap();
-            buf.write_str("''': ").unwrap();
+            buf.write_str("'''").infallible_write();
+            buf.write_formatted(&r.score, &Locale::en)
+                .infallible_write();
+            buf.write_str("''': ").infallible_write();
             write_name_and_amount(&mut buf, r.item_id, r.item_amt);
             buf
         })

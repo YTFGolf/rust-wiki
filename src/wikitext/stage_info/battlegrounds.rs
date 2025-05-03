@@ -6,7 +6,10 @@ use crate::{
         stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
     },
     meta::stage::variant::StageVariantID as T,
-    wikitext::{data_files::enemy_data::ENEMY_DATA, wiki_utils::extract_name},
+    wikitext::{
+        data_files::enemy_data::ENEMY_DATA, error_handler::InfallibleWrite,
+        wiki_utils::extract_name,
+    },
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -91,7 +94,7 @@ fn get_single_enemy_line(
     match enemy.amount {
         EnemyAmount::Infinite => buf += "Infinite",
         EnemyAmount::Limit(n) => {
-            let _ = buf.write_formatted(&n, &Locale::en).unwrap();
+            let _ = buf.write_formatted(&n, &Locale::en).infallible_write();
         }
     };
 
@@ -105,14 +108,14 @@ fn get_single_enemy_line(
         match enemy.magnification {
             Left(mag) => {
                 buf += " (";
-                buf.write_formatted(&mag, &Locale::en).unwrap();
+                buf.write_formatted(&mag, &Locale::en).infallible_write();
                 buf += "%)";
             }
             Right((hp, ap)) => {
                 buf += " (";
-                buf.write_formatted(&hp, &Locale::en).unwrap();
+                buf.write_formatted(&hp, &Locale::en).infallible_write();
                 buf += "% HP, ";
-                buf.write_formatted(&ap, &Locale::en).unwrap();
+                buf.write_formatted(&ap, &Locale::en).infallible_write();
                 buf += "% AP)";
             }
         }
@@ -157,7 +160,7 @@ fn get_single_enemy_line(
         write_enemy_delay(&mut buf, enemy);
     }
 
-    buf.write_char('.').unwrap();
+    buf.write_char('.').infallible_write();
 
     buf
 }
@@ -268,7 +271,8 @@ pub fn battlegrounds(stage: &Stage) -> String {
         }
 
         buf += "\n*When the base takes ";
-        buf.write_formatted(&other.0, &Locale::en).unwrap();
+        buf.write_formatted(&other.0, &Locale::en)
+            .infallible_write();
         buf += " damage:\n";
         buf += &stringify_enemy_list(&other.1, true, &enemies_dupe);
     }
