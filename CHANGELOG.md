@@ -16,6 +16,9 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 - More cat raw and parsed data.
 - Tabber and Section wikitext features.
 - `stage_info` end-to-end tests.
+- `static_regex` function and `regex_handler` module as per #8.
+- `infallible_write` as per #8.
+- (beta) Event preset for map info.
 
 ### Fixed
 
