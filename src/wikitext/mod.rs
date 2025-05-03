@@ -14,5 +14,8 @@ pub mod template;
 pub mod wiki_utils;
 // wikitext stuff
 
+pub mod error_handler;
+// util
+
 mod format_parser;
 // legacy
