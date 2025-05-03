@@ -37,14 +37,19 @@ assert_eq!(extract_name(COTC),            COTC);
 ```
 */
 pub fn extract_name(name: &str) -> &str {
-    if name.starts_with("[[") && name.chars().filter(|c| *c == '[').count() <= 2 {
-        let end = name.find("]]").unwrap();
-        match name.find('|') {
-            Some(i) => &name[i + 1..end],
-            None => &name[2..end],
-        }
-    } else {
-        name
+    let is_link = name.starts_with("[[") && name.chars().filter(|c| *c == '[').count() == 2;
+    if !is_link {
+        return name;
+    }
+
+    let end = match name.find("]]") {
+        Some(s) => s,
+        None => return name,
+    };
+
+    match name.find('|') {
+        Some(i) => &name[i + 1..end],
+        None => &name[2..end],
     }
 }
 
@@ -62,14 +67,19 @@ assert_eq!(extract_link(COTC),            COTC);
 ```
 */
 pub fn extract_link(link: &str) -> &str {
-    if link.starts_with("[[") && link.chars().filter(|c| *c == '[').count() <= 2 {
-        let end = link.find("]]").unwrap();
-        match link.find('|') {
-            Some(i) => &link[2..i],
-            None => &link[2..end],
-        }
-    } else {
-        link
+    let is_link = link.starts_with("[[") && link.chars().filter(|c| *c == '[').count() == 2;
+    if !is_link {
+        return link;
+    }
+
+    let end = match link.find("]]") {
+        Some(s) => s,
+        None => return link,
+    };
+
+    match link.find('|') {
+        Some(i) => &link[2..i],
+        None => &link[2..end],
     }
 }
 
