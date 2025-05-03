@@ -12,6 +12,16 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.5.3] - 2025-05-03
+
+### Added
+
 - Gauntlet script.
 - More cat raw and parsed data.
 - Tabber and Section wikitext features.
@@ -20,15 +30,11 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 - `infallible_write` as per #8.
 - (beta) Event preset for map info.
 
-### Fixed
-
 ### Changed
 
 - Split cat data module into raw and parsed.
 - Made most internals of the stage info script public.
 - Replaced old `format_parser` for stage info template.
-
-### Removed
 
 ## [0.5.2] - 2025-03-30
 
@@ -198,7 +204,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.2...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...dev
+[0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.4.3...v0.5.0
