@@ -9,6 +9,7 @@ use crate::meta::stage::{
     stage_types::data::SELECTOR_SEPARATOR,
     variant::StageVariantID as T,
 };
+use crate::regex_handler::static_regex;
 use regex::Regex;
 use std::sync::LazyLock;
 
@@ -34,7 +35,7 @@ pub fn parse_general_stage_id(selector: &str) -> Option<StageID> {
 /// [`parse_stage_file`]. Captures `["Space", "07", "00"]` from
 /// `"stageSpace07_00.csv"`.
 static GENERAL_STAGE_PAT: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$").unwrap());
+    LazyLock::new(|| static_regex(r"^stage([\D]*)([\d]*)_([\d]*)\.csv$"));
 
 /// Parse stage file name into a [`StageID`].
 pub fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError> {
@@ -121,10 +122,10 @@ pub fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError>
 /// Captures `["s01001-999"]` from
 /// `"*https://battlecats-db.com/stage/s01001-999.html"`.
 static DB_REFERENCE_FULL: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html").unwrap());
+    LazyLock::new(|| static_regex(r"\*?https://battlecats-db.com/stage/(s[\d\-]+).html"));
 /// Captures `["01", "001", "999"]` in `"s01001-999"`.
 static DB_REFERENCE_STAGE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^s(\d{2})(\d{3})\-(\d{2,})$").unwrap());
+    LazyLock::new(|| static_regex(r"^s(\d{2})(\d{3})\-(\d{2,})$"));
 // could possibly factor out the \d{2}\d{3} to be mapid
 
 /// Parse battle-cats.db reference into [`StageID`].

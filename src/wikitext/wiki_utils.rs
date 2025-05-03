@@ -1,11 +1,12 @@
 //! Contains wikitext utilities.
 
+use crate::regex_handler::static_regex;
 use regex::Regex;
 use std::sync::LazyLock;
 
 // Utility regexes.
 /// Detects if stage is old or removed.
-pub static OLD_OR_REMOVED_DETECT: LazyLock<Regex> = LazyLock::new(|| Regex::new(DET_PAT).unwrap());
+pub static OLD_OR_REMOVED_DETECT: LazyLock<Regex> = LazyLock::new(|| static_regex(DET_PAT));
 const DET_PAT: &str = r"\((Old|Removed)\)";
 
 /// Used for getting rid of the ` (Old)` or ` (Removed)` at the end of stage
@@ -20,7 +21,7 @@ const DET_PAT: &str = r"\((Old|Removed)\)";
 /// let map_name = "[[Deleted Event]] (Removed)";
 /// assert_eq!(OLD_OR_REMOVED_SUB.replace_all(&map_name, "$1"), "[[Deleted Event]]");
 /// ```
-pub static OLD_OR_REMOVED_SUB: LazyLock<Regex> = LazyLock::new(|| Regex::new(SUB_PAT).unwrap());
+pub static OLD_OR_REMOVED_SUB: LazyLock<Regex> = LazyLock::new(|| static_regex(SUB_PAT));
 const SUB_PAT: &str = r" \((?:Old|Removed)\)([^\|\]/]|$)";
 
 /**

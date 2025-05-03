@@ -1,10 +1,13 @@
 //! Parse [`MapID`] from various formats.
 
 use super::{StageTypeParseError, get_variant_from_code, is_single_map, is_single_stage};
-use crate::meta::stage::{
-    map_id::{MapID, MapSize},
-    stage_types::data::SELECTOR_SEPARATOR,
-    variant::StageVariantID as T,
+use crate::{
+    meta::stage::{
+        map_id::{MapID, MapSize},
+        stage_types::data::SELECTOR_SEPARATOR,
+        variant::StageVariantID as T,
+    },
+    regex_handler::static_regex,
 };
 use regex::Regex;
 use std::sync::LazyLock;
@@ -26,7 +29,7 @@ pub fn parse_general_map_id(selector: &str) -> Option<MapID> {
 
 /// Captures `["A", "000"]` from `"MapStageDataA_000.csv"`.
 static MAP_STAGE_DATA_PAT: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^MapStageData([^_]*)_(\d*)\.csv$").unwrap());
+    LazyLock::new(|| static_regex(r"^MapStageData([^_]*)_(\d*)\.csv$"));
 
 /// Parse map file name into a [`MapID`].
 pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
@@ -108,8 +111,7 @@ static DB_REFERENCE_FULL: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"\*?https://battlecats-db.com/stage/(s\d+)[\-\d]*\.html").unwrap()
 });
 /// Captures `["01001"]` in `"s01001-999"`.
-static DB_REFERENCE_MAP: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"^s(\d{5})[\-\d]*").unwrap());
+static DB_REFERENCE_MAP: LazyLock<Regex> = LazyLock::new(|| static_regex(r"^s(\d{5})[\-\d]*"));
 
 /// Parse battle-cats.db reference into [`MapID`].
 pub fn parse_map_ref(reference: &str) -> Result<MapID, StageTypeParseError> {
