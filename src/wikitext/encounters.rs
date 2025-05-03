@@ -3,6 +3,7 @@
 pub mod chapter;
 pub mod section;
 pub mod zoutbreak;
+use super::error_handler::InfallibleWrite;
 use crate::{
     config::Config,
     data::{
@@ -29,7 +30,6 @@ use section::{DisplayType, SectionRef};
 use std::{borrow::Cow, collections::HashSet, fmt::Write};
 use zoutbreak::manual_zoutbreak_replace;
 
-use super::error_handler::InfallibleWrite;
 type Ref = SectionRef;
 
 mod order {
