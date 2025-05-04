@@ -1,3 +1,5 @@
+//! Deals with unit animation data.
+
 use super::unitbuy::AncientEggInfo;
 use crate::data::version::Version;
 use std::{
