@@ -3,6 +3,7 @@
 /// Trait to simplify error handling.
 pub trait InfallibleWrite {
     /// Infallibly write a string to a buffer.
+    #[track_caller]
     fn infallible_write(self);
 }
 
