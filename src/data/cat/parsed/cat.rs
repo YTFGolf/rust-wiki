@@ -141,7 +141,7 @@ mod tests {
             if (740..=745).contains(&id) || id == 788 {
                 continue;
             }
-            let cat = match Cat::from_wiki_id(id, version) {
+            match Cat::from_wiki_id(id, version) {
                 Some(_) => (),
                 None => break,
             };

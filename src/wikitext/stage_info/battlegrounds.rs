@@ -94,7 +94,7 @@ fn get_single_enemy_line(
     match enemy.amount {
         EnemyAmount::Infinite => buf += "Infinite",
         EnemyAmount::Limit(n) => {
-            let _ = buf.write_formatted(&n, &Locale::en).infallible_write();
+            buf.write_formatted(&n, &Locale::en).infallible_write();
         }
     };
 
