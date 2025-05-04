@@ -77,7 +77,7 @@ impl Cat {
         egg_data: &AncientEggInfo,
     ) -> CatForms {
         let stats = Self::get_stats(id, version).collect();
-        let anims = get_anims(id, version, amt_forms, egg_data);
+        let anims = get_anims(id, version, amt_forms, egg_data).unwrap();
         // TODO make sure these have same amount of forms.
 
         CatForms {

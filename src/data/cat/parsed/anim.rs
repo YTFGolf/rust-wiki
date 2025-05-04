@@ -15,17 +15,32 @@ impl AnimData {
     }
 }
 
+#[derive(Debug)]
+/// Error when getting animation data.
+pub enum AnimDataError {
+    /// Specific form not found.
+    FormNotFound(usize),
+}
+impl From<usize> for AnimDataError {
+    fn from(value: usize) -> Self {
+        match value {
+            n => Self::FormNotFound(n),
+        }
+    }
+}
+
 pub fn get_anims(
     wiki_id: u32,
     version: &Version,
     amt_forms: usize,
     egg_data: &AncientEggInfo,
-) -> Vec<AnimData> {
+) -> Result<Vec<AnimData>, AnimDataError> {
     // needs to be tested with en first, then do jp if en doesn't work
     let (form1, form2) = match egg_data {
         AncientEggInfo::None => (
             format!("{wiki_id:03}_f02.maanim"),
             format!("{wiki_id:03}_c02.maanim"),
+            // I think 02 means the attack animation
         ),
         AncientEggInfo::Egg { normal, evolved } => (
             format!("{normal:03}_m02.maanim"),
@@ -33,25 +48,25 @@ pub fn get_anims(
         ),
     };
 
-    let mut anims = vec![get_anim_data(&form1, version)];
+    let mut anims = vec![get_anim_data(&form1, version).ok_or(AnimDataError::FormNotFound(1))?];
     if amt_forms > 1 {
-        anims.push(get_anim_data(&form2, version))
+        anims.push(get_anim_data(&form2, version).ok_or(AnimDataError::FormNotFound(2))?)
     }
     if amt_forms > 2 {
         let tf = format!("{wiki_id:03}_s02.maanim");
-        anims.push(get_anim_data(&tf, version))
+        anims.push(get_anim_data(&tf, version).ok_or(AnimDataError::FormNotFound(3))?)
     }
     if amt_forms > 3 {
         let uf = format!("{wiki_id:03}_u02.maanim");
-        anims.push(get_anim_data(&uf, version))
+        anims.push(get_anim_data(&uf, version).ok_or(AnimDataError::FormNotFound(4))?)
     }
-    anims
+    Ok(anims)
 }
 
-fn get_anim_data(path: &str, version: &Version) -> AnimData {
+fn get_anim_data(path: &str, version: &Version) -> Option<AnimData> {
     const ANIM_LINE_LEN: usize = 4;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
-    let count = BufReader::new(File::open(&qualified).unwrap())
+    let count = BufReader::new(File::open(&qualified).ok()?)
         .lines()
         .filter_map(|line| {
             let line = line.as_ref().ok()?;
@@ -65,7 +80,7 @@ fn get_anim_data(path: &str, version: &Version) -> AnimData {
         })
         .max()
         .unwrap();
-    AnimData { length: count + 1 }
+    Some(AnimData { length: count + 1 })
 }
 
 #[cfg(test)]
