@@ -192,6 +192,10 @@ fn get_stage_name_map() -> StageNameMap {
     map
 }
 
+// one day I may have to reformat this entire thing so that instead of just
+// `expect`ing these have proper errors, but low priority as if panic is hit at
+// runtime the user probably did something wrong
+
 fn get_continue_stages_map() -> ContinueStagesMap {
     let rdr = csv::ReaderBuilder::new()
         .has_headers(true)
