@@ -140,6 +140,7 @@ fn get_stage_name_map() -> StageNameMap {
         .comment(Some(b'#'))
         .from_path(get_file_location(&FileLocation::WikiData).join("StageNames.csv"));
 
+    // unwraps and panic in here may be a problem
     for result in rdr.unwrap().deserialize() {
         let record: StageNamesLine = result.unwrap();
         match (record.type_num, record.map_num, record.stage_num) {
@@ -229,6 +230,13 @@ mod tests {
     use super::*;
     use crate::data::stage::parsed::stage::Stage;
     use StageVariantID as T;
+
+    #[test]
+    fn test_parse_succeeds() {
+        let _ = get_stage_name_map();
+        let _ = get_continue_stages_map();
+        let _ = get_stage_difficulty_map();
+    }
 
     #[test]
     fn assert_continue_stages_name_is_correct() {
