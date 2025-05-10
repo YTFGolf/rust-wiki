@@ -197,10 +197,11 @@ fn get_continue_stages_map() -> ContinueStagesMap {
         .delimiter(b',')
         .from_path(get_file_location(&FileLocation::WikiData).join("ContinueStages.csv"));
 
-    rdr.unwrap()
+    // expect is fine since this is static
+    rdr.expect("couldn't parse continue stages map")
         .deserialize::<ContinueStagesLine>()
         .map(|c| {
-            let Ok(c) = c else { return None };
+            let c = c.ok()?;
             Some((c.type_num, c.map_num))
         })
         .collect()
@@ -213,10 +214,11 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
         .comment(Some(b'#'))
         .from_path(get_file_location(&FileLocation::WikiData).join("Difficulty.txt"));
 
-    rdr.unwrap()
+    // expect is fine since this is static
+    rdr.expect("couldn't parse stage difficulty map")
         .deserialize::<StageDifficultyLine>()
         .map(|d| {
-            let d = d.unwrap();
+            let d = d.expect("invalid stage difficulty line");
             (d.stage_id, d.difficulty)
         })
         .collect()
