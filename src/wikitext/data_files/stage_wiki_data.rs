@@ -83,12 +83,6 @@ impl StageWikiDataContainer {
         self.continue_stages[ex_map_id as usize]
     }
 
-    /// Get map data from ex map id.
-    pub fn continue_map(&self, ex_map_id: u32) -> &MapWikiData {
-        let (t, m) = self.continue_id(ex_map_id).unwrap();
-        self.stage_map(&MapID::from_numbers(t, m)).unwrap()
-    }
-
     /// Get stage difficulty.
     pub fn difficulty(&self, id: &StageID) -> Option<&u8> {
         self.difficulty_str(&format!(
