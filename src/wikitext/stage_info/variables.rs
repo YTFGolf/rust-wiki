@@ -60,8 +60,7 @@ fn si_template(
         .add_params(stage_nav(stage, stage_wiki_data))
 }
 
-/// Get the content of a format
-/// [`Variable`][super::super::format_parser::ParseType::Variable].
+/// Get the content of a format variable.
 pub fn get_stage_variable(
     variable_name: &str,
     stage: &Stage,

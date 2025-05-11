@@ -34,9 +34,9 @@ pub enum Command {
 
     /// Get most boilerplate for a gauntlet map.
     ///
-    /// See https://battlecats.miraheze.org/wiki/?diff=207709 for a list of
+    /// See <https://battlecats.miraheze.org/wiki/?diff=207709> for a list of
     /// additional stuff you may need to do, although
-    /// (gauntlet.py)[https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/scripts#tabber-tabpanel-gauntlet.py-1]
+    /// (gauntlet.py)[<https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/scripts#tabber-tabpanel-gauntlet.py-1>]
     /// can fix most problems.
     Gauntlet(GauntletOptions),
 }
