@@ -6,8 +6,9 @@ use serde::{Deserialize, Serialize};
 use std::{fmt::Display, path::PathBuf};
 
 /// Default language.
-#[derive(Debug, Default, Deserialize, Serialize, Clone)]
+#[derive(Debug, Default, Deserialize, Serialize, Clone, Copy)]
 #[serde(rename_all = "lowercase")]
+#[repr(usize)]
 pub enum Lang {
     /// English.
     EN,
@@ -85,27 +86,36 @@ impl VersionConfig {
                 Lang::JP => &self.jppath,
             };
             let location = Self::expand_home(location);
-            let ind = lang.clone() as usize;
-            self.versions[ind] = Some(Version::new(location, lang, None));
+            self.versions[lang as usize] = Some(Version::new(location, lang, None));
         }
-
-        self.cur_index = self.lang.clone() as usize;
-    }
-
-    /// Try to get current version.
-    pub fn try_current_version(&self) -> Option<&Version> {
-        self.versions[self.cur_index].as_ref()
-    }
-
-    /// Get current game version.
-    pub fn current_version(&self) -> &Version {
-        self.try_current_version()
-            .expect("Error: config has not been properly initialised.")
     }
 
     /// Get configured language.
     pub fn lang(&self) -> &Lang {
         &self.lang
+    }
+}
+impl VersionConfig {
+    /// Try to get version.
+    pub fn try_version(&self, lang: Lang) -> Option<&Version> {
+        self.versions[lang as usize].as_ref()
+    }
+
+    /// Try to get current game version.
+    pub fn try_current_version(&self) -> Option<&Version> {
+        self.try_version(self.lang)
+    }
+
+    /// Get game version.
+    pub fn version(&self, lang: Lang) -> &Version {
+        self.try_version(lang)
+            .expect("config has not been properly initialised")
+    }
+
+    /// Get current game version.
+    pub fn current_version(&self) -> &Version {
+        self.try_version(self.lang)
+            .expect("config has not been properly initialised")
     }
 }
 
@@ -118,8 +128,8 @@ impl VersionConfig {
             Lang::JP => self.jppath = path,
         }
     }
-    /// Set the version's `lang`. Must be called before
-    /// [`init_all`][VersionConfig::init_all] or it will do nothing.
+
+    /// Set the version's `lang`.
     pub fn set_lang(&mut self, lang: Lang) {
         self.lang = lang;
     }
