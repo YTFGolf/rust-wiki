@@ -85,12 +85,7 @@ impl StageWikiDataContainer {
 
     /// Get stage difficulty.
     pub fn difficulty(&self, id: &StageID) -> Option<&u8> {
-        self.difficulty_str(&format!(
-            "{var:03}-{map:03}-{stage:03}",
-            var = id.variant().num(),
-            map = id.map().num(),
-            stage = id.num()
-        ))
+        self.difficulty_str(&id.to_string())
     }
 
     /// Get stage difficulty from the string key.
@@ -206,7 +201,7 @@ fn get_continue_stages_map() -> ContinueStagesMap {
         .from_path(get_file_location(&FileLocation::WikiData).join("ContinueStages.csv"));
 
     // expect is fine since this is static
-    rdr.expect("couldn't parse continue stages map")
+    rdr.expect("couldn't open continue stages map")
         .deserialize::<ContinueStagesLine>()
         .map(|c| {
             let c = c.ok()?;
@@ -223,7 +218,7 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
         .from_path(get_file_location(&FileLocation::WikiData).join("Difficulty.txt"));
 
     // expect is fine since this is static
-    rdr.expect("couldn't parse stage difficulty map")
+    rdr.expect("couldn't open stage difficulty map")
         .deserialize::<StageDifficultyLine>()
         .map(|d| {
             let d = d.expect("invalid stage difficulty line");
