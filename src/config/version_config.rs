@@ -49,8 +49,6 @@ pub struct VersionConfig {
 
     #[serde(skip)]
     versions: [Option<Version>; TOTAL_VERSIONS],
-    #[serde(skip)]
-    cur_index: usize,
 }
 
 impl Clone for VersionConfig {
@@ -61,7 +59,6 @@ impl Clone for VersionConfig {
             jppath: self.jppath.clone(),
 
             versions: Default::default(),
-            cur_index: Default::default(),
         }
     }
 }
