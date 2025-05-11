@@ -140,9 +140,8 @@ fn get_stage_name_map() -> StageNameMap {
         .comment(Some(b'#'))
         .from_path(get_file_location(&FileLocation::WikiData).join("StageNames.csv"));
 
-    // unwraps and panic in here may be a problem
-    for result in rdr.unwrap().deserialize() {
-        let record: StageNamesLine = result.unwrap();
+    for result in rdr.expect("couldn't open stage names map").deserialize() {
+        let record: StageNamesLine = result.expect("invalid stage names line");
         match (record.type_num, record.map_num, record.stage_num) {
             (n, None, None) => {
                 // stage type
@@ -154,7 +153,9 @@ fn get_stage_name_map() -> StageNameMap {
             }
             (t, Some(m), None) => {
                 // stage map
-                let type_data = map[t as usize].as_mut().unwrap();
+                let type_data = map[t as usize]
+                    .as_mut()
+                    .unwrap_or_else(|| panic!("Stage type {t:03} not found"));
                 type_data.maps.insert(
                     m,
                     MapWikiData {
@@ -166,7 +167,11 @@ fn get_stage_name_map() -> StageNameMap {
             }
             (t, Some(m), Some(s)) => {
                 // stage
-                let map = &mut map[t as usize].as_mut().unwrap().maps.get_mut(&m);
+                let map = &mut map[t as usize]
+                    .as_mut()
+                    .unwrap_or_else(|| panic!("Stage type {t:03} not found"))
+                    .maps
+                    .get_mut(&m);
                 let map_data = map.as_mut().unwrap_or_else(|| {
                     panic!("Map {m} not found when attempting to insert stage {s}")
                 });
@@ -174,11 +179,9 @@ fn get_stage_name_map() -> StageNameMap {
 
                 assert_eq!(
                     s,
-                    u32::try_from(stages.len()).unwrap(),
+                    u32::try_from(stages.len()).expect("u32 should be big enough"),
                     "Error parsing stage names record {record:?}: data is out of order."
                 );
-                // this could probably be done in tests to avoid runtime costs,
-                // although tbf it is only run once.
 
                 stages.push(StageWikiData {
                     name: record.link,
