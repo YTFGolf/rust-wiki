@@ -111,8 +111,7 @@ impl VersionConfig {
 
     /// Get current game version.
     pub fn current_version(&self) -> &Version {
-        self.try_version(self.lang)
-            .expect("config has not been properly initialised")
+        self.version(self.lang)
     }
 }
 
