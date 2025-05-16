@@ -135,7 +135,7 @@ impl RuleType {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 /// Possible rule name label value.
 pub enum RuleNameLabel {
     /// Trust Fund.
@@ -160,6 +160,8 @@ pub enum RuleNameLabel {
     等速直線運動,
     /// プラスワン EX
     プラスワンEX,
+    /// Placeholder.
+    Placeholder(String),
 }
 impl<T: AsRef<str>> From<T> for RuleNameLabel {
     fn from(value: T) -> Self {
@@ -175,7 +177,7 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName008" => Self::MegaCatCannon,
             "SpecialRuleName009" => Self::等速直線運動,
             "SpecialRuleName010" => Self::プラスワンEX,
-            label => panic!("Error: unknown special rule label {label:?}"),
+            label => Self::Placeholder(label.to_string()),
         }
     }
 }
@@ -194,6 +196,9 @@ impl RuleNameLabel {
             RuleNameLabel::MegaCatCannon => "Mega Cat Cannon",
             RuleNameLabel::等速直線運動 => "等速直線運動",
             RuleNameLabel::プラスワンEX => "プラスワン EX",
+            RuleNameLabel::Placeholder(label) => {
+                panic!("Error: unknown special rule label {label:?}")
+            }
         }
     }
 }
@@ -268,6 +273,7 @@ mod tests {
 
     #[test]
     fn assert_no_placeholders() {
+        // both for unused special rule and for string version
         let version = TEST_CONFIG.version.current_version();
         let rules = version.get_cached_file::<SpecialRules>();
         for rule in rules.map.iter() {
@@ -275,6 +281,9 @@ mod tests {
                 if let RuleType::Placeholder(n) = rtype {
                     panic!("Unknown SpecialRule id: {n}");
                 }
+            }
+            if let Some(RuleNameLabel::Placeholder(label)) = &rule.1.rule_name_label {
+                panic!("Error: unknown special rule label {label:?}")
             }
         }
     }
