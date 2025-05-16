@@ -624,4 +624,13 @@ mod tests {
             ]
         );
     }
+
+    #[test]
+    fn test_massive_header() {
+        let _ = StageData::from_id(
+            StageID::from_components(T::Collab, 224, 2),
+            TEST_CONFIG.version.current_version(),
+        )
+        .unwrap();
+    }
 }
