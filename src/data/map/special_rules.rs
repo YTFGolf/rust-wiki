@@ -98,6 +98,8 @@ pub enum RuleType {
     /// 100% speculation, but is probably `[min_cat_speed, normalised_cat_speed,
     /// min_enemy_speed, normalised_enemy_speed]`.
     AwesomeUnitSpeed([ParamSize; 4]),
+    /// Used so this program can still run when in the wrong update.
+    Placeholder(u8),
 }
 /// Item in [RawRuleData::rule_type].
 type RawRuleItem = (RuleKeySize, RawRuleType);
@@ -116,8 +118,7 @@ impl From<RawRuleItem> for RuleType {
             8 => Self::AwesomeCatSpawn(Self::to_arr(params)),
             9 => Self::AwesomeCatCannon(Self::to_arr(params)),
             10 => Self::AwesomeUnitSpeed(Self::to_arr(params)),
-            id => panic!("Unknown SpecialRule id: {id}"),
-            // _ => Self::TrustFund([0]),
+            id => Self::Placeholder(id),
         }
         // unfortunately using a match is probably the only way to do this since
         // strum doesn't have the capability and even if it did I couldn't mark
@@ -259,3 +260,22 @@ impl CacheableVersionData for SpecialRules {
 
 // Don't need to test for no duplicates since the file is JSON, which means all
 // map ids will be unique.
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::TEST_CONFIG;
+
+    #[test]
+    fn assert_no_placeholders() {
+        let version = TEST_CONFIG.version.current_version();
+        let rules = version.get_cached_file::<SpecialRules>();
+        for rule in rules.map.iter() {
+            for rtype in rule.1.rule_type.iter() {
+                if let RuleType::Placeholder(n) = rtype {
+                    panic!("Unknown SpecialRule id: {n}");
+                }
+            }
+        }
+    }
+}
