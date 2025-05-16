@@ -168,8 +168,22 @@ impl<'a> StageData<'_> {
         })
     }
 
+    // fn read_csv_line(line: &str) -> Option<ByteRecord> {
+    //     let split_line = line
+    //         .split("//")
+    //         .next()
+    //         .expect("Shouldn't panic on first next.")
+    //         .trim_matches(|c: char| c.is_whitespace() || c == ',');
+    //     if split_line.is_empty() {
+    //         return None;
+    //     }
+
+    //     Some(split_line.split(',').collect::<ByteRecord>())
+    // }
+
     /// Read a stage's csv file and obtain the data from it.
     pub fn read_stage_csv<R: std::io::Read>(reader: R) -> RawCSVData {
+        // TODO really needs proper error handling
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .trim(csv::Trim::All)
@@ -179,7 +193,8 @@ impl<'a> StageData<'_> {
         let mut records = rdr.byte_records();
         let mut line_1 = records.next().unwrap().unwrap();
 
-        let has_header = line_1.len() <= 7 || line_1[6].is_empty() || line_1[6].contains(&b'/');
+        let is_ignorable = |entry: &[u8]| entry.is_empty() || entry.contains(&b'/');
+        let has_header = line_1.len() <= 7 || is_ignorable(&line_1[6]) || is_ignorable(&line_1[7]);
         let csv_head: HeaderCSV = if has_header {
             let tmp = line_1;
             line_1 = records.next().unwrap().unwrap();
