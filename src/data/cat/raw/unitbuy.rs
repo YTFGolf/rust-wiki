@@ -24,7 +24,7 @@ pub struct UnitBuy {
     pub unlock_currency: u8,
     // appears to be 0 = xp, 1 = catfood, 2 = capsule/free
     pub rarity: u8,
-    pub cro_order: i16,
+    pub cro_order: i32,
     pub chap_available: u8,
     // 2 for bahamut, 1 for actress, mr, panties, skirt, valk
     pub sell_xp: u32,

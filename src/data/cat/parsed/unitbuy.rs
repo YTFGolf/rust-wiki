@@ -127,7 +127,7 @@ pub enum AncientEggInfo {
 
 #[derive(Debug)]
 pub enum CatGuideOrder {
-    Unit(u16),
+    Unit(u32),
     Summon,
 }
 impl CatGuideOrder {
@@ -138,10 +138,10 @@ impl CatGuideOrder {
         }
     }
 }
-impl From<i16> for CatGuideOrder {
-    fn from(value: i16) -> Self {
+impl From<i32> for CatGuideOrder {
+    fn from(value: i32) -> Self {
         match value {
-            x if x >= 0 => Self::Unit(x as u16),
+            x if x >= 0 => Self::Unit(x as u32),
             -1 => Self::Summon,
             _ => unreachable!(),
         }
