@@ -63,7 +63,6 @@ const AMT_RARITIES: usize = 6;
 type Single = [ParamSize; 1];
 /// Rule with parameters for each rarity.
 type Rarity = [ParamSize; AMT_RARITIES];
-type AwesomeCatSpawn = [ParamSize; 3];
 
 /// Type of special rule.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -91,9 +90,14 @@ pub enum RuleType {
     /// Spawn extra cats automatically.
     ///
     /// Params are `[rarity_bitmask, extra_cats_spawned, spawn_delay_f]`.
-    AwesomeCatSpawn(AwesomeCatSpawn),
+    AwesomeCatSpawn([ParamSize; 3]),
     /// Increase Cat Cannon damage. Param is a percentage value.
     AwesomeCatCannon(Single),
+    /// Normalise Cat and Enemy speed.
+    ///
+    /// 100% speculation, but is probably `[min_cat_speed, normalised_cat_speed,
+    /// min_enemy_speed, normalised_enemy_speed]`.
+    AwesomeUnitSpeed([ParamSize; 4]),
 }
 /// Item in [RawRuleData::rule_type].
 type RawRuleItem = (RuleKeySize, RawRuleType);
@@ -111,7 +115,9 @@ impl From<RawRuleItem> for RuleType {
             7 => Self::DeployLimit(Self::to_arr(params)),
             8 => Self::AwesomeCatSpawn(Self::to_arr(params)),
             9 => Self::AwesomeCatCannon(Self::to_arr(params)),
+            10 => Self::AwesomeUnitSpeed(Self::to_arr(params)),
             id => panic!("Unknown SpecialRule id: {id}"),
+            // _ => Self::TrustFund([0]),
         }
         // unfortunately using a match is probably the only way to do this since
         // strum doesn't have the capability and even if it did I couldn't mark
@@ -149,6 +155,10 @@ pub enum RuleNameLabel {
     PlusOneUber,
     /// Mega Cat Cannon.
     MegaCatCannon,
+    /// 等速直線運動
+    等速直線運動,
+    /// プラスワン EX
+    プラスワンEX,
 }
 impl<T: AsRef<str>> From<T> for RuleNameLabel {
     fn from(value: T) -> Self {
@@ -162,6 +172,8 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName006" => Self::SpecialClearance,
             "SpecialRuleName007" => Self::PlusOneUber,
             "SpecialRuleName008" => Self::MegaCatCannon,
+            "SpecialRuleName009" => Self::等速直線運動,
+            "SpecialRuleName010" => Self::プラスワンEX,
             label => panic!("Error: unknown special rule label {label:?}"),
         }
     }
@@ -179,6 +191,8 @@ impl RuleNameLabel {
             RuleNameLabel::SpecialClearance => "Special Clearance",
             RuleNameLabel::PlusOneUber => "Plus One: Uber",
             RuleNameLabel::MegaCatCannon => "Mega Cat Cannon",
+            RuleNameLabel::等速直線運動 => "等速直線運動",
+            RuleNameLabel::プラスワンEX => "プラスワン EX",
         }
     }
 }
