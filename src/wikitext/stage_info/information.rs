@@ -24,10 +24,10 @@ pub fn stage_name(stage: &Stage, lang: &Lang) -> TemplateParameter {
             let id: u32 = u32::from(id) - 2;
             const RESIZE: [u32; 6] = [657, 669, 678, 681, 693, 734];
             if RESIZE.contains(&id) {
-                write!(buf, "[[File:E {id}.png|250px]]").unwrap();
+                write!(buf, "[[File:E {id}.png|200px]]").unwrap();
             } else {
                 write!(buf, "[[File:E {id}.png]]").unwrap();
-                // maybe just put the 250px there always
+                // maybe just put the 200px there always
             }
         }
     };
