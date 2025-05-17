@@ -261,7 +261,7 @@ mod tests {
         assert_eq!(
             buf,
             "\
-            |stage name = [[File:E 657.png|250px]]\n\
+            |stage name = [[File:E 657.png|200px]]\n\
             [[File:Mapsn061 02 ex en.png]]\
             "
         );
