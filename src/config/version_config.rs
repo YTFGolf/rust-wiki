@@ -113,6 +113,16 @@ impl VersionConfig {
     pub fn current_version(&self) -> &Version {
         self.version(self.lang)
     }
+
+    /// Get English version.
+    pub fn en(&self) -> &Version {
+        self.version(Lang::EN)
+    }
+
+    /// Get Japanese version.
+    pub fn jp(&self) -> &Version {
+        self.version(Lang::JP)
+    }
 }
 
 impl VersionConfig {
