@@ -81,9 +81,11 @@ impl Cat {
         amt_forms: usize,
         egg_data: &AncientEggInfo,
     ) -> CatForms {
-        let stats = Self::get_stats(id, version).collect();
+        let stats = Self::get_stats(id, version).collect::<Vec<_>>();
         let anims = get_anims(id, version, amt_forms, egg_data).unwrap();
-        // TODO make sure these have same amount of forms.
+
+        assert!(stats.len() >= amt_forms);
+        assert!(anims.len() >= amt_forms);
 
         CatForms {
             amt_forms,
