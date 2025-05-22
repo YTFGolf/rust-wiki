@@ -754,5 +754,231 @@ mod tests {
             }
         )
     }
+
+    #[test]
+    fn metal() {
+        const GUIDE: u32 = 3001010;
+        const SELL_XP: u32 = 777777;
+        const SELL_NP: u8 = 15;
+
+        let version = TEST_CONFIG.version.current_version();
+
+        let metal = get_unitbuy(200, version);
+
+        let unlock = CatUnlock::default();
+
+        let costs = [
+            7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
+        ];
+        let misc = Misc {
+            rarity: Rarity::SuperRare,
+            guide_order: CatGuideOrder::Unit(GUIDE),
+            sell_xp: SELL_XP,
+            sell_np: SELL_NP,
+            update_released: 0,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            metal,
+            UnitBuyData {
+                unlock,
+                true_evol: None,
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: MaxLevels {
+                    ch1: 10,
+                    ch2: 20,
+                    initial_plus: 0,
+                    max_nat: 20,
+                    max_plus: 0
+                },
+                misc
+            }
+        )
+    }
+
+    #[test]
+    fn dasli() {
+        const GUIDE: u32 = 4805031;
+        const SELL_XP: u32 = 1000000;
+        const SELL_NP: u8 = 50;
+        const UPDATE: i64 = 90500;
+
+        let version = TEST_CONFIG.version.current_version();
+
+        let dasli = get_unitbuy(543, version);
+
+        let unlock = CatUnlock::default();
+
+        let costs = [
+            7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
+        ];
+        let misc = Misc {
+            rarity: Rarity::UberRare,
+            guide_order: CatGuideOrder::Unit(GUIDE),
+            sell_xp: SELL_XP,
+            sell_np: SELL_NP,
+            update_released: UPDATE,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            dasli,
+            UnitBuyData {
+                unlock,
+                true_evol: None,
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: UR_MAX,
+                misc
+            }
+        )
+    }
+
+    #[test]
+    fn modoki() {
+        const GUIDE: u32 = 1000400;
+        const SELL_XP: u32 = 10000;
+        const SELL_NP: u8 = 1;
+        const UPDATE: i64 = 101000;
+
+        let version = TEST_CONFIG.version.current_version();
+
+        let modoki = get_unitbuy(626, version);
+
+        let unlock = CatUnlock::default();
+
+        let costs = [
+            3_500, 5_600, 8_540, 12_460, 17_360, 23_240, 30_100, 37_940, 46_760, 56_560,
+        ];
+        let misc = Misc {
+            rarity: Rarity::Special,
+            guide_order: CatGuideOrder::Unit(GUIDE),
+            sell_xp: SELL_XP,
+            sell_np: SELL_NP,
+            update_released: UPDATE,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            modoki,
+            UnitBuyData {
+                unlock,
+                true_evol: None,
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: MaxLevels {
+                    ch1: 1,
+                    ch2: 1,
+                    initial_plus: 30,
+                    max_nat: 1,
+                    max_plus: 30
+                },
+                misc
+            }
+        )
+    }
+
+    #[test]
+    fn superfeline() {
+        const GUIDE: u32 = 90;
+        const SELL_XP: u32 = 30000;
+        const SELL_NP: u8 = 1;
+        const UPDATE: i64 = 110100;
+
+        let version = TEST_CONFIG.version.current_version();
+
+        let sfeline = get_unitbuy(643, version);
+
+        let unlock = CatUnlock::default();
+        let true_evol = EvolutionInfo::new(19010, EvolutionType::Levels { level: 100 });
+        let costs = [
+            999_999, 999_999, 999_999, 999_999, 999_999, 999_999, 999_999, 999_999, 999_999,
+            999_999,
+        ];
+        let misc = Misc {
+            rarity: Rarity::Normal,
+            guide_order: CatGuideOrder::Unit(GUIDE),
+            sell_xp: SELL_XP,
+            sell_np: SELL_NP,
+            update_released: UPDATE,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            sfeline,
+            UnitBuyData {
+                unlock,
+                true_evol: Some(true_evol),
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: MaxLevels {
+                    initial_plus: 9,
+                    ..NORMAL_MAX
+                },
+                misc
+            }
+        )
+    }
+
+    #[test]
+    fn courier() {
+        const GUIDE: u32 = 2050000;
+        const EVOL_ID: u32 = 15659;
+        const SELL_XP: u32 = 444;
+        const SELL_NP: u8 = 5;
+        const UPDATE: i64 = 110500;
+
+        let version = TEST_CONFIG.version.current_version();
+
+        let courier = get_unitbuy(658, version);
+
+        let unlock = CatUnlock::new(0, 0, 0, UnlockCurrency::XP);
+
+        let tf_costs = [
+            evol_item(I::PurpleStone, 5),
+            evol_item(I::RedStone, 5),
+            evol_item(I::Nothing, 0),
+            evol_item(I::Nothing, 0),
+            evol_item(I::Nothing, 0),
+        ];
+        let true_evol = EvolutionInfo::new(
+            EVOL_ID,
+            EvolutionType::Catfruit(CatfruitEvolution {
+                item_cost: tf_costs,
+                xp_cost: 200_000,
+                level_required: 30,
+            }),
+        );
+
+        let costs = [
+            2_000, 3_500, 6_200, 9_800, 14_300, 19_700, 26_000, 33_200, 41_300, 50_300,
+        ];
+        let misc = Misc {
+            rarity: Rarity::Rare,
+            guide_order: CatGuideOrder::Unit(GUIDE),
+            sell_xp: SELL_XP,
+            sell_np: SELL_NP,
+            update_released: UPDATE,
+            egg_info: AncientEggInfo::Egg {
+                normal: 0,
+                evolved: 2,
+            },
+        };
+
+        assert_eq!(
+            courier,
+            UnitBuyData {
+                unlock,
+                true_evol: Some(true_evol),
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: SPECIAL_MAX,
+                misc
+            }
+        )
+    }
+
     // TODO this should realistically be moved to another module
 }
