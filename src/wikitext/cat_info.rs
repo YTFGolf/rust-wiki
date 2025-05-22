@@ -12,17 +12,9 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
 }
 
 /*
-amount of forms: get desc file, find amount of lines
-backswing: get anim file, get frames after total foreswing
-growth curve
 talents
-xp cost
-evolutions
 combos
 desc (will need to make other parts better)
-----
-anim is most important to get backswing
-growth curve is second to get stats working
 */
 
 /*
