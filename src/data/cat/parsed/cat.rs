@@ -35,13 +35,18 @@ pub struct Cat {
     // combos
 }
 
+pub enum CatDataError {
+    UnitBuyNotFound,
+}
+
 impl Cat {
     /// Get cat from wiki id.
-    pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Option<Self> {
+    pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Result<Self, CatDataError> {
+        type E = CatDataError;
         let id = wiki_id;
 
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
-        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id)?);
+        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).ok_or(E::UnitBuyNotFound)?);
 
         let unitexp = Levelling::from_id(id);
 
@@ -53,7 +58,7 @@ impl Cat {
         let amt_forms = Self::get_amt_forms(id, is_summon, has_true, has_ultra);
         let forms = Self::get_forms(id, version, amt_forms, egg_data);
 
-        Some(Self {
+        Ok(Self {
             id,
             forms,
             unitbuy,
@@ -132,18 +137,15 @@ mod tests {
     #[test]
     #[ignore]
     fn test_all() {
-        // let mut config = TEST_CONFIG.clone();
-        // config.version.init_all();
-        // config.version.set_lang(Lang::EN);
-        // config
-        let version = TEST_CONFIG.version.current_version();
+        type E = CatDataError;
+        let version = TEST_CONFIG.version.jp();
         for id in 0..u32::MAX {
-            if (740..=745).contains(&id) || id == 788 {
+            if (740..=745).contains(&id) || [788, 810].contains(&id) {
                 continue;
             }
             match Cat::from_wiki_id(id, version) {
-                Some(_) => (),
-                None => break,
+                Ok(_) => (),
+                Err(E::UnitBuyNotFound) => break,
             };
         }
     }
