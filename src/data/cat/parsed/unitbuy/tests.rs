@@ -40,6 +40,10 @@ const UR_MAX: MaxLevels = MaxLevels {
     ..SR_MAX
 };
 
+const UR_COSTS: [u32; 10] = [
+    7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
+];
+
 enum EvolutionItemVariant {
     Nothing = 0,
     PurpleSeed = 30,
@@ -352,9 +356,7 @@ fn dio() {
         }),
     );
 
-    let costs = [
-        7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
-    ];
+    let costs = UR_COSTS;
     let misc = Misc {
         rarity: Rarity::UberRare,
         guide_order: CatGuideOrder::Unit(GUIDE),
@@ -389,9 +391,7 @@ fn metal() {
 
     let unlock = CatUnlock::default();
 
-    let costs = [
-        7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
-    ];
+    let costs = UR_COSTS;
     let misc = Misc {
         rarity: Rarity::SuperRare,
         guide_order: CatGuideOrder::Unit(GUIDE),
@@ -433,9 +433,7 @@ fn dasli() {
 
     let unlock = CatUnlock::default();
 
-    let costs = [
-        7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
-    ];
+    let costs = UR_COSTS;
     let misc = Misc {
         rarity: Rarity::UberRare,
         guide_order: CatGuideOrder::Unit(GUIDE),
