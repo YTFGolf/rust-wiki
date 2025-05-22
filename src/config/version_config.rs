@@ -1,9 +1,8 @@
 //! Deals with the config for version.
 
 use crate::data::version::Version;
-use home::home_dir;
 use serde::{Deserialize, Serialize};
-use std::{fmt::Display, path::PathBuf};
+use std::{env::home_dir, fmt::Display, path::PathBuf};
 
 /// Default language.
 #[derive(Debug, Default, Deserialize, Serialize, Clone, Copy)]
