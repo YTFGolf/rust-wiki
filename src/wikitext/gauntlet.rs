@@ -169,7 +169,7 @@ fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
 /// doctest.
 // TODO create a simpler subset of stageenemy that can be doctested, and fix
 // filter duplication.
-fn enemy_mag_lines(enemies_by_id: &Vec<u32>, enemies: &[StageEnemy]) -> Vec<Vec<Magnification>> {
+fn enemy_mag_lines(enemies_by_id: &[u32], enemies: &[StageEnemy]) -> Vec<Vec<Magnification>> {
     let mut mags = vec![Vec::new(); enemies_by_id.len()];
     for enemy in enemies {
         // needs to be kept in line with `get_enemies_by_id`
@@ -205,7 +205,7 @@ fn write_single_mag(buf: &mut String, mag: &Magnification) {
 }
 
 /// Write a single data row to the table.
-fn write_table_row(line_buf: &mut String, enemies_by_id: &Vec<u32>, stage: &Stage) {
+fn write_table_row(line_buf: &mut String, enemies_by_id: &[u32], stage: &Stage) {
     for mag_line in enemy_mag_lines(enemies_by_id, &stage.enemies) {
         line_buf.write_str("|").infallible_write();
 
