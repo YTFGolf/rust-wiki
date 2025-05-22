@@ -154,7 +154,7 @@ fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
         if enemy.id == MS_SIGN {
             continue;
         }
-        if !enemies_by_id.iter().any(|eid| *eid == enemy.id) {
+        if !enemies_by_id.contains(&enemy.id) {
             enemies_by_id.push(enemy.id)
         }
     }
@@ -181,7 +181,7 @@ fn enemy_mag_lines(enemies_by_id: &[u32], enemies: &[StageEnemy]) -> Vec<Vec<Mag
             .position(|eid| *eid == enemy.id)
             .unwrap();
 
-        if !mags[pos].iter().any(|mag| enemy.magnification == *mag) {
+        if !mags[pos].contains(&enemy.magnification) {
             mags[pos].push(enemy.magnification);
         }
     }
