@@ -92,6 +92,7 @@ mod tests {
         data::cat::{parsed::unitbuy::UnitBuyData, raw::unitbuy::UnitBuyContainer},
     };
 
+    /// Egg data, amount of forms.
     fn get_egg_data(id: u32, version: &Version) -> (AncientEggInfo, usize) {
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
         let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).unwrap());
@@ -104,30 +105,13 @@ mod tests {
         (egg_data, amt_forms)
     }
 
-    #[test]
-    #[ignore]
-    fn test_units() {
-        let version = TEST_CONFIG.version.current_version();
+    fn get_all_anims(id: u32, version: &Version) -> Vec<AnimData> {
+        let (egg, amt) = get_egg_data(id, version);
+        get_anims(id, version, amt, &egg).unwrap()
+    }
 
-        let test_units = [
-            ("cat", 0),
-            ("tank", 1),
-            ("titan", 8),
-            ("actress", 9),
-            ("bahamut", 25),
-            ("cancan", 32),
-            ("dio", 177),
-            ("metal", 200),
-            ("dasli", 543),
-            ("cat modoki", 626),
-            ("sfeline", 643),
-            ("courier", 658),
-        ];
-        for (name, id) in test_units {
-            let (egg, amt) = get_egg_data(id, version);
-            println!("{name} ({id}) = {:#?}\n", get_anims(id, version, amt, &egg));
-        }
-        todo!()
+    fn anim(length: usize) -> AnimData {
+        AnimData { length }
     }
 
     #[test]
