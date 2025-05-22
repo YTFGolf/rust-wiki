@@ -8,7 +8,7 @@ use std::num::NonZero;
 use strum::FromRepr;
 
 #[repr(u8)]
-#[derive(Debug, FromRepr)]
+#[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord)]
 /// Currency used to unlock a unit.
 pub enum UnlockCurrency {
     /// XP unlock.
@@ -18,7 +18,7 @@ pub enum UnlockCurrency {
     /// Unlock only available with capsules.
     None = 2,
 }
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct CatUnlock {
     /// EoC stage the unit is available (cat is available before stage 0, tank
     /// before stage 1, bahamut 48).
@@ -40,32 +40,56 @@ impl CatUnlock {
         }
     }
 }
+impl CatUnlock {
+    fn new(
+        stage_available: u8,
+        chap_available: u8,
+        unlock_cost: u16,
+        unlock_currency: UnlockCurrency,
+    ) -> CatUnlock {
+        Self {
+            stage_available,
+            chap_available,
+            unlock_cost,
+            unlock_currency,
+        }
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct EvolutionItem {
     item_id: u8,
     item_amt: u8,
 }
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct CatfruitEvolution {
     item_cost: [EvolutionItem; 5],
     xp_cost: u32,
     level_required: u8,
 }
-#[derive(Debug)]
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum EvolutionType {
-    XP { level: u8 },
+    Levels { level: u8 },
     Catfruit(CatfruitEvolution),
     Other,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct EvolutionInfo {
     evolution_id: NonZero<u32>,
     etype: EvolutionType,
 }
+impl EvolutionInfo {
+    fn new(evolution_id: u32, etype: EvolutionType) -> Self {
+        Self {
+            evolution_id: NonZero::new(evolution_id).unwrap(),
+            etype,
+        }
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct UpgradeCost {
     costs: [u32; 10],
 }
@@ -88,7 +112,7 @@ impl UpgradeCost {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MaxLevels {
     ch1: u8,
     ch2: u8,
@@ -109,7 +133,7 @@ impl MaxLevels {
 }
 
 #[repr(u8)]
-#[derive(Debug, FromRepr)]
+#[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Rarity {
     Normal = 0,
     Special = 1,
@@ -119,13 +143,13 @@ pub enum Rarity {
     LegendRare = 5,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum AncientEggInfo {
     None,
     Egg { normal: u8, evolved: u8 },
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum CatGuideOrder {
     Unit(u32),
     Summon,
@@ -148,7 +172,7 @@ impl From<i32> for CatGuideOrder {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Misc {
     pub rarity: Rarity,
     pub guide_order: CatGuideOrder,
@@ -182,7 +206,7 @@ impl Misc {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct UnitBuyData {
     pub unlock: CatUnlock,
     pub true_evol: Option<EvolutionInfo>,
@@ -210,7 +234,7 @@ impl UnitBuyData {
         if unitbuy.evol_level > -1 {
             return Some(EvolutionInfo {
                 evolution_id: tf_num,
-                etype: EvolutionType::XP {
+                etype: EvolutionType::Levels {
                     level: unitbuy.evol_level as u8,
                 },
             });
@@ -326,7 +350,10 @@ impl UnitBuyData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, data::cat::raw::unitbuy::UnitBuyContainer};
+    use crate::{
+        config::TEST_CONFIG,
+        data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
+    };
 
     #[test]
     #[ignore]
@@ -354,5 +381,52 @@ mod tests {
             println!("{:?}\n", UnitBuyData::from_unitbuy(unit));
         }
         todo!()
+    }
+
+    fn get_unitbuy(id: u32, version: &Version) -> UnitBuyData {
+        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+        let unit = unitbuy.get_unit(id).unwrap();
+        UnitBuyData::from_unitbuy(unit)
+    }
+
+    const NORMAL_MAX: MaxLevels = MaxLevels {
+        ch1: 10,
+        ch2: 20,
+        initial_plus: 19,
+        max_nat: 20,
+        max_plus: 90,
+    };
+
+    #[test]
+    fn basic() {
+        let version = TEST_CONFIG.version.current_version();
+
+        let cat = get_unitbuy(0, version);
+
+        let unlock = CatUnlock::new(0, 0, 0, UnlockCurrency::XP);
+        let true_evol = EvolutionInfo::new(19001, EvolutionType::Levels { level: 30 });
+        let costs = [
+            200, 400, 700, 1_100, 1_600, 2_200, 2_900, 3_700, 4_600, 5_600,
+        ];
+        let misc = Misc {
+            rarity: Rarity::Normal,
+            guide_order: CatGuideOrder::Unit(0),
+            sell_xp: 10_000,
+            sell_np: 1,
+            update_released: 0,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            cat,
+            UnitBuyData {
+                unlock,
+                true_evol: Some(true_evol),
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: NORMAL_MAX,
+                misc
+            }
+        )
     }
 }
