@@ -10,13 +10,34 @@ in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
 
 ## [Unreleased]
 
+### 14.4
+
+- `CatGuideOrder` uses a `u32` instead of a `u16`.
+- `AwesomeUnitSpeed` special rule.
+- New special rule labels.
+- Fix `read_stage_csv` when `line[7]` is a comment.
+
 ### Added
+
+- Version can now call a specific language rather than being stuck on the one in
+  preferences.
+- Improved error handling on unit animations.
+- Tests for animations and unitbuy.
+- Special rule data and label placeholders to avoid day 0 breakage on new
+  updates. Now uses tests to check validity rather than runtime panics.
 
 ### Fixed
 
 ### Changed
 
+- Use newly un-deprecated `std::env::home_dir` instead of `home` crate.
+- Version language no longer needs separate `cur_index` as well as `lang`.
+- `static_regex` and `infallible_write` now use `#[track_caller]`.
+- Large enemy base images now use 200px as size instead of 250px.
+
 ### Removed
+
+- Missing and incomplete/ignored tests.
 
 ## [0.5.3] - 2025-05-03
 
