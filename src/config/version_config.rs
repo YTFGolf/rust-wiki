@@ -53,7 +53,7 @@ pub struct VersionConfig {
 impl Clone for VersionConfig {
     fn clone(&self) -> Self {
         Self {
-            lang: self.lang.clone(),
+            lang: self.lang,
             enpath: self.enpath.clone(),
             jppath: self.jppath.clone(),
 
