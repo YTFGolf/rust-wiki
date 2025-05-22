@@ -1,7 +1,5 @@
 //! Deals with cat data.
 
-#![allow(dead_code, unused_variables, missing_docs)]
-
 use super::{
     anim::{AnimData, get_anims},
     cat_stats::CatStats,
@@ -13,10 +11,17 @@ use crate::data::{
 };
 
 #[derive(Debug)]
+/// Data about individual forms of the cat.
 pub struct CatForms {
-    amt_forms: usize,
-    stats: Vec<CatStats>,
-    anims: Vec<AnimData>,
+    /// Amount of forms the cat has.
+    ///
+    /// Guaranteed by assertion that `stats` and `anims` will have at least this
+    /// many forms.
+    pub amt_forms: usize,
+    /// Stats per form.
+    pub stats: Vec<CatStats>,
+    /// Animation data for each form.
+    pub anims: Vec<AnimData>,
     // desc
 }
 
@@ -27,7 +32,9 @@ pub struct Cat {
     pub id: u32,
     /// Cat's forms.
     pub forms: CatForms,
+    /// Data from `unitbuy.csv`.
     pub unitbuy: UnitBuyData,
+    /// Data from `unitexp.csv`.
     pub unitexp: Levelling,
     // growth curve
     // talents
@@ -36,7 +43,10 @@ pub struct Cat {
 }
 
 #[derive(Debug)]
+/// Error when getting cat data.
 pub enum CatDataError {
+    /// No data in `unitbuy.csv`. Almost certainly means that the unit does not
+    /// exist in the current version.
     UnitBuyNotFound,
 }
 
