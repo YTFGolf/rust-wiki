@@ -71,8 +71,11 @@ pub struct CatfruitEvolution {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum EvolutionType {
+    /// Evolves by getting to level.
     Levels { level: u8 },
+    /// Evolves by Catfruit.
     Catfruit(CatfruitEvolution),
+    /// By drop.
     Other,
 }
 
@@ -113,12 +116,18 @@ impl UpgradeCost {
     }
 }
 
+/// Information from the page "Level-up".
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MaxLevels {
+    /// Normal level cap.
     ch1: u8,
+    /// Level cap after chap 2.
     ch2: u8,
+    /// Initial plus level cap.
     initial_plus: u8,
+    /// Includes Catseyes.
     max_nat: u8,
+    /// Final level cap.
     max_plus: u8,
 }
 impl MaxLevels {
@@ -355,34 +364,6 @@ mod tests {
         config::TEST_CONFIG,
         data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
     };
-
-    #[test]
-    #[ignore]
-    fn test_units() {
-        let version = TEST_CONFIG.version.current_version();
-        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
-
-        let test_units = [
-            ("cat", 0),
-            ("tank", 1),
-            ("titan", 8),
-            ("actress", 9),
-            ("bahamut", 25),
-            ("cancan", 32),
-            ("dio", 177),
-            ("metal", 200),
-            ("dasli", 543),
-            ("cat modoki", 626),
-            ("sfeline", 643),
-            ("courier", 658),
-        ];
-        for (name, id) in test_units {
-            let unit = unitbuy.get_unit(id).unwrap();
-            println!("{name} ({id}) = {:?}", unit);
-            println!("{:?}\n", UnitBuyData::from_unitbuy(unit));
-        }
-        todo!()
-    }
 
     fn get_unitbuy(id: u32, version: &Version) -> UnitBuyData {
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
