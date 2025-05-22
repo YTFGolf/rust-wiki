@@ -20,6 +20,64 @@ const NORMAL_MAX: MaxLevels = MaxLevels {
     max_plus: 90,
 };
 
+const SPECIAL_MAX: MaxLevels = MaxLevels {
+    ch1: 10,
+    ch2: 20,
+    initial_plus: 0,
+    max_nat: 50,
+    max_plus: 0,
+};
+
+const SR_MAX: MaxLevels = MaxLevels {
+    ch1: 10,
+    ch2: 20,
+    initial_plus: 9,
+    max_nat: 50,
+    max_plus: 70,
+};
+const UR_MAX: MaxLevels = MaxLevels {
+    max_nat: 60,
+    ..SR_MAX
+};
+
+enum EvolutionItemVariant {
+    Nothing = 0,
+    PurpleSeed = 30,
+    RedSeed = 31,
+    BlueSeed = 32,
+    GreenSeed = 33,
+    YellowSeed = 34,
+    PurpleFruit = 35,
+    RedFruit = 36,
+    BlueFruit = 37,
+    GreenFruit = 38,
+    YellowFruit = 39,
+    EpicFruit = 40,
+    ElderSeed = 41,
+    ElderFruit = 42,
+    EpicSeed = 43,
+    GoldFruit = 44,
+    PurpleStone = 167,
+    RedStone = 168,
+    BlueStone = 169,
+    GreenStone = 170,
+    YellowStone = 171,
+    PurpleGem = 179,
+    RedGem = 180,
+    BlueGem = 181,
+    GreenGem = 182,
+    YellowGem = 183,
+    EpicStone = 184,
+}
+type I = EvolutionItemVariant;
+
+const fn evol_item(id: EvolutionItemVariant, amt: u8) -> EvolutionItem {
+    EvolutionItem {
+        item_id: id as u8,
+        item_amt: amt,
+    }
+}
+
 #[test]
 fn basic() {
     let version = TEST_CONFIG.version.current_version();
@@ -120,14 +178,6 @@ fn basic3() {
     )
 }
 
-const SPECIAL_MAX: MaxLevels = MaxLevels {
-    ch1: 10,
-    ch2: 20,
-    initial_plus: 0,
-    max_nat: 50,
-    max_plus: 0,
-};
-
 #[test]
 fn special() {
     const EVOL_ID: u32 = 10010;
@@ -200,56 +250,6 @@ fn bahamut() {
             misc
         }
     )
-}
-
-const SR_MAX: MaxLevels = MaxLevels {
-    ch1: 10,
-    ch2: 20,
-    initial_plus: 9,
-    max_nat: 50,
-    max_plus: 70,
-};
-const UR_MAX: MaxLevels = MaxLevels {
-    max_nat: 60,
-    ..SR_MAX
-};
-
-enum EvolutionItemVariant {
-    Nothing = 0,
-    PurpleSeed = 30,
-    RedSeed = 31,
-    BlueSeed = 32,
-    GreenSeed = 33,
-    YellowSeed = 34,
-    PurpleFruit = 35,
-    RedFruit = 36,
-    BlueFruit = 37,
-    GreenFruit = 38,
-    YellowFruit = 39,
-    EpicFruit = 40,
-    ElderSeed = 41,
-    ElderFruit = 42,
-    EpicSeed = 43,
-    GoldFruit = 44,
-    PurpleStone = 167,
-    RedStone = 168,
-    BlueStone = 169,
-    GreenStone = 170,
-    YellowStone = 171,
-    PurpleGem = 179,
-    RedGem = 180,
-    BlueGem = 181,
-    GreenGem = 182,
-    YellowGem = 183,
-    EpicStone = 184,
-}
-type I = EvolutionItemVariant;
-
-const fn evol_item(id: EvolutionItemVariant, amt: u8) -> EvolutionItem {
-    EvolutionItem {
-        item_id: id as u8,
-        item_amt: amt,
-    }
 }
 
 #[test]
@@ -600,5 +600,3 @@ fn courier() {
         }
     )
 }
-
-// TODO this should realistically be moved to another module
