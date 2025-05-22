@@ -44,6 +44,9 @@ const UR_COSTS: [u32; 10] = [
     7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
 ];
 
+#[allow(dead_code)]
+/// Shorthand to give names to item ids.
+// TODO this should be somewhere else and only imported from here.
 enum EvolutionItemVariant {
     Nothing = 0,
     PurpleSeed = 30,
