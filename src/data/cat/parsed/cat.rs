@@ -140,7 +140,7 @@ mod tests {
         type E = CatDataError;
         let version = TEST_CONFIG.version.jp();
         for id in 0..u32::MAX {
-            if (740..=745).contains(&id) || [788, 810].contains(&id) {
+            if matches!(id, (740..=745) | 788 | 810) {
                 continue;
             }
             match Cat::from_wiki_id(id, version) {
