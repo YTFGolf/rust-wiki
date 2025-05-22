@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.5.4] - 2025-05-23
+
 ### 14.4
 
 - `CatGuideOrder` uses a `u32` instead of a `u16`.
@@ -28,8 +38,6 @@ subheading.
 - Tests for animations and unitbuy.
 - Special rule data and label placeholders to avoid day 0 breakage on new
   updates. Now uses tests to check validity rather than runtime panics.
-
-### Fixed
 
 ### Changed
 
@@ -228,7 +236,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...dev
+[0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.0...v0.5.1
