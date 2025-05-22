@@ -108,34 +108,7 @@ impl Cat {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, data::cat::raw::unitbuy::UnitBuyContainer};
-
-    #[test]
-    #[ignore]
-    fn test_units() {
-        let version = TEST_CONFIG.version.current_version();
-        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
-
-        let test_units = [
-            ("cat", 0),
-            ("tank", 1),
-            ("titan", 8),
-            ("actress", 9),
-            ("bahamut", 25),
-            ("cancan", 32),
-            ("dio", 177),
-            ("metal", 200),
-            ("dasli", 543),
-            ("cat modoki", 626),
-            ("sfeline", 643),
-            ("courier", 658),
-        ];
-        for (name, id) in test_units {
-            // println!("{name} ({id}) = {:?}\n", Cat::from_wiki_id(id, version));
-            // println!("{name} ({id}) = {:#?}\n", Cat::from_wiki_id(id, version));
-        }
-        todo!()
-    }
+    use crate::config::TEST_CONFIG;
 
     #[test]
     #[ignore]
