@@ -35,6 +35,7 @@ pub struct Cat {
     // combos
 }
 
+#[derive(Debug)]
 pub enum CatDataError {
     UnitBuyNotFound,
 }
