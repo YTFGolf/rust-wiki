@@ -129,4 +129,14 @@ mod tests {
         }
         todo!()
     }
+
+    #[test]
+    fn basic() {
+        let version = TEST_CONFIG.version.jp();
+
+        let cat = get_all_anims(0, version);
+        let ans = [anim(18), anim(16), anim(16)];
+
+        assert_eq!(&cat, &ans);
+    }
 }
