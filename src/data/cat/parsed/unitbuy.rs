@@ -587,8 +587,13 @@ mod tests {
         max_nat: 50,
         max_plus: 70,
     };
+    const UR_MAX: MaxLevels = MaxLevels {
+        max_nat: 60,
+        ..SR_MAX
+    };
 
     enum EvolutionItemVariant {
+        Nothing = 0,
         PurpleSeed = 30,
         RedSeed = 31,
         BlueSeed = 32,
@@ -604,6 +609,17 @@ mod tests {
         ElderFruit = 42,
         EpicSeed = 43,
         GoldFruit = 44,
+        PurpleStone = 167,
+        RedStone = 168,
+        BlueStone = 169,
+        GreenStone = 170,
+        YellowStone = 171,
+        PurpleGem = 179,
+        RedGem = 180,
+        BlueGem = 181,
+        GreenGem = 182,
+        YellowGem = 183,
+        EpicStone = 184,
     }
     type I = EvolutionItemVariant;
 
@@ -623,7 +639,7 @@ mod tests {
 
         let version = TEST_CONFIG.version.current_version();
 
-        let bahamut = get_unitbuy(32, version);
+        let cancan = get_unitbuy(32, version);
 
         let unlock = CatUnlock::default();
 
@@ -656,7 +672,7 @@ mod tests {
         };
 
         assert_eq!(
-            bahamut,
+            cancan,
             UnitBuyData {
                 unlock,
                 true_evol: Some(true_evol),
@@ -667,4 +683,76 @@ mod tests {
             }
         )
     }
+
+    #[test]
+    fn dio() {
+        const TRUE_ID: u32 = 15178;
+        const ULTRA_ID: u32 = 25178;
+        const GUIDE: u32 = 4003050;
+        const SELL_XP: u32 = 1000000;
+        const SELL_NP: u8 = 50;
+
+        let version = TEST_CONFIG.version.current_version();
+
+        let dio = get_unitbuy(177, version);
+
+        let unlock = CatUnlock::default();
+
+        let tf_costs = [
+            evol_item(I::GreenFruit, 5),
+            evol_item(I::PurpleFruit, 4),
+            evol_item(I::BlueFruit, 3),
+            evol_item(I::YellowFruit, 7),
+            evol_item(I::EpicFruit, 4),
+        ];
+        let true_evol = EvolutionInfo::new(
+            TRUE_ID,
+            EvolutionType::Catfruit(CatfruitEvolution {
+                item_cost: tf_costs,
+                xp_cost: 1_000_000,
+                level_required: 30,
+            }),
+        );
+
+        let uf_costs = [
+            evol_item(I::YellowStone, 2),
+            evol_item(I::BlueStone, 5),
+            evol_item(I::YellowFruit, 5),
+            evol_item(I::BlueFruit, 5),
+            evol_item(I::Nothing, 0),
+        ];
+        let ultra_evol = EvolutionInfo::new(
+            ULTRA_ID,
+            EvolutionType::Catfruit(CatfruitEvolution {
+                item_cost: uf_costs,
+                xp_cost: 2_000_000,
+                level_required: 60,
+            }),
+        );
+
+        let costs = [
+            7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
+        ];
+        let misc = Misc {
+            rarity: Rarity::UberRare,
+            guide_order: CatGuideOrder::Unit(GUIDE),
+            sell_xp: SELL_XP,
+            sell_np: SELL_NP,
+            update_released: 0,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            dio,
+            UnitBuyData {
+                unlock,
+                true_evol: Some(true_evol),
+                ultra_evol: Some(ultra_evol),
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: UR_MAX,
+                misc
+            }
+        )
+    }
+    // TODO this should realistically be moved to another module
 }
