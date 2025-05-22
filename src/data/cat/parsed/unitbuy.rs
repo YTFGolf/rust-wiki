@@ -429,4 +429,71 @@ mod tests {
             }
         )
     }
+
+    #[test]
+    fn basic2() {
+        let version = TEST_CONFIG.version.en();
+        // jp has initial cost set at 500
+
+        let tank = get_unitbuy(1, version);
+
+        let unlock = CatUnlock::new(1, 0, 0, UnlockCurrency::XP);
+        let true_evol = EvolutionInfo::new(19002, EvolutionType::Levels { level: 30 });
+        let costs = [
+            400, 700, 1_600, 2_800, 4_300, 6_100, 8_200, 10_600, 13_300, 16_300,
+        ];
+        let misc = Misc {
+            rarity: Rarity::Normal,
+            guide_order: CatGuideOrder::Unit(1),
+            sell_xp: 12_000,
+            sell_np: 1,
+            update_released: 0,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            tank,
+            UnitBuyData {
+                unlock,
+                true_evol: Some(true_evol),
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: NORMAL_MAX,
+                misc
+            }
+        )
+    }
+
+    #[test]
+    fn basic3() {
+        let version = TEST_CONFIG.version.current_version();
+
+        let titan = get_unitbuy(8, version);
+
+        let unlock = CatUnlock::new(24, 0, 8_000, UnlockCurrency::XP);
+        let true_evol = EvolutionInfo::new(19009, EvolutionType::Levels { level: 30 });
+        let costs = [
+            2_000, 3_500, 6_200, 9_800, 14_300, 19_700, 26_000, 33_200, 41_300, 50_300,
+        ];
+        let misc = Misc {
+            rarity: Rarity::Normal,
+            guide_order: CatGuideOrder::Unit(80),
+            sell_xp: 24_000,
+            sell_np: 1,
+            update_released: 0,
+            egg_info: AncientEggInfo::None,
+        };
+
+        assert_eq!(
+            titan,
+            UnitBuyData {
+                unlock,
+                true_evol: Some(true_evol),
+                ultra_evol: None,
+                upgrade_costs: UpgradeCost { costs },
+                max_levels: NORMAL_MAX,
+                misc
+            }
+        )
+    }
 }
