@@ -1,9 +1,4 @@
-#![allow(dead_code, unused_variables, missing_docs, unused_imports)]
-
-use crate::data::cat::raw::{
-    unitbuy::{self, UnitBuy},
-    unitexp::Levelling,
-};
+use crate::data::cat::raw::unitbuy::UnitBuy;
 use std::num::NonZero;
 use strum::FromRepr;
 mod tests;
@@ -21,6 +16,7 @@ pub enum UnlockCurrency {
     None = 2,
 }
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Default)]
+/// How the cat is unlocked.
 pub struct CatUnlock {
     /// EoC stage the unit is available (cat is available before stage 0, tank
     /// before stage 1, bahamut 48).
@@ -33,17 +29,8 @@ pub struct CatUnlock {
     unlock_currency: UnlockCurrency,
 }
 impl CatUnlock {
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
-        Self {
-            stage_available: unitbuy.stage_available,
-            chap_available: unitbuy.chap_available,
-            unlock_cost: unitbuy.unlock_cost,
-            unlock_currency: UnlockCurrency::from_repr(unitbuy.unlock_currency).unwrap(),
-        }
-    }
-}
-impl CatUnlock {
-    fn new(
+    /// Create new [`CatUnlock`].
+    pub fn new(
         stage_available: u8,
         chap_available: u8,
         unlock_cost: u16,
@@ -56,24 +43,46 @@ impl CatUnlock {
             unlock_currency,
         }
     }
+
+    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+        Self {
+            stage_available: unitbuy.stage_available,
+            chap_available: unitbuy.chap_available,
+            unlock_cost: unitbuy.unlock_cost,
+            unlock_currency: UnlockCurrency::from_repr(unitbuy.unlock_currency).unwrap(),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Item used in Catfruit evolutions.
 pub struct EvolutionItem {
+    /// Item ID.
     item_id: u8,
+    /// Amount of item.
     item_amt: u8,
 }
+
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Descriptor for a unit's Catfruit evolution.
 pub struct CatfruitEvolution {
+    /// Catfruit/B.Stone cost.
     item_cost: [EvolutionItem; 5],
+    /// XP Cost.
     xp_cost: u32,
+    /// Level needed to evolve.
     level_required: u8,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-enum EvolutionType {
+/// How the unit might evolve into a specific form.
+pub enum EvolutionType {
     /// Evolves by getting to level.
-    Levels { level: u8 },
+    Levels {
+        /// Level that unit evolves at.
+        level: u8,
+        // could this just be a tuple?
+    },
     /// Evolves by Catfruit.
     Catfruit(CatfruitEvolution),
     /// By drop.
@@ -81,12 +90,19 @@ enum EvolutionType {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// How the unit might evolve.
 pub struct EvolutionInfo {
+    /// ID of evolution.
+    ///
+    /// E.g. an awakening stage will give a reward drop that corresponds to this
+    /// number.
     evolution_id: NonZero<u32>,
+    /// How the unit evolves into their new form.
     etype: EvolutionType,
 }
 impl EvolutionInfo {
-    fn new(evolution_id: u32, etype: EvolutionType) -> Self {
+    /// Get new [`EvolutionInfo`] without already needing a [`NonZero<u32>`].
+    pub const fn new(evolution_id: u32, etype: EvolutionType) -> Self {
         Self {
             evolution_id: NonZero::new(evolution_id).unwrap(),
             etype,
@@ -95,6 +111,10 @@ impl EvolutionInfo {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Base cost of upgrading the unit each level.
+///
+/// This is not the full picture, this will also require usage of
+/// `unitexp.csv`'s data to know the cost for each level.
 pub struct UpgradeCost {
     costs: [u32; 10],
 }
