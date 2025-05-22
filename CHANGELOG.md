@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 This project DOES NOT adhere to Semantic Versioning. Reason being that I pretty
 much need to add an enum variant every single update, which is a breaking change
-in Rust. Besides enum variants I'll try to do semantic versioning perhaps idk.
+in Rust. Besides updates I'll try to do semantic versioning perhaps idk.
+
+From [0.5.4] onwards, this will describe changes for game updates in a separate
+subheading.
 
 ## [Unreleased]
 
