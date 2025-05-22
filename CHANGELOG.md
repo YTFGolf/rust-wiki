@@ -237,7 +237,7 @@ update since there's just too much to actually make sense of.
 Project started.
 
 [unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...dev
-[0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...v0.5.4
+[0.5.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.0...v0.5.1
