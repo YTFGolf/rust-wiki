@@ -1,3 +1,5 @@
+//! Data from `unitbuy.csv`.
+
 use crate::data::cat::raw::unitbuy::UnitBuy;
 use std::num::NonZero;
 use strum::FromRepr;
@@ -165,24 +167,46 @@ impl MaxLevels {
 
 #[repr(u8)]
 #[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord)]
+/// Rarity of unit.
 pub enum Rarity {
+    /// Normal.
     Normal = 0,
+    /// Special.
     Special = 1,
+    /// Rare.
     Rare = 2,
+    /// Super Rare.
     SuperRare = 3,
+    /// Uber Rare.
     UberRare = 4,
+    /// Legend Rare.
     LegendRare = 5,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Info about Ancient Eggs.
 pub enum AncientEggInfo {
+    /// Unit is not an egg.
     None,
-    Egg { normal: u8, evolved: u8 },
+    /// Unit is an egg.
+    Egg {
+        /// The "m" id of the normal form.
+        ///
+        /// E.g. if this is 0 then the deploy icon is "uni000_m00.png".
+        normal: u8,
+        /// "m" id of evolved form.
+        ///
+        /// E.g. if this is 2 then the deploy icon is "uni002_m01.png".
+        evolved: u8,
+    },
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Order of unit in the Cat Guide.
 pub enum CatGuideOrder {
+    /// Unit with id.
     Unit(u32),
+    /// Unit is a summon and is not in the guide.
     Summon,
 }
 impl CatGuideOrder {
@@ -204,12 +228,19 @@ impl From<i32> for CatGuideOrder {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Miscellaneous unitbuy data.
 pub struct Misc {
+    /// Unit's rarity.
     pub rarity: Rarity,
+    /// Order in Cat Guide.
     pub guide_order: CatGuideOrder,
+    /// XP that unit sells for.
     pub sell_xp: u32,
+    /// NP that unit sells for.
     pub sell_np: u8,
+    /// Update unit was released (don't trust this tbh).
     pub update_released: i64,
+    /// Ancinet Egg info.
     pub egg_info: AncientEggInfo,
 }
 impl Misc {
@@ -232,22 +263,31 @@ impl Misc {
         }
     }
 
+    /// Is the unit a summon?
     pub fn is_summon(&self) -> bool {
         self.guide_order.is_summon()
     }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// All data contained in `unitbuy.csv`.
 pub struct UnitBuyData {
+    /// How to unlock the unit.
     pub unlock: CatUnlock,
+    /// How to evolve unit into True Form.
     pub true_evol: Option<EvolutionInfo>,
+    /// How to evolve unit into Ultra Form.
     pub ultra_evol: Option<EvolutionInfo>,
+    /// Base upgrade costs for each level.
     pub upgrade_costs: UpgradeCost,
+    /// Max level data for unit.
     pub max_levels: MaxLevels,
+    /// Random data unitbuy also includes.
     pub misc: Misc,
 }
 
 impl UnitBuyData {
+    /// Get data from raw unitbuy data.
     pub fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
         let (true_evol, ultra_evol) = Self::get_evolutions(unitbuy);
         Self {
