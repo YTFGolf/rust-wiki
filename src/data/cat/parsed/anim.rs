@@ -16,7 +16,7 @@ pub enum AnimDataError {
     EmptyAnimation,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Data about a unit form's animations.
 pub struct AnimData {
     length: usize, // right now all that's needed is the length of the animation
@@ -122,5 +122,115 @@ mod tests {
         let ans = [anim(18), anim(16), anim(16)];
 
         assert_eq!(&cat, &ans);
+    }
+
+    #[test]
+    fn basic2() {
+        let version = TEST_CONFIG.version.jp();
+
+        let tank = get_all_anims(1, version);
+        let ans = [anim(16), anim(16), anim(16)];
+
+        assert_eq!(&tank, &ans);
+    }
+
+    #[test]
+    fn basic3() {
+        let version = TEST_CONFIG.version.jp();
+
+        let titan = get_all_anims(8, version);
+        let ans = [anim(26), anim(32), anim(32)];
+
+        assert_eq!(&titan, &ans);
+    }
+
+    #[test]
+    fn basic4() {
+        let version = TEST_CONFIG.version.jp();
+
+        let actress = get_all_anims(9, version);
+        let ans = [anim(12), anim(16), anim(16)];
+
+        assert_eq!(&actress, &ans);
+    }
+
+    #[test]
+    fn backswing_multihit() {
+        let version = TEST_CONFIG.version.jp();
+
+        let bahamut = get_all_anims(25, version);
+        let ans = [anim(151), anim(151), anim(93)];
+
+        assert_eq!(&bahamut, &ans);
+    }
+
+    #[test]
+    fn long_foreswing() {
+        let version = TEST_CONFIG.version.jp();
+
+        let cancan = get_all_anims(32, version);
+        let ans = [anim(46), anim(46), anim(46)];
+
+        assert_eq!(&cancan, &ans);
+    }
+
+    #[test]
+    fn dio() {
+        let version = TEST_CONFIG.version.jp();
+
+        let dio = get_all_anims(177, version);
+        let ans = [anim(146), anim(146), anim(165), anim(175)];
+
+        assert_eq!(&dio, &ans);
+    }
+
+    #[test]
+    fn metal() {
+        let version = TEST_CONFIG.version.jp();
+
+        let metal = get_all_anims(200, version);
+        let ans = [anim(18), anim(16)];
+
+        assert_eq!(&metal, &ans);
+    }
+
+    #[test]
+    fn full_backswing() {
+        let version = TEST_CONFIG.version.jp();
+
+        let dasli = get_all_anims(543, version);
+        let ans = [anim(171), anim(174)];
+
+        assert_eq!(&dasli, &ans);
+    }
+
+    #[test]
+    fn backswing2() {
+        let version = TEST_CONFIG.version.jp();
+
+        let cat_modoki = get_all_anims(626, version);
+        let ans = [anim(10), anim(10)];
+
+        assert_eq!(&cat_modoki, &ans);
+    }
+
+    #[test]
+    fn partial_backswing() {
+        let version = TEST_CONFIG.version.jp();
+
+        let sfeline = get_all_anims(643, version);
+        let ans = [anim(31), anim(31), anim(74)];
+
+        assert_eq!(&sfeline, &ans);
+    }
+
+    #[test]
+    fn egg() {
+        let version = TEST_CONFIG.version.jp();
+
+        let courier = get_all_anims(658, version);
+        let ans = [anim(76), anim(76), anim(61)];
+
+        assert_eq!(&courier, &ans);
     }
 }
