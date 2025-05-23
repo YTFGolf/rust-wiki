@@ -1,6 +1,6 @@
 use clap::Parser;
 use rust_wiki::{
-    cli::commands::Cli,
+    interface::cli::commands::Cli,
     config::{CONFIG_FILE, Config},
     logger::{init_logger, set_log_level},
 };

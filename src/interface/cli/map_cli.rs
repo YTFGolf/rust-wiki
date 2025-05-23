@@ -1,4 +1,4 @@
-//! `gauntlet` command.
+//! `map_info` command.
 
 use super::{
     base::BaseOptions,
@@ -6,16 +6,15 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    cli::cli_util::input, config::Config,
-    meta::stage::stage_types::parse::parse_map::parse_general_map_id,
-    wikitext::gauntlet::map_gauntlet,
+    interface::cli::cli_util::input, config::Config, data::map::parsed::map::GameMap,
+    wikitext::map_info::get_map_info,
 };
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
-/// Gauntlet options.
-pub struct GauntletOptions {
-    /// Gauntlet map selector.
+/// Map info options.
+pub struct MapInfoOptions {
+    /// Map selector.
     pub selector: Vec<String>,
 
     #[command(flatten)]
@@ -25,13 +24,13 @@ pub struct GauntletOptions {
     /// Version options.
     pub version: VersionOptions,
 }
-impl ConfigMerge for GauntletOptions {
+impl ConfigMerge for MapInfoOptions {
     fn merge(&self, config: &mut Config) {
         self.base.merge(config);
         self.version.merge(config);
     }
 }
-impl CommandExec for GauntletOptions {
+impl CommandExec for MapInfoOptions {
     fn exec(&self, config: &Config) {
         let selector = match self.selector.len() {
             1 => self.selector[0].clone(),
@@ -39,8 +38,8 @@ impl CommandExec for GauntletOptions {
             _ => self.selector.join(" "),
         };
 
-        let gauntlet_id = parse_general_map_id(&selector).unwrap();
-        let info = map_gauntlet(&gauntlet_id, config);
+        let map = GameMap::from_selector(&selector, config.version.current_version()).unwrap();
+        let info = get_map_info(&map, config);
         println!("{info}");
     }
 }
