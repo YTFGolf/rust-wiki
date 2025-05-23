@@ -3,9 +3,8 @@
 use super::{
     cat_cli::CatInfoOptions, cli_util::CliCommand, encounters_cli::EncountersOptions,
     gauntlet_cli::GauntletOptions, map_cli::MapInfoOptions, stage_cli::StageInfoOptions,
-    wiki_cli::ReadWikiOptions,
 };
-use crate::config::Config;
+use crate::{config::Config, interface::scripts::read_wiki::wiki_cli::ReadWikiOptions};
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Subcommand, PartialEq)]

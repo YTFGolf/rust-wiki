@@ -1,10 +1,10 @@
 //! `read_wiki` command.
 
-use super::{
+use crate::interface::cli::{
     base::BaseOptions,
     cli_util::{CommandExec, ConfigMerge},
 };
-use crate::{config::Config, wiki_files::update_wiki_files};
+use crate::{config::Config, interface::scripts::read_wiki::wiki_files::update_wiki_files};
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
