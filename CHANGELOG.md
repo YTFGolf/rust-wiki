@@ -15,6 +15,8 @@ subheading.
 
 ### Added
 
+- Dev profiles to [Cargo.toml](Cargo.toml) to speed up compilation.
+
 ### Fixed
 
 ### Changed
