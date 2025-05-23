@@ -1,4 +1,4 @@
-//! Represents the command line interface.
+//! Utility functions and traits for the cli.
 
 use crate::config::Config;
 use std::io::{self, Write};
