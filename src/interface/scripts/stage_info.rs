@@ -1,8 +1,8 @@
 //! Get information about a stage.
 
-use super::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
-use super::error_handler::InfallibleWrite;
-use super::format_parser::{ParseType, parse_info_format};
+use crate::wikitext::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
+use crate::wikitext::error_handler::InfallibleWrite;
+use crate::wikitext::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
 use crate::meta::stage::stage_id::StageID;

@@ -5,12 +5,6 @@ use num_format::{Locale, WriteFormatted};
 
 use super::{
     error_handler::InfallibleWrite,
-    stage_info::{
-        enemies_list::enemies_list,
-        information::{max_enemies, stage_location, stage_name, width},
-        misc_information::{chapter, max_clears, star},
-        restrictions::restrictions_info,
-    },
     tabber::{Tabber, TabberTab, TabberType},
     template::Template,
 };
@@ -20,19 +14,10 @@ use crate::{
         stage::Stage,
         stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },
+    interface::scripts::stage_info::enemies_list,
     meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{
-        data_files::enemy_data::ENEMY_DATA,
-        map_info::reference,
-        section::Section,
-        stage_info::{
-            battlegrounds::battlegrounds,
-            beginning::enemies_appearing,
-            get_stage_wiki_data,
-            information::{base_hp, energy, xp},
-            restrictions::{restrictions_section, rules},
-            treasure::treasure,
-        },
+        data_files::enemy_data::ENEMY_DATA, map_info::reference, section::Section,
         wiki_utils::extract_link,
     },
 };
