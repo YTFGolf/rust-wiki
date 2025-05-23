@@ -6,8 +6,10 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    interface::cli::cli_util::input, config::Config, data::stage::parsed::stage::Stage,
-    meta::stage::stage_types::iter_stage_types, wikitext::stage_info::get_stage_info,
+    config::Config,
+    data::stage::parsed::stage::Stage,
+    interface::{cli::cli_util::input, scripts::stage_info::get_stage_info},
+    meta::stage::stage_types::iter_stage_types,
 };
 use clap::Args;
 use std::{
@@ -101,8 +103,8 @@ impl CommandExec for StageInfoOptions {
 mod tests {
     use super::*;
     use crate::{
-        interface::cli::commands::{Cli, Command},
         config::TEST_CONFIG,
+        interface::cli::commands::{Cli, Command},
     };
     use clap::Parser;
 

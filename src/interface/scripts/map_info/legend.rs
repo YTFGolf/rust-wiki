@@ -8,14 +8,16 @@ use crate::{
         },
         version::Version,
     },
+    interface::{
+        error_handler::InfallibleWrite,
+        scripts::format_parser::{ParseType, parse_info_format},
+    },
     meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
         variant::StageVariantID,
     },
     wikitext::{
         data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
-        error_handler::InfallibleWrite,
-        format_parser::{ParseType, parse_info_format},
         wiki_utils::{extract_link, extract_name, get_ordinal},
     },
 };

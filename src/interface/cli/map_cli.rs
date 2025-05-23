@@ -6,8 +6,9 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    interface::cli::cli_util::input, config::Config, data::map::parsed::map::GameMap,
-    wikitext::map_info::get_map_info,
+    config::Config,
+    data::map::parsed::map::GameMap,
+    interface::{cli::cli_util::input, scripts::map_info::get_map_info},
 };
 use clap::Args;
 

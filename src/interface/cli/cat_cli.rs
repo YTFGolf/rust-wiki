@@ -36,6 +36,6 @@ impl CommandExec for CatInfoOptions {
             Some(id) => id,
         };
 
-        crate::wikitext::cat_info::do_thing(id, config);
+        crate::interface::scripts::cat_info::do_thing(id, config);
     }
 }

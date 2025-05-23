@@ -6,9 +6,9 @@ use super::{
     version_opt::VersionOptions,
 };
 use crate::{
-    interface::cli::cli_util::input, config::Config,
+    config::Config,
+    interface::{cli::cli_util::input, scripts::gauntlet::map_gauntlet},
     meta::stage::stage_types::parse::parse_map::parse_general_map_id,
-    wikitext::gauntlet::map_gauntlet,
 };
 use clap::Args;
 

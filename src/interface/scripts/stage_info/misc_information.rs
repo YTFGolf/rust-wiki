@@ -1,12 +1,12 @@
 //! Gets the misc information of the stage infobox.
 
+use super::StageWikiDataContainer;
 use crate::{
     data::stage::parsed::stage::{ContinueStages, Stage},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     regex_handler::static_regex,
     wikitext::{
         data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
-        stage_info::StageWikiDataContainer,
         template::TemplateParameter,
         wiki_utils::OLD_OR_REMOVED_SUB,
     },
@@ -195,7 +195,7 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePa
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::wikitext::stage_info::get_stage_wiki_data;
+    use crate::interface::scripts::stage_info::get_stage_wiki_data;
 
     #[test]
     fn test_single_stage() {

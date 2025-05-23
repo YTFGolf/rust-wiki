@@ -1,12 +1,12 @@
 //! Beginning of stage info i.e. EnemiesAppearing and intro.
 
+use super::StageWikiDataContainer;
 use crate::{
     data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
+    interface::error_handler::InfallibleWrite,
     meta::stage::variant::StageVariantID,
     wikitext::{
         data_files::enemy_data::ENEMY_DATA,
-        error_handler::InfallibleWrite,
-        stage_info::StageWikiDataContainer,
         wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
     },
 };
@@ -89,8 +89,10 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::{stage_id::StageID, variant::StageVariantID as T};
-    use crate::wikitext::stage_info::get_stage_wiki_data;
+    use crate::{
+        interface::scripts::stage_info::get_stage_wiki_data,
+        meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+    };
 
     #[test]
     fn test_enemies_appearing() {

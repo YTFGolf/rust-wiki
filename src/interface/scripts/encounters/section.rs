@@ -263,8 +263,9 @@ impl SectionRef {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::wikitext::{
-        data_files::stage_wiki_data::STAGE_WIKI_DATA, encounters::chapter::Stage,
+    use crate::{
+        interface::scripts::encounters::chapter::Stage,
+        wikitext::data_files::stage_wiki_data::STAGE_WIKI_DATA,
     };
     use SectionRef as Ref;
     use std::borrow::Cow;

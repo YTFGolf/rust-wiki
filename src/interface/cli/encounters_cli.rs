@@ -38,6 +38,6 @@ impl CommandExec for EncountersOptions {
             Some(id) => *id,
         };
 
-        crate::wikitext::encounters::do_thing(id, config);
+        crate::interface::scripts::encounters::do_thing(id, config);
     }
 }

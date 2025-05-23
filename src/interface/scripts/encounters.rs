@@ -3,13 +3,13 @@
 pub mod chapter;
 pub mod section;
 pub mod zoutbreak;
-use super::error_handler::InfallibleWrite;
 use crate::{
     config::Config,
     data::{
         enemy::raw_encounters::stage_contains_enemy,
         stage::{get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
     },
+    interface::error_handler::InfallibleWrite,
     meta::stage::{
         map_id::{MainType, MapID},
         stage_id::StageID,

@@ -1,12 +1,17 @@
 //! Gaunlet page script.
 
-use either::Either::{Left, Right};
-use num_format::{Locale, WriteFormatted};
-
 use super::{
-    error_handler::InfallibleWrite,
-    tabber::{Tabber, TabberTab, TabberType},
-    template::Template,
+    map_info::reference,
+    stage_info::{
+        battlegrounds::battlegrounds,
+        beginning::enemies_appearing,
+        enemies_list::enemies_list,
+        get_stage_wiki_data,
+        information::{base_hp, energy, max_enemies, stage_location, stage_name, width, xp},
+        misc_information::{chapter, max_clears, star},
+        restrictions::{restrictions_info, restrictions_section, rules},
+        treasure::treasure,
+    },
 };
 use crate::{
     config::Config,
@@ -14,13 +19,18 @@ use crate::{
         stage::Stage,
         stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },
-    interface::scripts::stage_info::enemies_list,
+    interface::error_handler::InfallibleWrite,
     meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{
-        data_files::enemy_data::ENEMY_DATA, map_info::reference, section::Section,
+        data_files::enemy_data::ENEMY_DATA,
+        section::Section,
+        tabber::{Tabber, TabberTab, TabberType},
+        template::Template,
         wiki_utils::extract_link,
     },
 };
+use either::Either::{Left, Right};
+use num_format::{Locale, WriteFormatted};
 use std::fmt::{Display, Write};
 
 /// Get the template used for comparing [`TabInfo`].

@@ -3,10 +3,10 @@
 use crate::{
     config::version_config::Lang,
     data::stage::parsed::stage::Stage,
+    interface::error_handler::InfallibleWrite,
     meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},
     wikitext::{
         data_files::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
-        error_handler::InfallibleWrite,
         template::TemplateParameter,
     },
 };
