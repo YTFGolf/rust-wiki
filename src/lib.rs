@@ -3,10 +3,8 @@
 #![warn(missing_docs)]
 pub mod config;
 pub mod data;
-pub mod file_handler;
 pub mod interface;
 pub mod logger;
 pub mod meta;
 pub mod regex_handler;
-pub mod wiki_files;
 pub mod wikitext;
