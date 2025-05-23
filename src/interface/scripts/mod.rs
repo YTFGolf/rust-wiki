@@ -1,3 +1,5 @@
+//! Scripts to run on the cli.
+
 pub mod cat_info;
 pub mod read_wiki;
 pub mod encounters;
