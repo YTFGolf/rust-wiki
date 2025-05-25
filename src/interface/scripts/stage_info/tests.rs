@@ -1,7 +1,7 @@
 //! Module for testing stage info.
 #![cfg(test)]
 
-use super::{get_stage_wiki_data, variables::get_stage_variable};
+use super::{stage_info::get_stage_wiki_data, variables::get_stage_variable};
 use crate::{
     config::{Config, TEST_CONFIG, version_config::Lang},
     game_data::{

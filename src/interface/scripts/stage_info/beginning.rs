@@ -1,6 +1,6 @@
 //! Beginning of stage info i.e. EnemiesAppearing and intro.
 
-use super::StageWikiDataContainer;
+use super::stage_info::StageWikiDataContainer;
 use crate::{
     game_data::{
         meta::stage::variant::StageVariantID,
@@ -91,7 +91,7 @@ mod tests {
     use super::*;
     use crate::{
         game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
-        interface::scripts::stage_info::get_stage_wiki_data,
+        interface::scripts::stage_info::stage_info::get_stage_wiki_data,
     };
 
     #[test]

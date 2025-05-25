@@ -1,6 +1,6 @@
 //! Gets the misc information of the stage infobox.
 
-use super::StageWikiDataContainer;
+use super::stage_info::StageWikiDataContainer;
 use crate::{
     game_data::{
         meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
@@ -194,7 +194,7 @@ pub fn stage_nav(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePa
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::interface::scripts::stage_info::get_stage_wiki_data;
+    use crate::interface::scripts::stage_info::stage_info::get_stage_wiki_data;
 
     #[test]
     fn test_single_stage() {

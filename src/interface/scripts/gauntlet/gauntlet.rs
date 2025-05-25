@@ -4,10 +4,10 @@ use super::super::{
         battlegrounds::battlegrounds,
         beginning::enemies_appearing,
         enemies_list::enemies_list,
-        get_stage_wiki_data,
         information::{base_hp, energy, max_enemies, stage_location, stage_name, width, xp},
         misc_information::{chapter, max_clears, star},
         restrictions::{restrictions_info, restrictions_section, rules},
+        stage_info::get_stage_wiki_data,
         treasure::treasure,
     },
 };

@@ -1,7 +1,7 @@
 //! Deals with stage info variables.
 
 use super::{
-    StageWikiDataContainer,
+    stage_info::StageWikiDataContainer,
     battlegrounds::battlegrounds,
     beginning::{enemies_appearing, intro},
     enemies_list::enemies_list,
