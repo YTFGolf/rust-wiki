@@ -1,14 +1,18 @@
 //! Module that deals with getting information about stages.
 use super::stage_option::StageOptionCSV;
-use crate::game_data::{map::{
-            map_data::GameMapData, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
-            special_rules::SpecialRule,
-        }, meta::stage::{
+use crate::game_data::{
+    map::{
+        map_data::GameMapData, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
+        special_rules::SpecialRule,
+    },
+    meta::stage::{
         stage_id::StageID,
         stage_types::{
             parse::parse_stage::parse_stage_file, transform::transform_stage::stage_data_file,
         },
-    }, version::Version};
+    },
+    version::Version,
+};
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
 use std::{

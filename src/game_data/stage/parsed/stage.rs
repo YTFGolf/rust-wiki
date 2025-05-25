@@ -1,18 +1,22 @@
 //! Represents a full stage.
 
 use super::stage_enemy::StageEnemy;
-use crate::game_data::{map::{
-            map_option::MapOptionCSV,
-            raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-            special_rules::SpecialRule,
-        }, meta::stage::{
-        stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id,
-    }, stage::raw::{
-            stage_data::StageData,
-            stage_option::{
-                charagroups::{CharaGroup, CharaGroups}, StageOptionCSV
-            },
-        }, version::Version};
+use crate::game_data::{
+    map::{
+        map_option::MapOptionCSV,
+        raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+        special_rules::SpecialRule,
+    },
+    meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
+    stage::raw::{
+        stage_data::StageData,
+        stage_option::{
+            StageOptionCSV,
+            charagroups::{CharaGroup, CharaGroups},
+        },
+    },
+    version::Version,
+};
 use std::num::NonZeroU32;
 
 #[derive(Debug, PartialEq)]
