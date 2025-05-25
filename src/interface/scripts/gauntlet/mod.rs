@@ -372,14 +372,13 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
             let map = data.stage_map.get(tab_stage0.id.num()).unwrap();
             let link = extract_link(&map.name);
 
-            match link.find("#") {
-                Some(pos) => link[pos + 1..].to_string(),
-                None => {
-                    if len > 1 {
-                        log::warn!("`#` character not found in gauntlet name: {link:?}");
-                    }
-                    format!("Level {range_str}")
+            if let Some(pos) = link.find('#') {
+                link[pos + 1..].to_string()
+            } else {
+                if len > 1 {
+                    log::warn!("`#` character not found in gauntlet name: {link:?}");
                 }
+                format!("Level {range_str}")
             }
         };
 
