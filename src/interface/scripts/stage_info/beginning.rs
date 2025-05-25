@@ -4,7 +4,7 @@ use super::StageWikiDataContainer;
 use crate::{
     game_data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
     interface::error_handler::InfallibleWrite,
-    meta::stage::variant::StageVariantID,
+    game_data::meta::stage::variant::StageVariantID,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
 };
@@ -89,7 +89,7 @@ mod tests {
     use super::*;
     use crate::{
         interface::scripts::stage_info::get_stage_wiki_data,
-        meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+        game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
     };
 
     #[test]

@@ -1,7 +1,7 @@
 //! Contains data about all different stage types.
 
 use super::types::{StageCodeType, StageType};
-use crate::meta::stage::variant::{StageVariantID, VariantSize};
+use crate::game_data::meta::stage::variant::{StageVariantID, VariantSize};
 use regex::{Regex, RegexBuilder};
 use std::sync::LazyLock;
 

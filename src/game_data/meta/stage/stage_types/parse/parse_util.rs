@@ -1,5 +1,5 @@
 use super::super::iter_stage_types;
-use crate::meta::stage::variant::StageVariantID;
+use crate::game_data::meta::stage::variant::StageVariantID;
 
 #[derive(Debug, PartialEq)]
 /// Error when parsing the stage type.

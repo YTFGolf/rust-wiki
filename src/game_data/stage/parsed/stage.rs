@@ -17,7 +17,7 @@ use crate::{
         },
         version::Version,
     },
-    meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
+    game_data::meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
 };
 use std::num::NonZeroU32;
 
@@ -375,7 +375,7 @@ mod tests {
     use crate::{
         config::TEST_CONFIG,
         game_data::stage::get_stage_files,
-        meta::stage::{
+        game_data::meta::stage::{
             stage_types::transform::transform_stage::stage_data_file, variant::StageVariantID as T,
         },
     };

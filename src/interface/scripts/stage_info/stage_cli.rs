@@ -12,7 +12,7 @@ use crate::{
         },
         scripts::stage_info::get_stage_info,
     },
-    meta::stage::stage_types::iter_stage_types,
+    game_data::meta::stage::stage_types::iter_stage_types,
 };
 use clap::Args;
 use std::{

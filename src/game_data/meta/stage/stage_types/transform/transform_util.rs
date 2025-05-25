@@ -1,8 +1,8 @@
-use crate::meta::stage::variant::StageVariantID;
+use crate::game_data::meta::stage::variant::StageVariantID;
 
 /// Every [`StageVariantID`] that has a custom [`StageCodeType`][StageCodeType].
 ///
-/// [StageCodeType]: crate::meta::stage::stage_types::types::StageCodeType
+/// [StageCodeType]: crate::game_data::meta::stage::stage_types::types::StageCodeType
 #[derive(Debug, PartialEq)]
 pub enum CustomVariantID {
     MainChapters,
@@ -34,7 +34,7 @@ impl From<StageVariantID> for CustomVariantID {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_types::{iter_stage_types, types::StageCodeType};
+    use crate::game_data::meta::stage::stage_types::{iter_stage_types, types::StageCodeType};
 
     #[test]
     fn test_custom_stypes() {

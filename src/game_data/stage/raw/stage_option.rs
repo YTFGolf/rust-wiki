@@ -2,7 +2,7 @@
 
 use crate::{
     game_data::version::version_data::CacheableVersionData,
-    meta::stage::{map_id::MapID, stage_id::StageID},
+    game_data::meta::stage::{map_id::MapID, stage_id::StageID},
 };
 use std::{collections::HashMap, path::Path};
 

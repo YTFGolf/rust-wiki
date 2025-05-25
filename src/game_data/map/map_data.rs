@@ -12,7 +12,7 @@ use crate::{
         stage::raw::stage_option::{StageOption, StageOptionCSV},
         version::Version,
     },
-    meta::stage::{
+    game_data::meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_data_file,
         variant::StageVariantID,
     },

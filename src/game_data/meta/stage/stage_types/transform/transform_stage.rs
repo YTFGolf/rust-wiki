@@ -1,7 +1,7 @@
 //! Transform [`StageID`] data into various formats.
 
 use super::transform_util::CustomVariantID as T;
-use crate::meta::stage::{
+use crate::game_data::meta::stage::{
     map_id::MainType,
     stage_id::StageID,
     stage_types::{get_stage_type, types::StageCodeType},
@@ -88,7 +88,7 @@ pub fn stage_data_file(stage_id: &StageID) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::{
+    use crate::game_data::meta::stage::{
         stage_types::parse::parse_stage::parse_stage_file, variant::StageVariantID as T,
     };
 

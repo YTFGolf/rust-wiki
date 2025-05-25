@@ -4,7 +4,7 @@ use crate::{
     config::version_config::Lang,
     game_data::stage::parsed::stage::Stage,
     interface::error_handler::InfallibleWrite,
-    meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},
+    game_data::meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},
     wiki_data::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
     wikitext::template::TemplateParameter,
 };
@@ -199,7 +199,7 @@ pub fn max_enemies(stage: &Stage) -> TemplateParameter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_id::StageID;
+    use crate::game_data::meta::stage::stage_id::StageID;
     use StageVariantID as T;
 
     #[test]

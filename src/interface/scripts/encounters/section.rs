@@ -2,7 +2,7 @@
 
 use super::chapter::Chapter;
 use crate::{
-    meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+    game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
     wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;

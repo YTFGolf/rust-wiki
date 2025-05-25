@@ -6,7 +6,7 @@ use crate::{
         stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
         version::Version,
     },
-    meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
+    game_data::meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
 };
 use std::num::NonZeroU32;
 use strum::FromRepr;

@@ -1,7 +1,7 @@
 //! Deals with singular chapters of encounters.
 
 use super::section::SectionRef;
-use crate::meta::stage::stage_id::StageID;
+use crate::game_data::meta::stage::stage_id::StageID;
 use std::{borrow::Cow, collections::HashSet};
 
 #[derive(Debug)]

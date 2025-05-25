@@ -6,7 +6,7 @@ use crate::{
         stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
     },
     interface::error_handler::InfallibleWrite,
-    meta::stage::variant::StageVariantID as T,
+    game_data::meta::stage::variant::StageVariantID as T,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::wiki_utils::extract_name,
 };
@@ -282,7 +282,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_id::StageID;
+    use crate::game_data::meta::stage::stage_id::StageID;
 
     #[test]
     fn test_basic_battleground() {

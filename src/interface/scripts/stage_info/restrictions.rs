@@ -319,7 +319,7 @@ mod tests {
     use super::*;
     use crate::{
         game_data::stage::parsed::stage::RestrictionCrowns,
-        meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+        game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
     };
 
     #[test]

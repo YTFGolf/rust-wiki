@@ -4,7 +4,7 @@ use super::parse_util::{
     StageTypeParseError, get_variant_from_code, is_single_map, is_single_stage,
 };
 use crate::{
-    meta::stage::{
+    game_data::meta::stage::{
         map_id::{MapID, MapSize},
         stage_types::data::SELECTOR_SEPARATOR,
         variant::StageVariantID as T,
@@ -179,9 +179,9 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::meta::stage::stage_types::data::get_stage_type;
-    use crate::meta::stage::stage_types::transform::transform_map::map_data_file;
-    use crate::meta::stage::variant::StageVariantID;
+    use crate::game_data::meta::stage::stage_types::data::get_stage_type;
+    use crate::game_data::meta::stage::stage_types::transform::transform_map::map_data_file;
+    use crate::game_data::meta::stage::variant::StageVariantID;
     use rand::random;
     use strum::IntoEnumIterator;
 

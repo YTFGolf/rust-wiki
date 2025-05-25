@@ -8,7 +8,7 @@ use crate::{
         },
         version::Version,
     },
-    meta::stage::{
+    game_data::meta::stage::{
         stage_id::StageID,
         stage_types::{
             parse::parse_stage::parse_stage_file, transform::transform_stage::stage_data_file,
@@ -345,7 +345,7 @@ mod tests {
     use crate::{
         config::TEST_CONFIG,
         game_data::map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-        meta::stage::variant::StageVariantID as T,
+        game_data::meta::stage::variant::StageVariantID as T,
     };
     use std::{io::Cursor, vec};
 

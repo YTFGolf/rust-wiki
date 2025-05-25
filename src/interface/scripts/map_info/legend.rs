@@ -12,7 +12,7 @@ use crate::{
         error_handler::InfallibleWrite,
         scripts::format_parser::{ParseType, parse_info_format},
     },
-    meta::stage::{
+    game_data::meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
         variant::StageVariantID,
     },
@@ -372,7 +372,7 @@ pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, meta::stage::map_id::MapID};
+    use crate::{config::TEST_CONFIG, game_data::meta::stage::map_id::MapID};
 
     #[test]
     fn test_full() {
