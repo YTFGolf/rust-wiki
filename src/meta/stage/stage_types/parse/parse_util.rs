@@ -1,15 +1,5 @@
-//! Parse ID from various formats.
-
-use super::iter_stage_types;
+use super::super::iter_stage_types;
 use crate::meta::stage::variant::StageVariantID;
-
-pub mod parse_map;
-pub mod parse_stage;
-
-/*
-Important note: selectors in this module are custom behaviour, so any time that
-selectors are updated then the docs also need to be updated.
-*/
 
 #[derive(Debug, PartialEq)]
 /// Error when parsing the stage type.
