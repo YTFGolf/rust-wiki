@@ -2,7 +2,8 @@
 
 use super::{
     parse_map::parse_map_selector,
-    parse_util::{StageTypeParseError, is_single_map, is_single_stage},
+    parse_types::StageTypeParseError,
+    parse_util::{is_single_map, is_single_stage},
 };
 use crate::{
     game_data::meta::stage::{

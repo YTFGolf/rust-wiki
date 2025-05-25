@@ -2,6 +2,7 @@
 
 pub mod parse_map;
 pub mod parse_stage;
+pub mod parse_types;
 mod parse_util;
 
 /*

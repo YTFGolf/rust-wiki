@@ -1,7 +1,8 @@
 //! Parse [`MapID`] from various formats.
 
-use super::parse_util::{
-    StageTypeParseError, get_variant_from_code, is_single_map, is_single_stage,
+use super::{
+    parse_types::StageTypeParseError,
+    parse_util::{get_variant_from_code, is_single_map, is_single_stage},
 };
 use crate::{
     game_data::meta::stage::{
