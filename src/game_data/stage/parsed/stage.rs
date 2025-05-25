@@ -3,9 +3,9 @@
 use super::stage_enemy::StageEnemy;
 use crate::game_data::{
     map::{
-        cacheable::map_option::MapOptionCSV,
+        cached::map_option::MapOptionCSV,
         raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-        cacheable::special_rules::SpecialRule,
+        cached::special_rules::SpecialRule,
     },
     meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
     stage::raw::{

@@ -2,4 +2,4 @@
 
 pub mod parsed;
 pub mod raw;
-pub mod cacheable;
+pub mod cached;

@@ -1,7 +1,7 @@
 //! Module that deals with getting information about stage maps.
 
 use super::super::{
-    cacheable::{
+    cached::{
         drop_item::{DropItem, DropItemRaw},
         ex_option::ExOption,
         map_option::{MapOption, MapOptionCSV},
