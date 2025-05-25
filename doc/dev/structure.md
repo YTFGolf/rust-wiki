@@ -2,6 +2,25 @@ General organisation of the project.
 
 ## Code
 
+### General structure
+
+You might see a structure like
+
+```
+├───interface
+│   ├───cli
+│   │   └───...
+│   └───scripts
+│       └───encounters
+│           └───cli.rs
+...
+```
+
+Here, you can see the main organisational principle: the general CLI is meant to be in the `cli` folder at the top, but the part of the CLI related to the `encounters` script should be inside the `encounters` module.
+
+### Other half-rules
+
+- Interface code goes in the `interface` module.
 - `mod.rs`, and only `mod.rs`, is for organising.  The `mod` keyword should only appear in files named `mod.rs`.
   - This does not apply to any modules named `tests`.
   - `lib.rs` is an exception for obvious reasons.
