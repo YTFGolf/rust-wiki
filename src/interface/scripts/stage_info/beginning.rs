@@ -3,7 +3,7 @@
 use super::StageWikiDataContainer;
 use crate::{
     data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
-    data_files::enemy_data::ENEMY_DATA,
+    wiki_data::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::variant::StageVariantID,
     wikitext::wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},

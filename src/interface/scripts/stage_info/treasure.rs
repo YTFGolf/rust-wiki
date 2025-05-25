@@ -5,7 +5,7 @@ use crate::{
         map::raw::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
-    data_files::rewards::TREASURE_DATA,
+    wiki_data::rewards::TREASURE_DATA,
     interface::error_handler::InfallibleWrite,
     wikitext::template::TemplateParameter,
 };

@@ -1,6 +1,6 @@
 //! Module that deals with getting and updating wiki files.
 
-use crate::{config::Config, data_files::file_handler::get_wiki_data_location};
+use crate::{config::Config, wiki_data::file_handler::get_wiki_data_location};
 use similar::{ChangeTag, TextDiff};
 use std::{
     fs::File,

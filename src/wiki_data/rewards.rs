@@ -1,6 +1,6 @@
 //! Get information about stage rewards.
 
-use crate::data_files::file_handler::get_wiki_data_location;
+use crate::wiki_data::file_handler::get_wiki_data_location;
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
 

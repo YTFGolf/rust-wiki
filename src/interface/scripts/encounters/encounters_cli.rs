@@ -2,7 +2,7 @@
 
 use crate::{
     config::Config,
-    data_files::enemy_data::ENEMY_DATA,
+    wiki_data::enemy_data::ENEMY_DATA,
     interface::cli::{
         base::BaseOptions,
         cli_util::{CommandExec, ConfigMerge},

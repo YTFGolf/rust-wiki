@@ -5,7 +5,7 @@ use crate::{
         stage::Stage,
         stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
     },
-    data_files::enemy_data::ENEMY_DATA,
+    wiki_data::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::variant::StageVariantID as T,
     wikitext::wiki_utils::extract_name,

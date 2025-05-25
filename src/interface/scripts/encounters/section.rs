@@ -2,7 +2,7 @@
 
 use super::chapter::Chapter;
 use crate::{
-    data_files::stage_wiki_data::STAGE_WIKI_DATA,
+    wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
     meta::stage::{stage_id::StageID, variant::StageVariantID as T},
 };
 use std::fmt::Write;
@@ -264,7 +264,7 @@ impl SectionRef {
 mod tests {
     use super::*;
     use crate::{
-        data_files::stage_wiki_data::STAGE_WIKI_DATA,
+        wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
         interface::scripts::encounters::chapter::Stage,
     };
     use SectionRef as Ref;

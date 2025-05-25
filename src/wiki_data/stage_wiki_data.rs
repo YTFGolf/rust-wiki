@@ -1,7 +1,7 @@
 //! Module that gets information about stage names and continue stages.
 
 use crate::{
-    data_files::file_handler::get_wiki_data_location,
+    wiki_data::file_handler::get_wiki_data_location,
     meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::MAX_VARIANT_INDEX, variant::StageVariantID,
     },

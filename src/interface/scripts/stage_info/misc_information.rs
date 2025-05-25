@@ -3,7 +3,7 @@
 use super::StageWikiDataContainer;
 use crate::{
     data::stage::parsed::stage::{ContinueStages, Stage},
-    data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
+    wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     regex_handler::static_regex,
     wikitext::{template::TemplateParameter, wiki_utils::OLD_OR_REMOVED_SUB},

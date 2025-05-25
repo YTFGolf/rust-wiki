@@ -20,7 +20,7 @@ use crate::{
         stage::Stage,
         stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },
-    data_files::enemy_data::ENEMY_DATA,
+    wiki_data::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::{map_id::MapID, stage_id::StageID},
     wikitext::{

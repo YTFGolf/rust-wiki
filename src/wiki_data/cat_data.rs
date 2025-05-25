@@ -1,6 +1,6 @@
 //! Module that gets information about cat names.G
 
-use crate::data_files::file_handler::get_wiki_data_location;
+use crate::wiki_data::file_handler::get_wiki_data_location;
 use serde::Deserialize;
 use std::sync::LazyLock;
 

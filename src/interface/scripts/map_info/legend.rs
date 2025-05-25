@@ -8,7 +8,7 @@ use crate::{
         },
         version::Version,
     },
-    data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
+    wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
     interface::{
         error_handler::InfallibleWrite,
         scripts::format_parser::{ParseType, parse_info_format},

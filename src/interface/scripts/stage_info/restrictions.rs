@@ -8,7 +8,7 @@ use crate::{
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
         },
     },
-    data_files::cat_data::CAT_DATA,
+    wiki_data::cat_data::CAT_DATA,
     interface::error_handler::InfallibleWrite,
     wikitext::template::TemplateParameter,
 };
