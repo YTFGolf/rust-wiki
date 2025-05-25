@@ -1,5 +1,6 @@
 //! Get info about a cat.
 
+pub mod cat_cli;
 use crate::{config::Config, data::cat::parsed::cat::Cat};
 
 /// Do thing.

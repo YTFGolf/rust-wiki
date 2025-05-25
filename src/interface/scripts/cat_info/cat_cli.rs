@@ -1,11 +1,13 @@
 //! `cat` command.
 
-use super::{
-    base::BaseOptions,
-    cli_util::{CommandExec, ConfigMerge},
-    version_opt::VersionOptions,
+use crate::{
+    config::Config,
+    interface::cli::{
+        base::BaseOptions,
+        cli_util::{CommandExec, ConfigMerge},
+        version_opt::VersionOptions,
+    },
 };
-use crate::config::Config;
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
