@@ -3,8 +3,8 @@ use crate::{
     config::Config,
     game_data::{
         map::{
-            raw::map_data::GameMapData,
             parsed::map::{GameMap, ResetType},
+            raw::map_data::GameMapData,
         },
         meta::stage::{
             map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,

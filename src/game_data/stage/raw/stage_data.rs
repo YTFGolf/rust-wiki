@@ -2,8 +2,8 @@
 use super::stage_option::StageOptionCSV;
 use crate::game_data::{
     map::{
-        raw::map_data::GameMapData, cached::map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
-        cached::special_rules::SpecialRule,
+        cached::map_option::MapOptionCSV, cached::special_rules::SpecialRule,
+        raw::csv_types::StageDataCSV, raw::map_data::GameMapData,
     },
     meta::stage::{
         stage_id::StageID,
