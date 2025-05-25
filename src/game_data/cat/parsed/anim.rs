@@ -102,7 +102,8 @@ mod tests {
         let has_ultra = unitbuy.ultra_evol.is_some();
         let egg_data = unitbuy.misc.egg_info;
 
-        let amt_forms = 2 + has_true as usize + has_ultra as usize;
+        let amt_forms = 2 + usize::from(has_true) + usize::from(has_ultra);
+        // TODO use methods from `Cat` to achieve this.
         (egg_data, amt_forms)
     }
 

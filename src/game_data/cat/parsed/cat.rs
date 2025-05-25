@@ -82,7 +82,7 @@ impl Cat {
             339 | 673 => 1,
             // iron wall, cheetah
             _ if is_summon => 1,
-            _ => 2 + has_true as usize + has_ultra as usize,
+            _ => 2 + usize::from(has_true) + usize::from(has_ultra),
         }
     }
 
