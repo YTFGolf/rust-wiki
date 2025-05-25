@@ -109,11 +109,11 @@ impl StageRange {
             match iter.peek() {
                 None => {
                     ranges.push(Self::new(range_min, *id));
-                    continue;
+                    // break;
                 }
                 Some(&&i) if i != id + 1 => {
                     ranges.push(Self::new(range_min, *id));
-                    range_min = i
+                    range_min = i;
                 }
                 Some(_) => (),
             }
