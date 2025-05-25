@@ -137,6 +137,8 @@ pub enum StageDataError {
     IOError(io::Error),
     /// Selector doesn't work.
     InvalidSelector(StageTypeParseError),
+    /// Error when parsing CSV.
+    ParseError(CSVParseError),
 }
 
 #[derive(Debug)]
@@ -173,13 +175,20 @@ impl<'a> StageData<'_> {
 
     /// Get stage data from [`StageID`].
     pub fn from_id(id: StageID, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
-        let stage_file = PathBuf::from("DataLocal").join(stage_data_file(&id));
+        let file_name = stage_data_file(&id);
+        let stage_file = PathBuf::from("DataLocal").join(&file_name);
         let reader = BufReader::new(
             File::open(version.get_file_path(&stage_file)).map_err(StageDataError::IOError)?,
         );
 
         let stage_file_reader = reader;
-        let stage_csv_data = Self::read_stage_csv(stage_file_reader).unwrap();
+        let stage_csv_data = Self::read_stage_csv(stage_file_reader)
+            .map_err(|(kind, line)| CSVParseError {
+                kind,
+                file_name,
+                line,
+            })
+            .map_err(StageDataError::ParseError)?;
 
         Ok(StageData {
             id,
