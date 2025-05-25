@@ -1,9 +1,9 @@
 //! Contains all CLI commands.
 
 use super::cli_util::CliCommand;
-use crate::{
-    interface::config::Config,
-    interface::scripts::{
+use crate::interface::{
+    config::Config,
+    scripts::{
         cat_info::cat_cli::CatInfoOptions, encounters::encounters_cli::EncountersOptions,
         gauntlet::gauntlet_cli::GauntletOptions, map_info::map_cli::MapInfoOptions,
         read_wiki::wiki_cli::ReadWikiOptions, stage_info::stage_cli::StageInfoOptions,

@@ -4,8 +4,7 @@ use super::{
 };
 use crate::{
     game_data::{meta::stage::stage_id::StageID, stage::parsed::stage::Stage},
-    interface::config::Config,
-    interface::error_handler::InfallibleWrite,
+    interface::{config::Config, error_handler::InfallibleWrite},
     regex_handler::static_regex,
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
 };

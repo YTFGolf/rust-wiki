@@ -1,10 +1,9 @@
-use std::process::exit;
-
 use clap::Parser;
 use rust_wiki::{
     CONFIG_FILE, Cli, Config,
     logger::{init_logger, set_log_level},
 };
+use std::process::exit;
 
 /// Initialise the user config.
 fn initialise_config() -> ! {

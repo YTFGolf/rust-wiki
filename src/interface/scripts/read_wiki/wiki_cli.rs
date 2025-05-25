@@ -1,14 +1,12 @@
 //! `read_wiki` command.
 
-use crate::{
-    interface::config::Config,
-    interface::{
-        cli::{
-            base::BaseOptions,
-            cli_util::{CommandExec, ConfigMerge},
-        },
-        scripts::read_wiki::wiki_files::update_wiki_files,
+use crate::interface::{
+    cli::{
+        base::BaseOptions,
+        cli_util::{CommandExec, ConfigMerge},
     },
+    config::Config,
+    scripts::read_wiki::wiki_files::update_wiki_files,
 };
 use clap::Args;
 

@@ -11,8 +11,8 @@ use crate::{
         },
         version::Version,
     },
-    interface::config::Config,
     interface::{
+        config::Config,
         error_handler::InfallibleWrite,
         scripts::format_parser::{ParseType, parse_info_format},
     },

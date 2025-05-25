@@ -1,12 +1,12 @@
 //! `cat` command.
 
-use crate::{
-    interface::cli::{
+use crate::interface::{
+    cli::{
         base::BaseOptions,
         cli_util::{CommandExec, ConfigMerge},
         version_opt::VersionOptions,
     },
-    interface::config::Config,
+    config::Config,
 };
 use clap::Args;
 

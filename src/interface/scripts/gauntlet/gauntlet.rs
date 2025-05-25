@@ -19,8 +19,7 @@ use crate::{
             stage_enemy::{MS_SIGN, Magnification, StageEnemy},
         },
     },
-    interface::config::Config,
-    interface::error_handler::InfallibleWrite,
+    interface::{config::Config, error_handler::InfallibleWrite},
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::{
         section::Section,

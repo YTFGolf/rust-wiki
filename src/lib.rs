@@ -8,9 +8,7 @@ pub mod regex_handler;
 pub mod wiki_data;
 pub mod wikitext;
 
-pub use interface::CONFIG_FILE;
-pub use interface::Cli;
-pub use interface::Config;
-pub use interface::SLang;
 #[cfg(test)]
 pub use interface::TEST_CONFIG;
+pub use interface::{CONFIG_FILE, Cli, Config, SLang};
+// TODO something about these being fully public

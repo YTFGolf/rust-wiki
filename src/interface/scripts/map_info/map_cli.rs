@@ -2,13 +2,13 @@
 
 use crate::{
     game_data::map::parsed::map::GameMap,
-    interface::config::Config,
     interface::{
         cli::{
             base::BaseOptions,
             cli_util::{CommandExec, ConfigMerge, input},
             version_opt::VersionOptions,
         },
+        config::Config,
         scripts::map_info::map_info::get_map_info,
     },
 };
