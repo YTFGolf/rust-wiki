@@ -4,7 +4,7 @@ use crate::{
     meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::MAX_VARIANT_INDEX, variant::StageVariantID,
     },
-    wikitext::file_handler::get_wiki_data_location,
+    data_files::file_handler::get_wiki_data_location,
 };
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
