@@ -1,6 +1,5 @@
-use crate::{config::Config, game_data::map::parsed::map::GameMap};
-
 use super::legend::{get_map_wiki_data, stage_table};
+use crate::{config::Config, game_data::map::parsed::map::GameMap};
 
 pub fn get_event_map(map: &GameMap, config: &Config) -> String {
     log::warn!("Event map is incomplete.");

@@ -1,6 +1,8 @@
-use super::chapter::{Chapter, Group, Stage};
-use super::section::{DisplayType, SectionRef};
-use super::zoutbreak::manual_zoutbreak_replace;
+use super::{
+    chapter::{Chapter, Group, Stage},
+    section::{DisplayType, SectionRef},
+    zoutbreak::manual_zoutbreak_replace,
+};
 use crate::{
     config::Config,
     game_data::{

@@ -1,3 +1,4 @@
+use super::{event::get_event_map, legend::get_legend_map};
 use crate::{
     config::Config,
     game_data::{
@@ -5,8 +6,6 @@ use crate::{
         meta::stage::{map_id::MapID, variant::StageVariantID},
     },
 };
-
-use super::{event::get_event_map, legend::get_legend_map};
 
 /// battlecats-db reference.
 pub fn reference(map: &MapID) -> String {
