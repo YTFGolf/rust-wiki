@@ -144,19 +144,19 @@ pub enum StageDataError {
 pub enum CSVParseErrorKind {
     /// CSV file doesn't have enough lines.
     NotEnoughLines,
-    /// Error when converting to ByteRecord.
-    ByteRecordError(csv::Error),
-    /// Error when deserialising ByteRecord.
+    /// Error when converting to CSV Record.
+    CSVRecordError(csv::Error),
+    /// Error when deserialising CSV Record.
     DeserialiseError(csv::Error),
 }
-type CSVParseErrorLine = (CSVParseErrorKind, u8);
+type CSVParseErrorLine = (CSVParseErrorKind, usize);
 
 #[derive(Debug)]
 /// Error when parsing stage data CSV files.
 pub struct CSVParseError {
     kind: CSVParseErrorKind,
     file_name: String,
-    line: u8,
+    line: usize,
 }
 
 impl<'a> StageData<'_> {
@@ -207,6 +207,7 @@ impl<'a> StageData<'_> {
             if record[0].contains('/') {
                 continue;
             }
+            // TODO real error handling in the function here
             let Some(enemy) = deserialise_single_enemy(record) else {
                 continue;
             };
@@ -262,7 +263,7 @@ fn read_header_lines<R: std::io::Read>(
     let mut line_1_or_2 = records
         .next()
         .ok_or((E::NotEnoughLines, 1))?
-        .map_err(|e| (E::ByteRecordError(e), 1))?;
+        .map_err(|e| (E::CSVRecordError(e), 1))?;
     // some stages (e.g. EoC) don't have the header line, and in those stages
     // the header line is the struct referred to as `Line2`.
 
@@ -280,7 +281,7 @@ fn read_header_lines<R: std::io::Read>(
         line_1_or_2 = records
             .next()
             .ok_or((E::NotEnoughLines, 2))?
-            .map_err(|e| (E::ByteRecordError(e), 2))?;
+            .map_err(|e| (E::CSVRecordError(e), 2))?;
         line_1_or_2 = remove_comment_ind(line_1_or_2, 9);
 
         head
@@ -302,7 +303,9 @@ fn read_header_lines<R: std::io::Read>(
     };
 
     let line_2 = line_1_or_2;
-    let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
+    let csv_line_2: Line2CSV = line_2
+        .deserialize(None)
+        .map_err(|e| (E::DeserialiseError(e), 2))?;
 
     Ok((csv_head, csv_line_2))
 }
