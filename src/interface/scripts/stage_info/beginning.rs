@@ -3,9 +3,9 @@
 use super::StageWikiDataContainer;
 use crate::{
     game_data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
-    wiki_data::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::variant::StageVariantID,
+    wiki_data::enemy_data::ENEMY_DATA,
     wikitext::wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
 };
 use std::{collections::HashSet, fmt::Write};

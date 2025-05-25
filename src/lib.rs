@@ -3,11 +3,11 @@
 #![warn(missing_docs)]
 pub mod config;
 pub mod game_data;
-pub mod wiki_data;
 mod interface;
 pub mod logger;
 pub mod meta;
 pub mod regex_handler;
+pub mod wiki_data;
 pub mod wikitext;
 
 pub use interface::Cli;

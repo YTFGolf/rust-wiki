@@ -114,7 +114,9 @@ fn get_reverse_map() -> HashMap<String, u32> {
 // Need to check id in these tests but don't want it to give clippy a stroke.
 mod tests {
     use super::*;
-    use crate::{game_data::stage::parsed::stage_enemy::MS_SIGN, wikitext::wiki_utils::extract_name};
+    use crate::{
+        game_data::stage::parsed::stage_enemy::MS_SIGN, wikitext::wiki_utils::extract_name,
+    };
     use std::collections::HashSet;
 
     #[test]

@@ -5,8 +5,8 @@ use crate::{
         map::raw::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
-    wiki_data::rewards::TREASURE_DATA,
     interface::error_handler::InfallibleWrite,
+    wiki_data::rewards::TREASURE_DATA,
     wikitext::template::TemplateParameter,
 };
 use num_format::{Locale, WriteFormatted};

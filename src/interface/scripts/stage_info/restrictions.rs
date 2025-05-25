@@ -8,8 +8,8 @@ use crate::{
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
         },
     },
-    wiki_data::cat_data::CAT_DATA,
     interface::error_handler::InfallibleWrite,
+    wiki_data::cat_data::CAT_DATA,
     wikitext::template::TemplateParameter,
 };
 use num_format::{Locale, WriteFormatted};

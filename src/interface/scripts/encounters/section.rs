@@ -2,8 +2,8 @@
 
 use super::chapter::Chapter;
 use crate::{
-    wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
     meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+    wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
 };
 use std::fmt::Write;
 use strum::EnumIter;
@@ -264,8 +264,7 @@ impl SectionRef {
 mod tests {
     use super::*;
     use crate::{
-        wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
-        interface::scripts::encounters::chapter::Stage,
+        interface::scripts::encounters::chapter::Stage, wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
     };
     use SectionRef as Ref;
     use std::borrow::Cow;

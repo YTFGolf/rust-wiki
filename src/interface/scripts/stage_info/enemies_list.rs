@@ -5,9 +5,9 @@ use crate::{
         stage::Stage,
         stage_enemy::{BossType, MS_SIGN, StageEnemy},
     },
-    wiki_data::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::variant::StageVariantID as T,
+    wiki_data::enemy_data::ENEMY_DATA,
     wikitext::template::TemplateParameter,
 };
 use either::Either::{Left, Right};

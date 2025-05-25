@@ -2,12 +2,12 @@
 
 use crate::{
     config::Config,
-    wiki_data::enemy_data::ENEMY_DATA,
     interface::cli::{
         base::BaseOptions,
         cli_util::{CommandExec, ConfigMerge},
         version_opt::VersionOptions,
     },
+    wiki_data::enemy_data::ENEMY_DATA,
 };
 use clap::{Args, command};
 

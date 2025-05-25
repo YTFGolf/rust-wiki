@@ -20,9 +20,9 @@ use crate::{
         stage::Stage,
         stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },
-    wiki_data::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::{map_id::MapID, stage_id::StageID},
+    wiki_data::enemy_data::ENEMY_DATA,
     wikitext::{
         section::Section,
         tabber::{Tabber, TabberTab, TabberType},
