@@ -209,7 +209,7 @@ where
 fn get_stage_mags(stage: &StageData, abs_enemy_id: u32) -> String {
     if stage.id.map() == &MapID::from_components(T::MainChapters, 0) {
         return String::new();
-    };
+    }
 
     let mut mags = vec![];
     for enemy in &stage.stage_csv_data.enemies {
@@ -347,7 +347,7 @@ fn get_section_map<'a>(
                     encounter.id.map().num()
                 );
                 continue;
-            };
+            }
         }
         let raw = raw;
 
@@ -355,7 +355,7 @@ fn get_section_map<'a>(
             sections_map[pos].1.push(encounter);
         } else {
             sections_map.push((raw, vec![encounter]));
-        };
+        }
         // if section in map then add to add to section, otherwise add new
         // section to map
     }

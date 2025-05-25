@@ -45,7 +45,7 @@ fn get_file_diff(old_content: &str, new_content: &str) -> String {
                 ChangeTag::Insert => write!(buf, "\x1b[38;2;0;200;0m").unwrap(),
                 ChangeTag::Delete => write!(buf, "\x1b[38;2;200;0;0m").unwrap(),
                 ChangeTag::Equal => (),
-            };
+            }
             write!(buf, "{}{}", change.tag(), change.to_string_lossy()).unwrap();
             write!(buf, "\x1b[38;2;255;255;255m").unwrap();
         }

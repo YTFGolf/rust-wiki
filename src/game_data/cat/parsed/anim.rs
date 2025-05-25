@@ -76,7 +76,7 @@ fn get_anim_data(path: &str, version: &Version) -> Result<AnimData, AnimDataErro
             // if has 4 items then has 3 commas
             if count != ANIM_LINE_LEN {
                 return None;
-            };
+            }
             let frame_no = line.split(',').next()?;
             frame_no.parse::<usize>().ok()
         })

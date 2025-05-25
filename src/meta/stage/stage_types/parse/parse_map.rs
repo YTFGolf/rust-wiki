@@ -18,13 +18,13 @@ use std::sync::LazyLock;
 pub fn parse_general_map_id(selector: &str) -> Option<MapID> {
     if let Ok(st) = parse_map_file(selector) {
         return Some(st);
-    };
+    }
     if let Ok(st) = parse_map_selector(selector) {
         return Some(st);
-    };
+    }
     if let Ok(st) = parse_map_ref(selector) {
         return Some(st);
-    };
+    }
 
     None
 }
@@ -140,7 +140,7 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
     if is_single_stage(variant) || is_single_map(variant) {
         // if type only has 1 stage/map then map num will always be 0
         return Ok(MapID::from_components(variant, 0));
-    };
+    }
 
     let map_num = iter
         .next()

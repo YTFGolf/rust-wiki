@@ -132,7 +132,7 @@ mod tests {
             match Cat::from_wiki_id(id, version) {
                 Ok(_) => (),
                 Err(E::UnitBuyNotFound) => break,
-            };
+            }
         }
     }
 }

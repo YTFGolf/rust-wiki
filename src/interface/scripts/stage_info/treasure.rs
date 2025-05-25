@@ -147,7 +147,7 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
         write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
         buf.write_str(" (100%, 1 time)").infallible_write();
         return buf;
-    };
+    }
 
     let (is_equal_chance, total) = get_total_chance(t);
 
@@ -177,7 +177,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> String {
         write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
         buf.write_str(" (100%, unlimited)").infallible_write();
         return buf;
-    };
+    }
 
     let (is_equal_chance, total) = get_total_chance(t);
 

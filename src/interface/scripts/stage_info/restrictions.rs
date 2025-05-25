@@ -48,7 +48,7 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
             // if i = 0 this gets the 1 at the end of the number
             if rarity_bit == 0 {
                 return None;
-            };
+            }
 
             let rarity = match i {
                 0 => "[[:Category:Normal Cats|Normal]]",

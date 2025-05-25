@@ -28,7 +28,7 @@ pub fn stage_name(stage: &Stage, lang: &Lang) -> TemplateParameter {
                 // maybe just put the 200px there always
             }
         }
-    };
+    }
     // base part
 
     write!(

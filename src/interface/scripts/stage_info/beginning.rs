@@ -58,7 +58,7 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
         (n, Some(_)) => {
             write!(buf, "{ord}", ord = get_ordinal(n + 1)).unwrap();
         }
-    };
+    }
     // only/nth/nth and final
 
     write!(

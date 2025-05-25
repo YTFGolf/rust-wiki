@@ -197,7 +197,7 @@ fn get_stage_option(path: &Path) -> HashMap<u32, Vec<StageOptionCSV>> {
             None => {
                 map.insert(result.mapid, vec![result]);
             }
-        };
+        }
     }
 
     map

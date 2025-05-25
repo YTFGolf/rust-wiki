@@ -171,7 +171,7 @@ fn get_nav(stage: &Stage, data: &StageWikiDataContainer) -> (String, String) {
 
     if let Some(continue_data) = stage.continue_data.as_ref() {
         next = merge_nav(next, get_continuation_stages(continue_data));
-    };
+    }
 
     (prev, next)
 }

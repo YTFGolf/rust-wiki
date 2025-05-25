@@ -82,7 +82,7 @@ pub fn enemies_list(
                     .unwrap();
                 buf.write_str("%").infallible_write();
             }
-        };
+        }
     }
     /// Write `|{enemy}|0` to `buf`.
     fn write_enemy_0(buf: &mut String, enemy: &StageEnemy, _: u32) {

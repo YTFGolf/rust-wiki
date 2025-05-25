@@ -88,14 +88,14 @@ fn get_single_enemy_line(
 
         write!(buf, "The enemy base here is {an} {name}.").unwrap();
         return buf;
-    };
+    }
 
     match enemy.amount {
         EnemyAmount::Infinite => buf += "Infinite",
         EnemyAmount::Limit(n) => {
             buf.write_formatted(&n, &Locale::en).infallible_write();
         }
-    };
+    }
 
     let is_single_enemy: bool = enemy.amount.is_singular();
     if is_single_enemy {

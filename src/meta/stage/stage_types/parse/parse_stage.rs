@@ -20,13 +20,13 @@ pub fn parse_general_stage_id(selector: &str) -> Option<StageID> {
     // from files, so just put that one first lol.
     if let Ok(st) = parse_stage_file(selector) {
         return Some(st);
-    };
+    }
     if let Ok(st) = parse_stage_selector(selector) {
         return Some(st);
-    };
+    }
     if let Ok(st) = parse_stage_ref(selector) {
         return Some(st);
-    };
+    }
 
     None
 }

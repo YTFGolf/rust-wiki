@@ -47,7 +47,7 @@ impl Display for Section {
         match &self.title {
             SectionTitle::Blank => (),
             SectionTitle::H2(title) => writeln!(f, "=={title}==")?,
-        };
+        }
         f.write_str(&self.content)
     }
 }
