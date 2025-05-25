@@ -41,6 +41,6 @@ impl CommandExec for EncountersOptions {
             Some(id) => *id,
         };
 
-        crate::interface::scripts::encounters::do_thing(id, config);
+        crate::interface::scripts::encounters::encounters::do_thing(id, config);
     }
 }
