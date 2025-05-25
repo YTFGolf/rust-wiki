@@ -2,7 +2,7 @@
 
 use crate::{
     config::Config,
-    data::map::parsed::map::GameMap,
+    game_data::map::parsed::map::GameMap,
     interface::{
         cli::{
             base::BaseOptions,

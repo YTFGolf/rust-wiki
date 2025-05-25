@@ -16,7 +16,7 @@ use super::{
 };
 use crate::{
     config::Config,
-    data::stage::parsed::{
+    game_data::stage::parsed::{
         stage::Stage,
         stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },

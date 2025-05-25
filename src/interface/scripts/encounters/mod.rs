@@ -6,7 +6,7 @@ pub mod section;
 pub mod zoutbreak;
 use crate::{
     config::Config,
-    data::{
+    game_data::{
         enemy::raw_encounters::stage_contains_enemy,
         stage::{get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
     },

@@ -1,7 +1,7 @@
 //! Get the battlegrounds section of stage.
 
 use crate::{
-    data::stage::parsed::{
+    game_data::stage::parsed::{
         stage::Stage,
         stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
     },

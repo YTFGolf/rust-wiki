@@ -1,6 +1,6 @@
 //! Deals with the config for version.
 
-use crate::data::version::Version;
+use crate::game_data::version::Version;
 use serde::{Deserialize, Serialize};
 use std::{env::home_dir, fmt::Display, path::PathBuf};
 

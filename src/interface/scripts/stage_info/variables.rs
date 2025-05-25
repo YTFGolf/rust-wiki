@@ -9,7 +9,7 @@ use super::misc_information::{chapter, difficulty, max_clears, stage_nav, star};
 use super::restrictions::{restrictions_info, restrictions_section, rules};
 use super::treasure::{score_rewards, treasure};
 use crate::config::Config;
-use crate::data::stage::parsed::stage::Stage;
+use crate::game_data::stage::parsed::stage::Stage;
 use crate::wikitext::template::Template;
 
 /// Default format for stage info.

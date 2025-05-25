@@ -2,7 +2,7 @@
 
 use crate::{
     config::version_config::Lang,
-    data::stage::parsed::stage::Stage,
+    game_data::stage::parsed::stage::Stage,
     wiki_data::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
     interface::error_handler::InfallibleWrite,
     meta::stage::{stage_types::transform::transform_map::map_img_code, variant::StageVariantID},

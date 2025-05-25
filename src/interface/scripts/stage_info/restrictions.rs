@@ -1,7 +1,7 @@
 //! Get the stage's restrictions.
 
 use crate::{
-    data::{
+    game_data::{
         map::special_rules::{ContentsType, RuleType},
         stage::{
             parsed::stage::{Restriction, RestrictionCrowns as Crowns, RestrictionStages, Stage},
@@ -318,7 +318,7 @@ pub fn rules(stage: &Stage) -> String {
 mod tests {
     use super::*;
     use crate::{
-        data::stage::parsed::stage::RestrictionCrowns,
+        game_data::stage::parsed::stage::RestrictionCrowns,
         meta::stage::{stage_id::StageID, variant::StageVariantID as T},
     };
 

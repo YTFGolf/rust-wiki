@@ -1,4 +1,4 @@
-use crate::{config::Config, data::map::parsed::map::GameMap};
+use crate::{config::Config, game_data::map::parsed::map::GameMap};
 
 use super::legend::{get_map_wiki_data, stage_table};
 

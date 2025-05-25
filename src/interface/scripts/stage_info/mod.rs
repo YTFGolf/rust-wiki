@@ -2,7 +2,7 @@
 
 use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
-use crate::data::stage::parsed::stage::Stage;
+use crate::game_data::stage::parsed::stage::Stage;
 use crate::wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
 use crate::interface::error_handler::InfallibleWrite;
 use crate::meta::stage::stage_id::StageID;

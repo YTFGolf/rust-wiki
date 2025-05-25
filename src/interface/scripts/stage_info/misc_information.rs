@@ -2,7 +2,7 @@
 
 use super::StageWikiDataContainer;
 use crate::{
-    data::stage::parsed::stage::{ContinueStages, Stage},
+    game_data::stage::parsed::stage::{ContinueStages, Stage},
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     regex_handler::static_regex,

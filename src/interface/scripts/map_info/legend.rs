@@ -1,7 +1,7 @@
 use super::reference;
 use crate::{
     config::Config,
-    data::{
+    game_data::{
         map::{
             map_data::GameMapData,
             parsed::map::{GameMap, ResetType},

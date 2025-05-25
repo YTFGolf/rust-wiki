@@ -2,7 +2,7 @@
 
 use crate::{
     config::Config,
-    data::stage::parsed::stage::Stage,
+    game_data::stage::parsed::stage::Stage,
     interface::{
         cli::{
             base::BaseOptions,

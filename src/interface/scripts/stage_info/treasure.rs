@@ -1,7 +1,7 @@
 //! Deals with the stage's rewards.
 
 use crate::{
-    data::{
+    game_data::{
         map::raw::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
@@ -243,7 +243,7 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 mod tests {
     use super::*;
     use crate::{
-        data::map::raw::csv_types::{TreasureCSV, TreasureType},
+        game_data::map::raw::csv_types::{TreasureCSV, TreasureType},
         meta::stage::{stage_id::StageID, variant::StageVariantID},
     };
 

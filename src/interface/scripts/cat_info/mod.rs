@@ -1,7 +1,7 @@
 //! Get info about a cat.
 
 pub mod cat_cli;
-use crate::{config::Config, data::cat::parsed::cat::Cat};
+use crate::{config::Config, game_data::cat::parsed::cat::Cat};
 
 /// Do thing.
 pub fn do_thing(wiki_id: u32, config: &Config) {

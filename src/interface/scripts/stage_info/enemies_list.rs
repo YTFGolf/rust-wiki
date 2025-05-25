@@ -1,7 +1,7 @@
 //! Module for the [enemies_list] function.
 
 use crate::{
-    data::stage::parsed::{
+    game_data::stage::parsed::{
         stage::Stage,
         stage_enemy::{BossType, MS_SIGN, StageEnemy},
     },

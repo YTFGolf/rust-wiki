@@ -230,7 +230,7 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::stage::parsed::stage::Stage;
+    use crate::game_data::stage::parsed::stage::Stage;
     use StageVariantID as T;
 
     #[test]
