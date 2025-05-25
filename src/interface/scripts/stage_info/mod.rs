@@ -15,12 +15,14 @@ pub mod enemies_list;
 pub mod information;
 pub mod misc_information;
 pub mod restrictions;
+pub mod stage_cli;
 mod tests;
 pub mod treasure;
 pub mod variables;
 
 /// Container for wiki data about a stage.
 pub struct StageWikiDataContainer {
+    // TODO rename
     /// Stage's map.
     pub stage_map: &'static MapWikiData,
     /// Stage itself.

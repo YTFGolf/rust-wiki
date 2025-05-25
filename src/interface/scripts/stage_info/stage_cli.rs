@@ -1,14 +1,17 @@
 //! `stage_info` command.
 
-use super::{
-    base::BaseOptions,
-    cli_util::{CommandExec, ConfigMerge},
-    version_opt::VersionOptions,
-};
 use crate::{
     config::Config,
     data::stage::parsed::stage::Stage,
-    interface::{cli::cli_util::input, scripts::stage_info::get_stage_info},
+    interface::{
+        cli::{
+            base::BaseOptions,
+            cli_util::input,
+            cli_util::{CommandExec, ConfigMerge},
+            version_opt::VersionOptions,
+        },
+        scripts::stage_info::get_stage_info,
+    },
     meta::stage::stage_types::iter_stage_types,
 };
 use clap::Args;

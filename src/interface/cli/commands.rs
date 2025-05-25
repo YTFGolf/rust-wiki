@@ -2,9 +2,14 @@
 
 use super::{
     cat_cli::CatInfoOptions, cli_util::CliCommand, encounters_cli::EncountersOptions,
-    gauntlet_cli::GauntletOptions, map_cli::MapInfoOptions, stage_cli::StageInfoOptions,
+    gauntlet_cli::GauntletOptions, map_cli::MapInfoOptions,
 };
-use crate::{config::Config, interface::scripts::read_wiki::wiki_cli::ReadWikiOptions};
+use crate::{
+    config::Config,
+    interface::scripts::{
+        read_wiki::wiki_cli::ReadWikiOptions, stage_info::stage_cli::StageInfoOptions,
+    },
+};
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Subcommand, PartialEq)]
