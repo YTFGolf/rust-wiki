@@ -1,6 +1,6 @@
 //! Data from `unitbuy.csv`.
 
-use crate::data::cat::raw::unitbuy::UnitBuy;
+use crate::game_data::cat::raw::unitbuy::UnitBuy;
 use std::num::NonZero;
 use strum::FromRepr;
 mod tests;

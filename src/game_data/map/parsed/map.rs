@@ -1,7 +1,7 @@
 //! Represents a map.
 
 use crate::{
-    data::{
+    game_data::{
         map::{map_data::GameMapData, special_rules::SpecialRule},
         stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
         version::Version,

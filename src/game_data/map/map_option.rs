@@ -1,6 +1,6 @@
 //! Module that deals with the `Map_option` file.
 
-use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
+use crate::{game_data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use csv::ByteRecord;
 use std::{collections::HashMap, num::NonZero, path::Path};
 

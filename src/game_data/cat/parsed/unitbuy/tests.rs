@@ -3,7 +3,7 @@
 use super::*;
 use crate::{
     config::TEST_CONFIG,
-    data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
+    game_data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
 };
 
 fn get_unitbuy(id: u32, version: &Version) -> UnitBuyData {

@@ -1,7 +1,7 @@
 //! Deals with unit animation data.
 
 use super::unitbuy::AncientEggInfo;
-use crate::data::version::Version;
+use crate::game_data::version::Version;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -90,7 +90,7 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        data::cat::{parsed::unitbuy::UnitBuyData, raw::unitbuy::UnitBuyContainer},
+        game_data::cat::{parsed::unitbuy::UnitBuyData, raw::unitbuy::UnitBuyContainer},
     };
 
     /// Egg data, amount of forms.

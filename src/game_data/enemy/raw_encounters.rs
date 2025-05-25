@@ -1,6 +1,6 @@
 //! Deals with enemy encounters.
 
-use crate::data::stage::raw::stage_data::StageData;
+use crate::game_data::stage::raw::stage_data::StageData;
 
 /// Does the stage contain the given enemy. Useful for filter operations.
 ///

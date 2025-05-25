@@ -8,7 +8,7 @@ use super::{
     special_rules::{SpecialRule, SpecialRules},
 };
 use crate::{
-    data::{
+    game_data::{
         stage::raw::stage_option::{StageOption, StageOptionCSV},
         version::Version,
     },

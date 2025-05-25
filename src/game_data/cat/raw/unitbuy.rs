@@ -1,6 +1,6 @@
 //! Module that deals with `unitbuy.csv` data.
 
-use crate::data::version::version_data::CacheableVersionData;
+use crate::game_data::version::version_data::CacheableVersionData;
 use csv::{ByteRecord, Error};
 use std::{fmt::Debug, path::Path};
 

@@ -5,7 +5,7 @@ use super::{
     cat_stats::CatStats,
     unitbuy::{AncientEggInfo, UnitBuyData},
 };
-use crate::data::{
+use crate::game_data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
     version::Version,
 };

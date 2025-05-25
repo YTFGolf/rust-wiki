@@ -1,14 +1,14 @@
 //! Module that deals with the `Stage_option` file.
 
 use crate::{
-    data::version::version_data::CacheableVersionData,
+    game_data::version::version_data::CacheableVersionData,
     meta::stage::{map_id::MapID, stage_id::StageID},
 };
 use std::{collections::HashMap, path::Path};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
-    use crate::data::version::version_data::CacheableVersionData;
+    use crate::game_data::version::version_data::CacheableVersionData;
     use std::path::Path;
     use strum::FromRepr;
 

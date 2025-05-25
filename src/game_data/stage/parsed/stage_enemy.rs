@@ -1,6 +1,6 @@
 //! Module that deals with getting information about enemies in stages.
 
-use crate::data::stage::raw::stage_data::csv_types::StageEnemyCSV;
+use crate::game_data::stage::raw::stage_data::csv_types::StageEnemyCSV;
 use either::Either::{self, Left, Right};
 use std::num::NonZeroU32;
 use strum::FromRepr;

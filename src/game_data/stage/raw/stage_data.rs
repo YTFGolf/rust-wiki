@@ -1,7 +1,7 @@
 //! Module that deals with getting information about stages.
 use super::stage_option::StageOptionCSV;
 use crate::{
-    data::{
+    game_data::{
         map::{
             map_data::GameMapData, map_option::MapOptionCSV, raw::csv_types::StageDataCSV,
             special_rules::SpecialRule,
@@ -343,7 +343,7 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        data::map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+        game_data::map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
         meta::stage::variant::StageVariantID as T,
     };
     use std::{io::Cursor, vec};

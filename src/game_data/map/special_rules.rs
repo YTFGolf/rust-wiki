@@ -1,6 +1,6 @@
 //! Deals with `SpecialRulesMap.json`.
 
-use crate::{data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
+use crate::{game_data::version::version_data::CacheableVersionData, meta::stage::map_id::MapID};
 use raw::{RawRuleData, RawRuleType, RulesMap};
 use std::{collections::HashMap, fs::File};
 use strum::FromRepr;

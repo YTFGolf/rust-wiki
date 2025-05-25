@@ -300,7 +300,7 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        data::cat::{
+        game_data::cat::{
             ability::{Surge, SurgeType, Wave, WaveType},
             parsed::cat::Cat,
         },

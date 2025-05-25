@@ -2,7 +2,7 @@
 
 use super::stage_enemy::StageEnemy;
 use crate::{
-    data::{
+    game_data::{
         map::{
             map_option::MapOptionCSV,
             raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
@@ -375,7 +375,7 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        data::stage::get_stage_files,
+        game_data::stage::get_stage_files,
         meta::stage::{
             stage_types::transform::transform_stage::stage_data_file, variant::StageVariantID as T,
         },

@@ -1,6 +1,6 @@
 //! Deals with raw CSV cat data.
 
-use crate::{data::version::Version, regex_handler::static_regex};
+use crate::{game_data::version::Version, regex_handler::static_regex};
 use csv::ByteRecord;
 use std::{
     fs::File,
