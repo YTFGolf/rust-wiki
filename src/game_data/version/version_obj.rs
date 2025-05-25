@@ -101,10 +101,10 @@ impl Version {
     /// ```rust,no_run
     /// use rust_wiki::game_data::map::cached::map_option::MapOption;
     /// # use rust_wiki::game_data::version::Version;
-    /// # use rust_wiki::config::version_config::Lang;
+    /// # use rust_wiki::SLang;
     /// # use rust_wiki::game_data::meta::stage::map_id::MapID;
     ///
-    /// let version = Version::new("~", Lang::EN, Some("1.0".into()));
+    /// let version = Version::new("~", SLang::EN, Some("1.0".into()));
     /// let map_option = version.get_cached_file::<MapOption>();
     /// let earthshaker_option = map_option.get_map(&MapID::from_numbers(0, 0));
     /// ```

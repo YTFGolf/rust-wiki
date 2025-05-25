@@ -35,7 +35,7 @@ const TOTAL_VERSIONS: usize = 2;
 ///
 /// Make sure to initialise the config before it is read.
 /// ```
-/// # use rust_wiki::config::version_config::VersionConfig;
+/// # use rust_wiki::VersionConfig;
 /// let mut new_vc = VersionConfig::default();
 /// assert!(matches!(new_vc.try_current_version(), None));
 /// new_vc.init_all();

@@ -10,5 +10,5 @@ pub mod wikitext;
 
 #[cfg(test)]
 pub use interface::TEST_CONFIG;
-pub use interface::{CONFIG_FILE, Cli, Config, SLang};
+pub use interface::{CONFIG_FILE, Cli, Config, SLang, VersionConfig};
 // TODO something about these being fully public
