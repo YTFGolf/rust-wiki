@@ -57,7 +57,7 @@ fn get_ex_option(path: &Path) -> Option<Vec<ExOptionCSV>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TEST_CONFIG;
+    use crate::TEST_CONFIG;
     use std::collections::HashSet;
 
     #[test]

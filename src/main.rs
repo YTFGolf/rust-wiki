@@ -1,17 +1,18 @@
-use clap::Parser;
-use rust_wiki::{
-    Cli,
-    config::{CONFIG_FILE, Config},
-    logger::{init_logger, set_log_level},
-};
 use std::process::exit;
 
+use clap::Parser;
+use rust_wiki::{
+    CONFIG_FILE, Cli, Config,
+    logger::{init_logger, set_log_level},
+};
+
+/// Initialise the user config.
 fn initialise_config() -> ! {
     println!("Config not found, initialising...");
     Config::initialise();
     println!("Config initialised at {CONFIG_FILE}. Exiting program.");
 
-    exit(0);
+    exit(0)
 }
 
 fn main() {

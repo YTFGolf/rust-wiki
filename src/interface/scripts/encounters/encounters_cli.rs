@@ -1,7 +1,7 @@
 //! `encounters` command.
 
 use crate::{
-    config::Config,
+    interface::config::Config,
     interface::cli::{
         base::BaseOptions,
         cli_util::{CommandExec, ConfigMerge},

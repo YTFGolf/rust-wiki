@@ -12,7 +12,7 @@ use super::super::{
     },
 };
 use crate::{
-    config::Config,
+    interface::config::Config,
     game_data::{
         meta::stage::{map_id::MapID, stage_id::StageID},
         stage::parsed::{

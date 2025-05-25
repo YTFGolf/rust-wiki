@@ -730,7 +730,7 @@ impl Ability {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, game_data::cat::raw::stats::read_data_file};
+    use crate::{TEST_CONFIG, game_data::cat::raw::stats::read_data_file};
     use Ability as A;
     use std::iter::zip;
 

@@ -1,6 +1,6 @@
 //! Utility functions and traits for the cli.
 
-use crate::config::Config;
+use crate::interface::config::Config;
 use std::io::{self, Write};
 
 /// Syntax sugar for a function that works like Python's `input`.

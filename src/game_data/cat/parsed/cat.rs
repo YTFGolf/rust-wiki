@@ -118,7 +118,7 @@ impl Cat {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TEST_CONFIG;
+    use crate::TEST_CONFIG;
 
     #[test]
     #[ignore]

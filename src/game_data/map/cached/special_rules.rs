@@ -269,7 +269,7 @@ impl CacheableVersionData for SpecialRules {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TEST_CONFIG;
+    use crate::TEST_CONFIG;
 
     #[test]
     fn assert_no_placeholders() {

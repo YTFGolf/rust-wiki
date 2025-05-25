@@ -1,4 +1,4 @@
-use crate::{config::Config, game_data::cat::parsed::cat::Cat};
+use crate::{interface::config::Config, game_data::cat::parsed::cat::Cat};
 
 /// Do thing.
 pub fn do_thing(wiki_id: u32, config: &Config) {

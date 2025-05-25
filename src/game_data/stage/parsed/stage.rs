@@ -361,7 +361,7 @@ impl Stage {
     /// Create a new stage object from `selector` in current version.
     #[cfg(test)]
     pub fn from_id_current(id: StageID) -> Option<Self> {
-        use crate::config::TEST_CONFIG;
+        use crate::TEST_CONFIG;
         Self::from_id(id, TEST_CONFIG.version.current_version())
     }
 }
@@ -370,7 +370,7 @@ impl Stage {
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG,
+        TEST_CONFIG,
         game_data::{
             meta::stage::{
                 stage_types::transform::transform_stage::stage_data_file,

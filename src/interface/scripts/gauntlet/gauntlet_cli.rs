@@ -1,7 +1,7 @@
 //! `gauntlet` command.
 
 use crate::{
-    config::Config,
+    interface::config::Config,
     game_data::meta::stage::stage_types::parse::parse_map::parse_general_map_id,
     interface::{
         cli::{

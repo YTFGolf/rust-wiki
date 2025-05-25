@@ -1,6 +1,6 @@
 use super::map_info::reference;
 use crate::{
-    config::Config,
+    interface::config::Config,
     game_data::{
         map::{
             parsed::map::{GameMap, ResetType},
@@ -372,7 +372,7 @@ pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::TEST_CONFIG, game_data::meta::stage::map_id::MapID};
+    use crate::{TEST_CONFIG, game_data::meta::stage::map_id::MapID};
 
     #[test]
     fn test_full() {

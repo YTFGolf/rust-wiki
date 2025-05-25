@@ -3,11 +3,11 @@
 
 use super::{stage_info::get_stage_wiki_data, variables::get_stage_variable};
 use crate::{
-    config::{Config, TEST_CONFIG, version_config::Lang},
     game_data::{
         meta::stage::{stage_id::StageID, variant::StageVariantID as T},
         stage::parsed::stage::Stage,
     },
+    interface::config::{Config, TEST_CONFIG}, SLang,
 };
 
 // these were all generated on a different branch.
@@ -155,7 +155,7 @@ pub const DOJO: &str = "{{Stage Info
 fn get_config() -> Config {
     let mut config = TEST_CONFIG.clone();
     config.version.init_all();
-    config.version.set_lang(Lang::EN);
+    config.version.set_lang(SLang::EN);
     config
 }
 

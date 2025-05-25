@@ -1,7 +1,7 @@
 //! `stage_info` command.
 
 use crate::{
-    config::Config,
+    interface::config::Config,
     game_data::{meta::stage::stage_types::iter_stage_types, stage::parsed::stage::Stage},
     interface::{
         cli::{
@@ -104,7 +104,7 @@ impl CommandExec for StageInfoOptions {
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG,
+        TEST_CONFIG,
         interface::cli::commands::{Cli, Command},
     };
     use clap::Parser;

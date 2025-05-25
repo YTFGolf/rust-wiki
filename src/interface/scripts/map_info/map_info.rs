@@ -1,6 +1,6 @@
 use super::{event::get_event_map, legend::get_legend_map};
 use crate::{
-    config::Config,
+    interface::config::Config,
     game_data::{
         map::parsed::map::GameMap,
         meta::stage::{map_id::MapID, variant::StageVariantID},

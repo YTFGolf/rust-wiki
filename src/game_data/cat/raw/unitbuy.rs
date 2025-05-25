@@ -148,7 +148,7 @@ impl CacheableVersionData for UnitBuyContainer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TEST_CONFIG;
+    use crate::TEST_CONFIG;
 
     #[test]
     fn test_file_reader() {

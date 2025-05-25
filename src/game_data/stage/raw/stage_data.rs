@@ -341,7 +341,7 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG,
+        TEST_CONFIG,
         game_data::{
             map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
             meta::stage::variant::StageVariantID as T,

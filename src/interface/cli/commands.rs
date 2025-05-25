@@ -2,7 +2,7 @@
 
 use super::cli_util::CliCommand;
 use crate::{
-    config::Config,
+    interface::config::Config,
     interface::scripts::{
         cat_info::cat_cli::CatInfoOptions, encounters::encounters_cli::EncountersOptions,
         gauntlet::gauntlet_cli::GauntletOptions, map_info::map_cli::MapInfoOptions,

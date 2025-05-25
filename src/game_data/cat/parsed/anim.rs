@@ -89,7 +89,7 @@ fn get_anim_data(path: &str, version: &Version) -> Result<AnimData, AnimDataErro
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG,
+        TEST_CONFIG,
         game_data::cat::{parsed::unitbuy::UnitBuyData, raw::unitbuy::UnitBuyContainer},
     };
 

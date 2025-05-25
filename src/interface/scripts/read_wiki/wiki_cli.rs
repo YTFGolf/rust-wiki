@@ -1,7 +1,7 @@
 //! `read_wiki` command.
 
 use crate::{
-    config::Config,
+    interface::config::Config,
     interface::{
         cli::{
             base::BaseOptions,

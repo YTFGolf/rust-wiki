@@ -299,7 +299,7 @@ impl CatStats {
 mod tests {
     use super::*;
     use crate::{
-        config::TEST_CONFIG,
+        TEST_CONFIG,
         game_data::cat::{
             ability::{Surge, SurgeType, Wave, WaveType},
             parsed::cat::Cat,

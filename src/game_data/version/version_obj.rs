@@ -1,7 +1,7 @@
 //! Deals with getting information about a certain version of the game.
 
 use super::version_data::CacheableVersionData;
-use crate::config::version_config::Lang;
+use crate::SLang;
 use std::{
     any::{Any, TypeId},
     path::{Path, PathBuf},
@@ -33,11 +33,11 @@ impl TryFrom<&str> for VersionLanguage {
         }
     }
 }
-impl From<Lang> for VersionLanguage {
-    fn from(value: Lang) -> Self {
+impl From<SLang> for VersionLanguage {
+    fn from(value: SLang) -> Self {
         match value {
-            Lang::EN => Self::EN,
-            Lang::JP => Self::JP,
+            SLang::EN => Self::EN,
+            SLang::JP => Self::JP,
         }
     }
 }
@@ -60,7 +60,7 @@ pub struct Version {
 }
 impl Version {
     /// Create new Version object.
-    pub fn new<P>(location: P, language: Lang, number: Option<String>) -> Self
+    pub fn new<P>(location: P, language: SLang, number: Option<String>) -> Self
     where
         PathBuf: From<P>,
     {

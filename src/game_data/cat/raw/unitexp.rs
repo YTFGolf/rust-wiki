@@ -131,7 +131,7 @@ impl Levelling {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::TEST_CONFIG;
+    use crate::TEST_CONFIG;
     use std::path::Path;
 
     fn get_unitexp(path: &Path) -> Vec<UnitExp> {

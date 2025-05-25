@@ -4,7 +4,7 @@ use super::{
     zoutbreak::manual_zoutbreak_replace,
 };
 use crate::{
-    config::Config,
+    interface::config::Config,
     game_data::{
         enemy::raw_encounters::stage_contains_enemy,
         meta::stage::{
