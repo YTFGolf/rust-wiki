@@ -1,5 +1,7 @@
-use super::super::format_parser::{ParseType, parse_info_format};
-use super::variables::{DEFAULT_FORMAT, get_stage_variable};
+use super::{
+    super::format_parser::{ParseType, parse_info_format},
+    variables::{DEFAULT_FORMAT, get_stage_variable},
+};
 use crate::{
     config::Config,
     game_data::{meta::stage::stage_id::StageID, stage::parsed::stage::Stage},

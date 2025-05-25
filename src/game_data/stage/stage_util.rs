@@ -1,7 +1,6 @@
 //! Utility functions for dealing with stages.
 
-use super::super::version::Version;
-use super::raw::stage_data::StageData;
+use super::{super::version::Version, raw::stage_data::StageData};
 use crate::regex_handler::static_regex;
 
 /// Get a list of all stage data files in the game.
