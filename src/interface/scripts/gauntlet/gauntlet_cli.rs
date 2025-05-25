@@ -1,13 +1,15 @@
 //! `gauntlet` command.
 
-use super::{
-    base::BaseOptions,
-    cli_util::{CommandExec, ConfigMerge},
-    version_opt::VersionOptions,
-};
 use crate::{
     config::Config,
-    interface::{cli::cli_util::input, scripts::gauntlet::map_gauntlet},
+    interface::{
+        cli::{
+            base::BaseOptions,
+            cli_util::{CommandExec, ConfigMerge, input},
+            version_opt::VersionOptions,
+        },
+        scripts::gauntlet::map_gauntlet,
+    },
     meta::stage::stage_types::parse::parse_map::parse_general_map_id,
 };
 use clap::Args;

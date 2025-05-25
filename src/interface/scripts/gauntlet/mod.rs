@@ -1,5 +1,6 @@
 //! Gaunlet page script.
 
+pub mod gauntlet_cli;
 use super::{
     map_info::reference,
     stage_info::{
