@@ -190,8 +190,7 @@ impl<'a> StageData<'_> {
 
     /// Read a stage's csv file and obtain the data from it.
     pub fn read_stage_csv<R: std::io::Read>(reader: R) -> Result<RawCSVData, CSVParseErrorLine> {
-        // TODO really needs proper error handling
-        // type E = CSVParseErrorKind;
+        type E = CSVParseErrorKind;
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .trim(csv::Trim::All)
@@ -202,8 +201,12 @@ impl<'a> StageData<'_> {
         let (header, line2) = read_header_lines(&mut records)?;
 
         let mut enemies = vec![];
-        for result in rdr.records() {
-            let record = result.unwrap();
+        for (i, result) in rdr.records().enumerate() {
+            const OFFSET: usize = 2;
+            let record = result.map_err(|e| (E::CSVRecordError(e), OFFSET + i))?;
+
+            assert!(!record.is_empty());
+            // below would panic anyway without this assert
             if record[0].contains('/') {
                 continue;
             }
@@ -320,6 +323,9 @@ fn remove_comment_ind(mut record: ByteRecord, index: usize) -> ByteRecord {
     record
 }
 
+#[allow(clippy::unwrap_used)]
+// I really can't be bothered to make this look nice rn
+// FIXME this
 fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
     let record: StageEnemyCSV = match result.deserialize(None) {
         Ok(r) => r,
