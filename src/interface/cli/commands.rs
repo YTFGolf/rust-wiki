@@ -1,14 +1,11 @@
 //! Contains all CLI commands.
 
-use super::{
-    cat_cli::CatInfoOptions, cli_util::CliCommand, gauntlet_cli::GauntletOptions,
-    map_cli::MapInfoOptions,
-};
+use super::{cat_cli::CatInfoOptions, cli_util::CliCommand, gauntlet_cli::GauntletOptions};
 use crate::{
     config::Config,
     interface::scripts::{
-        encounters::encounters_cli::EncountersOptions, read_wiki::wiki_cli::ReadWikiOptions,
-        stage_info::stage_cli::StageInfoOptions,
+        encounters::encounters_cli::EncountersOptions, map_info::map_cli::MapInfoOptions,
+        read_wiki::wiki_cli::ReadWikiOptions, stage_info::stage_cli::StageInfoOptions,
     },
 };
 use clap::{Parser, Subcommand};

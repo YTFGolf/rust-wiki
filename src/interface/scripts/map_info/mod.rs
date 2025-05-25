@@ -2,6 +2,7 @@
 
 mod event;
 mod legend;
+pub mod map_cli;
 use crate::{
     config::Config,
     data::map::parsed::map::GameMap,

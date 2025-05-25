@@ -1,14 +1,17 @@
 //! `map_info` command.
 
-use super::{
-    base::BaseOptions,
-    cli_util::{CommandExec, ConfigMerge},
-    version_opt::VersionOptions,
-};
 use crate::{
     config::Config,
     data::map::parsed::map::GameMap,
-    interface::{cli::cli_util::input, scripts::map_info::get_map_info},
+    interface::{
+        cli::{
+            base::BaseOptions,
+            cli_util::input,
+            cli_util::{CommandExec, ConfigMerge},
+            version_opt::VersionOptions,
+        },
+        scripts::map_info::get_map_info,
+    },
 };
 use clap::Args;
 
