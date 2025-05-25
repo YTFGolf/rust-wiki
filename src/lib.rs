@@ -3,7 +3,7 @@
 #![warn(missing_docs)]
 pub mod config;
 pub mod data;
- mod interface;
+mod interface;
 pub mod logger;
 pub mod meta;
 pub mod regex_handler;
