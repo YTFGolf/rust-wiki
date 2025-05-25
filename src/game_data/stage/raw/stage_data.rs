@@ -25,6 +25,7 @@ use std::{
 
 /// Types to deserialise csv files.
 pub mod csv_types {
+    // TODO split this up
     #[derive(Debug, serde::Deserialize)]
     /// Data stored in the header of the csv file (minus most Main Chapters).
     pub struct HeaderCSV {

@@ -8,6 +8,7 @@ use std::{collections::HashMap, path::Path};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
+    // TODO split this up
     use crate::game_data::version::version_data::CacheableVersionData;
     use std::path::Path;
     use strum::FromRepr;
