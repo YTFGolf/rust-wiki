@@ -10,6 +10,7 @@ use crate::{
         enemy::raw_encounters::stage_contains_enemy,
         stage::{get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
     },
+    data_files::stage_wiki_data::STAGE_WIKI_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::{
         map_id::{MainType, MapID},
@@ -17,10 +18,7 @@ use crate::{
         variant::StageVariantID as T,
     },
     regex_handler::static_regex,
-    wikitext::{
-        data_files::stage_wiki_data::STAGE_WIKI_DATA,
-        wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
-    },
+    wikitext::wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
 };
 use chapter::{Chapter, Group, Stage};
 use either::Either::{Left, Right};

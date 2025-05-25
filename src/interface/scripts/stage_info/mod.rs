@@ -3,10 +3,10 @@
 use super::format_parser::{ParseType, parse_info_format};
 use crate::config::Config;
 use crate::data::stage::parsed::stage::Stage;
+use crate::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
 use crate::interface::error_handler::InfallibleWrite;
 use crate::meta::stage::stage_id::StageID;
 use crate::regex_handler::static_regex;
-use crate::wikitext::data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
 use std::fmt::{Display, Write};
 use variables::{DEFAULT_FORMAT, get_stage_variable};
 pub mod battlegrounds;

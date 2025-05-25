@@ -3,13 +3,10 @@
 use super::StageWikiDataContainer;
 use crate::{
     data::stage::parsed::stage::{ContinueStages, Stage},
+    data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
     meta::stage::{map_id::MapID, stage_id::StageID, variant::StageVariantID as T},
     regex_handler::static_regex,
-    wikitext::{
-        data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
-        template::TemplateParameter,
-        wiki_utils::OLD_OR_REMOVED_SUB,
-    },
+    wikitext::{template::TemplateParameter, wiki_utils::OLD_OR_REMOVED_SUB},
 };
 use std::borrow::Cow;
 

@@ -5,9 +5,10 @@ use crate::{
         stage::Stage,
         stage_enemy::{BossType, MS_SIGN, StageEnemy},
     },
+    data_files::enemy_data::ENEMY_DATA,
     interface::error_handler::InfallibleWrite,
     meta::stage::variant::StageVariantID as T,
-    wikitext::{data_files::enemy_data::ENEMY_DATA, template::TemplateParameter},
+    wikitext::template::TemplateParameter,
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};

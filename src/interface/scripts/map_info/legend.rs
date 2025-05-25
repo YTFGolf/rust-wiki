@@ -8,6 +8,7 @@ use crate::{
         },
         version::Version,
     },
+    data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
     interface::{
         error_handler::InfallibleWrite,
         scripts::format_parser::{ParseType, parse_info_format},
@@ -16,10 +17,7 @@ use crate::{
         map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
         variant::StageVariantID,
     },
-    wikitext::{
-        data_files::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
-        wiki_utils::{extract_link, extract_name, get_ordinal},
-    },
+    wikitext::wiki_utils::{extract_link, extract_name, get_ordinal},
 };
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;

@@ -5,8 +5,9 @@ use crate::{
         map::raw::csv_types::{TreasureCSV, TreasureType as T},
         stage::parsed::stage::{Stage, StageRewards},
     },
+    data_files::rewards::TREASURE_DATA,
     interface::error_handler::InfallibleWrite,
-    wikitext::{data_files::rewards::TREASURE_DATA, template::TemplateParameter},
+    wikitext::template::TemplateParameter,
 };
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
