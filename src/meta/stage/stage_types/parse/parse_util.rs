@@ -18,7 +18,7 @@ pub enum StageTypeParseError {
 }
 
 /// Get the [`StageVariantID`] the code corresponds to.
-fn get_variant_from_code(code: &str) -> Option<StageVariantID> {
+pub fn get_variant_from_code(code: &str) -> Option<StageVariantID> {
     for stype in iter_stage_types() {
         if stype.matcher.re.is_match(code) {
             return Some(stype.data.variant_id);
@@ -30,13 +30,13 @@ fn get_variant_from_code(code: &str) -> Option<StageVariantID> {
 }
 
 /// Variant only has a single stage.
-fn is_single_stage(v: StageVariantID) -> bool {
+pub fn is_single_stage(v: StageVariantID) -> bool {
     type T = StageVariantID;
     matches!(v, T::Challenge | T::Filibuster)
 }
 
 /// Variant only has a single map but multiple stages.
-fn is_single_map(v: StageVariantID) -> bool {
+pub fn is_single_map(v: StageVariantID) -> bool {
     type T = StageVariantID;
     matches!(v, T::AkuRealms | T::Labyrinth)
 }

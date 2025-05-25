@@ -1,6 +1,6 @@
 //! Transform [`StageID`] data into various formats.
 
-use super::CustomVariantID as T;
+use super::transform_util::CustomVariantID as T;
 use crate::meta::stage::{
     map_id::MainType,
     stage_id::StageID,

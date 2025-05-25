@@ -4,7 +4,7 @@ use crate::meta::stage::variant::StageVariantID;
 ///
 /// [StageCodeType]: crate::meta::stage::stage_types::types::StageCodeType
 #[derive(Debug, PartialEq)]
-enum CustomVariantID {
+pub enum CustomVariantID {
     MainChapters,
     EocOutbreak,
     ItfOutbreak,

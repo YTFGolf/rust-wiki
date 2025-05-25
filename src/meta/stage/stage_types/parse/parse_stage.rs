@@ -1,7 +1,7 @@
 //! Parse [`StageID`] from various formats.
 
 use super::parse_map::parse_map_selector;
-use super::{StageTypeParseError, is_single_map, is_single_stage};
+use super::parse_util::{StageTypeParseError, is_single_map, is_single_stage};
 use crate::meta::stage::variant::VariantSize;
 use crate::meta::stage::{
     map_id::{MapID, MapSize},
