@@ -1,11 +1,14 @@
 //! `encounters` command.
 
-use super::{
-    base::BaseOptions,
-    cli_util::{CommandExec, ConfigMerge},
-    version_opt::VersionOptions,
+use crate::{
+    config::Config,
+    interface::cli::{
+        base::BaseOptions,
+        cli_util::{CommandExec, ConfigMerge},
+        version_opt::VersionOptions,
+    },
+    wikitext::data_files::enemy_data::ENEMY_DATA,
 };
-use crate::{config::Config, wikitext::data_files::enemy_data::ENEMY_DATA};
 use clap::{Args, command};
 
 #[derive(Debug, Args, PartialEq)]
