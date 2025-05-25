@@ -13,7 +13,7 @@ use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
 /// Get the `|stage name` parameter.
-pub fn stage_name(stage: &Stage, lang: &Lang) -> TemplateParameter {
+pub fn stage_name(stage: &Stage, lang: Lang) -> TemplateParameter {
     let mut buf = String::new();
 
     match stage.anim_base_id {
@@ -45,7 +45,7 @@ pub fn stage_name(stage: &Stage, lang: &Lang) -> TemplateParameter {
 }
 
 /// Get the `|stage location` parameter.
-pub fn stage_location(stage: &Stage, lang: &Lang) -> TemplateParameter {
+pub fn stage_location(stage: &Stage, lang: Lang) -> TemplateParameter {
     let buf = format!(
         "[[File:Mapname{map_num:03} {type_code} {lang}.png]]",
         map_num = stage.id.map().num(),
@@ -208,9 +208,9 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::SoL, 17, 5)).unwrap();
         let mut buf = String::new();
 
-        write!(buf, "{}", stage_name(&great_escaper, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_name(&great_escaper, Lang::EN)).unwrap();
         buf += "\n";
-        write!(buf, "{}", stage_location(&great_escaper, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_location(&great_escaper, Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
@@ -224,9 +224,9 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Enigma, 10, 0)).unwrap();
         let mut buf = String::new();
 
-        write!(buf, "{}", stage_name(&red_summit, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_name(&red_summit, Lang::EN)).unwrap();
         buf += "\n";
-        write!(buf, "{}", stage_location(&red_summit, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_location(&red_summit, Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
@@ -239,9 +239,9 @@ mod tests {
         let finale = Stage::from_id_current(StageID::from_components(T::Collab, 209, 0)).unwrap();
         let mut buf = String::new();
 
-        write!(buf, "{}", stage_name(&finale, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_name(&finale, Lang::EN)).unwrap();
         buf += "\n";
-        write!(buf, "{}", stage_location(&finale, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_location(&finale, Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\
@@ -255,7 +255,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Extra, 61, 2)).unwrap();
         let mut buf = String::new();
 
-        write!(buf, "{}", stage_name(&relay_1600m, &Lang::EN)).unwrap();
+        write!(buf, "{}", stage_name(&relay_1600m, Lang::EN)).unwrap();
         assert_eq!(
             buf,
             "\

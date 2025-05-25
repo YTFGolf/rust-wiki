@@ -87,8 +87,8 @@ impl VersionConfig {
     }
 
     /// Get configured language.
-    pub fn lang(&self) -> &Lang {
-        &self.lang
+    pub fn lang(&self) -> Lang {
+        self.lang
     }
 }
 impl VersionConfig {

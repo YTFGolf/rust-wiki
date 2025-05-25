@@ -251,11 +251,11 @@ pub enum SectionRef {
 impl SectionRef {
     /// Get the index of the section in the ordered list of sections. Can be
     /// used as an ordering function.
-    pub const fn index(&self) -> u8 {
-        *self as u8
+    pub const fn index(self) -> u8 {
+        self as u8
     }
     /// Get the defined section.
-    pub const fn section(&self) -> &'static EncountersSection {
+    pub const fn section(self) -> &'static EncountersSection {
         &SECTIONS[self.index() as usize]
     }
 }
