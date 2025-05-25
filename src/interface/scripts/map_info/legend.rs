@@ -3,7 +3,7 @@ use crate::{
     config::Config,
     game_data::{
         map::{
-            map_data::GameMapData,
+            raw::map_data::GameMapData,
             parsed::map::{GameMap, ResetType},
         },
         meta::stage::{

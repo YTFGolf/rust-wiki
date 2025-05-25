@@ -1,11 +1,13 @@
 //! Module that deals with getting information about stage maps.
 
-use super::{
-    drop_item::{DropItem, DropItemRaw},
-    ex_option::ExOption,
-    map_option::{MapOption, MapOptionCSV},
+use super::super::{
+    cacheable::{
+        drop_item::{DropItem, DropItemRaw},
+        ex_option::ExOption,
+        map_option::{MapOption, MapOptionCSV},
+        special_rules::{SpecialRule, SpecialRules},
+    },
     raw::csv_types::{HeaderCSV, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
-    special_rules::{SpecialRule, SpecialRules},
 };
 use crate::game_data::{
     meta::stage::{

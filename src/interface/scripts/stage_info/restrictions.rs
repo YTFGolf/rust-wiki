@@ -2,7 +2,7 @@
 
 use crate::{
     game_data::{
-        map::special_rules::{ContentsType, RuleType},
+        map::cacheable::special_rules::{ContentsType, RuleType},
         stage::{
             parsed::stage::{Restriction, RestrictionCrowns as Crowns, RestrictionStages, Stage},
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
