@@ -276,8 +276,8 @@ mod tests {
         // both for unused special rule and for string version
         let version = TEST_CONFIG.version.current_version();
         let rules = version.get_cached_file::<SpecialRules>();
-        for rule in rules.map.iter() {
-            for rtype in rule.1.rule_type.iter() {
+        for rule in &rules.map {
+            for rtype in &rule.1.rule_type {
                 if let RuleType::Placeholder(n) = rtype {
                     panic!("Unknown SpecialRule id: {n}");
                 }

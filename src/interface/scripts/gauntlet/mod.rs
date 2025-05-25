@@ -145,7 +145,7 @@ fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
     }
 
     let mut enemies_by_id = vec![];
-    for enemy in stage.enemies.iter() {
+    for enemy in &stage.enemies {
         // needs to be kept in line with `enemy_mag_lines`
         if enemy.id == MS_SIGN {
             continue;
