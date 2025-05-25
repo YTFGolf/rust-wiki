@@ -1,6 +1,6 @@
 //! Module that gets information about enemy names and data.
 
-use super::super::file_handler::{FileLocation, get_file_location};
+use crate::wikitext::file_handler::get_wiki_data_location;
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
 
@@ -75,7 +75,7 @@ fn get_enemy_names() -> Vec<EnemyName> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b',')
         .comment(Some(b'#'))
-        .from_path(get_file_location(&FileLocation::WikiData).join("EnemyLinkData.csv"));
+        .from_path(get_wiki_data_location().join("EnemyLinkData.csv"));
 
     rdr.unwrap()
         .deserialize::<EnemyName>()
@@ -85,7 +85,7 @@ fn get_enemy_names() -> Vec<EnemyName> {
 fn get_enemy_data() -> HashMap<u32, EnemyData> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b'\t')
-        .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"));
+        .from_path(get_wiki_data_location().join("EnemyNames.csv"));
 
     rdr.unwrap()
         .deserialize::<EnemyData>()
@@ -98,7 +98,7 @@ fn get_enemy_data() -> HashMap<u32, EnemyData> {
 fn get_reverse_map() -> HashMap<String, u32> {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b'\t')
-        .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"));
+        .from_path(get_wiki_data_location().join("EnemyNames.csv"));
 
     rdr.unwrap()
         .deserialize::<EnemyData>()
@@ -128,7 +128,7 @@ mod tests {
     fn test_no_duplicate_data_keys() {
         let mut rdr = csv::ReaderBuilder::new()
             .delimiter(b'\t')
-            .from_path(get_file_location(&FileLocation::WikiData).join("EnemyNames.csv"))
+            .from_path(get_wiki_data_location().join("EnemyNames.csv"))
             .unwrap();
 
         let it = rdr.deserialize::<EnemyData>();

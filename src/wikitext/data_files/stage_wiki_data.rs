@@ -4,7 +4,7 @@ use crate::{
     meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::MAX_VARIANT_INDEX, variant::StageVariantID,
     },
-    wikitext::file_handler::{FileLocation, get_file_location},
+    wikitext::file_handler::get_wiki_data_location,
 };
 use serde::Deserialize;
 use std::{collections::HashMap, sync::LazyLock};
@@ -133,7 +133,7 @@ fn get_stage_name_map() -> StageNameMap {
     let rdr = csv::ReaderBuilder::new()
         .delimiter(b',')
         .comment(Some(b'#'))
-        .from_path(get_file_location(&FileLocation::WikiData).join("StageNames.csv"));
+        .from_path(get_wiki_data_location().join("StageNames.csv"));
 
     for result in rdr.expect("couldn't open stage names map").deserialize() {
         let record: StageNamesLine = result.expect("invalid stage names line");
@@ -198,7 +198,7 @@ fn get_continue_stages_map() -> ContinueStagesMap {
     let rdr = csv::ReaderBuilder::new()
         .has_headers(true)
         .delimiter(b',')
-        .from_path(get_file_location(&FileLocation::WikiData).join("ContinueStages.csv"));
+        .from_path(get_wiki_data_location().join("ContinueStages.csv"));
 
     // expect is fine since this is static
     rdr.expect("couldn't open continue stages map")
@@ -215,7 +215,7 @@ fn get_stage_difficulty_map() -> StageDifficultyMap {
         .has_headers(false)
         .delimiter(b'\t')
         .comment(Some(b'#'))
-        .from_path(get_file_location(&FileLocation::WikiData).join("Difficulty.txt"));
+        .from_path(get_wiki_data_location().join("Difficulty.txt"));
 
     // expect is fine since this is static
     rdr.expect("couldn't open stage difficulty map")
@@ -253,7 +253,7 @@ mod tests {
         let rdr = csv::ReaderBuilder::new()
             .has_headers(true)
             .delimiter(b',')
-            .from_path(get_file_location(&FileLocation::WikiData).join("ContinueStages.csv"));
+            .from_path(get_wiki_data_location().join("ContinueStages.csv"));
 
         let mut i = 0;
         for record in rdr.unwrap().records() {

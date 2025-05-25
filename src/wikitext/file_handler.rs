@@ -14,12 +14,13 @@ pub enum FileLocation {
 use FileLocation as F;
 
 /// Get the root directory of a location.
-/// ```
-/// # use rust_wiki::file_handler::{FileLocation, get_file_location};
-/// assert_eq!(get_file_location(&FileLocation::WikiData), &std::env::current_dir().unwrap().join("data"));
-/// ```
-pub fn get_file_location(location: &FileLocation) -> &'static PathBuf {
+fn get_file_location(location: &FileLocation) -> &'static PathBuf {
     match location {
         F::WikiData => &WIKI_DATA_LOCATION,
     }
+}
+
+/// Get root directory of wiki data.
+pub fn get_wiki_data_location() -> &'static PathBuf {
+    get_file_location(&FileLocation::WikiData)
 }
