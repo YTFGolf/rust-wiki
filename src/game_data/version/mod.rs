@@ -1,5 +1,6 @@
-pub mod version_data;
-mod version_obj;
+//! Get information about a version of the game.
 
-#[deprecated]
+pub mod version_data;
+pub mod version_obj;
+
 pub use version_obj::Version;
