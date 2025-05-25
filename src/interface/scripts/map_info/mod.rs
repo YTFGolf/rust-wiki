@@ -6,7 +6,7 @@ pub mod map_cli;
 use crate::{
     config::Config,
     game_data::map::parsed::map::GameMap,
-    meta::stage::{map_id::MapID, variant::StageVariantID},
+    game_data::meta::stage::{map_id::MapID, variant::StageVariantID},
 };
 use event::get_event_map;
 use legend::get_legend_map;

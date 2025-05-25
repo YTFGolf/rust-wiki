@@ -21,7 +21,7 @@ use crate::{
         stage_enemy::{MS_SIGN, Magnification, StageEnemy},
     },
     interface::error_handler::InfallibleWrite,
-    meta::stage::{map_id::MapID, stage_id::StageID},
+    game_data::meta::stage::{map_id::MapID, stage_id::StageID},
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::{
         section::Section,

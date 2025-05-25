@@ -11,7 +11,7 @@ use crate::{
         stage::{get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
     },
     interface::error_handler::InfallibleWrite,
-    meta::stage::{
+    game_data::meta::stage::{
         map_id::{MainType, MapID},
         stage_id::StageID,
         variant::StageVariantID as T,
@@ -32,7 +32,7 @@ use zoutbreak::manual_zoutbreak_replace;
 type Ref = SectionRef;
 
 mod order {
-    use crate::meta::stage::{
+    use crate::game_data::meta::stage::{
         stage_types::{MAX_VARIANT_INDEX, RAW_STAGE_TYPES},
         variant::StageVariantID,
     };
