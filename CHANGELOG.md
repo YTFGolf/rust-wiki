@@ -13,17 +13,21 @@ subheading.
 
 ## [Unreleased]
 
-This update involved a major module reorganisation as per #9.
-
 ### Added
-
-- Dev profiles to [Cargo.toml](Cargo.toml) to speed up compilation.
 
 ### Fixed
 
 ### Changed
 
 ### Removed
+
+## [0.6.0] - 2025-05-25
+
+This update involved a major module reorganisation as per #9.
+
+### Added
+
+- Dev profiles to [Cargo.toml](Cargo.toml) to speed up compilation.
 
 ## [0.5.4] - 2025-05-23
 
@@ -240,7 +244,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.0...dev
+[0.6.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...v0.6.0
 [0.5.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.1...v0.5.2
