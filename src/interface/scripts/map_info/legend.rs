@@ -1,4 +1,4 @@
-use super::reference;
+use super::map_info::reference;
 use crate::{
     config::Config,
     game_data::{

@@ -9,7 +9,7 @@ use crate::{
             cli_util::{CommandExec, ConfigMerge, input},
             version_opt::VersionOptions,
         },
-        scripts::map_info::get_map_info,
+        scripts::map_info::map_info::get_map_info,
     },
 };
 use clap::Args;

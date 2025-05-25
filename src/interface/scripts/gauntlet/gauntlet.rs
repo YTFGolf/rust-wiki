@@ -1,5 +1,5 @@
 use super::super::{
-    map_info::reference,
+    map_info::map_info::reference,
     stage_info::{
         battlegrounds::battlegrounds,
         beginning::enemies_appearing,
