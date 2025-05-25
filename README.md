@@ -1,4 +1,4 @@
-Read the [user manual](doc/user-manual.md).
+Read the [user manual](doc/user/manual.md).
 
 ## Running the program
 
