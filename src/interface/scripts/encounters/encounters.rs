@@ -12,7 +12,7 @@ use crate::{
             stage_id::StageID,
             variant::StageVariantID as T,
         },
-        stage::{get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
+        stage::{stage_util::get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
     },
     interface::error_handler::InfallibleWrite,
     regex_handler::static_regex,

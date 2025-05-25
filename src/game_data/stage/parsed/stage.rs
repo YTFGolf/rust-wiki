@@ -377,7 +377,7 @@ mod tests {
                 stage_types::transform::transform_stage::stage_data_file,
                 variant::StageVariantID as T,
             },
-            stage::get_stage_files,
+            stage::stage_util::get_stage_files,
         },
     };
 
