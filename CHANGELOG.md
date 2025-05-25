@@ -13,6 +13,8 @@ subheading.
 
 ## [Unreleased]
 
+This update involved a major module reorganisation as per #9.
+
 ### Added
 
 - Dev profiles to [Cargo.toml](Cargo.toml) to speed up compilation.
