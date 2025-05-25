@@ -99,8 +99,8 @@ impl Version {
     ///
     /// ## Usage
     /// ```rust,no_run
-    /// use rust_wiki::data::map::map_option::MapOption;
-    /// # use rust_wiki::data::version::Version;
+    /// use rust_wiki::game_data::map::map_option::MapOption;
+    /// # use rust_wiki::game_data::version::Version;
     /// # use rust_wiki::config::version_config::Lang;
     /// # use rust_wiki::meta::stage::map_id::MapID;
     ///
