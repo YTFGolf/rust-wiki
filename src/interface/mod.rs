@@ -1,5 +1,7 @@
 //! Deals with the interface of the project.
 
-pub mod cli;
-pub mod error_handler;
-pub mod scripts;
+mod cli;
+mod error_handler;
+mod scripts;
+
+pub use cli::commands::Cli;

@@ -9,4 +9,4 @@ pub mod meta;
 pub mod regex_handler;
 pub mod wikitext;
 
-pub use interface::cli::commands::Cli;
+pub use interface::Cli;
