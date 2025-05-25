@@ -197,23 +197,36 @@ impl<'a> StageData<'_> {
             .from_reader(reader);
 
         let mut records = rdr.byte_records();
-        let mut line_1 = records
+        let mut line_1_or_2 = records
             .next()
             .ok_or((E::NotEnoughLines, 1))?
             .map_err(|e| (E::ByteRecordError(e), 1))?;
+        // some stages (e.g. EoC) don't have the header line, and in those stages
+        // the header line is the struct referred to as `Line2`.
 
         let is_ignorable = |entry: &[u8]| entry.is_empty() || entry.contains(&b'/');
-        let has_header = line_1.len() <= 7 || is_ignorable(&line_1[6]) || is_ignorable(&line_1[7]);
+        let has_header = line_1_or_2.len() <= 7
+            || is_ignorable(&line_1_or_2[6])
+            || is_ignorable(&line_1_or_2[7]);
+        // does this specific file have the proper header? If not then the first
+        // line will be what is called line2
         let csv_head: HeaderCSV = if has_header {
-            let tmp = line_1;
-            line_1 = records.next().unwrap().unwrap();
-            line_1 = remove_comment_ind(line_1, 9);
+            let tmp = line_1_or_2;
+            let head = tmp
+                .deserialize(None)
+                .map_err(|e| (E::DeserialiseError(e), 1))?;
 
-            tmp.deserialize(None).unwrap()
+            line_1_or_2 = records
+                .next()
+                .ok_or((E::NotEnoughLines, 2))?
+                .map_err(|e| (E::ByteRecordError(e), 2))?;
+            line_1_or_2 = remove_comment_ind(line_1_or_2, 9);
+
+            head
             // if (cas == -1)
             //     cas = CH_CASTLES[id.id];
         } else {
-            line_1 = remove_comment_ind(line_1, 6);
+            line_1_or_2 = remove_comment_ind(line_1_or_2, 6);
 
             // In EoC
             HeaderCSV {
@@ -227,7 +240,7 @@ impl<'a> StageData<'_> {
             // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
         };
 
-        let line_2 = line_1;
+        let line_2 = line_1_or_2;
         let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
 
         let mut enemies = vec![];
