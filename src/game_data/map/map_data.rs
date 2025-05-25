@@ -7,15 +7,13 @@ use super::{
     raw::csv_types::{HeaderCSV, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
     special_rules::{SpecialRule, SpecialRules},
 };
-use crate::{
-    game_data::{
-        stage::raw::stage_option::{StageOption, StageOptionCSV},
-        version::Version,
-    },
-    game_data::meta::stage::{
+use crate::game_data::{
+    meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_data_file,
         variant::StageVariantID,
     },
+    stage::raw::stage_option::{StageOption, StageOptionCSV},
+    version::Version,
 };
 use csv::ByteRecord;
 use std::{

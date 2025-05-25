@@ -1,24 +1,18 @@
 //! Represents a full stage.
 
 use super::stage_enemy::StageEnemy;
-use crate::{
-    game_data::{
-        map::{
+use crate::game_data::{map::{
             map_option::MapOptionCSV,
             raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
             special_rules::SpecialRule,
-        },
-        stage::raw::{
+        }, meta::stage::{
+        stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id,
+    }, stage::raw::{
             stage_data::StageData,
             stage_option::{
-                StageOptionCSV,
-                charagroups::{CharaGroup, CharaGroups},
+                charagroups::{CharaGroup, CharaGroups}, StageOptionCSV
             },
-        },
-        version::Version,
-    },
-    game_data::meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
-};
+        }, version::Version};
 use std::num::NonZeroU32;
 
 #[derive(Debug, PartialEq)]
@@ -374,10 +368,10 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        game_data::stage::get_stage_files,
         game_data::meta::stage::{
             stage_types::transform::transform_stage::stage_data_file, variant::StageVariantID as T,
         },
+        game_data::stage::get_stage_files,
     };
 
     // test none values, esp. with crown data

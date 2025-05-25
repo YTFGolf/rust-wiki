@@ -1,13 +1,6 @@
 //! Represents a map.
 
-use crate::{
-    game_data::{
-        map::{map_data::GameMapData, special_rules::SpecialRule},
-        stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
-        version::Version,
-    },
-    game_data::meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
-};
+use crate::game_data::{map::{map_data::GameMapData, special_rules::SpecialRule}, meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id}, stage::parsed::stage::{CrownData, Restriction, RestrictionStages}, version::Version};
 use std::num::NonZeroU32;
 use strum::FromRepr;
 

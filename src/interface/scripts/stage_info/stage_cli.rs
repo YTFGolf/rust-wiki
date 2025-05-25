@@ -2,6 +2,7 @@
 
 use crate::{
     config::Config,
+    game_data::meta::stage::stage_types::iter_stage_types,
     game_data::stage::parsed::stage::Stage,
     interface::{
         cli::{
@@ -12,7 +13,6 @@ use crate::{
         },
         scripts::stage_info::get_stage_info,
     },
-    game_data::meta::stage::stage_types::iter_stage_types,
 };
 use clap::Args;
 use std::{

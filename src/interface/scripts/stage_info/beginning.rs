@@ -2,9 +2,9 @@
 
 use super::StageWikiDataContainer;
 use crate::{
+    game_data::meta::stage::variant::StageVariantID,
     game_data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
     interface::error_handler::InfallibleWrite,
-    game_data::meta::stage::variant::StageVariantID,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
 };
@@ -88,8 +88,8 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
 mod tests {
     use super::*;
     use crate::{
-        interface::scripts::stage_info::get_stage_wiki_data,
         game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+        interface::scripts::stage_info::get_stage_wiki_data,
     };
 
     #[test]

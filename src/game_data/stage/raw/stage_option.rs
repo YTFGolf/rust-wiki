@@ -1,8 +1,8 @@
 //! Module that deals with the `Stage_option` file.
 
 use crate::{
-    game_data::version::version_data::CacheableVersionData,
     game_data::meta::stage::{map_id::MapID, stage_id::StageID},
+    game_data::version::version_data::CacheableVersionData,
 };
 use std::{collections::HashMap, path::Path};
 

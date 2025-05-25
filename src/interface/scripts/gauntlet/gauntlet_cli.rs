@@ -2,6 +2,7 @@
 
 use crate::{
     config::Config,
+    game_data::meta::stage::stage_types::parse::parse_map::parse_general_map_id,
     interface::{
         cli::{
             base::BaseOptions,
@@ -10,7 +11,6 @@ use crate::{
         },
         scripts::gauntlet::map_gauntlet,
     },
-    game_data::meta::stage::stage_types::parse::parse_map::parse_general_map_id,
 };
 use clap::Args;
 

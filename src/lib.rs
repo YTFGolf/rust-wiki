@@ -5,7 +5,6 @@ pub mod config;
 pub mod game_data;
 mod interface;
 pub mod logger;
-pub mod meta;
 pub mod regex_handler;
 pub mod wiki_data;
 pub mod wikitext;

@@ -1,12 +1,12 @@
 //! Get the battlegrounds section of stage.
 
 use crate::{
+    game_data::meta::stage::variant::StageVariantID as T,
     game_data::stage::parsed::{
         stage::Stage,
         stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
     },
     interface::error_handler::InfallibleWrite,
-    game_data::meta::stage::variant::StageVariantID as T,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::wiki_utils::extract_name,
 };

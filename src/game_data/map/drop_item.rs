@@ -1,6 +1,6 @@
 //! Module that deals with the `DropItem.csv` file.
 
-use crate::{game_data::version::version_data::CacheableVersionData, game_data::meta::stage::map_id::MapID};
+use crate::game_data::{meta::stage::map_id::MapID, version::version_data::CacheableVersionData};
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 

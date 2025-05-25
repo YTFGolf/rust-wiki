@@ -1,12 +1,12 @@
 //! Module for the [enemies_list] function.
 
 use crate::{
+    game_data::meta::stage::variant::StageVariantID as T,
     game_data::stage::parsed::{
         stage::Stage,
         stage_enemy::{BossType, MS_SIGN, StageEnemy},
     },
     interface::error_handler::InfallibleWrite,
-    game_data::meta::stage::variant::StageVariantID as T,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::template::TemplateParameter,
 };

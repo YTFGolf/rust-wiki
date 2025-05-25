@@ -1,6 +1,6 @@
 //! Module that deals with the `EX_option` file.
 
-use crate::{game_data::version::version_data::CacheableVersionData, game_data::meta::stage::map_id::MapID};
+use crate::game_data::{meta::stage::map_id::MapID, version::version_data::CacheableVersionData};
 use std::path::Path;
 
 #[derive(Debug, serde::Deserialize)]

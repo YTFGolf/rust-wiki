@@ -4,8 +4,8 @@
 use super::{get_stage_wiki_data, variables::get_stage_variable};
 use crate::{
     config::{Config, TEST_CONFIG, version_config::Lang},
-    game_data::stage::parsed::stage::Stage,
     game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+    game_data::stage::parsed::stage::Stage,
 };
 
 // these were all generated on a different branch.

@@ -1,6 +1,10 @@
 use super::reference;
 use crate::{
     config::Config,
+    game_data::meta::stage::{
+        map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
+        variant::StageVariantID,
+    },
     game_data::{
         map::{
             map_data::GameMapData,
@@ -11,10 +15,6 @@ use crate::{
     interface::{
         error_handler::InfallibleWrite,
         scripts::format_parser::{ParseType, parse_info_format},
-    },
-    game_data::meta::stage::{
-        map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
-        variant::StageVariantID,
     },
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
     wikitext::wiki_utils::{extract_link, extract_name, get_ordinal},
