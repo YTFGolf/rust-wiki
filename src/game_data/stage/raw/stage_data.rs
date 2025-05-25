@@ -144,8 +144,10 @@ pub enum StageDataError {
 pub enum CSVParseErrorKind {
     /// CSV file doesn't have enough lines.
     NotEnoughLines,
-    /// Parse error on specific line.
+    /// Error when converting to ByteRecord.
     ByteRecordError(csv::Error),
+    /// Error when deserialising ByteRecord.
+    DeserialiseError(csv::Error),
 }
 type CSVParseErrorLine = (CSVParseErrorKind, u8);
 
@@ -189,7 +191,7 @@ impl<'a> StageData<'_> {
     /// Read a stage's csv file and obtain the data from it.
     pub fn read_stage_csv<R: std::io::Read>(reader: R) -> Result<RawCSVData, CSVParseErrorLine> {
         // TODO really needs proper error handling
-        type E = CSVParseErrorKind;
+        // type E = CSVParseErrorKind;
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .trim(csv::Trim::All)
@@ -197,51 +199,7 @@ impl<'a> StageData<'_> {
             .from_reader(reader);
 
         let mut records = rdr.byte_records();
-        let mut line_1_or_2 = records
-            .next()
-            .ok_or((E::NotEnoughLines, 1))?
-            .map_err(|e| (E::ByteRecordError(e), 1))?;
-        // some stages (e.g. EoC) don't have the header line, and in those stages
-        // the header line is the struct referred to as `Line2`.
-
-        let is_ignorable = |entry: &[u8]| entry.is_empty() || entry.contains(&b'/');
-        let has_header = line_1_or_2.len() <= 7
-            || is_ignorable(&line_1_or_2[6])
-            || is_ignorable(&line_1_or_2[7]);
-        // does this specific file have the proper header? If not then the first
-        // line will be what is called line2
-        let csv_head: HeaderCSV = if has_header {
-            let tmp = line_1_or_2;
-            let head = tmp
-                .deserialize(None)
-                .map_err(|e| (E::DeserialiseError(e), 1))?;
-
-            line_1_or_2 = records
-                .next()
-                .ok_or((E::NotEnoughLines, 2))?
-                .map_err(|e| (E::ByteRecordError(e), 2))?;
-            line_1_or_2 = remove_comment_ind(line_1_or_2, 9);
-
-            head
-            // if (cas == -1)
-            //     cas = CH_CASTLES[id.id];
-        } else {
-            line_1_or_2 = remove_comment_ind(line_1_or_2, 6);
-
-            // In EoC
-            HeaderCSV {
-                base_id: 0,
-                no_cont: 0,
-                cont_chance: 0,
-                cont_map_id: 0,
-                cont_stage_id_min: 0,
-                cont_stage_id_max: 0,
-            }
-            // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
-        };
-
-        let line_2 = line_1_or_2;
-        let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
+        let (header, line2) = read_header_lines(&mut records)?;
 
         let mut enemies = vec![];
         for result in rdr.records() {
@@ -260,8 +218,8 @@ impl<'a> StageData<'_> {
         }
 
         Ok(RawCSVData {
-            header: csv_head,
-            line2: csv_line_2,
+            header,
+            line2,
             enemies,
         })
     }
@@ -295,6 +253,58 @@ impl<'a> StageData<'_> {
     pub fn version(&self) -> &Version {
         self.version
     }
+}
+
+fn read_header_lines<R: std::io::Read>(
+    records: &mut csv::ByteRecordsIter<'_, R>,
+) -> Result<(HeaderCSV, Line2CSV), CSVParseErrorLine> {
+    type E = CSVParseErrorKind;
+    let mut line_1_or_2 = records
+        .next()
+        .ok_or((E::NotEnoughLines, 1))?
+        .map_err(|e| (E::ByteRecordError(e), 1))?;
+    // some stages (e.g. EoC) don't have the header line, and in those stages
+    // the header line is the struct referred to as `Line2`.
+
+    let is_ignorable = |entry: &[u8]| entry.is_empty() || entry.contains(&b'/');
+    let has_header =
+        line_1_or_2.len() <= 7 || is_ignorable(&line_1_or_2[6]) || is_ignorable(&line_1_or_2[7]);
+    // does this specific file have the proper header? If not then the first
+    // line will be what is called line2
+    let csv_head: HeaderCSV = if has_header {
+        let tmp = line_1_or_2;
+        let head = tmp
+            .deserialize(None)
+            .map_err(|e| (E::DeserialiseError(e), 1))?;
+
+        line_1_or_2 = records
+            .next()
+            .ok_or((E::NotEnoughLines, 2))?
+            .map_err(|e| (E::ByteRecordError(e), 2))?;
+        line_1_or_2 = remove_comment_ind(line_1_or_2, 9);
+
+        head
+        // if (cas == -1)
+        //     cas = CH_CASTLES[id.id];
+    } else {
+        line_1_or_2 = remove_comment_ind(line_1_or_2, 6);
+
+        // In EoC
+        HeaderCSV {
+            base_id: 0,
+            no_cont: 0,
+            cont_chance: 0,
+            cont_map_id: 0,
+            cont_stage_id_min: 0,
+            cont_stage_id_max: 0,
+        }
+        // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
+    };
+
+    let line_2 = line_1_or_2;
+    let csv_line_2: Line2CSV = line_2.deserialize(None).unwrap();
+
+    Ok((csv_head, csv_line_2))
 }
 
 /// If `record[index]` is a comment, then truncate record.
