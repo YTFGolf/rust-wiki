@@ -3,8 +3,8 @@ use super::{
     variables::{DEFAULT_FORMAT, get_stage_variable},
 };
 use crate::{
-    interface::config::Config,
     game_data::{meta::stage::stage_id::StageID, stage::parsed::stage::Stage},
+    interface::config::Config,
     interface::error_handler::InfallibleWrite,
     regex_handler::static_regex,
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},

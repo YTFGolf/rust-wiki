@@ -10,7 +10,9 @@ use super::{
     stage_info::StageWikiDataContainer,
     treasure::{score_rewards, treasure},
 };
-use crate::{interface::config::Config, game_data::stage::parsed::stage::Stage, wikitext::template::Template};
+use crate::{
+    game_data::stage::parsed::stage::Stage, interface::config::Config, wikitext::template::Template,
+};
 
 /// Default format for stage info.
 pub const DEFAULT_FORMAT: &str = "\

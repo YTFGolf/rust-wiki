@@ -1,6 +1,7 @@
 //! Deals with basic stage information in the infobox.
 
 use crate::{
+    SLang,
     game_data::{
         meta::stage::{
             stage_types::transform::transform_map::map_img_code, variant::StageVariantID,
@@ -9,7 +10,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
-    wikitext::template::TemplateParameter, SLang,
+    wikitext::template::TemplateParameter,
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};

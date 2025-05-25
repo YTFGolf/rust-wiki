@@ -1,6 +1,5 @@
 use super::map_info::reference;
 use crate::{
-    interface::config::Config,
     game_data::{
         map::{
             parsed::map::{GameMap, ResetType},
@@ -12,6 +11,7 @@ use crate::{
         },
         version::Version,
     },
+    interface::config::Config,
     interface::{
         error_handler::InfallibleWrite,
         scripts::format_parser::{ParseType, parse_info_format},

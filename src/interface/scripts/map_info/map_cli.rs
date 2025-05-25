@@ -1,8 +1,8 @@
 //! `map_info` command.
 
 use crate::{
-    interface::config::Config,
     game_data::map::parsed::map::GameMap,
+    interface::config::Config,
     interface::{
         cli::{
             base::BaseOptions,

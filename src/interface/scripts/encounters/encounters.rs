@@ -4,7 +4,6 @@ use super::{
     zoutbreak::manual_zoutbreak_replace,
 };
 use crate::{
-    interface::config::Config,
     game_data::{
         enemy::raw_encounters::stage_contains_enemy,
         meta::stage::{
@@ -16,6 +15,7 @@ use crate::{
             parsed::stage_enemy::StageEnemy, raw::stage_data::StageData, stage_util::get_stages,
         },
     },
+    interface::config::Config,
     interface::error_handler::InfallibleWrite,
     regex_handler::static_regex,
     wiki_data::stage_wiki_data::STAGE_WIKI_DATA,

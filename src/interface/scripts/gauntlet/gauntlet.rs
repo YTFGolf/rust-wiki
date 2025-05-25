@@ -12,7 +12,6 @@ use super::super::{
     },
 };
 use crate::{
-    interface::config::Config,
     game_data::{
         meta::stage::{map_id::MapID, stage_id::StageID},
         stage::parsed::{
@@ -20,6 +19,7 @@ use crate::{
             stage_enemy::{MS_SIGN, Magnification, StageEnemy},
         },
     },
+    interface::config::Config,
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::{

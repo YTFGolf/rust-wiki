@@ -1,10 +1,10 @@
 use super::{event::get_event_map, legend::get_legend_map};
 use crate::{
-    interface::config::Config,
     game_data::{
         map::parsed::map::GameMap,
         meta::stage::{map_id::MapID, variant::StageVariantID},
     },
+    interface::config::Config,
 };
 
 /// battlecats-db reference.

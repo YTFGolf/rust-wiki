@@ -1,8 +1,8 @@
 //! `stage_info` command.
 
 use crate::{
-    interface::config::Config,
     game_data::{meta::stage::stage_types::iter_stage_types, stage::parsed::stage::Stage},
+    interface::config::Config,
     interface::{
         cli::{
             base::BaseOptions,

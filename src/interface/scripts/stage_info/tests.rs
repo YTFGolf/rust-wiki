@@ -3,11 +3,12 @@
 
 use super::{stage_info::get_stage_wiki_data, variables::get_stage_variable};
 use crate::{
+    SLang,
     game_data::{
         meta::stage::{stage_id::StageID, variant::StageVariantID as T},
         stage::parsed::stage::Stage,
     },
-    interface::config::{Config, TEST_CONFIG}, SLang,
+    interface::config::{Config, TEST_CONFIG},
 };
 
 // these were all generated on a different branch.

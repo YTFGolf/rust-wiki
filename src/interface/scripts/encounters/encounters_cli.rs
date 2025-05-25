@@ -1,12 +1,12 @@
 //! `encounters` command.
 
 use crate::{
-    interface::config::Config,
     interface::cli::{
         base::BaseOptions,
         cli_util::{CommandExec, ConfigMerge},
         version_opt::VersionOptions,
     },
+    interface::config::Config,
     wiki_data::enemy_data::ENEMY_DATA,
 };
 use clap::{Args, command};
