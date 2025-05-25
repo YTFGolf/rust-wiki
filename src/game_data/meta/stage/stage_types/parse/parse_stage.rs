@@ -1,10 +1,6 @@
 //! Parse [`StageID`] from various formats.
 
-use super::{
-    parse_map::parse_map_selector,
-    parse_types::StageTypeParseError,
-    parse_util::{is_single_map, is_single_stage},
-};
+use super::{parse_map::parse_map_selector, parse_types::StageTypeParseError};
 use crate::{
     game_data::meta::stage::{
         map_id::{MapID, MapSize},
@@ -152,11 +148,11 @@ fn parse_stage_ref(reference: &str) -> Result<StageID, StageTypeParseError> {
 fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> {
     let map = parse_map_selector(selector)?;
 
-    if is_single_stage(map.variant()) {
+    if map.variant().has_single_stage() {
         return Ok(StageID::from_map(map, 0));
     }
 
-    if is_single_map(map.variant()) || map == MapID::from_components(T::MainChapters, 0) {
+    if map.variant().has_single_map() || map == MapID::from_components(T::MainChapters, 0) {
         // if single map (inc. EoC) then just need last number
         if !selector.contains(SELECTOR_SEPARATOR) {
             return Err(StageTypeParseError::NoStageNumber);
@@ -512,9 +508,9 @@ mod tests {
             }
 
             for _ in 0..NUM_ITERATIONS {
-                let (map, stage) = if is_single_stage(var) {
+                let (map, stage) = if var.has_single_stage() {
                     (0, 0)
-                } else if is_single_map(var) {
+                } else if var.has_single_map() {
                     (0, random::<StageSize>() % 1000)
                 } else if var.is_outbreak() {
                     (random::<MapSize>() % 3, random::<StageSize>() % 1000)

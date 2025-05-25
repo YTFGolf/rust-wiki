@@ -12,15 +12,3 @@ pub fn get_variant_from_code(code: &str) -> Option<StageVariantID> {
 
     None
 }
-
-/// Variant only has a single stage.
-pub fn is_single_stage(v: StageVariantID) -> bool {
-    type T = StageVariantID;
-    matches!(v, T::Challenge | T::Filibuster)
-}
-
-/// Variant only has a single map but multiple stages.
-pub fn is_single_map(v: StageVariantID) -> bool {
-    type T = StageVariantID;
-    matches!(v, T::AkuRealms | T::Labyrinth)
-}

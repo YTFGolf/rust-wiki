@@ -102,6 +102,16 @@ impl StageVariantID {
         matches!(self, Self::Gauntlet | Self::CollabGauntlet)
     }
 
+    /// Does variant only have a single stage?
+    pub const fn has_single_stage(&self) -> bool {
+        matches!(self, Self::Challenge | Self::Filibuster)
+    }
+
+    /// Does variant only have a single map but multiple stages?
+    pub const fn has_single_map(&self) -> bool {
+        matches!(self, Self::AkuRealms | Self::Labyrinth)
+    }
+
     // no dojo because championships are ambiguous
 }
 

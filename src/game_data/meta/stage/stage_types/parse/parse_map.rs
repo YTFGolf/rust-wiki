@@ -1,9 +1,6 @@
 //! Parse [`MapID`] from various formats.
 
-use super::{
-    parse_types::StageTypeParseError,
-    parse_util::{get_variant_from_code, is_single_map, is_single_stage},
-};
+use super::{parse_types::StageTypeParseError, parse_util::get_variant_from_code};
 use crate::{
     game_data::meta::stage::{
         map_id::{MapID, MapSize},
@@ -138,7 +135,7 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
         Some(v) => v,
     };
 
-    if is_single_stage(variant) || is_single_map(variant) {
+    if variant.has_single_stage() || variant.has_single_map() {
         // if type only has 1 stage/map then map num will always be 0
         return Ok(MapID::from_components(variant, 0));
     }
@@ -349,7 +346,7 @@ mod tests {
             }
 
             for _ in 0..NUM_ITERATIONS {
-                let map = if is_single_stage(var) || is_single_map(var) {
+                let map = if var.has_single_stage() || var.has_single_map() {
                     0
                 } else if var.is_outbreak() {
                     random::<MapSize>() % 3
