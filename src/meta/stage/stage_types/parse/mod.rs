@@ -1,8 +1,8 @@
 //! Parse ID from various formats.
 
-mod parse_util;
 pub mod parse_map;
 pub mod parse_stage;
+mod parse_util;
 
 /*
 Important note: selectors in this module are custom behaviour, so any time that

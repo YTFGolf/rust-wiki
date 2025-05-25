@@ -1,13 +1,13 @@
 //! Deals with getting information about a certain version of the game.
 
+use super::version_data::CacheableVersionData;
+use crate::config::version_config::Lang;
 use std::{
     any::{Any, TypeId},
     path::{Path, PathBuf},
     pin::Pin,
     sync::Mutex,
 };
-use crate::config::version_config::Lang;
-use super::version_data::CacheableVersionData;
 
 #[derive(Debug)]
 /// Represents an invalid language code.
