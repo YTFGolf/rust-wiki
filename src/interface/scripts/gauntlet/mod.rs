@@ -16,10 +16,12 @@ use super::{
 };
 use crate::{
     config::Config,
-    game_data::meta::stage::{map_id::MapID, stage_id::StageID},
-    game_data::stage::parsed::{
-        stage::Stage,
-        stage_enemy::{MS_SIGN, Magnification, StageEnemy},
+    game_data::{
+        meta::stage::{map_id::MapID, stage_id::StageID},
+        stage::parsed::{
+            stage::Stage,
+            stage_enemy::{MS_SIGN, Magnification, StageEnemy},
+        },
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,

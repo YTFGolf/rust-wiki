@@ -342,8 +342,10 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        game_data::map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
-        game_data::meta::stage::variant::StageVariantID as T,
+        game_data::{
+            map::raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
+            meta::stage::variant::StageVariantID as T,
+        },
     };
     use std::{io::Cursor, vec};
 

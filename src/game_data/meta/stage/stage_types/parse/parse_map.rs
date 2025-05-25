@@ -179,9 +179,10 @@ pub fn parse_map_selector(selector: &str) -> Result<MapID, StageTypeParseError> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::game_data::meta::stage::stage_types::data::get_stage_type;
-    use crate::game_data::meta::stage::stage_types::transform::transform_map::map_data_file;
-    use crate::game_data::meta::stage::variant::StageVariantID;
+    use crate::game_data::meta::stage::{
+        stage_types::{data::get_stage_type, transform::transform_map::map_data_file},
+        variant::StageVariantID,
+    };
     use rand::random;
     use strum::IntoEnumIterator;
 

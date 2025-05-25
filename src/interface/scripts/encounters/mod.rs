@@ -6,13 +6,13 @@ pub mod section;
 pub mod zoutbreak;
 use crate::{
     config::Config,
-    game_data::meta::stage::{
-        map_id::{MainType, MapID},
-        stage_id::StageID,
-        variant::StageVariantID as T,
-    },
     game_data::{
         enemy::raw_encounters::stage_contains_enemy,
+        meta::stage::{
+            map_id::{MainType, MapID},
+            stage_id::StageID,
+            variant::StageVariantID as T,
+        },
         stage::{get_stages, parsed::stage_enemy::StageEnemy, raw::stage_data::StageData},
     },
     interface::error_handler::InfallibleWrite,

@@ -6,8 +6,7 @@ use crate::{
     interface::{
         cli::{
             base::BaseOptions,
-            cli_util::input,
-            cli_util::{CommandExec, ConfigMerge},
+            cli_util::{CommandExec, ConfigMerge, input},
             version_opt::VersionOptions,
         },
         scripts::map_info::get_map_info,

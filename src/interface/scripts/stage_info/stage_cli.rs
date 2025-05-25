@@ -2,13 +2,11 @@
 
 use crate::{
     config::Config,
-    game_data::meta::stage::stage_types::iter_stage_types,
-    game_data::stage::parsed::stage::Stage,
+    game_data::{meta::stage::stage_types::iter_stage_types, stage::parsed::stage::Stage},
     interface::{
         cli::{
             base::BaseOptions,
-            cli_util::input,
-            cli_util::{CommandExec, ConfigMerge},
+            cli_util::{CommandExec, ConfigMerge, input},
             version_opt::VersionOptions,
         },
         scripts::stage_info::get_stage_info,

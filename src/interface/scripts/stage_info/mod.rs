@@ -1,12 +1,13 @@
 //! Get information about a stage.
 
 use super::format_parser::{ParseType, parse_info_format};
-use crate::config::Config;
-use crate::game_data::meta::stage::stage_id::StageID;
-use crate::game_data::stage::parsed::stage::Stage;
-use crate::interface::error_handler::InfallibleWrite;
-use crate::regex_handler::static_regex;
-use crate::wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData};
+use crate::{
+    config::Config,
+    game_data::{meta::stage::stage_id::StageID, stage::parsed::stage::Stage},
+    interface::error_handler::InfallibleWrite,
+    regex_handler::static_regex,
+    wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
+};
 use std::fmt::{Display, Write};
 use variables::{DEFAULT_FORMAT, get_stage_variable};
 

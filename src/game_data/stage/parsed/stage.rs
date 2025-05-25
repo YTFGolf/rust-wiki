@@ -372,10 +372,13 @@ mod tests {
     use super::*;
     use crate::{
         config::TEST_CONFIG,
-        game_data::meta::stage::{
-            stage_types::transform::transform_stage::stage_data_file, variant::StageVariantID as T,
+        game_data::{
+            meta::stage::{
+                stage_types::transform::transform_stage::stage_data_file,
+                variant::StageVariantID as T,
+            },
+            stage::get_stage_files,
         },
-        game_data::stage::get_stage_files,
     };
 
     // test none values, esp. with crown data

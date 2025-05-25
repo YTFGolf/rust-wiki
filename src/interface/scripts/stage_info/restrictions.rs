@@ -317,9 +317,9 @@ pub fn rules(stage: &Stage) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
-        game_data::meta::stage::{stage_id::StageID, variant::StageVariantID as T},
-        game_data::stage::parsed::stage::RestrictionCrowns,
+    use crate::game_data::{
+        meta::stage::{stage_id::StageID, variant::StageVariantID as T},
+        stage::parsed::stage::RestrictionCrowns,
     };
 
     #[test]

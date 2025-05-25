@@ -1,14 +1,14 @@
 use super::reference;
 use crate::{
     config::Config,
-    game_data::meta::stage::{
-        map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
-        variant::StageVariantID,
-    },
     game_data::{
         map::{
             map_data::GameMapData,
             parsed::map::{GameMap, ResetType},
+        },
+        meta::stage::{
+            map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_img_code,
+            variant::StageVariantID,
         },
         version::Version,
     },

@@ -2,8 +2,10 @@
 
 use super::StageWikiDataContainer;
 use crate::{
-    game_data::meta::stage::variant::StageVariantID,
-    game_data::stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
+    game_data::{
+        meta::stage::variant::StageVariantID,
+        stage::parsed::{stage::Stage, stage_enemy::MS_SIGN},
+    },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},

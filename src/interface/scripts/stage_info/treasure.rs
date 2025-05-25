@@ -242,9 +242,9 @@ pub fn score_rewards(stage: &Stage) -> Option<TemplateParameter> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
-        game_data::map::raw::csv_types::{TreasureCSV, TreasureType},
-        game_data::meta::stage::{stage_id::StageID, variant::StageVariantID},
+    use crate::game_data::{
+        map::raw::csv_types::{TreasureCSV, TreasureType},
+        meta::stage::{stage_id::StageID, variant::StageVariantID},
     };
 
     #[test]

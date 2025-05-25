@@ -1,15 +1,18 @@
 //! Parse [`StageID`] from various formats.
 
-use super::parse_map::parse_map_selector;
-use super::parse_util::{StageTypeParseError, is_single_map, is_single_stage};
-use crate::game_data::meta::stage::variant::VariantSize;
-use crate::game_data::meta::stage::{
-    map_id::{MapID, MapSize},
-    stage_id::{StageID, StageSize},
-    stage_types::data::SELECTOR_SEPARATOR,
-    variant::StageVariantID as T,
+use super::{
+    parse_map::parse_map_selector,
+    parse_util::{StageTypeParseError, is_single_map, is_single_stage},
 };
-use crate::regex_handler::static_regex;
+use crate::{
+    game_data::meta::stage::{
+        map_id::{MapID, MapSize},
+        stage_id::{StageID, StageSize},
+        stage_types::data::SELECTOR_SEPARATOR,
+        variant::{StageVariantID as T, VariantSize},
+    },
+    regex_handler::static_regex,
+};
 use regex::Regex;
 use std::sync::LazyLock;
 
@@ -178,8 +181,9 @@ fn parse_stage_selector(selector: &str) -> Result<StageID, StageTypeParseError> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::game_data::meta::stage::stage_types::transform::transform_stage::stage_data_file;
-    use crate::game_data::meta::stage::variant::StageVariantID;
+    use crate::game_data::meta::stage::{
+        stage_types::transform::transform_stage::stage_data_file, variant::StageVariantID,
+    };
     use StageTypeParseError as E;
     use rand::random;
     use strum::IntoEnumIterator;

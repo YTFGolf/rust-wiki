@@ -1,7 +1,6 @@
 //! Defines a trait to allow version data to be cached.
 
-use std::fmt::Debug;
-use std::path::Path;
+use std::{fmt::Debug, path::Path};
 
 /// Represents a cacheable version data object.
 ///
