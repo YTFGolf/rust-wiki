@@ -157,7 +157,6 @@ impl StageOption {
 
     /// Get all restrictions in the map where either the entire map has a
     /// restriction or that specific stage has a restriction.
-    #[allow(clippy::cast_possible_wrap)]
     pub fn get_stage(&self, stage_id: &StageID) -> Option<Vec<&StageOptionCSV>> {
         Some(
             self.get_map(stage_id.map())?
