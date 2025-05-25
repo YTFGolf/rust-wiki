@@ -51,15 +51,15 @@ pub fn get_anims(
 
     let mut anims = vec![get_anim_data(&form1, version).map_err(|e| (e, 1))?];
     if amt_forms > 1 {
-        anims.push(get_anim_data(&form2, version).map_err(|e| (e, 2))?)
+        anims.push(get_anim_data(&form2, version).map_err(|e| (e, 2))?);
     }
     if amt_forms > 2 {
         let tf = format!("{wiki_id:03}_s02.maanim");
-        anims.push(get_anim_data(&tf, version).map_err(|e| (e, 3))?)
+        anims.push(get_anim_data(&tf, version).map_err(|e| (e, 3))?);
     }
     if amt_forms > 3 {
         let uf = format!("{wiki_id:03}_u02.maanim");
-        anims.push(get_anim_data(&uf, version).map_err(|e| (e, 4))?)
+        anims.push(get_anim_data(&uf, version).map_err(|e| (e, 4))?);
     }
     Ok(anims)
 }

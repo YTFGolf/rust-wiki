@@ -115,7 +115,7 @@ fn basic() {
             max_levels: NORMAL_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -149,7 +149,7 @@ fn basic2() {
             max_levels: NORMAL_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -182,7 +182,7 @@ fn basic3() {
             max_levels: NORMAL_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -219,7 +219,7 @@ fn special() {
             max_levels: SPECIAL_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -256,7 +256,7 @@ fn bahamut() {
             max_levels: SPECIAL_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -310,7 +310,7 @@ fn cancan() {
             max_levels: SR_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -379,7 +379,7 @@ fn dio() {
             max_levels: UR_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -420,7 +420,7 @@ fn metal() {
             },
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -456,7 +456,7 @@ fn dasli() {
             max_levels: UR_MAX,
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -500,7 +500,7 @@ fn modoki() {
             },
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -541,7 +541,7 @@ fn superfeline() {
             },
             misc
         }
-    )
+    );
 }
 
 #[test]
@@ -599,5 +599,5 @@ fn courier() {
             max_levels: SPECIAL_MAX,
             misc
         }
-    )
+    );
 }

@@ -151,7 +151,7 @@ fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
             continue;
         }
         if !enemies_by_id.contains(&enemy.id) {
-            enemies_by_id.push(enemy.id)
+            enemies_by_id.push(enemy.id);
         }
     }
     enemies_by_id
@@ -376,7 +376,7 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
                 Some(pos) => link[pos + 1..].to_string(),
                 None => {
                     if len > 1 {
-                        log::warn!("`#` character not found in gauntlet name: {link:?}")
+                        log::warn!("`#` character not found in gauntlet name: {link:?}");
                     }
                     format!("Level {range_str}")
                 }
@@ -398,7 +398,7 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
                 .join("\n\n"),
         };
 
-        tabber.content.push(tab)
+        tabber.content.push(tab);
     }
     tabber
 }
