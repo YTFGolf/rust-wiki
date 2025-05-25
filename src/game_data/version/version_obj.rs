@@ -6,9 +6,8 @@ use std::{
     pin::Pin,
     sync::Mutex,
 };
-pub mod version_data;
 use crate::config::version_config::Lang;
-use version_data::CacheableVersionData;
+use super::version_data::CacheableVersionData;
 
 #[derive(Debug)]
 /// Represents an invalid language code.
