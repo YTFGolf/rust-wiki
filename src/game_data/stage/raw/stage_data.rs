@@ -16,12 +16,7 @@ use crate::game_data::{
 };
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
-use std::{
-    fmt::Display,
-    fs::File,
-    io::{self, BufReader},
-    path::PathBuf,
-};
+use std::{fmt::Display, fs::File, io::BufReader, path::PathBuf};
 
 /// Types to deserialise csv files.
 pub mod csv_types {
@@ -131,25 +126,31 @@ pub struct StageData<'a> {
     version: &'a Version,
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 /// Error when getting data from file name.
 pub enum FromFileError {
     /// File selector doesn't work.
-    InvalidSelector(StageTypeParseError),
+    #[error(transparent)]
+    InvalidSelector(#[from] StageTypeParseError),
     /// Error creating data object.
-    DataParseError(StageDataError),
+    #[error(transparent)]
+    DataParseError(#[from] StageDataError),
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 /// Error when creating [StageData].
 pub enum StageDataError {
     /// Error opening file given.
+    #[error("Couldn't open file {file_name}. {source}")]
     FileOpenError {
+        /// File that couldn't be opened.
         file_name: String,
+        /// What went wrong when trying to open.
         source: std::io::Error,
     },
     /// Error when parsing CSV.
-    ParseError(CSVParseError),
+    #[error("couldn't parse CSV")]
+    ParseError(#[from] CSVParseError),
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -212,15 +213,12 @@ impl<'a> StageData<'_> {
         };
 
         let reader = BufReader::new(file);
-
-        let stage_file_reader = reader;
-        let stage_csv_data = Self::read_stage_csv(stage_file_reader)
-            .map_err(|(kind, line)| CSVParseError {
+        let stage_csv_data =
+            Self::read_stage_csv(reader).map_err(|(kind, line)| CSVParseError {
                 kind,
                 file_name,
                 line,
-            })
-            .map_err(StageDataError::ParseError)?;
+            })?;
 
         Ok(StageData {
             id,
