@@ -507,10 +507,19 @@ mod tests {
     fn test_file_no_exist() {
         let version = TEST_CONFIG.version.current_version();
         let no_file = StageData::from_file_name("stage84.csv", version).unwrap_err();
+        // I could use the actual numbers but idc
         assert!(matches!(
             no_file,
             FromFileError::DataParseError(StageDataError::FileOpenError { .. })
         ));
+
+        assert!(
+            no_file
+                .to_string()
+                .starts_with("Couldn't open file stage84.csv.")
+                // ensure proper error bubbling. Testing IOError is not
+                // necessary and may change between platforms.
+        );
     }
 
     #[test]
