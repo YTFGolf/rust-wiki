@@ -15,9 +15,14 @@ subheading.
 
 ### Added
 
+- Error returns for `StageData`, minus `deserialise_single_enemy`.
+- Error impl for `StageTypeParseError`.
+
 ### Fixed
 
 ### Changed
+
+- Moved `get_stages` to `encounters` module as it contains an unwrap.
 
 ### Removed
 
