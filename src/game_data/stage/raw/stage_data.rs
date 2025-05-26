@@ -17,6 +17,7 @@ use crate::game_data::{
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
 use std::{
+    fmt::Display,
     fs::File,
     io::{self, BufReader},
     path::PathBuf,
@@ -141,14 +142,17 @@ pub enum StageDataError {
     ParseError(CSVParseError),
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 /// Type of error encountered on certain line.
 pub enum CSVParseErrorKind {
     /// CSV file doesn't have enough lines.
+    #[error("tried to get a line that didn't exist")]
     NotEnoughLines,
     /// Error when converting to CSV Record.
+    #[error("couldn't convert to CSV Record")]
     CSVRecordError(csv::Error),
     /// Error when deserialising CSV Record.
+    #[error("couldn't deserialise CSV Record")]
     DeserialiseError(csv::Error),
 }
 type CSVParseErrorLine = (CSVParseErrorKind, usize);
@@ -160,6 +164,18 @@ pub struct CSVParseError {
     file_name: String,
     line: usize,
 }
+impl Display for CSVParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "error on line {line} in file {file_name:?}: {kind}",
+            line = self.line,
+            file_name = self.file_name,
+            kind = self.kind
+        )
+    }
+}
+impl std::error::Error for CSVParseError {}
 
 impl<'a> StageData<'_> {
     /// Create new StageData object from file name.
