@@ -419,45 +419,47 @@ mod tests {
             meta::stage::variant::StageVariantID as T,
         },
     };
-    use std::{io::Cursor, vec};
+    use std::vec;
 
-    #[test]
-    fn test_whitespace() {
-        let aven_jazz_cafe_sirrel = Cursor::new("414,5 ,1430,10,15,75,6,9,0,150,");
-        let mut rdr = csv::ReaderBuilder::new()
+    /// Get CSV reader from lines.
+    fn get_reader(lines: &str) -> csv::Reader<&[u8]> {
+        csv::ReaderBuilder::new()
             .has_headers(false)
             .trim(csv::Trim::All)
             .flexible(true)
-            .from_reader(aven_jazz_cafe_sirrel);
+            .from_reader(lines.as_bytes())
+    }
+
+    #[test]
+    fn test_whitespace() {
+        let aven_jazz_cafe_sirrel = "414,5 ,1430,10,15,75,6,9,0,150,";
+        let mut rdr = get_reader(aven_jazz_cafe_sirrel);
+
         let line = rdr.records().next().unwrap().unwrap();
         let enemy = line.deserialize::<StageEnemyCSV>(None);
+
         assert!(enemy.is_ok());
         assert_eq!(enemy.ok(), deserialise_single_enemy(line));
     }
 
     #[test]
     fn test_invalid_char() {
-        let tragedy_in_red_those_guys = Cursor::new("4,0,20,50,150,100,0,8,0,2400,.");
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .trim(csv::Trim::All)
-            .flexible(true)
-            .from_reader(tragedy_in_red_those_guys);
+        let tragedy_in_red_those_guys = "4,0,20,50,150,100,0,8,0,2400,.";
+        let mut rdr = get_reader(tragedy_in_red_those_guys);
+
         let mut line = rdr.records().next().unwrap().unwrap();
         line.truncate(10);
         let enemy = line.deserialize::<StageEnemyCSV>(None);
+
         assert!(enemy.is_ok());
         assert_eq!(enemy.ok(), deserialise_single_enemy(line));
     }
 
     #[test]
     fn test_simple_parse() {
-        let those_guys = Cursor::new("4,0,20,50,150,100,0,8,0,2400");
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .trim(csv::Trim::All)
-            .flexible(true)
-            .from_reader(those_guys);
+        let those_guys = "4,0,20,50,150,100,0,8,0,2400";
+        let mut rdr = get_reader(those_guys);
+
         let line = rdr.records().next().unwrap().unwrap();
         assert_eq!(
             deserialise_single_enemy(line)
@@ -471,25 +473,20 @@ mod tests {
     #[test]
     #[should_panic = "left: 5\n right: 10"]
     // . is not at end of line so panics
+    // really should not panic but idc
     fn test_parse_error_panics() {
-        let unparsable = Cursor::new("4,0,20,50,.,100,0,8,0,2400");
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .trim(csv::Trim::All)
-            .flexible(true)
-            .from_reader(unparsable);
+        let unparsable = "4,0,20,50,.,100,0,8,0,2400";
+        let mut rdr = get_reader(unparsable);
+
         let line = rdr.records().next().unwrap().unwrap();
         deserialise_single_enemy(line);
     }
 
     #[test]
     fn test_invalid_line_fails() {
-        let invalid = Cursor::new(",,,,,,,,,,");
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .trim(csv::Trim::All)
-            .flexible(true)
-            .from_reader(invalid);
+        let invalid = ",,,,,,,,,,";
+        let mut rdr = get_reader(invalid);
+
         let line = rdr.records().next().unwrap().unwrap();
         assert_eq!(deserialise_single_enemy(line), None);
     }
