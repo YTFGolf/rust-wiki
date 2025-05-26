@@ -504,6 +504,16 @@ mod tests {
     }
 
     #[test]
+    fn test_file_no_exist() {
+        let version = TEST_CONFIG.version.current_version();
+        let no_file = StageData::from_file_name("stage84.csv", version).unwrap_err();
+        assert!(matches!(
+            no_file,
+            FromFileError::DataParseError(StageDataError::FileOpenError { .. })
+        ));
+    }
+
+    #[test]
     fn test_basic() {
         let earthshaker = StageData::from_id(
             StageID::from_components(T::SoL, 0, 0),
