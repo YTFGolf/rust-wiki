@@ -6,12 +6,14 @@ use crate::game_data::stage::raw::stage_data::StageData;
 ///
 /// ```rust,no_run
 /// # use rust_wiki::game_data::enemy::raw_encounters::stage_contains_enemy;
+/// # use rust_wiki::game_data::stage::{raw::stage_data::StageData, stage_util::get_stage_files};
 /// # use rust_wiki::game_data::version::Version;
 /// # use rust_wiki::SLang;
-/// use rust_wiki::game_data::stage::stage_util::get_stages;
 /// # let version = Version::new("~", SLang::EN, Some("1.0".into()));
 /// let abs_enemy_id = 2;
-/// let all_stages = get_stages(&version).collect::<Vec<_>>();
+/// let all_stages = get_stage_files(&version)
+///     .map(|file_name| StageData::from_file_name(&file_name, &version).unwrap())
+///     .collect::<Vec<_>>();
 ///
 /// let encounters_iter = all_stages
 ///     .iter()

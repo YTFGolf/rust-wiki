@@ -11,7 +11,11 @@ use crate::{
             stage_id::StageID,
             variant::StageVariantID as T,
         },
-        stage::{parsed::stage_enemy::StageEnemy, raw::stage_data::StageData, stage_util::get_stage_files}, version::Version,
+        stage::{
+            parsed::stage_enemy::StageEnemy, raw::stage_data::StageData,
+            stage_util::get_stage_files,
+        },
+        version::Version,
     },
     interface::{config::Config, error_handler::InfallibleWrite},
     regex_handler::static_regex,
