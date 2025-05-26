@@ -160,10 +160,10 @@ pub enum CSVParseErrorKind {
     #[error("tried to get a line that didn't exist")]
     NotEnoughLines,
     /// Error when converting to CSV Record.
-    #[error("couldn't convert to CSV Record")]
+    #[error("Couldn't convert to CSV Record. (TODO: fix this message) {0}")]
     CSVRecordError(csv::Error),
     /// Error when deserialising CSV Record.
-    #[error("couldn't deserialise CSV Record")]
+    #[error(transparent)]
     DeserialiseError(csv::Error),
 }
 type CSVParseErrorLine = (CSVParseErrorKind, usize);
@@ -549,6 +549,13 @@ mod tests {
             (CSVParseErrorKind::DeserialiseError(_), 1),
             //
         ));
+
+        assert_eq!(
+            error.0.to_string(),
+            "CSV deserialize error: record 0 (line: 1, byte: 0): field 1: invalid digit found in string",
+            "{}",
+            error.0
+        );
     }
 
     #[test]
