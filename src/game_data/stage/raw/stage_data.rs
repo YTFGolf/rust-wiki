@@ -331,16 +331,7 @@ fn read_header_lines<R: std::io::Read>(
         //     cas = CH_CASTLES[id.id];
     } else {
         line_1_or_2 = remove_comment_ind(line_1_or_2, 6);
-
-        // In EoC
-        HeaderCSV {
-            base_id: 0,
-            no_cont: 0,
-            cont_chance: 0,
-            cont_map_id: 0,
-            cont_stage_id_min: 0,
-            cont_stage_id_max: 0,
-        }
+        HeaderCSV::default()
         // castle = Identifier.parseInt(sm.cast * 1000 + CH_CASTLES[id.id], CastleImg.class);
     };
 
