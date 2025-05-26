@@ -21,7 +21,7 @@ use std::{fmt::Display, fs::File, io::BufReader, path::PathBuf};
 /// Types to deserialise csv files.
 pub mod csv_types {
     // TODO split this up
-    #[derive(Debug, serde::Deserialize)]
+    #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
     /// Data stored in the header of the csv file (minus most Main Chapters).
     pub struct HeaderCSV {
         /// ID of base used.
@@ -38,7 +38,7 @@ pub mod csv_types {
         pub cont_stage_id_max: u32,
     }
 
-    #[derive(Debug, serde::Deserialize)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
     /// Data stored in line 2 of the csv file (line 1 for most Main Chapter
     /// stages).
     pub struct Line2CSV {
@@ -46,8 +46,8 @@ pub mod csv_types {
         pub width: u32,
         /// Base HP (ignore this if `animbase_id` is not 0).
         pub base_hp: u32,
-        _生産最低f: u32,
-        _生産最高f: u32,
+        pub(super) _生産最低f: u32,
+        pub(super) _生産最高f: u32,
         /// ID of stage background.
         pub background_id: u32,
         /// Max enemies in stage.
@@ -58,10 +58,10 @@ pub mod csv_types {
         pub time_limit: u32,
         /// Do you have the green barrier thing (boolean value).
         pub indestructible: u8,
-        _unknown_3: Option<u32>,
+        pub(super) _unknown_3: Option<u32>,
     }
 
-    #[derive(Debug, serde::Deserialize, PartialEq)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
     /// CSV data for enemies. See [Stage Structure
     /// Page/Battlegrounds](https://battlecats.miraheze.org/wiki/The_Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds)
     /// for more complete documentation.
@@ -104,7 +104,7 @@ pub mod csv_types {
     }
 
     /// Raw data from the stage csv file.
-    #[derive(Debug)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
     pub struct RawCSVData {
         /// Header row.
         pub header: HeaderCSV,
@@ -516,10 +516,48 @@ mod tests {
         assert!(
             no_file
                 .to_string()
-                .starts_with("Couldn't open file stage84.csv.")
-                // ensure proper error bubbling. Testing IOError is not
-                // necessary and may change between platforms.
+                .starts_with("Couldn't open file stage84.csv.") // ensure proper error bubbling. Testing IOError is not
+                                                                // necessary and may change between platforms.
         );
+    }
+
+    #[test]
+    fn header_parse() {
+        let header = "0,0,0,0,0,0,\n4200,60000,1,60,0,7,0,0,0,0,";
+        let data = StageData::read_stage_csv(header.as_bytes()).unwrap();
+
+        const LINE_2: Line2CSV = Line2CSV {
+            width: 4_200,
+            base_hp: 60_000,
+            _生産最低f: 1,
+            _生産最高f: 60,
+            background_id: 0,
+            max_enemies: 7,
+            anim_base_id: 0,
+            time_limit: 0,
+            indestructible: 0,
+            _unknown_3: Some(0),
+        };
+        assert_eq!(
+            data,
+            RawCSVData {
+                header: Default::default(),
+                line2: LINE_2,
+                enemies: Default::default(),
+            }
+        );
+    }
+
+    #[test]
+    fn header_parse_fail() {
+        let header = "0,-1,0,0,0,0,\n4200,60000,1,60,0,7,0,0,0,0,";
+        let error = StageData::read_stage_csv(header.as_bytes()).unwrap_err();
+
+        assert!(matches!(
+            error,
+            (CSVParseErrorKind::DeserialiseError(_), 1),
+            //
+        ));
     }
 
     #[test]
