@@ -132,12 +132,22 @@ pub struct StageData<'a> {
 }
 
 #[derive(Debug)]
+/// Error when getting data from file name.
+pub enum FromFileError {
+    /// File selector doesn't work.
+    InvalidSelector(StageTypeParseError),
+    /// Error creating data object.
+    DataParseError(StageDataError),
+}
+
+#[derive(Debug)]
 /// Error when creating [StageData].
 pub enum StageDataError {
     /// Error opening file given.
-    IOError(io::Error),
-    /// Selector doesn't work.
-    InvalidSelector(StageTypeParseError),
+    FileOpenError {
+        file_name: String,
+        source: std::io::Error,
+    },
     /// Error when parsing CSV.
     ParseError(CSVParseError),
 }
@@ -182,20 +192,26 @@ impl<'a> StageData<'_> {
     pub fn from_file_name(
         selector: &str,
         version: &'a Version,
-    ) -> Result<StageData<'a>, StageDataError> {
+    ) -> Result<StageData<'a>, FromFileError> {
         match parse_stage_file(selector) {
-            Ok(id) => Self::from_id(id, version),
-            Err(e) => Err(StageDataError::InvalidSelector(e)),
+            Ok(id) => Self::from_id(id, version).map_err(FromFileError::DataParseError),
+            Err(e) => Err(FromFileError::InvalidSelector(e)),
         }
     }
 
     /// Get stage data from [`StageID`].
     pub fn from_id(id: StageID, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
         let file_name = stage_data_file(&id);
-        let stage_file = PathBuf::from("DataLocal").join(&file_name);
-        let reader = BufReader::new(
-            File::open(version.get_file_path(&stage_file)).map_err(StageDataError::IOError)?,
-        );
+        let path = PathBuf::from("DataLocal").join(&file_name);
+
+        let file = match File::open(version.get_file_path(&path)) {
+            Ok(file) => file,
+            Err(source) => return Err(StageDataError::FileOpenError { file_name, source }),
+            // `map_err` can't be used because it moves `file_name` and compiler
+            // can't determine that that's completely safe to do so
+        };
+
+        let reader = BufReader::new(file);
 
         let stage_file_reader = reader;
         let stage_csv_data = Self::read_stage_csv(stage_file_reader)
