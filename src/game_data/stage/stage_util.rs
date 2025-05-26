@@ -1,6 +1,6 @@
 //! Utility functions for dealing with stages.
 
-use super::{super::version::Version, raw::stage_data::StageData};
+use super::super::version::Version;
 use crate::regex_handler::static_regex;
 
 /// Get a list of all stage data files in the game.
@@ -20,10 +20,4 @@ pub fn get_stage_files(version: &Version) -> impl Iterator<Item = String> {
             None
         }
     })
-}
-
-/// Get an iterator over all stages in the version.
-pub fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
-    get_stage_files(version)
-        .map(|file_name| StageData::from_file_name(&file_name, version).unwrap())
 }

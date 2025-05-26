@@ -11,9 +11,7 @@ use crate::{
             stage_id::StageID,
             variant::StageVariantID as T,
         },
-        stage::{
-            parsed::stage_enemy::StageEnemy, raw::stage_data::StageData, stage_util::get_stages,
-        },
+        stage::{parsed::stage_enemy::StageEnemy, raw::stage_data::StageData, stage_util::get_stage_files}, version::Version,
     },
     interface::{config::Config, error_handler::InfallibleWrite},
     regex_handler::static_regex,
@@ -445,6 +443,12 @@ fn write_encounter_group(buf: &mut String, group: Group<'_>) {
         group.sref.section().fmt_chapter(buf, chapter.dedupped());
         *buf += "\n";
     }
+}
+
+/// Get an iterator over all stages in the version.
+fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
+    get_stage_files(version)
+        .map(|file_name| StageData::from_file_name(&file_name, version).unwrap())
 }
 
 /// temp

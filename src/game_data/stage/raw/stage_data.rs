@@ -354,8 +354,8 @@ fn remove_comment_ind(mut record: ByteRecord, index: usize) -> ByteRecord {
 }
 
 #[allow(clippy::unwrap_used)]
-// I really can't be bothered to make this look nice rn
-// FIXME this
+// I really can't be bothered to make this look nice, so deal with the spaghetti
+// code
 fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
     let record: StageEnemyCSV = match result.deserialize(None) {
         Ok(r) => r,
