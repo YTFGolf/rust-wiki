@@ -21,18 +21,18 @@ Okay that's not true, since these tests rely on runtime data. Panicking in a `co
 ### Acceptable
 
 - `unreachable!` - path that should never be reached. For example
-  ```rust
-  if i < 0 {
-      return None;
-  }
-  match i {
-      0 => Some(2),
-      1 => Some(3),
-      2.. => Some(4),
-      _ => unreachable!()
-  }
-  ```
-  This is a bit contrived but we already checked the case where `i < 0` so the last case could never happen. If not obvious then `unreachable!` should have a reason, similar to `expect`.
+    ```rust
+    if i < 0 {
+        return None;
+    }
+    match i {
+        0 => Some(2),
+        1 => Some(3),
+        2.. => Some(4),
+        _ => unreachable!()
+    }
+    ```
+    This is a bit contrived but we already checked the case where `i < 0` so the last case could never happen. If not obvious then `unreachable!` should have a reason, similar to `expect`.
 
 - `todo!` - useful in dev and any place which has an issue filed for a missing feature.
 - `unimplemented!` - used where a feature is not implemented and implementing the feature is not a priority.
@@ -46,3 +46,25 @@ I should be very careful about how I implement error handling. In particular, if
 The way I want to sum it up is that basically, just imagine that I'm trying to run the current code on a server 24/7: errors need to be propagated out of library code so that interface code can decide what to do with it. I can't just let the entire server go down because it couldn't find a file, so that error must be bubbled up with more and more context each time until the actual server receives that error, at which point it needs to be able to log the error with the full context.
 
 That being said, I'm not trying to run this on a server 24/7, so if it takes a significant amount of work to change the structure it's probably not worth it. I mainly just need to think about the binary (redistributing it is a pain). Static wiki data panicking is a low priority, as if the panic is hit then the data is probably wrong. Game data will be a little more strict, but if all `CacheableVersionData` structs pass all tests using the current game version then probability of runtime panicking is low.
+
+## 2025-05-26
+
+Okay, more insight about how to display an error. Let's take this function:
+
+```rust
+pub fn from_file_name(
+    selector: &str,
+    version: &'a Version,
+) -> Result<StageData<'a>, FromFileError> {
+    match parse_stage_file(selector) {
+        Ok(id) => Self::from_id(id, version).map_err(FromFileError::DataParseError),
+        Err(e) => Err(FromFileError::InvalidSelector(e)),
+    }
+}
+```
+
+Now, `Self::from_id` will return an error, which is either that it couldn't open the correct file or it could open the file but couldn't parse it. In the first case, it must also report the name of the file it couldn't open, because any user of `Self::from_id` won't have that information. In the second case, it must report both the name of the file and the line where it occurred, because users of the function do not have that information.
+
+`Self::from_file_name` will return a different error; either that same error from `Self::from_id` (but wrapped because it has to be), or an `InvalidSelector`. The trick here is that it only returns the error and not the name of the file. Why? Because the user **does** have that information. They called this function using that file name. In this case, the user of this call is responsible for adding necessary context.
+
+In the first case, if the function fails, the user of the function needs to know why it failed. Perhaps there could be better error variants, but it does describe the aspects of the implementation that failed. The specific file that it failed on and the line it failed on are both implementation details. With `Self::from_file_name`, on the other hand, the file that couldn't be parsed into a selector is not an implementation detail, it is part of the interface.
