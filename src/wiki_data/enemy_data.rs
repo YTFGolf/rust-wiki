@@ -175,7 +175,7 @@ mod tests {
         assert_eq!(*ENEMY_DATA.get_id_from_name(name).unwrap(), id);
 
         let id = 644;
-        let name = "644";
+        let name = "E-644";
         assert_eq!(*ENEMY_DATA.get_id_from_name(name).unwrap(), id);
     }
 
