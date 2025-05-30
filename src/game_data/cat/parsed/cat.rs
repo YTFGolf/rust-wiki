@@ -6,7 +6,12 @@ use super::{
     unitbuy::{AncientEggInfo, UnitBuy},
 };
 use crate::game_data::{
-    cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::XPCostScale},
+    cat::raw::{
+        stats::read_data_file,
+        unitbuy::UnitBuyContainer,
+        unitexp::XPCostScale,
+        unitlevel::{UnitLevelContainer, UnitLevelRaw},
+    },
     version::{
         Version,
         lang::{MultiLangVersionContainer, VersionLanguage},
@@ -39,6 +44,8 @@ pub struct Cat {
     pub unitbuy: UnitBuy,
     /// Data from `unitexp.csv`.
     pub unitexp: XPCostScale,
+    /// Data from `unitlevel.csv`.
+    pub unitlevel: UnitLevelRaw,
     // growth curve
     // talents
     // evolutions
@@ -51,6 +58,8 @@ pub enum CatDataError {
     /// No data in `unitbuy.csv`. Almost certainly means that the unit does not
     /// exist in the current version.
     UnitBuyNotFound,
+    /// No data in `unitlevel.csv`.
+    UnitLevelNotFound,
 }
 
 impl Cat {
@@ -69,6 +78,11 @@ impl Cat {
 
         let unitexp = XPCostScale::from_id(id);
 
+        let unitlevel = version_cont
+            .lang_default()
+            .get_cached_file::<UnitLevelContainer>();
+        let unitlevel = unitlevel.get_unit(id).ok_or(E::UnitLevelNotFound)?.clone();
+
         let is_summon = unitbuy.misc.is_summon();
         let has_true = unitbuy.true_evol.is_some();
         let has_ultra = unitbuy.ultra_evol.is_some();
@@ -82,6 +96,7 @@ impl Cat {
             forms,
             unitbuy,
             unitexp,
+            unitlevel,
         })
     }
 
@@ -157,7 +172,7 @@ mod tests {
             }
             match Cat::from_wiki_id(id, &TEST_CONFIG.version) {
                 Ok(_) => (),
-                Err(E::UnitBuyNotFound) => break,
+                Err(E::UnitBuyNotFound | E::UnitLevelNotFound) => break,
             }
         }
     }
