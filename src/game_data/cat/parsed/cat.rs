@@ -129,6 +129,18 @@ impl Cat {
     }
 }
 
+impl Cat {
+    /// Does the cat have a true form?
+    pub fn has_true_form(&self) -> bool {
+        self.forms.amt_forms > 2
+    }
+
+    /// Does the cat have an ultra form?
+    pub fn has_ultra_form(&self) -> bool {
+        self.forms.amt_forms > 3
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
