@@ -1,10 +1,11 @@
+use super::Version;
 use crate::SLang;
 
 #[derive(Debug)]
 /// Represents an invalid language code.
 pub struct InvalidLanguage(pub String);
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 /// Version's language.
 pub enum VersionLanguage {
     /// English.
@@ -13,6 +14,8 @@ pub enum VersionLanguage {
     JP,
 }
 use VersionLanguage as V;
+// TODO merge with VersionConfig's lang.
+
 impl TryFrom<&str> for VersionLanguage {
     type Error = InvalidLanguage;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
@@ -31,4 +34,20 @@ impl From<SLang> for VersionLanguage {
             SLang::JP => Self::JP,
         }
     }
+}
+impl From<VersionLanguage> for SLang {
+    fn from(value: VersionLanguage) -> Self {
+        match value {
+            VersionLanguage::EN => Self::EN,
+            VersionLanguage::JP => Self::JP,
+        }
+    }
+}
+
+/// Struct that can hold game data for multiple languages.
+pub trait MultiLangVersionContainer {
+    /// Get a "default" version.
+    fn lang_default(&self) -> &Version;
+    /// Get the version that corresponds to the appropriate language.
+    fn get_lang(&self, lang: VersionLanguage) -> &Version;
 }
