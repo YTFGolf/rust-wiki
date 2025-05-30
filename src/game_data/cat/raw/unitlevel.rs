@@ -5,7 +5,7 @@ use std::path::Path;
 /// Level-up scale multiplier per 10 levels.
 ///
 /// All values are multiplied by 100 to avoid using floats.
-pub struct UnitLevel {
+pub struct UnitLevelRaw {
     /// Level scale multiplier up to level 10.
     pub until_10: u8,
     /// Level scale multiplier up to level 20.
@@ -52,7 +52,7 @@ pub struct UnitLevel {
     rest: Vec<u8>,
 }
 
-fn get_unitlevel(path: &Path) -> Vec<UnitLevel> {
+fn get_unitlevel(path: &Path) -> Vec<UnitLevelRaw> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/unitlevel.csv"))
@@ -61,20 +61,20 @@ fn get_unitlevel(path: &Path) -> Vec<UnitLevel> {
     rdr.byte_records()
         .map(|record| {
             let result = record.unwrap();
-            let unit: UnitLevel = result.deserialize(None).unwrap();
+            let unit: UnitLevelRaw = result.deserialize(None).unwrap();
             unit
         })
         .collect()
 }
 
 #[derive(Debug)]
-/// Container for [`UnitLevel`] data.
+/// Container for [`UnitLevelRaw`] data.
 pub struct UnitLevelContainer {
-    units: Vec<UnitLevel>,
+    units: Vec<UnitLevelRaw>,
 }
 impl UnitLevelContainer {
-    /// Get [`UnitLevel`] line for a unit.
-    pub fn get_unit(&self, id: u32) -> Option<&UnitLevel> {
+    /// Get [`UnitLevelRaw`] line for a unit.
+    pub fn get_unit(&self, id: u32) -> Option<&UnitLevelRaw> {
         self.units.get(id as usize)
     }
 }

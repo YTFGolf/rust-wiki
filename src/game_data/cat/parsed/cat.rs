@@ -139,6 +139,7 @@ impl Cat {
     pub fn has_ultra_form(&self) -> bool {
         self.forms.amt_forms > 3
     }
+    // are these even needed?
 }
 
 #[cfg(test)]
