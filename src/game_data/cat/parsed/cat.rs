@@ -1,7 +1,9 @@
 //! Deals with cat data.
 
 use super::{
-    anim::{get_anims, AnimData}, stats::form::CatStats, unitbuy::{AncientEggInfo, UnitBuyData}
+    anim::{CatFormAnimData, get_anims},
+    stats::form::CatFormStats,
+    unitbuy::{AncientEggInfo, UnitBuyData},
 };
 use crate::game_data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
@@ -20,9 +22,9 @@ pub struct CatForms {
     /// many forms.
     pub amt_forms: usize,
     /// Stats per form.
-    pub stats: Vec<CatStats>,
+    pub stats: Vec<CatFormStats>,
     /// Animation data for each form.
-    pub anims: Vec<AnimData>,
+    pub anims: Vec<CatFormAnimData>,
     // desc
 }
 
@@ -118,12 +120,12 @@ impl Cat {
     }
 
     /// Get stats for each form.
-    pub fn get_stats(wiki_id: u32, version: &Version) -> impl Iterator<Item = CatStats> {
+    pub fn get_stats(wiki_id: u32, version: &Version) -> impl Iterator<Item = CatFormStats> {
         // get_stats(wiki_id + 1, version)
         let abs_id = wiki_id + 1;
         let file_name = format!("unit{abs_id:03}.csv");
         let combined_iter = read_data_file(&file_name, version);
-        combined_iter.map(|combined| CatStats::from_combined(&combined))
+        combined_iter.map(|combined| CatFormStats::from_combined(&combined))
     }
 }
 

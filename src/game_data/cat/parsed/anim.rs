@@ -18,10 +18,10 @@ pub enum AnimDataError {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Data about a unit form's animations.
-pub struct AnimData {
+pub struct CatFormAnimData {
     length: usize, // right now all that's needed is the length of the animation
 }
-impl AnimData {
+impl CatFormAnimData {
     /// Get length of unit's animations.
     pub fn length(&self) -> usize {
         // not called `len` to avoid setting off `clippy::len_without_is_empty`
@@ -35,7 +35,7 @@ pub fn get_anims(
     version: &Version,
     amt_forms: usize,
     egg_data: &AncientEggInfo,
-) -> Result<Vec<AnimData>, (AnimDataError, usize)> {
+) -> Result<Vec<CatFormAnimData>, (AnimDataError, usize)> {
     // needs to be tested with en first, then do jp if en doesn't work
     let (form1, form2) = match egg_data {
         AncientEggInfo::None => (
@@ -64,7 +64,7 @@ pub fn get_anims(
     Ok(anims)
 }
 
-fn get_anim_data(path: &str, version: &Version) -> Result<AnimData, AnimDataError> {
+fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
     use AnimDataError as E;
     const ANIM_LINE_LEN: usize = 4;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
@@ -82,7 +82,7 @@ fn get_anim_data(path: &str, version: &Version) -> Result<AnimData, AnimDataErro
         })
         .max()
         .ok_or(E::EmptyAnimation)?;
-    Ok(AnimData { length: count + 1 })
+    Ok(CatFormAnimData { length: count + 1 })
 }
 
 #[cfg(test)]
@@ -107,13 +107,13 @@ mod tests {
         (egg_data, amt_forms)
     }
 
-    fn get_all_anims(id: u32, version: &Version) -> Vec<AnimData> {
+    fn get_all_anims(id: u32, version: &Version) -> Vec<CatFormAnimData> {
         let (egg, amt) = get_egg_data(id, version);
         get_anims(id, version, amt, &egg).unwrap()
     }
 
-    fn anim(length: usize) -> AnimData {
-        AnimData { length }
+    fn anim(length: usize) -> CatFormAnimData {
+        CatFormAnimData { length }
     }
 
     #[test]
