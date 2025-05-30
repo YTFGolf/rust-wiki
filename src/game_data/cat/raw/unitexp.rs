@@ -103,15 +103,15 @@ const SUPERFELINE: UnitExp = UnitExp {
 };
 
 #[derive(Debug)]
-/// Levelling enum to avoid using a big object.
-pub enum Levelling {
+/// Enum to avoid using a big object.
+pub enum XPCostScale {
     /// Default level cost growth.
     Normal,
     /// Superfeline level cost growth.
     Superfeline,
 }
-impl Levelling {
-    /// Get levelling from unit id.
+impl XPCostScale {
+    /// Get XPCostScale from unit id.
     pub const fn from_id(id: u32) -> Self {
         match id {
             643 => Self::Superfeline,
@@ -120,10 +120,10 @@ impl Levelling {
     }
 
     /// Get [`UnitExp`] levelling multipliers.
-    pub const fn get_levelling(&self) -> UnitExp {
+    pub const fn get_cost_scale(&self) -> UnitExp {
         match self {
-            Levelling::Normal => DEFAULT,
-            Levelling::Superfeline => SUPERFELINE,
+            XPCostScale::Normal => DEFAULT,
+            XPCostScale::Superfeline => SUPERFELINE,
         }
     }
 }
@@ -157,8 +157,8 @@ mod tests {
         let units = get_unitexp(&version.get_file_path(""));
 
         for (i, unit) in units.into_iter().enumerate() {
-            let level = Levelling::from_id(i as u32);
-            assert_eq!(level.get_levelling(), unit);
+            let level = XPCostScale::from_id(i as u32);
+            assert_eq!(level.get_cost_scale(), unit);
         }
     }
 

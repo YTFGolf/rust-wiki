@@ -6,7 +6,7 @@ use super::{
     unitbuy::{AncientEggInfo, UnitBuy},
 };
 use crate::game_data::{
-    cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
+    cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::XPCostScale},
     version::{
         Version,
         lang::{MultiLangVersionContainer, VersionLanguage},
@@ -38,7 +38,7 @@ pub struct Cat {
     /// Data from `unitbuy.csv`.
     pub unitbuy: UnitBuy,
     /// Data from `unitexp.csv`.
-    pub unitexp: Levelling,
+    pub unitexp: XPCostScale,
     // growth curve
     // talents
     // evolutions
@@ -67,7 +67,7 @@ impl Cat {
             .get_cached_file::<UnitBuyContainer>();
         let unitbuy = UnitBuy::from_unitbuy(unitbuy.get_unit(id).ok_or(E::UnitBuyNotFound)?);
 
-        let unitexp = Levelling::from_id(id);
+        let unitexp = XPCostScale::from_id(id);
 
         let is_summon = unitbuy.misc.is_summon();
         let has_true = unitbuy.true_evol.is_some();
