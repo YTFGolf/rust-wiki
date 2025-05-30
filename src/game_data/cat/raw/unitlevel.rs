@@ -51,6 +51,7 @@ pub struct UnitLevelRaw {
     #[serde(default)]
     rest: Vec<u8>,
 }
+
 impl UnitLevelRaw {
     fn up_to_10(level: u8, until: u8) -> f64 {
         f64::from(level) * f64::from(until) / 100.0
@@ -65,13 +66,40 @@ impl UnitLevelRaw {
         }
         total_multiplier += Self::up_to_10(9, self.until_10);
         level -= 10;
-        // needs to do - 1 for both calls to `up_to_10`.
+        // needs to do - 1 for both calls to `up_to_10`, so can't use macro
 
-        // let mut total_multiplier = 1.0 + ;
+        /// The rest is just the same code so use macro.
+        macro_rules! level_split {
+            ($input_name:expr) => {
+                if level <= 10 {
+                    return total_multiplier + Self::up_to_10(level, $input_name);
+                }
+                total_multiplier += Self::up_to_10(10, $input_name);
+                level -= 10;
+            };
+        }
 
-        // level = level - 10;
+        level_split!(self.until_20);
+        level_split!(self.until_30);
+        level_split!(self.until_40);
+        level_split!(self.until_50);
+        level_split!(self.until_60);
+        level_split!(self.until_70);
+        level_split!(self.until_80);
+        level_split!(self.until_90);
+        level_split!(self.until_100);
+        level_split!(self.until_110);
+        level_split!(self.until_120);
+        level_split!(self.until_130);
+        level_split!(self.until_140);
+        level_split!(self.until_150);
+        level_split!(self.until_160);
+        level_split!(self.until_170);
+        level_split!(self.until_180);
+        level_split!(self.until_190);
+        level_split!(self.until_200);
 
-        todo!()
+        unreachable!("Reached {total_multiplier} with {level} levels remaining");
     }
 
     /// Raw, pre-treasure stat at level.
