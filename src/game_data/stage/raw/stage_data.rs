@@ -1,6 +1,7 @@
 //! Module that deals with getting information about stages.
 use super::stage_option::StageOptionCSV;
 use crate::game_data::{
+    csv::{CSVParseError, CSVParseErrorKind, CSVParseErrorLine, FullCSVError},
     map::{
         cached::{map_option::MapOptionCSV, special_rules::SpecialRule},
         raw::{csv_types::StageDataCSV, map_data::GameMapData},
@@ -16,7 +17,7 @@ use crate::game_data::{
 };
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
-use std::{fmt::Display, fs::File, io::BufReader, path::PathBuf};
+use std::{fs::File, io::BufReader, path::PathBuf};
 
 /// Types to deserialise csv files.
 pub mod csv_types {
@@ -134,59 +135,8 @@ pub enum FromFileError {
     InvalidSelector(#[from] StageTypeParseError),
     /// Error creating data object.
     #[error(transparent)]
-    DataParseError(#[from] StageDataError),
+    DataParseError(#[from] FullCSVError),
 }
-
-#[derive(Debug, thiserror::Error)]
-/// Error when creating [StageData].
-pub enum StageDataError {
-    /// Error opening file given.
-    #[error("Couldn't open file {file_name}. {source}")]
-    FileOpenError {
-        /// File that couldn't be opened.
-        file_name: String,
-        /// What went wrong when trying to open.
-        source: std::io::Error,
-    },
-    /// Error when parsing CSV.
-    #[error("couldn't parse CSV")]
-    ParseError(#[from] CSVParseError),
-}
-
-#[derive(Debug, thiserror::Error)]
-/// Type of error encountered on certain line.
-pub enum CSVParseErrorKind {
-    /// CSV file doesn't have enough lines.
-    #[error("tried to get a line that didn't exist")]
-    NotEnoughLines,
-    /// Error when converting to CSV Record.
-    #[error("Couldn't convert to CSV Record. (TODO: fix this message) {0}")]
-    CSVRecordError(csv::Error),
-    /// Error when deserialising CSV Record.
-    #[error(transparent)]
-    DeserialiseError(csv::Error),
-}
-type CSVParseErrorLine = (CSVParseErrorKind, usize);
-
-#[derive(Debug)]
-/// Error when parsing stage data CSV files.
-pub struct CSVParseError {
-    kind: CSVParseErrorKind,
-    file_name: String,
-    line: usize,
-}
-impl Display for CSVParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "error on line {line} in file {file_name:?}: {kind}",
-            line = self.line,
-            file_name = self.file_name,
-            kind = self.kind
-        )
-    }
-}
-impl std::error::Error for CSVParseError {}
 
 impl<'a> StageData<'_> {
     /// Create new StageData object from file name.
@@ -201,13 +151,13 @@ impl<'a> StageData<'_> {
     }
 
     /// Get stage data from [`StageID`].
-    pub fn from_id(id: StageID, version: &'a Version) -> Result<StageData<'a>, StageDataError> {
+    pub fn from_id(id: StageID, version: &'a Version) -> Result<StageData<'a>, FullCSVError> {
         let file_name = stage_data_file(&id);
         let path = PathBuf::from("DataLocal").join(&file_name);
 
         let file = match File::open(version.get_file_path(&path)) {
             Ok(file) => file,
-            Err(source) => return Err(StageDataError::FileOpenError { file_name, source }),
+            Err(source) => return Err(FullCSVError::FileOpenError { file_name, source }),
             // `map_err` can't be used because it moves `file_name` and compiler
             // can't determine that that's completely safe to do so
         };
@@ -498,7 +448,7 @@ mod tests {
         // I could use the actual numbers but idc
         assert!(matches!(
             no_file,
-            FromFileError::DataParseError(StageDataError::FileOpenError { .. })
+            FromFileError::DataParseError(FullCSVError::FileOpenError { .. })
         ));
 
         assert!(
