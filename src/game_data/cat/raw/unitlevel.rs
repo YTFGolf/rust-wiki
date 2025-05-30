@@ -52,11 +52,20 @@ pub struct UnitLevelRaw {
     rest: Vec<u8>,
 }
 impl UnitLevelRaw {
+    fn up_to_10(level: u8, until: u8) -> f64 {
+        f64::from(level) * f64::from(until) / 100.0
+    }
+
     fn get_stat_multiplier_at_level(&self, mut level: u8) -> f64 {
         assert!(level > 0);
+        let mut total_multiplier = 1.0;
+
         if level <= 10 {
-            return 1.0 + f64::from(level - 1) * f64::from(self.until_10) / 100.0;
+            return total_multiplier + Self::up_to_10(level - 1, self.until_10);
         }
+        total_multiplier += Self::up_to_10(9, self.until_10);
+        level -= 10;
+        // needs to do - 1 for both calls to `up_to_10`.
 
         // let mut total_multiplier = 1.0 + ;
 
