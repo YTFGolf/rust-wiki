@@ -48,10 +48,6 @@ pub struct UnitLevelRaw {
     pub until_190: u8,
     /// Level scale multiplier up to level 200.
     pub until_200: u8,
-
-    /// Should be empty.
-    #[serde(default)]
-    rest: Vec<u8>,
 }
 
 impl UnitLevelRaw {
@@ -126,6 +122,8 @@ fn get_unitlevel(path: &Path) -> Vec<UnitLevelRaw> {
     rdr.byte_records()
         .map(|record| {
             let result = record.unwrap();
+            assert_eq!(result.len(), std::mem::size_of::<UnitLevelRaw>());
+            // make sure that the struct definition is up-to-date
             let unit: UnitLevelRaw = result.deserialize(None).unwrap();
             unit
         })
@@ -155,17 +153,6 @@ impl CacheableVersionData for UnitLevelContainer {
 mod tests {
     use super::*;
     use crate::{TEST_CONFIG, game_data::version::Version};
-
-    #[test]
-    fn test_file_reader() {
-        let version = TEST_CONFIG.version.current_version();
-        let unitlevel = version.get_cached_file::<UnitLevelContainer>();
-        let units = &unitlevel.units;
-
-        for unit in units {
-            assert_eq!(unit.rest, Vec::<u8>::new());
-        }
-    }
 
     fn get_unitlevel(id: u32, version: &Version) -> &UnitLevelRaw {
         let unitlevel = version.get_cached_file::<UnitLevelContainer>();
