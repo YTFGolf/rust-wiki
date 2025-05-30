@@ -466,12 +466,13 @@ fn dasli() {
 fn modoki() {
     const SELL_XP: u32 = 10000;
     const SELL_NP: u8 = 1;
-    const UPDATE: i64 = 101000;
 
     let version = TEST_CONFIG.version.current_version();
 
     let modoki = get_unitbuy(626, version);
     let guide_cmp_const = modoki.misc.guide_order.clone();
+    let update_cmp_const = modoki.misc.update_released;
+    // -1 in en but actual version in jp
 
     let unlock = CatUnlock::default();
 
@@ -483,7 +484,7 @@ fn modoki() {
         guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
-        update_released: UPDATE,
+        update_released: update_cmp_const,
         egg_info: AncientEggInfo::None,
     };
 
