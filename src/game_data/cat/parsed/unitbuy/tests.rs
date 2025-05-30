@@ -90,6 +90,7 @@ fn basic() {
     let version = TEST_CONFIG.version.current_version();
 
     let cat = get_unitbuy(0, version);
+    let guide_cmp_const = cat.misc.guide_order.clone();
 
     let unlock = CatUnlock::new(0, 0, 0, UnlockCurrency::XP);
     let true_evol = EvolutionInfo::new(19001, EvolutionType::Levels { level: 30 });
@@ -98,7 +99,7 @@ fn basic() {
     ];
     let misc = Misc {
         rarity: Rarity::Normal,
-        guide_order: CatGuideOrder::Unit(0),
+        guide_order: guide_cmp_const,
         sell_xp: 10_000,
         sell_np: 1,
         update_released: 0,
@@ -124,6 +125,7 @@ fn basic2() {
     // jp has initial cost set at 500
 
     let tank = get_unitbuy(1, version);
+    let guide_cmp_const = tank.misc.guide_order.clone();
 
     let unlock = CatUnlock::new(1, 0, 0, UnlockCurrency::XP);
     let true_evol = EvolutionInfo::new(19002, EvolutionType::Levels { level: 30 });
@@ -132,7 +134,7 @@ fn basic2() {
     ];
     let misc = Misc {
         rarity: Rarity::Normal,
-        guide_order: CatGuideOrder::Unit(1),
+        guide_order: guide_cmp_const,
         sell_xp: 12_000,
         sell_np: 1,
         update_released: 0,
@@ -157,6 +159,7 @@ fn basic3() {
     let version = TEST_CONFIG.version.current_version();
 
     let titan = get_unitbuy(8, version);
+    let guide_cmp_const = titan.misc.guide_order.clone();
 
     let unlock = CatUnlock::new(24, 0, 8_000, UnlockCurrency::XP);
     let true_evol = EvolutionInfo::new(19009, EvolutionType::Levels { level: 30 });
@@ -165,7 +168,7 @@ fn basic3() {
     ];
     let misc = Misc {
         rarity: Rarity::Normal,
-        guide_order: CatGuideOrder::Unit(80),
+        guide_order: guide_cmp_const,
         sell_xp: 24_000,
         sell_np: 1,
         update_released: 0,
@@ -188,12 +191,12 @@ fn basic3() {
 #[test]
 fn special() {
     const EVOL_ID: u32 = 10010;
-    const GUIDE: u32 = 1000090;
     const SELL_XP: u32 = 999;
 
     let version = TEST_CONFIG.version.current_version();
 
     let actress = get_unitbuy(9, version);
+    let guide_cmp_const = actress.misc.guide_order.clone();
 
     let unlock = CatUnlock::new(7, 1, 150, UnlockCurrency::Catfood);
     let true_evol = EvolutionInfo::new(EVOL_ID, EvolutionType::Other);
@@ -202,7 +205,7 @@ fn special() {
     ];
     let misc = Misc {
         rarity: Rarity::Special,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: 1,
         update_released: 0,
@@ -225,12 +228,12 @@ fn special() {
 #[test]
 fn bahamut() {
     const EVOL_ID: u32 = 18026;
-    const GUIDE: u32 = 1910010;
     const SELL_XP: u32 = 999;
 
     let version = TEST_CONFIG.version.current_version();
 
     let bahamut = get_unitbuy(25, version);
+    let guide_cmp_const = bahamut.misc.guide_order.clone();
 
     let unlock = CatUnlock::new(48, 2, 0, UnlockCurrency::XP);
     let true_evol = EvolutionInfo::new(EVOL_ID, EvolutionType::Other);
@@ -239,7 +242,7 @@ fn bahamut() {
     ];
     let misc = Misc {
         rarity: Rarity::Special,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: 1,
         update_released: 0,
@@ -262,13 +265,13 @@ fn bahamut() {
 #[test]
 fn cancan() {
     const EVOL_ID: u32 = 15033;
-    const GUIDE: u32 = 3000000;
     const SELL_XP: u32 = 478000;
     const SELL_NP: u8 = 15;
 
     let version = TEST_CONFIG.version.current_version();
 
     let cancan = get_unitbuy(32, version);
+    let guide_cmp_const = cancan.misc.guide_order.clone();
 
     let unlock = CatUnlock::default();
 
@@ -293,7 +296,7 @@ fn cancan() {
     ];
     let misc = Misc {
         rarity: Rarity::SuperRare,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: 0,
@@ -317,13 +320,13 @@ fn cancan() {
 fn dio() {
     const TRUE_ID: u32 = 15178;
     const ULTRA_ID: u32 = 25178;
-    const GUIDE: u32 = 4003050;
     const SELL_XP: u32 = 1000000;
     const SELL_NP: u8 = 50;
 
     let version = TEST_CONFIG.version.current_version();
 
     let dio = get_unitbuy(177, version);
+    let guide_cmp_const = dio.misc.guide_order.clone();
 
     let unlock = CatUnlock::default();
 
@@ -362,7 +365,7 @@ fn dio() {
     let costs = UR_COSTS;
     let misc = Misc {
         rarity: Rarity::UberRare,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: 0,
@@ -384,20 +387,20 @@ fn dio() {
 
 #[test]
 fn metal() {
-    const GUIDE: u32 = 3001010;
     const SELL_XP: u32 = 777777;
     const SELL_NP: u8 = 15;
 
     let version = TEST_CONFIG.version.current_version();
 
     let metal = get_unitbuy(200, version);
+    let guide_cmp_const = metal.misc.guide_order.clone();
 
     let unlock = CatUnlock::default();
 
     let costs = UR_COSTS;
     let misc = Misc {
         rarity: Rarity::SuperRare,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: 0,
@@ -425,7 +428,6 @@ fn metal() {
 
 #[test]
 fn dasli() {
-    const GUIDE: u32 = 4805031;
     const SELL_XP: u32 = 1000000;
     const SELL_NP: u8 = 50;
     const UPDATE: i64 = 90500;
@@ -433,13 +435,14 @@ fn dasli() {
     let version = TEST_CONFIG.version.current_version();
 
     let dasli = get_unitbuy(543, version);
+    let guide_cmp_const = dasli.misc.guide_order.clone();
 
     let unlock = CatUnlock::default();
 
     let costs = UR_COSTS;
     let misc = Misc {
         rarity: Rarity::UberRare,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: UPDATE,
@@ -461,7 +464,6 @@ fn dasli() {
 
 #[test]
 fn modoki() {
-    const GUIDE: u32 = 1000400;
     const SELL_XP: u32 = 10000;
     const SELL_NP: u8 = 1;
     const UPDATE: i64 = 101000;
@@ -469,6 +471,7 @@ fn modoki() {
     let version = TEST_CONFIG.version.current_version();
 
     let modoki = get_unitbuy(626, version);
+    let guide_cmp_const = modoki.misc.guide_order.clone();
 
     let unlock = CatUnlock::default();
 
@@ -477,7 +480,7 @@ fn modoki() {
     ];
     let misc = Misc {
         rarity: Rarity::Special,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: UPDATE,
@@ -505,7 +508,6 @@ fn modoki() {
 
 #[test]
 fn superfeline() {
-    const GUIDE: u32 = 90;
     const SELL_XP: u32 = 30000;
     const SELL_NP: u8 = 1;
     const UPDATE: i64 = 110100;
@@ -513,6 +515,7 @@ fn superfeline() {
     let version = TEST_CONFIG.version.current_version();
 
     let sfeline = get_unitbuy(643, version);
+    let guide_cmp_const = sfeline.misc.guide_order.clone();
 
     let unlock = CatUnlock::default();
     let true_evol = EvolutionInfo::new(19010, EvolutionType::Levels { level: 100 });
@@ -521,7 +524,7 @@ fn superfeline() {
     ];
     let misc = Misc {
         rarity: Rarity::Normal,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: UPDATE,
@@ -546,7 +549,6 @@ fn superfeline() {
 
 #[test]
 fn courier() {
-    const GUIDE: u32 = 2050000;
     const EVOL_ID: u32 = 15659;
     const SELL_XP: u32 = 444;
     const SELL_NP: u8 = 5;
@@ -555,6 +557,7 @@ fn courier() {
     let version = TEST_CONFIG.version.current_version();
 
     let courier = get_unitbuy(658, version);
+    let guide_cmp_const = courier.misc.guide_order.clone();
 
     let unlock = CatUnlock::new(0, 0, 0, UnlockCurrency::XP);
 
@@ -579,7 +582,7 @@ fn courier() {
     ];
     let misc = Misc {
         rarity: Rarity::Rare,
-        guide_order: CatGuideOrder::Unit(GUIDE),
+        guide_order: guide_cmp_const,
         sell_xp: SELL_XP,
         sell_np: SELL_NP,
         update_released: UPDATE,

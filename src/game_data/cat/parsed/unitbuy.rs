@@ -201,7 +201,7 @@ pub enum AncientEggInfo {
     },
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 /// Order of unit in the Cat Guide.
 pub enum CatGuideOrder {
     /// Unit with id.
