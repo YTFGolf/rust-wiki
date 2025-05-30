@@ -1,6 +1,9 @@
 //! Deals with the config for version.
 
-use crate::game_data::version::{lang::{self, MultiLangVersionContainer}, Version};
+use crate::game_data::version::{
+    Version,
+    lang::{self, MultiLangVersionContainer},
+};
 use serde::{Deserialize, Serialize};
 use std::{env::home_dir, fmt::Display, path::PathBuf};
 

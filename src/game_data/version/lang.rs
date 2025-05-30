@@ -1,3 +1,5 @@
+//! Defines a version's language.
+
 use super::Version;
 use crate::SLang;
 
