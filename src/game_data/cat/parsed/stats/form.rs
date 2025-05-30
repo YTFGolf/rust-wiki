@@ -256,7 +256,7 @@ impl Attack {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Stats at level 1 with no treasures.
-pub struct CatStats {
+pub struct CatFormStats {
     /// Unit HP.
     pub hp: u32,
     /// HP knockbacks.
@@ -277,7 +277,7 @@ pub struct CatStats {
     pub targets: Rc<[EnemyType]>,
 }
 
-impl CatStats {
+impl CatFormStats {
     /// Get unit stats from the combined stat data.
     pub fn from_combined(combined: &CombinedCatData) -> Self {
         let (fixed, var) = combined;
@@ -309,7 +309,7 @@ mod tests {
     use EnemyType as E;
     use std::iter::zip;
 
-    fn get_unit_current(id: u32) -> impl Iterator<Item = CatStats> {
+    fn get_unit_current(id: u32) -> impl Iterator<Item = CatFormStats> {
         let version = TEST_CONFIG.version.current_version();
         Cat::get_stats(id, version)
     }
@@ -324,7 +324,7 @@ mod tests {
         let bahamut = get_unit_current(25);
 
         let forms = [
-            CatStats {
+            CatFormStats {
                 hp: 1500,
                 kb: 3,
                 death_anim: None,
@@ -345,7 +345,7 @@ mod tests {
                 abilities: [].into(),
                 targets: [].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 1500,
                 kb: 3,
                 death_anim: None,
@@ -366,7 +366,7 @@ mod tests {
                 abilities: [].into(),
                 targets: [].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 1500,
                 kb: 6,
                 death_anim: None,
@@ -413,7 +413,7 @@ mod tests {
         let dark_phono = get_unit_current(705);
 
         let forms = [
-            CatStats {
+            CatFormStats {
                 hp: 2600,
                 kb: 5,
                 death_anim: None,
@@ -484,7 +484,7 @@ mod tests {
                 ]
                 .into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 3400,
                 kb: 5,
                 death_anim: None,
@@ -568,7 +568,7 @@ mod tests {
         let dark_iz = get_unit_current(657);
 
         let forms = [
-            CatStats {
+            CatFormStats {
                 hp: 3200,
                 kb: 2,
                 death_anim: None,
@@ -620,7 +620,7 @@ mod tests {
                 .into(),
                 targets: [E::Traitless].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 4500,
                 kb: 2,
                 death_anim: None,
@@ -690,7 +690,7 @@ mod tests {
         let moneko = get_unit_current(16);
 
         let forms = [
-            CatStats {
+            CatFormStats {
                 hp: 600,
                 kb: 4,
                 death_anim: NonZero::new(1),
@@ -711,7 +711,7 @@ mod tests {
                 abilities: [A::Crit { chance: 15 }].into(),
                 targets: [].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 1000,
                 kb: 4,
                 death_anim: NonZero::new(1),
@@ -732,7 +732,7 @@ mod tests {
                 abilities: [A::Crit { chance: 15 }].into(),
                 targets: [].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 1250,
                 kb: 4,
                 death_anim: NonZero::new(16),
@@ -773,7 +773,7 @@ mod tests {
         let eva_02 = get_unit_current(414);
 
         let forms = [
-            CatStats {
+            CatFormStats {
                 hp: 3900,
                 kb: 3,
                 death_anim: NonZero::new(14),
@@ -797,7 +797,7 @@ mod tests {
                 abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
                 targets: [E::Red].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 3900,
                 kb: 3,
                 death_anim: NonZero::new(14),
@@ -821,7 +821,7 @@ mod tests {
                 abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
                 targets: [E::Red].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 3900,
                 kb: 3,
                 death_anim: NonZero::new(14),
@@ -864,7 +864,7 @@ mod tests {
     fn test_kamikaze() {
         let stone = get_unit_current(581);
 
-        let ans = CatStats {
+        let ans = CatFormStats {
             hp: 20_000,
             kb: 1,
             death_anim: NonZero::new(-1),
@@ -906,7 +906,7 @@ mod tests {
         let cosmo = get_unit_current(135);
 
         let forms = [
-            CatStats {
+            CatFormStats {
                 hp: 555,
                 kb: 3,
                 death_anim: None,
@@ -927,7 +927,7 @@ mod tests {
                 abilities: [A::Knockback { chance: 20 }].into(),
                 targets: [E::Float, E::Angel].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 1600,
                 kb: 4,
                 death_anim: None,
@@ -948,7 +948,7 @@ mod tests {
                 abilities: [A::Knockback { chance: 100 }].into(),
                 targets: [E::Float, E::Angel].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 1600,
                 kb: 4,
                 death_anim: None,
@@ -976,7 +976,7 @@ mod tests {
                 .into(),
                 targets: [E::Float, E::Angel].into(),
             },
-            CatStats {
+            CatFormStats {
                 hp: 2000,
                 kb: 4,
                 death_anim: None,
