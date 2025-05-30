@@ -182,4 +182,29 @@ mod tests {
         assert_eq!(mohawk.get_stat_at_level(init_hp, 1), init_hp * 25 / 10);
         assert_eq!(mohawk.get_stat_at_level(init_ap, 1), init_ap * 25 / 10);
     }
+
+    #[test]
+    fn basic_stat_at_level() {
+        let mohawk = get_unitlevel(0, TEST_CONFIG.version.current_version());
+
+        let init_hp = 200;
+        let init_ap = 8;
+
+        assert_eq!(mohawk.get_stat_at_level(init_hp, 30), init_hp * 17);
+        assert_eq!(mohawk.get_stat_at_level(init_ap, 30), 135);
+        // init_ap not divisible by 5 so ends up not being * 17
+    }
+
+    #[test]
+    fn standarad_stat_at_level() {
+        let dasli = get_unitlevel(543, TEST_CONFIG.version.current_version());
+
+        let init_hp = 4_600;
+        let init_ap = 1_000;
+
+        assert_eq!(dasli.get_stat_at_level(init_hp, 30), init_hp * 17);
+        assert_eq!(dasli.get_stat_at_level(init_hp, 30), 78_200);
+        assert_eq!(dasli.get_stat_at_level(init_ap, 30), init_ap * 17);
+        assert_eq!(dasli.get_stat_at_level(init_ap, 30), 17_000);
+    }
 }
