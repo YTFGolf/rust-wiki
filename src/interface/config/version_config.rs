@@ -1,6 +1,6 @@
 //! Deals with the config for version.
 
-use crate::game_data::version::Version;
+use crate::game_data::version::{lang::{self, MultiLangVersionContainer}, Version};
 use serde::{Deserialize, Serialize};
 use std::{env::home_dir, fmt::Display, path::PathBuf};
 
@@ -91,6 +91,7 @@ impl VersionConfig {
         self.lang
     }
 }
+
 impl VersionConfig {
     /// Try to get version.
     pub fn try_version(&self, lang: Lang) -> Option<&Version> {
@@ -121,6 +122,15 @@ impl VersionConfig {
     /// Get Japanese version.
     pub fn jp(&self) -> &Version {
         self.version(Lang::JP)
+    }
+}
+impl MultiLangVersionContainer for VersionConfig {
+    fn lang_default(&self) -> &Version {
+        self.current_version()
+    }
+
+    fn get_lang(&self, lang: lang::VersionLanguage) -> &Version {
+        self.version(lang.into())
     }
 }
 
