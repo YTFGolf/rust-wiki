@@ -196,7 +196,7 @@ mod tests {
     }
 
     #[test]
-    fn standarad_stat_at_level() {
+    fn standard_stat_at_level() {
         let dasli = get_unitlevel(543, TEST_CONFIG.version.current_version());
 
         let init_hp = 4_600;
@@ -209,7 +209,7 @@ mod tests {
     }
 
     #[test]
-    fn standard_lvl_60() {
+    fn standard_uber_60_and_max() {
         let dio = get_unitlevel(177, TEST_CONFIG.version.current_version());
 
         let init_hp = 14_800;
@@ -219,14 +219,6 @@ mod tests {
         assert_eq!(dio.get_stat_at_level(init_hp, 60), 473_600);
         assert_eq!(dio.get_stat_at_level(init_ap, 60), init_ap * 32);
         assert_eq!(dio.get_stat_at_level(init_ap, 60), 179_200);
-    }
-
-    #[test]
-    fn uber_max() {
-        let dio = get_unitlevel(177, TEST_CONFIG.version.current_version());
-
-        let init_hp = 14_800;
-        let init_ap = 5_600;
 
         assert_eq!(dio.get_stat_at_level(init_hp, 60 + 70), 640_100);
         assert_eq!(dio.get_stat_at_level(init_ap, 60 + 70), 242_200);
@@ -245,5 +237,47 @@ mod tests {
         assert_eq!(metal.get_stat_at_level(init_ap, 19), 92);
         assert_eq!(metal.get_stat_at_level(init_hp, 18), 10);
         assert_eq!(metal.get_stat_at_level(init_ap, 18), 87);
+    }
+
+    #[test]
+    fn bahamut() {
+        let bahamut = get_unitlevel(25, TEST_CONFIG.version.current_version());
+
+        let init_hp = 1_500;
+        let init_ap = 5_000 + 200 + 300;
+
+        assert_eq!(bahamut.get_stat_at_level(init_hp, 30), 25_500);
+        assert_eq!(bahamut.get_stat_at_level(init_ap, 30), 93_500);
+        assert_eq!(bahamut.get_stat_at_level(init_hp, 50), 33_000);
+        assert_eq!(bahamut.get_stat_at_level(init_ap, 50), 121_000);
+    }
+
+    #[test]
+    fn gacha() {
+        let gacha = get_unitlevel(558, TEST_CONFIG.version.current_version());
+
+        let init_hp = 1_500;
+        let init_ap = 1;
+
+        assert_eq!(gacha.get_stat_at_level(init_hp, 20), 18_000);
+        assert_eq!(gacha.get_stat_at_level(init_ap, 20), 12);
+        assert_eq!(gacha.get_stat_at_level(init_hp, 21), 20_250);
+        assert_eq!(gacha.get_stat_at_level(init_ap, 21), 12);
+        assert_eq!(gacha.get_stat_at_level(init_hp, 22), 22_500);
+        assert_eq!(gacha.get_stat_at_level(init_ap, 22), 15);
+        assert_eq!(gacha.get_stat_at_level(init_hp, 50), 153_000);
+        assert_eq!(gacha.get_stat_at_level(init_ap, 50), 102);
+    }
+
+    #[test]
+    fn ramen() {
+        let ramen = get_unitlevel(148, TEST_CONFIG.version.current_version());
+
+        let init_hp = 1_050;
+        // level-up page only talks about hp
+
+        assert_eq!(ramen.get_stat_at_level(init_hp, 25), 15_225);
+        assert_eq!(ramen.get_stat_at_level(init_hp, 75), 40_162);
+        assert_eq!(ramen.get_stat_at_level(init_hp, 95), 44_757);
     }
 }
