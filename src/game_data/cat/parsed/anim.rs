@@ -90,13 +90,13 @@ mod tests {
     use super::*;
     use crate::{
         TEST_CONFIG,
-        game_data::cat::{parsed::unitbuy::UnitBuyData, raw::unitbuy::UnitBuyContainer},
+        game_data::cat::{parsed::unitbuy::UnitBuy, raw::unitbuy::UnitBuyContainer},
     };
 
     /// Egg data, amount of forms.
     fn get_egg_data(id: u32, version: &Version) -> (AncientEggInfo, usize) {
         let unitbuy = version.get_cached_file::<UnitBuyContainer>();
-        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).unwrap());
+        let unitbuy = UnitBuy::from_unitbuy(unitbuy.get_unit(id).unwrap());
 
         let has_true = unitbuy.true_evol.is_some();
         let has_ultra = unitbuy.ultra_evol.is_some();

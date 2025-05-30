@@ -3,7 +3,7 @@
 use super::{
     anim::{CatFormAnimData, get_anims},
     stats::form::CatFormStats,
-    unitbuy::{AncientEggInfo, UnitBuyData},
+    unitbuy::{AncientEggInfo, UnitBuy},
 };
 use crate::game_data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
@@ -36,7 +36,7 @@ pub struct Cat {
     /// Cat's forms.
     pub forms: CatForms,
     /// Data from `unitbuy.csv`.
-    pub unitbuy: UnitBuyData,
+    pub unitbuy: UnitBuy,
     /// Data from `unitexp.csv`.
     pub unitexp: Levelling,
     // growth curve
@@ -65,7 +65,7 @@ impl Cat {
         let unitbuy = version_cont
             .lang_default()
             .get_cached_file::<UnitBuyContainer>();
-        let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).ok_or(E::UnitBuyNotFound)?);
+        let unitbuy = UnitBuy::from_unitbuy(unitbuy.get_unit(id).ok_or(E::UnitBuyNotFound)?);
 
         let unitexp = Levelling::from_id(id);
 

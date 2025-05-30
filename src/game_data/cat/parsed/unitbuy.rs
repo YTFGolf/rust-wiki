@@ -1,6 +1,6 @@
 //! Data from `unitbuy.csv`.
 
-use crate::game_data::cat::raw::unitbuy::UnitBuy;
+use crate::game_data::cat::raw::unitbuy::UnitBuyRaw;
 use std::num::NonZero;
 use strum::FromRepr;
 mod tests;
@@ -46,7 +46,7 @@ impl CatUnlock {
         }
     }
 
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+    fn from_unitbuy(unitbuy: &UnitBuyRaw) -> Self {
         Self {
             stage_available: unitbuy.stage_available,
             chap_available: unitbuy.chap_available,
@@ -122,7 +122,7 @@ pub struct UpgradeCost {
 }
 
 impl UpgradeCost {
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+    fn from_unitbuy(unitbuy: &UnitBuyRaw) -> Self {
         let costs = [
             unitbuy.upgrade_to_1,
             unitbuy.upgrade_to_2,
@@ -154,7 +154,7 @@ pub struct MaxLevels {
     max_plus: u8,
 }
 impl MaxLevels {
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+    fn from_unitbuy(unitbuy: &UnitBuyRaw) -> Self {
         Self {
             ch1: unitbuy.max_xp_level_ch1,
             ch2: unitbuy.max_xp_level_ch2,
@@ -244,7 +244,7 @@ pub struct Misc {
     pub egg_info: AncientEggInfo,
 }
 impl Misc {
-    fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+    fn from_unitbuy(unitbuy: &UnitBuyRaw) -> Self {
         let egg_info = match (unitbuy.ancient_egg_id_norm, unitbuy.ancient_egg_id_evo) {
             (-1, -1) => AncientEggInfo::None,
             (0, n) if n > 0 => AncientEggInfo::Egg {
@@ -271,7 +271,7 @@ impl Misc {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// All data contained in `unitbuy.csv`.
-pub struct UnitBuyData {
+pub struct UnitBuy {
     /// How to unlock the unit.
     pub unlock: CatUnlock,
     /// How to evolve unit into True Form.
@@ -286,9 +286,9 @@ pub struct UnitBuyData {
     pub misc: Misc,
 }
 
-impl UnitBuyData {
+impl UnitBuy {
     /// Get data from raw unitbuy data.
-    pub fn from_unitbuy(unitbuy: &UnitBuy) -> Self {
+    pub fn from_unitbuy(unitbuy: &UnitBuyRaw) -> Self {
         let (true_evol, ultra_evol) = Self::get_evolutions(unitbuy);
         Self {
             unlock: CatUnlock::from_unitbuy(unitbuy),
@@ -300,7 +300,7 @@ impl UnitBuyData {
         }
     }
 
-    fn get_tf_evol(unitbuy: &UnitBuy) -> Option<EvolutionInfo> {
+    fn get_tf_evol(unitbuy: &UnitBuyRaw) -> Option<EvolutionInfo> {
         let tf_num = NonZero::new(unitbuy.true_num)?;
         if unitbuy.evol_level > -1 {
             return Some(EvolutionInfo {
@@ -356,7 +356,7 @@ impl UnitBuyData {
         })
     }
 
-    fn get_uf_evol(unitbuy: &UnitBuy) -> Option<EvolutionInfo> {
+    fn get_uf_evol(unitbuy: &UnitBuyRaw) -> Option<EvolutionInfo> {
         let uf_num = NonZero::new(unitbuy.ultra_num)?;
         // if unitbuy.evol_level > -1 {
         //     return Some(EvolutionInfo {
@@ -411,7 +411,7 @@ impl UnitBuyData {
             etype,
         })
     }
-    fn get_evolutions(unitbuy: &UnitBuy) -> (Option<EvolutionInfo>, Option<EvolutionInfo>) {
+    fn get_evolutions(unitbuy: &UnitBuyRaw) -> (Option<EvolutionInfo>, Option<EvolutionInfo>) {
         let tf = Self::get_tf_evol(unitbuy);
         let uf = Self::get_uf_evol(unitbuy);
         (tf, uf)

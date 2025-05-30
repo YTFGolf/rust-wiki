@@ -6,10 +6,10 @@ use crate::{
     game_data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
 };
 
-fn get_unitbuy(id: u32, version: &Version) -> UnitBuyData {
+fn get_unitbuy(id: u32, version: &Version) -> UnitBuy {
     let unitbuy = version.get_cached_file::<UnitBuyContainer>();
     let unit = unitbuy.get_unit(id).unwrap();
-    UnitBuyData::from_unitbuy(unit)
+    UnitBuy::from_unitbuy(unit)
 }
 
 const NORMAL_MAX: MaxLevels = MaxLevels {
@@ -108,7 +108,7 @@ fn basic() {
 
     assert_eq!(
         cat,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -143,7 +143,7 @@ fn basic2() {
 
     assert_eq!(
         tank,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -177,7 +177,7 @@ fn basic3() {
 
     assert_eq!(
         titan,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -214,7 +214,7 @@ fn special() {
 
     assert_eq!(
         actress,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -251,7 +251,7 @@ fn bahamut() {
 
     assert_eq!(
         bahamut,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -305,7 +305,7 @@ fn cancan() {
 
     assert_eq!(
         cancan,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -374,7 +374,7 @@ fn dio() {
 
     assert_eq!(
         dio,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: Some(ultra_evol),
@@ -409,7 +409,7 @@ fn metal() {
 
     assert_eq!(
         metal,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: None,
             ultra_evol: None,
@@ -451,7 +451,7 @@ fn dasli() {
 
     assert_eq!(
         dasli,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: None,
             ultra_evol: None,
@@ -490,7 +490,7 @@ fn modoki() {
 
     assert_eq!(
         modoki,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: None,
             ultra_evol: None,
@@ -534,7 +534,7 @@ fn superfeline() {
 
     assert_eq!(
         sfeline,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
@@ -595,7 +595,7 @@ fn courier() {
 
     assert_eq!(
         courier,
-        UnitBuyData {
+        UnitBuy {
             unlock,
             true_evol: Some(true_evol),
             ultra_evol: None,
