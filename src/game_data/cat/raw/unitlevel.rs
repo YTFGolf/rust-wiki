@@ -52,14 +52,29 @@ pub struct UnitLevelRaw {
     rest: Vec<u8>,
 }
 impl UnitLevelRaw {
-    /// Raw, pre-treasure stat at level.
-    pub fn get_raw_stat_at_level(&self, stat: u32, level: u8) -> u32 {
+    fn get_stat_multiplier_at_level(&self, mut level: u8) -> f64 {
+        assert!(level > 0);
+        if level <= 10 {
+            return 1.0 + f64::from(level - 1) * f64::from(self.until_10) / 100.0;
+        }
+
+        // let mut total_multiplier = 1.0 + ;
+
+        // level = level - 10;
+
         todo!()
     }
 
+    /// Raw, pre-treasure stat at level.
+    pub fn get_raw_stat_at_level(&self, initial: u32, level: u8) -> u32 {
+        let multiplier = self.get_stat_multiplier_at_level(level);
+        let n = multiplier * f64::from(initial);
+        n.round() as u32
+    }
+
     /// Includes treasure bonuses.
-    pub fn get_stat_at_level(&self, stat: u32, level: u8) -> u32 {
-        todo!()
+    pub fn get_stat_at_level(&self, initial: u32, level: u8) -> u32 {
+        self.get_raw_stat_at_level(initial, level) * 25 / 10
     }
 }
 
@@ -127,7 +142,7 @@ mod tests {
 
         assert_eq!(mohawk.get_raw_stat_at_level(init_hp, 1), init_hp);
         assert_eq!(mohawk.get_raw_stat_at_level(init_ap, 1), init_ap);
-        assert_eq!(mohawk.get_raw_stat_at_level(init_hp, 1), init_hp * 25 / 10);
-        assert_eq!(mohawk.get_raw_stat_at_level(init_ap, 1), init_ap * 25 / 10);
+        assert_eq!(mohawk.get_stat_at_level(init_hp, 1), init_hp * 25 / 10);
+        assert_eq!(mohawk.get_stat_at_level(init_ap, 1), init_ap * 25 / 10);
     }
 }
