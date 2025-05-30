@@ -1,3 +1,5 @@
+//! Deals with unit level-up scaling.
+
 use crate::game_data::version::version_data::CacheableVersionData;
 use std::path::Path;
 
