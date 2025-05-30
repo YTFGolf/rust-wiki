@@ -51,6 +51,17 @@ pub struct UnitLevelRaw {
     #[serde(default)]
     rest: Vec<u8>,
 }
+impl UnitLevelRaw {
+    /// Raw, pre-treasure stat at level.
+    pub fn get_raw_stat_at_level(&self, stat: u32, level: u8) -> u32 {
+        todo!()
+    }
+
+    /// Includes treasure bonuses.
+    pub fn get_stat_at_level(&self, stat: u32, level: u8) -> u32 {
+        todo!()
+    }
+}
 
 fn get_unitlevel(path: &Path) -> Vec<UnitLevelRaw> {
     let mut rdr = csv::ReaderBuilder::new()
@@ -89,7 +100,7 @@ impl CacheableVersionData for UnitLevelContainer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::TEST_CONFIG;
+    use crate::{TEST_CONFIG, game_data::version::Version};
 
     #[test]
     fn test_file_reader() {
@@ -98,8 +109,25 @@ mod tests {
         let units = &unitlevel.units;
 
         for unit in units {
-            println!("{unit:?}");
             assert_eq!(unit.rest, Vec::<u8>::new());
         }
+    }
+
+    fn get_unitlevel(id: u32, version: &Version) -> &UnitLevelRaw {
+        let unitlevel = version.get_cached_file::<UnitLevelContainer>();
+        unitlevel.get_unit(id).unwrap()
+    }
+
+    #[test]
+    fn standard_1() {
+        let mohawk = get_unitlevel(0, TEST_CONFIG.version.current_version());
+
+        let init_hp = 200;
+        let init_ap = 8;
+
+        assert_eq!(mohawk.get_raw_stat_at_level(init_hp, 1), init_hp);
+        assert_eq!(mohawk.get_raw_stat_at_level(init_ap, 1), init_ap);
+        assert_eq!(mohawk.get_raw_stat_at_level(init_hp, 1), init_hp * 25 / 10);
+        assert_eq!(mohawk.get_raw_stat_at_level(init_ap, 1), init_ap * 25 / 10);
     }
 }
