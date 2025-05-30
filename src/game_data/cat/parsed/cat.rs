@@ -7,7 +7,7 @@ use super::{
 };
 use crate::game_data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
-    version::Version,
+    version::{Version, lang::MultiLangVersionContainer},
 };
 
 #[derive(Debug)]
@@ -52,11 +52,16 @@ pub enum CatDataError {
 
 impl Cat {
     /// Get cat from wiki id.
-    pub fn from_wiki_id(wiki_id: u32, version: &Version) -> Result<Self, CatDataError> {
+    pub fn from_wiki_id<T: MultiLangVersionContainer>(
+        wiki_id: u32,
+        version_cont: &T,
+    ) -> Result<Self, CatDataError> {
         type E = CatDataError;
         let id = wiki_id;
 
-        let unitbuy = version.get_cached_file::<UnitBuyContainer>();
+        let unitbuy = version_cont
+            .lang_default()
+            .get_cached_file::<UnitBuyContainer>();
         let unitbuy = UnitBuyData::from_unitbuy(unitbuy.get_unit(id).ok_or(E::UnitBuyNotFound)?);
 
         let unitexp = Levelling::from_id(id);
@@ -67,7 +72,7 @@ impl Cat {
         let egg_data = &unitbuy.misc.egg_info;
 
         let amt_forms = Self::get_amt_forms(id, is_summon, has_true, has_ultra);
-        let forms = Self::get_forms(id, version, amt_forms, egg_data);
+        let forms = Self::get_forms(id, version_cont, amt_forms, egg_data);
 
         Ok(Self {
             id,
@@ -86,14 +91,15 @@ impl Cat {
         }
     }
 
-    fn get_forms(
+    fn get_forms<T: MultiLangVersionContainer>(
         id: u32,
-        version: &Version,
+        version_cont: &T,
         amt_forms: usize,
         egg_data: &AncientEggInfo,
     ) -> CatForms {
-        let stats = Self::get_stats(id, version).collect::<Vec<_>>();
-        let anims = get_anims(id, version, amt_forms, egg_data).unwrap();
+        let stats = Self::get_stats(id, version_cont.lang_default()).collect::<Vec<_>>();
+        let anims = get_anims(id, version_cont.lang_default(), amt_forms, egg_data).unwrap();
+        // TODO fix anims
 
         assert!(stats.len() >= amt_forms);
         assert!(anims.len() >= amt_forms);
@@ -124,12 +130,11 @@ mod tests {
     #[ignore]
     fn test_all() {
         type E = CatDataError;
-        let version = TEST_CONFIG.version.jp();
         for id in 0..u32::MAX {
             if matches!(id, (740..=745) | 788 | 810) {
                 continue;
             }
-            match Cat::from_wiki_id(id, version) {
+            match Cat::from_wiki_id(id, &TEST_CONFIG.version) {
                 Ok(_) => (),
                 Err(E::UnitBuyNotFound) => break,
             }

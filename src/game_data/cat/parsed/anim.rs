@@ -24,7 +24,7 @@ pub struct AnimData {
 impl AnimData {
     /// Get length of unit's animations.
     pub fn length(&self) -> usize {
-        // not called `len` to avoid setting off clippy::len_without_is_empty
+        // not called `len` to avoid setting off `clippy::len_without_is_empty`
         self.length
     }
 }
