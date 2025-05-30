@@ -13,29 +13,32 @@ fn get_template(cat: Cat) {
     let stats = &forms.stats[0];
     let anims = &forms.anims[0];
 
-    let params = [
-        TemplateParameter::new("Attack Frequency Normal", "?"),
-        TemplateParameter::new("Movement Speed Normal", stats.speed.to_string()),
-        TemplateParameter::new(
-            "Knockback Normal",
-            format!(
-                "{kb} {times}",
-                kb = stats.kb,
-                times = plural(stats.kb, "time", "times")
-            ),
+    let mut t = Template::named("Cat Stats");
+
+    t.push_params(TemplateParameter::new("Attack Frequency Normal", "?"));
+    t.push_params(TemplateParameter::new(
+        "Movement Speed Normal",
+        stats.speed.to_string(),
+    ));
+
+    t.push_params(TemplateParameter::new(
+        "Knockback Normal",
+        format!(
+            "{kb} {times}",
+            kb = stats.kb,
+            times = plural(stats.kb, "time", "times")
         ),
-        TemplateParameter::new("Attack Animation Normal", "?"),
-        TemplateParameter::new("Recharging Time Normal", "?"),
-        TemplateParameter::new("Hp Normal Lv.MAX", "?"),
-        TemplateParameter::new("Atk Power Normal Lv.MAX", "?"),
-        TemplateParameter::new("Attack type Normal", "?"),
-        TemplateParameter::new("Special Ability Normal", "?"),
-    ];
+    ));
+
+    t.push_params(TemplateParameter::new("Attack Animation Normal", "?"));
+    t.push_params(TemplateParameter::new("Recharging Time Normal", "?"));
+    t.push_params(TemplateParameter::new("Hp Normal Lv.MAX", "?"));
+    t.push_params(TemplateParameter::new("Atk Power Normal Lv.MAX", "?"));
+    t.push_params(TemplateParameter::new("Attack type Normal", "?"));
+    t.push_params(TemplateParameter::new("Special Ability Normal", "?"));
 
     /*
     'Attack Frequency Normal': f"{baseStats['freq']}f <sub>{f_to_s(baseStats['freq'])} seconds</sub>",
-    'Movement Speed Normal': baseStats['spd'],
-    'Knockback Normal': f"{baseStats['kb']} time{'s' if baseStats['kb'] > 1 else ''}",
     'Attack Animation Normal': f"{baseStats['fore']}f <sup>{f_to_s(baseStats['fore'])}s</sup><br>({baseStats['back']}f <sup>{f_to_s(baseStats['back'])}s</sup> backswing)",
     'Recharging Time Normal': f"{baseStats['rch']} ~ {baseStats['rchT']} seconds",
     'Hp Normal Lv.MAX': f"{cat.getStat(0, 30, 'hp'):,} HP",
@@ -44,7 +47,6 @@ fn get_template(cat: Cat) {
     'Special Ability Normal': cat.abilityDesc(0, 0),
      */
 
-    let t = Template::named("Cat Stats").add_params(params);
     println!("{t}");
 }
 

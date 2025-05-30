@@ -68,6 +68,13 @@ impl Template {
         Self::new(name, vec![])
     }
 
+    /// Push parameters into template.
+    ///
+    /// `t.push_params(p)` is equivalent to `t = t.add_params(p)`.
+    pub fn push_params<P: AutoParam>(&mut self, params: P) {
+        params.add_self_to(&mut self.params);
+    }
+
     #[must_use]
     /// Add parameters to template.
     pub fn add_params<P: AutoParam>(mut self, params: P) -> Self {
