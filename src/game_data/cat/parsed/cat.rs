@@ -1,9 +1,7 @@
 //! Deals with cat data.
 
 use super::{
-    anim::{AnimData, get_anims},
-    cat_stats::CatStats,
-    unitbuy::{AncientEggInfo, UnitBuyData},
+    anim::{get_anims, AnimData}, stats::form::CatStats, unitbuy::{AncientEggInfo, UnitBuyData}
 };
 use crate::game_data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},

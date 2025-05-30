@@ -2,5 +2,5 @@
 
 pub mod anim;
 pub mod cat;
-pub mod cat_stats;
+pub mod stats;
 pub mod unitbuy;
