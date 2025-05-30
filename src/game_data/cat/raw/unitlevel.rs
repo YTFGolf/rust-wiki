@@ -207,4 +207,43 @@ mod tests {
         assert_eq!(dasli.get_stat_at_level(init_ap, 30), init_ap * 17);
         assert_eq!(dasli.get_stat_at_level(init_ap, 30), 17_000);
     }
+
+    #[test]
+    fn standard_lvl_60() {
+        let dio = get_unitlevel(177, TEST_CONFIG.version.current_version());
+
+        let init_hp = 14_800;
+        let init_ap = 5_600;
+
+        assert_eq!(dio.get_stat_at_level(init_hp, 60), init_hp * 32);
+        assert_eq!(dio.get_stat_at_level(init_hp, 60), 473_600);
+        assert_eq!(dio.get_stat_at_level(init_ap, 60), init_ap * 32);
+        assert_eq!(dio.get_stat_at_level(init_ap, 60), 179_200);
+    }
+
+    #[test]
+    fn uber_max() {
+        let dio = get_unitlevel(177, TEST_CONFIG.version.current_version());
+
+        let init_hp = 14_800;
+        let init_ap = 5_600;
+
+        assert_eq!(dio.get_stat_at_level(init_hp, 60 + 70), 640_100);
+        assert_eq!(dio.get_stat_at_level(init_ap, 60 + 70), 242_200);
+    }
+
+    #[test]
+    fn metal() {
+        let metal = get_unitlevel(200, TEST_CONFIG.version.current_version());
+
+        let init_hp = 1;
+        let init_ap = 8;
+
+        assert_eq!(metal.get_stat_at_level(init_hp, 20), 12);
+        assert_eq!(metal.get_stat_at_level(init_ap, 20), 95);
+        assert_eq!(metal.get_stat_at_level(init_hp, 19), 12);
+        assert_eq!(metal.get_stat_at_level(init_ap, 19), 92);
+        assert_eq!(metal.get_stat_at_level(init_hp, 18), 10);
+        assert_eq!(metal.get_stat_at_level(init_ap, 18), 87);
+    }
 }
