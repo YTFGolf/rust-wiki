@@ -7,7 +7,10 @@ use super::{
 };
 use crate::game_data::{
     cat::raw::{stats::read_data_file, unitbuy::UnitBuyContainer, unitexp::Levelling},
-    version::{Version, lang::MultiLangVersionContainer},
+    version::{
+        Version,
+        lang::{MultiLangVersionContainer, VersionLanguage},
+    },
 };
 
 #[derive(Debug)]
@@ -103,8 +106,8 @@ impl Cat {
         let anims = match get(version_cont.get_lang(VersionLanguage::EN)) {
             Ok(anims) => anims,
             Err(_) => get(version_cont.get_lang(VersionLanguage::JP)).unwrap(),
+            // unwrap is probably a bad idea here
         };
-        // let anims = .unwrap();
 
         assert!(stats.len() >= amt_forms);
         assert!(anims.len() >= amt_forms);
