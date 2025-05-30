@@ -1,12 +1,57 @@
-use crate::{game_data::cat::parsed::cat::Cat, interface::config::Config};
+use crate::{
+    game_data::cat::parsed::cat::Cat,
+    interface::config::Config,
+    wikitext::template::{Template, TemplateParameter},
+};
+
+fn plural<'a>(amt: u16, single: &'a str, plural: &'a str) -> &'a str {
+    if amt == 1 { single } else { plural }
+}
+
+fn get_template(cat: Cat) {
+    let forms = &cat.forms;
+    let stats = &forms.stats[0];
+    let anims = &forms.anims[0];
+
+    let params = [
+        TemplateParameter::new("Attack Frequency Normal", "?"),
+        TemplateParameter::new("Movement Speed Normal", stats.speed.to_string()),
+        TemplateParameter::new(
+            "Knockback Normal",
+            format!(
+                "{kb} {times}",
+                kb = stats.kb,
+                times = plural(stats.kb, "time", "times")
+            ),
+        ),
+        TemplateParameter::new("Attack Animation Normal", "?"),
+        TemplateParameter::new("Recharging Time Normal", "?"),
+        TemplateParameter::new("Hp Normal Lv.MAX", "?"),
+        TemplateParameter::new("Atk Power Normal Lv.MAX", "?"),
+        TemplateParameter::new("Attack type Normal", "?"),
+        TemplateParameter::new("Special Ability Normal", "?"),
+    ];
+
+    /*
+    'Attack Frequency Normal': f"{baseStats['freq']}f <sub>{f_to_s(baseStats['freq'])} seconds</sub>",
+    'Movement Speed Normal': baseStats['spd'],
+    'Knockback Normal': f"{baseStats['kb']} time{'s' if baseStats['kb'] > 1 else ''}",
+    'Attack Animation Normal': f"{baseStats['fore']}f <sup>{f_to_s(baseStats['fore'])}s</sup><br>({baseStats['back']}f <sup>{f_to_s(baseStats['back'])}s</sup> backswing)",
+    'Recharging Time Normal': f"{baseStats['rch']} ~ {baseStats['rchT']} seconds",
+    'Hp Normal Lv.MAX': f"{cat.getStat(0, 30, 'hp'):,} HP",
+    'Atk Power Normal Lv.MAX': f"{cat.getStat(0, 30, 'ap'):,} damage<br>({cat.getStat(0, 30, 'dps'):,} DPS)",
+    'Attack type Normal': baseStats['atkType'],
+    'Special Ability Normal': cat.abilityDesc(0, 0),
+     */
+
+    let t = Template::named("Cat Stats").add_params(params);
+    println!("{t}");
+}
 
 /// Do thing.
 pub fn do_thing(wiki_id: u32, config: &Config) {
     println!("{wiki_id:?} {config:?}");
-    println!(
-        "{cat:#?}",
-        cat = Cat::from_wiki_id(wiki_id, &config.version).unwrap()
-    );
+    get_template(Cat::from_wiki_id(wiki_id, &config.version).unwrap());
 }
 
 /*
@@ -21,15 +66,7 @@ standardStats = Template('Cat Stats', {
     'Hp Normal': f"{baseStats['hp']:,} HP",
     'Atk Power Normal': f"{baseStats['ap']:,} damage<br>({baseStats['dps']:,} DPS)",
     'Atk Range Normal': f"{baseStats['rng']:,}",
-    'Attack Frequency Normal': f"{baseStats['freq']}f <sub>{f_to_s(baseStats['freq'])} seconds</sub>",
-    'Movement Speed Normal': baseStats['spd'],
-    'Knockback Normal': f"{baseStats['kb']} time{'s' if baseStats['kb'] > 1 else ''}",
-    'Attack Animation Normal': f"{baseStats['fore']}f <sup>{f_to_s(baseStats['fore'])}s</sup><br>({baseStats['back']}f <sup>{f_to_s(baseStats['back'])}s</sup> backswing)",
-    'Recharging Time Normal': f"{baseStats['rch']} ~ {baseStats['rchT']} seconds",
-    'Hp Normal Lv.MAX': f"{cat.getStat(0, 30, 'hp'):,} HP",
-    'Atk Power Normal Lv.MAX': f"{cat.getStat(0, 30, 'ap'):,} damage<br>({cat.getStat(0, 30, 'dps'):,} DPS)",
-    'Attack type Normal': baseStats['atkType'],
-    'Special Ability Normal': cat.abilityDesc(0, 0),
+
     'Evolved Form name': names[1],
     'Hp Evolved': f"{cat.getStat(1, 30, 'hp'):,} HP",
     'Atk Power Evolved': f"{cat.getStat(1, 30, 'ap'):,} damage<br>({cat.getStat(1, 30, 'dps'):,} DPS)",
