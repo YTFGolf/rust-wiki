@@ -1,7 +1,7 @@
 //! Deals with cat stats.
 
 use super::super::super::{ability::Ability, raw::stats::CombinedCatData};
-use std::{num::NonZero, rc::Rc};
+use std::{fmt::Display, num::NonZero};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Enemy types that can be targeted.
@@ -26,6 +26,23 @@ pub enum EnemyType {
     Relic,
     /// Aku.
     Aku,
+}
+impl Display for EnemyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let t = match self {
+            Self::Red => "Red",
+            Self::Float => "Float",
+            Self::Black => "Black",
+            Self::Metal => "Metal",
+            Self::Traitless => "Traitless",
+            Self::Angel => "Angel",
+            Self::Alien => "Alien",
+            Self::Zombie => "Zombie",
+            Self::Relic => "Relic",
+            Self::Aku => "Aku",
+        };
+        write!(f, "{t}")
+    }
 }
 impl EnemyType {
     /// Get all of the cat's targets.
@@ -381,9 +398,9 @@ pub struct CatFormStats {
     /// Unit attack.
     pub attack: Attack,
     /// All unit's abilities.
-    pub abilities: Rc<[Ability]>,
+    pub abilities: Vec<Ability>,
     /// Enemy types the unit targets.
-    pub targets: Rc<[EnemyType]>,
+    pub targets: Vec<EnemyType>,
 }
 
 impl CatFormStats {
