@@ -1,11 +1,44 @@
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::config::Config,
-    wikitext::template::{Template, TemplateParameter},
+    wikitext::{
+        template::{Template, TemplateParameter},
+        wiki_utils::get_precision_f,
+    },
 };
+use num_format::{Locale, WriteFormatted};
+use std::{cmp::max, fmt::Write};
 
 fn plural<'a>(amt: u16, single: &'a str, plural: &'a str) -> &'a str {
     if amt == 1 { single } else { plural }
+}
+
+fn plural_f<'a>(amt: u32, single: &'a str, plural: &'a str) -> &'a str {
+    if amt == 30 { single } else { plural }
+}
+
+fn write_seconds(buf: &mut String, time_f: u32) {
+    let time_s = f64::from(time_f) / 30.0;
+    assert!(time_s < 1_000.0, "Amount of seconds is above 1,000!");
+    let precision = get_precision_f(time_f);
+    write!(buf, "{time_s:.precision$}").unwrap();
+}
+
+/// `(frames, seconds)`
+fn time_repr(time_f: u32) -> (String, String) {
+    let f = {
+        let mut buf = String::new();
+        buf.write_formatted(&time_f, &Locale::en).unwrap();
+        buf
+    };
+
+    let s = {
+        let mut buf = String::new();
+        write_seconds(&mut buf, time_f);
+        buf
+    };
+
+    (f, s)
 }
 
 fn get_template(cat: Cat) {
@@ -15,7 +48,20 @@ fn get_template(cat: Cat) {
 
     let mut t = Template::named("Cat Stats");
 
-    t.push_params(TemplateParameter::new("Attack Frequency Normal", "?"));
+    let foreswing = stats.attack.hits.foreswing();
+    let attack_length = stats.attack.hits.attack_length();
+    let backswing = anims.length() - attack_length;
+    let frequency = attack_length + max(2 * stats.attack.tba - 1, backswing);
+
+    let (freq_f, freq_s) = time_repr(u32::from(frequency));
+    t.push_params(TemplateParameter::new(
+        "Attack Frequency Normal",
+        format!(
+            "{freq_f}f <sub>{freq_s} {seconds}</sub>",
+            seconds = plural_f(frequency.into(), "second", "seconds")
+        ),
+    ));
+
     t.push_params(TemplateParameter::new(
         "Movement Speed Normal",
         stats.speed.to_string(),
@@ -38,6 +84,11 @@ fn get_template(cat: Cat) {
     t.push_params(TemplateParameter::new("Special Ability Normal", "?"));
 
     /*
+    'Normal Form name': names[0],
+    'Hp Normal': f"{baseStats['hp']:,} HP",
+    'Atk Power Normal': f"{baseStats['ap']:,} damage<br>({baseStats['dps']:,} DPS)",
+    'Atk Range Normal': f"{baseStats['rng']:,}",
+
     'Attack Frequency Normal': f"{baseStats['freq']}f <sub>{f_to_s(baseStats['freq'])} seconds</sub>",
     'Attack Animation Normal': f"{baseStats['fore']}f <sup>{f_to_s(baseStats['fore'])}s</sup><br>({baseStats['back']}f <sup>{f_to_s(baseStats['back'])}s</sup> backswing)",
     'Recharging Time Normal': f"{baseStats['rch']} ~ {baseStats['rchT']} seconds",
@@ -64,11 +115,6 @@ desc (will need to make other parts better)
 
 /*
 standardStats = Template('Cat Stats', {
-    'Normal Form name': names[0],
-    'Hp Normal': f"{baseStats['hp']:,} HP",
-    'Atk Power Normal': f"{baseStats['ap']:,} damage<br>({baseStats['dps']:,} DPS)",
-    'Atk Range Normal': f"{baseStats['rng']:,}",
-
     'Evolved Form name': names[1],
     'Hp Evolved': f"{cat.getStat(1, 30, 'hp'):,} HP",
     'Atk Power Evolved': f"{cat.getStat(1, 30, 'ap'):,} damage<br>({cat.getStat(1, 30, 'dps'):,} DPS)",
