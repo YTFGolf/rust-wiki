@@ -87,8 +87,7 @@ fn get_template(cat: Cat) {
         format!(
             "{ap} damage<br>({dps} DPS)",
             ap = ap_max.to_formatted_string(&Locale::en),
-            dps = (get_formatted_float(dps_max, 2)).trim_end_matches('0') // TODO use better methods for this, something like
-                                                                          // `imprecise_float_trim`
+            dps = get_formatted_float(dps_max, 2)
         ),
     ));
 

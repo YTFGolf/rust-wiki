@@ -9,7 +9,7 @@ use crate::{
     regex_handler::static_regex,
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
     wikitext::{
-        number_utils::get_float_precision, template::TemplateParameter,
+        number_utils::get_formatted_float, template::TemplateParameter,
         text_utils::OLD_OR_REMOVED_SUB,
     },
 };
@@ -126,8 +126,8 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
             chance => {
                 let single_cont_chance: f64 =
                     f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
-                let precision = get_float_precision(single_cont_chance);
-                format!("{stage} (''Continuation Stage'', {single_cont_chance:.precision$}%)")
+                let chance_repr = get_formatted_float(single_cont_chance, 1);
+                format!("{stage} (''Continuation Stage'', {chance_repr}%)")
             } // TODO actually write something for precision
         }
     });
