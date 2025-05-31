@@ -17,7 +17,7 @@ const DET_PAT: &str = r"\((Old|Removed)\)";
 /// Regex crate doesn't support lookarounds.
 ///
 /// ```
-/// # use rust_wiki::wikitext::wiki_utils::OLD_OR_REMOVED_SUB;
+/// # use rust_wiki::wikitext::text_utils::OLD_OR_REMOVED_SUB;
 /// let map_name = "[[Deleted Event]] (Removed)";
 /// assert_eq!(OLD_OR_REMOVED_SUB.replace_all(&map_name, "$1"), "[[Deleted Event]]");
 /// ```
@@ -28,7 +28,7 @@ const SUB_PAT: &str = r" \((?:Old|Removed)\)([^\|\]/]|$)";
 Extracts the name from a link:
 
 ```
-# use rust_wiki::wikitext::wiki_utils::extract_name;
+# use rust_wiki::wikitext::text_utils::extract_name;
 assert_eq!(extract_name("[[link|name]]"), "name");
 assert_eq!(extract_name("[[link]]"),      "link");
 assert_eq!(extract_name("name"),          "name");
@@ -58,7 +58,7 @@ pub fn extract_name(name: &str) -> &str {
 Extracts the link from a formatted link:
 
 ```
-# use rust_wiki::wikitext::wiki_utils::extract_link;
+# use rust_wiki::wikitext::text_utils::extract_link;
 assert_eq!(extract_link("[[link|name]]"), "link");
 assert_eq!(extract_link("[[link]]"),      "link");
 assert_eq!(extract_link("nothing"),       "nothing");

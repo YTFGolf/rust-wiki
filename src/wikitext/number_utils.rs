@@ -6,7 +6,7 @@ use std::fmt::Write;
 /// Due to floats being silly this has a maximum precision of 1. Anything else,
 /// do it manually.
 /// ```
-/// # use rust_wiki::wikitext::wiki_utils::get_float_precision;
+/// # use rust_wiki::wikitext::number_utils::get_float_precision;
 /// assert_eq!(get_float_precision(1.0), 0);
 /// assert_eq!(get_float_precision(1.1), 1);
 /// ```
@@ -17,7 +17,7 @@ pub fn get_float_precision(num: f64) -> usize {
 /// Get precision to use when formatting as float. Optimised for frames to use
 /// as their seconds conversion.
 /// ```
-/// # use rust_wiki::wikitext::wiki_utils::get_precision_f;
+/// # use rust_wiki::wikitext::number_utils::get_precision_f;
 /// assert_eq!(get_precision_f(30), 0);
 /// assert_eq!(get_precision_f(3), 1);
 /// assert_eq!(get_precision_f(1), 2);
