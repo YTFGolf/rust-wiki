@@ -104,8 +104,13 @@ fn get_template(cat: Cat) {
     ));
     // no need for plural as min is 2 seconds
 
-    t.push_params(TemplateParameter::new("Hp Normal Lv.MAX", "?"));
-    t.push_params(TemplateParameter::new("Atk Power Normal Lv.MAX", "?"));
+    let level = 30;
+
+    let hp_max = cat.unitlevel.get_stat_at_level(stats.hp, level);
+    t.push_params(TemplateParameter::new(
+        "Hp Normal Lv.MAX",
+        format!("{hp} HP", hp = hp_max.to_formatted_string(&Locale::en)),
+    ));
     t.push_params(TemplateParameter::new("Attack type Normal", "?"));
     t.push_params(TemplateParameter::new("Special Ability Normal", "?"));
 
