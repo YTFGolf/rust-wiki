@@ -115,11 +115,11 @@ pub fn get_ordinal(n: u32) -> String {
 /// Due to floats being silly this has a maximum precision of 1. Anything else,
 /// do it manually.
 /// ```
-/// # use rust_wiki::wikitext::wiki_utils::get_precision;
-/// assert_eq!(get_precision(1.0), 0);
-/// assert_eq!(get_precision(1.1), 1);
+/// # use rust_wiki::wikitext::wiki_utils::get_float_precision;
+/// assert_eq!(get_float_precision(1.0), 0);
+/// assert_eq!(get_float_precision(1.1), 1);
 /// ```
-pub fn get_precision( num: f64) -> usize {
+pub fn get_float_precision(num: f64) -> usize {
     if num % 1.0 == 0.0 { 0 } else { 1 }
 }
 
