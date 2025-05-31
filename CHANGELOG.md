@@ -15,16 +15,32 @@ subheading.
 
 ### Added
 
-- Error returns for `StageData`, minus `deserialise_single_enemy`.
-- Error impl for `StageTypeParseError`.
-
 ### Fixed
 
 ### Changed
 
-- Moved `get_stages` to `encounters` module as it contains an unwrap.
-
 ### Removed
+
+## [0.6.1] - 2025-05-31
+
+### Added
+
+- `thiserror` dependency.
+- Error returns for `StageData`, minus `deserialise_single_enemy`.
+  - By extension, a general CSV error enum.
+- Error impl for `StageTypeParseError`.
+- `unitlevel.csv` support in `Cat` object.
+  - Includes calculations for the cat's stats at a certain level.
+- `foreswing`, `attack_length` and `total_damage` methods on `AttackHits`.
+- `MultiLangVersionContainer` trait for use in anims.
+- Base of `cat-info` script.
+
+### Changed
+
+- Moved `get_stages` to `encounters` module as it contains an unwrap.
+- Split `wiki_utils` into `text_utils` and `number_utils`.
+  - Replace ad-hoc precision and formatting code with proper functions from
+    `number_utils`.
 
 ## [0.6.0] - 2025-05-25
 
@@ -249,7 +265,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.0...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.1...dev
+[0.6.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...v0.6.0
 [0.5.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.2...v0.5.3
