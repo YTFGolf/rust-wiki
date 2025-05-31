@@ -1,3 +1,5 @@
+//! Utilities for dealing with numbers.
+
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
 
@@ -23,6 +25,7 @@ pub fn get_float_precision(num: f64) -> usize {
 /// assert_eq!(get_precision_f(3), 1);
 /// assert_eq!(get_precision_f(1), 2);
 /// ```
+// potentially deprecate?
 pub fn get_precision_f(frames: u32) -> usize {
     if frames % 30 == 0 {
         0
@@ -78,7 +81,7 @@ pub fn time_repr(time_f: u32) -> (String, String) {
 }
 
 /// [`get_formatted_float`] implementation without intermediate allocation.
-pub fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
+pub fn write_formatted_float(buf: &mut String, num: f64, max_precision: usize) {
     // e.g. for 3300.3300, will do `buf.write("3,300")` at the top, then below
     // will do `buf.write(".33")`
 
@@ -86,11 +89,11 @@ pub fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
     buf.write_formatted(&int_part, &Locale::en).unwrap();
 
     let float_part = num.fract();
-    if precision == 0 || float_part == 0.0 {
+    if max_precision == 0 || float_part == 0.0 {
         return;
     }
 
-    let formatted_float_untrimmed = format!("{float_part:.precision$}");
+    let formatted_float_untrimmed = format!("{float_part:.max_precision$}");
     let formatted_float = formatted_float_untrimmed.trim_matches('0');
     // need to remove both the 0 at the start (0.xxx -> .xxx) and any trailing
     // zeros (.xx0000 -> .xx); while doing those separately might semantically
@@ -108,8 +111,8 @@ pub fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
 /// assert_eq!(get_formatted_float(3.11,  2), "3.11");
 /// assert_eq!(get_formatted_float(3.111, 2), "3.11");
 /// ```
-pub fn get_formatted_float(num: f64, precision: usize) -> String {
+pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
     let mut buf = String::new();
-    write_formatted_float(&mut buf, num, precision);
+    write_formatted_float(&mut buf, num, max_precision);
     buf
 }
