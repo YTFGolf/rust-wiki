@@ -10,6 +10,7 @@ use std::fmt::Write;
 /// assert_eq!(get_float_precision(1.0), 0);
 /// assert_eq!(get_float_precision(1.1), 1);
 /// ```
+#[deprecated]
 pub fn get_float_precision(num: f64) -> usize {
     if num % 1.0 == 0.0 { 0 } else { 1 }
 }
@@ -53,14 +54,16 @@ pub fn plural_f<'a>(amt: u32, single: &'a str, plural: &'a str) -> &'a str {
     if amt == 30 { single } else { plural }
 }
 
+/// Write time in seconds to buffer.
 pub fn write_seconds(buf: &mut String, time_f: u32) {
-    // TODO refactor to `write_formatted_float`
     let time_s = f64::from(time_f) / 30.0;
-    assert!(time_s < 1_000.0, "Amount of seconds is above 1,000!");
     let precision = get_precision_f(time_f);
-    write!(buf, "{time_s:.precision$}").unwrap();
+    // technically precision could just be 2 but might as well get the proper
+    // precision.
+    write_formatted_float(buf, time_s, precision);
 }
 
+/// Get string representation of the time in seconds.
 pub fn seconds_repr(time_f: u32) -> String {
     let mut buf = String::new();
     write_seconds(&mut buf, time_f);
