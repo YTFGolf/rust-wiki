@@ -211,6 +211,25 @@ impl AttackHits {
         }
     }
 }
+impl AttackHits {
+    /// Public foreswing value.
+    pub fn foreswing(&self) -> u16 {
+        match self {
+            AttackHits::Single([first]) => first.foreswing,
+            AttackHits::Double([first, ..]) => first.foreswing,
+            AttackHits::Triple([first, ..]) => first.foreswing,
+        }
+    }
+
+    /// Time between attack starting and final hit connecting.
+    pub fn attack_length(&self) -> u16 {
+        match self {
+            AttackHits::Single([last]) => last.foreswing,
+            AttackHits::Double([.., last]) => last.foreswing,
+            AttackHits::Triple([.., last]) => last.foreswing,
+        }
+    }
+}
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Area of the unit's hits.
