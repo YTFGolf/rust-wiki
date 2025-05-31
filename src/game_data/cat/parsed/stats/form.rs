@@ -258,8 +258,58 @@ mod hit_tests {
         // single hit means foreswing = attack length
         assert_eq!(cat, ans);
     }
-    // check that foreswing is as expected
-    // cat, bahamut, cosmo, dasli, greenshell, CGtG, Phono, Musashi Miyamoto
+
+    #[test]
+    fn bahamut() {
+        let cat = get_hits_vec(25);
+        let ans = vec![(121, 121), (121, 121), (5, 20)];
+        assert_eq!(cat, ans);
+    }
+
+    #[test]
+    fn cosmo() {
+        let cat = get_hits_vec(135);
+        let ans = vec![(5, 5), (321, 321), (321, 321), (321, 321)];
+        assert_eq!(cat, ans);
+    }
+
+    #[test]
+    fn dasli() {
+        let mut cat = get_hits_vec(543);
+        cat.truncate(2);
+        // stats file contains 3 lines
+        let ans = vec![(55, 55), (55, 55)];
+        assert_eq!(cat, ans);
+    }
+
+    #[test]
+    fn curling() {
+        let cat = get_hits_vec(324);
+        let ans = vec![(3, 3), (3, 3), (3, 3)];
+        assert_eq!(cat, ans);
+    }
+
+    #[test]
+    fn cat_god_great() {
+        let cat = get_hits_vec(437);
+        let ans = vec![(90, 300), (90, 300), (90, 300)];
+        assert_eq!(cat, ans);
+    }
+
+    #[test]
+    fn phono() {
+        let mut cat = get_hits_vec(690);
+        cat.truncate(2);
+        let ans = vec![(70, 90), (70, 90)];
+        assert_eq!(cat, ans);
+    }
+
+    #[test]
+    fn miyamoto() {
+        let cat = get_hits_vec(448);
+        let ans = vec![(9, 32), (9, 32), (9, 32)];
+        assert_eq!(cat, ans);
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
