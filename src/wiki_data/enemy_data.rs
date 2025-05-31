@@ -115,7 +115,7 @@ fn get_reverse_map() -> HashMap<String, u32> {
 mod tests {
     use super::*;
     use crate::{
-        game_data::stage::parsed::stage_enemy::MS_SIGN, wikitext::wiki_utils::extract_name,
+        game_data::stage::parsed::stage_enemy::MS_SIGN, wikitext::text_utils::extract_name,
     };
     use std::collections::HashSet;
 

@@ -143,7 +143,7 @@ pub fn get_precision_f(frames: u32) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use crate::wikitext::wiki_utils::get_ordinal;
+    use crate::wikitext::text_utils::get_ordinal;
 
     #[test]
     #[should_panic = "assertion failed: (1..1000).contains(&n)"]

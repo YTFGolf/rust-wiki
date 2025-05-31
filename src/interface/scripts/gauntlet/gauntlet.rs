@@ -25,7 +25,7 @@ use crate::{
         section::Section,
         tabber::{Tabber, TabberTab, TabberType},
         template::Template,
-        wiki_utils::extract_link,
+        text_utils::extract_link,
     },
 };
 use either::Either::{Left, Right};

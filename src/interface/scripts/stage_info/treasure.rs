@@ -7,7 +7,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::rewards::TREASURE_DATA,
-    wikitext::{template::TemplateParameter, wiki_utils::get_float_precision},
+    wikitext::{template::TemplateParameter, text_utils::get_float_precision},
 };
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;

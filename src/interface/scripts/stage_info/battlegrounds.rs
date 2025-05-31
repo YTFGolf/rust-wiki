@@ -10,7 +10,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
-    wikitext::wiki_utils::{extract_name, get_precision_f},
+    wikitext::text_utils::{extract_name, get_precision_f},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};

@@ -3,4 +3,4 @@
 pub mod section;
 pub mod tabber;
 pub mod template;
-pub mod wiki_utils;
+pub mod text_utils;

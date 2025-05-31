@@ -20,7 +20,7 @@ use crate::{
     interface::{config::Config, error_handler::InfallibleWrite},
     regex_handler::static_regex,
     wiki_data::stage_wiki_data::STAGE_WIKI_DATA,
-    wikitext::wiki_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
+    wikitext::text_utils::{OLD_OR_REMOVED_DETECT, OLD_OR_REMOVED_SUB},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};

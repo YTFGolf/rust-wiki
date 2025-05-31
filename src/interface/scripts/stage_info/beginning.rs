@@ -8,7 +8,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
-    wikitext::wiki_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
+    wikitext::text_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
 };
 use std::{collections::HashSet, fmt::Write};
 

@@ -3,7 +3,7 @@ use crate::{
     interface::config::Config,
     wikitext::{
         template::{Template, TemplateParameter},
-        wiki_utils::get_precision_f,
+        text_utils::get_precision_f,
     },
 };
 use num_format::{Locale, ToFormattedString};

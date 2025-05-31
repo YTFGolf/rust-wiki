@@ -17,7 +17,7 @@ use crate::{
         scripts::format_parser::{ParseType, parse_info_format},
     },
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
-    wikitext::wiki_utils::{extract_link, extract_name, get_ordinal},
+    wikitext::text_utils::{extract_link, extract_name, get_ordinal},
 };
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
