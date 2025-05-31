@@ -10,7 +10,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
-    wikitext::wiki_utils::extract_name,
+    wikitext::wiki_utils::{extract_name, get_precision_f},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -21,13 +21,7 @@ use std::fmt::Write;
 fn write_single_spawn_s(buf: &mut String, time_f: u32) {
     let respawn_s = f64::from(time_f) / 30.0;
     assert!(respawn_s < 1_000.0, "Spawn time is above 1,000 seconds!");
-    let precision = if time_f % 30 == 0 {
-        0
-    } else if time_f % 3 == 0 {
-        1
-    } else {
-        2
-    };
+    let precision = get_precision_f(time_f);
     write!(buf, "{respawn_s:.precision$}").unwrap();
 }
 

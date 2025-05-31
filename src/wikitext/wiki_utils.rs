@@ -110,6 +110,34 @@ pub fn get_ordinal(n: u32) -> String {
     }
 }
 
+/// Get precision to use when formatting as float.
+pub fn get_precision(mut num: f64, max_precision: usize) -> usize {
+    let mut precision = 0;
+    while num % 1.0 != 0.0 && precision < max_precision {
+        precision += 1;
+        num = num % 1.0 * 10.0;
+    }
+    precision
+}
+
+/// Get precision to use when formatting as float. Optimised for frames to use
+/// as their seconds conversion.
+/// ```
+/// # use rust_wiki::wikitext::wiki_utils::get_precision_f;
+/// assert_eq!(get_precision_f(30), 0);
+/// assert_eq!(get_precision_f(3), 1);
+/// assert_eq!(get_precision_f(1), 2);
+/// ```
+pub fn get_precision_f(frames: u32) -> usize {
+    if frames % 30 == 0 {
+        0
+    } else if frames % 3 == 0 {
+        1
+    } else {
+        2
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::wikitext::wiki_utils::get_ordinal;
