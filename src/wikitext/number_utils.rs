@@ -61,6 +61,7 @@ pub fn time_repr(time_f: u32) -> (String, String) {
     (f, s)
 }
 
+/// [`get_formatted_float`] implementation without intermediate allocation.
 pub fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
     // e.g. for 3300.3300, will do `buf.write("3,300")` at the top, then below
     // will do `buf.write(".33")`
@@ -82,6 +83,15 @@ pub fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
     write!(buf, "{formatted_float}").unwrap();
 }
 
+/// Get a formatted decimal representation of the number. Simply a wrapper
+/// around [`write_formatted_float`].
+/// ```
+/// # use rust_wiki::wikitext::number_utils::get_formatted_float;
+/// assert_eq!(get_formatted_float(3.0,   2), "3");
+/// assert_eq!(get_formatted_float(3.1,   2), "3.1");
+/// assert_eq!(get_formatted_float(3.11,  2), "3.11");
+/// assert_eq!(get_formatted_float(3.111, 2), "3.11");
+/// ```
 pub fn get_formatted_float(num: f64, precision: usize) -> String {
     let mut buf = String::new();
     write_formatted_float(&mut buf, num, precision);
