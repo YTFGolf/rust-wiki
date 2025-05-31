@@ -24,6 +24,12 @@ fn write_seconds(buf: &mut String, time_f: u32) {
     write!(buf, "{time_s:.precision$}").unwrap();
 }
 
+fn seconds_repr(time_f: u32) -> String {
+    let mut buf = String::new();
+    write_seconds(&mut buf, time_f);
+    buf
+}
+
 /// `(frames, seconds)`
 fn time_repr(time_f: u32) -> (String, String) {
     let f = {
@@ -32,11 +38,7 @@ fn time_repr(time_f: u32) -> (String, String) {
         buf
     };
 
-    let s = {
-        let mut buf = String::new();
-        write_seconds(&mut buf, time_f);
-        buf
-    };
+    let s = seconds_repr(time_f);
 
     (f, s)
 }
@@ -76,8 +78,32 @@ fn get_template(cat: Cat) {
         ),
     ));
 
-    t.push_params(TemplateParameter::new("Attack Animation Normal", "?"));
-    t.push_params(TemplateParameter::new("Recharging Time Normal", "?"));
+    let (fore_f, fore_s) = time_repr(u32::from(foreswing));
+    let (back_f, back_s) = time_repr(u32::from(backswing));
+    t.push_params(TemplateParameter::new(
+        "Attack Animation Normal",
+        format!("{fore_f}f <sup>{fore_s}s</sup><br>({back_f}f <sup>{back_s}s</sup> backswing)"),
+    ));
+
+    let max_spawn = stats.respawn_half * 2;
+    let min_spawn = {
+        const MAX_LEVEL_REDUCE_F: u16 = 264;
+        // 8.8 * 30
+        const MIN_SPAWN_AMT: u16 = 60;
+        // 2 seconds
+        max(max_spawn, MAX_LEVEL_REDUCE_F + MIN_SPAWN_AMT) - MAX_LEVEL_REDUCE_F
+        // because this uses unsigned integers, the intuitive `max(2s,
+        // base_spawn - 8.8s)` could loop around to `u32::MAX`, so `max` needs
+        // to be applied beforehand
+    };
+    let max_s = seconds_repr(max_spawn.into());
+    let min_s = seconds_repr(min_spawn.into());
+    t.push_params(TemplateParameter::new(
+        "Recharging Time Normal",
+        format!("{max_s} ~ {min_s} seconds"),
+    ));
+    // no need for plural as min is 2 seconds
+
     t.push_params(TemplateParameter::new("Hp Normal Lv.MAX", "?"));
     t.push_params(TemplateParameter::new("Atk Power Normal Lv.MAX", "?"));
     t.push_params(TemplateParameter::new("Attack type Normal", "?"));
