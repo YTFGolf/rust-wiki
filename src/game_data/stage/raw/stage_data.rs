@@ -199,11 +199,9 @@ impl<'a> StageData<'_> {
             if record[0].contains('/') {
                 continue;
             }
-            // TODO real error handling in the function here
             let Some(enemy) = deserialise_single_enemy(record) else {
                 continue;
             };
-
             if enemy.num == 0 {
                 break;
             }

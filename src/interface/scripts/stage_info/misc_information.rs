@@ -128,7 +128,7 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
                     f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
                 let chance_repr = get_formatted_float(single_cont_chance, 1);
                 format!("{stage} (''Continuation Stage'', {chance_repr}%)")
-            } // TODO actually write something for precision
+            }
         }
     });
 
