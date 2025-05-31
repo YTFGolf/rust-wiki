@@ -62,7 +62,7 @@ fn once_then_unlimited(rewards: &StageRewards) -> String {
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
-        let precision = get_precision(chance, 1);
+        let precision = get_precision(chance);
         let limit = drop_limit(item.item_id);
         write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
     }
@@ -84,7 +84,7 @@ fn all_unlimited(rewards: &StageRewards) -> String {
 
         let chance = total_allowed * f64::from(item.item_chance) / 100.0;
         total_allowed -= chance;
-        let precision = get_precision(chance, 1);
+        let precision = get_precision(chance);
         let limit = drop_limit(item.item_id);
         write!(buf, " ({chance:.precision$}%, {limit})").unwrap();
         buf.write_str("<br>\n").infallible_write();
@@ -158,7 +158,7 @@ fn guaranteed_once(rewards: &StageRewards) -> String {
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
         if !is_equal_chance {
             let item_chance = f64::from(100 * item.item_chance) / total;
-            let precision = get_precision(item_chance, 1);
+            let precision = get_precision(item_chance);
             write!(buf, " ({item_chance:.precision$}%)").unwrap();
         }
     }
@@ -188,7 +188,7 @@ fn guaranteed_unlimited(rewards: &StageRewards) -> String {
         write_name_and_amount(&mut buf, item.item_id, item.item_amt);
         if !is_equal_chance {
             let item_chance = f64::from(100 * item.item_chance) / total;
-            let precision = get_precision(item_chance, 1);
+            let precision = get_precision(item_chance);
             write!(buf, " ({item_chance:.precision$}%)").unwrap();
         }
     }

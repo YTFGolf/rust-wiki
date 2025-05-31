@@ -111,13 +111,16 @@ pub fn get_ordinal(n: u32) -> String {
 }
 
 /// Get precision to use when formatting as float.
-pub fn get_precision(mut num: f64, max_precision: usize) -> usize {
-    let mut precision = 0;
-    while num % 1.0 != 0.0 && precision < max_precision {
-        precision += 1;
-        num = num % 1.0 * 10.0;
-    }
-    precision
+///
+/// Due to floats being silly this has a maximum precision of 1. Anything else,
+/// do it manually.
+/// ```
+/// # use rust_wiki::wikitext::wiki_utils::get_precision;
+/// assert_eq!(get_precision(1.0), 0);
+/// assert_eq!(get_precision(1.1), 1);
+/// ```
+pub fn get_precision( num: f64) -> usize {
+    if num % 1.0 == 0.0 { 0 } else { 1 }
 }
 
 /// Get precision to use when formatting as float. Optimised for frames to use

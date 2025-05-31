@@ -123,7 +123,7 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
             chance => {
                 let single_cont_chance: f64 =
                     f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
-                let precision = get_precision(single_cont_chance, 1);
+                let precision = get_precision(single_cont_chance);
                 format!("{stage} (''Continuation Stage'', {single_cont_chance:.precision$}%)")
             } // TODO actually write something for precision
         }
