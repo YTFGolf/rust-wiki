@@ -3,20 +3,6 @@
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
 
-/// Get precision to use when formatting as float.
-///
-/// Due to floats being silly this has a maximum precision of 1. Anything else,
-/// do it manually.
-/// ```
-/// # use rust_wiki::wikitext::number_utils::get_float_precision;
-/// assert_eq!(get_float_precision(1.0), 0);
-/// assert_eq!(get_float_precision(1.1), 1);
-/// ```
-#[deprecated]
-pub fn get_float_precision(num: f64) -> usize {
-    if num % 1.0 == 0.0 { 0 } else { 1 }
-}
-
 /// Get precision to use when formatting as float. Optimised for frames to use
 /// as their seconds conversion.
 /// ```
