@@ -62,15 +62,24 @@ pub fn time_repr(time_f: u32) -> (String, String) {
 }
 
 pub fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
+    // e.g. for 3300.3300, will do `buf.write("3,300")` at the top, then below
+    // will do `buf.write(".33")`
+
     let int_part = num.floor() as i64;
-    let formatted_int = int_part.to_formatted_string(&Locale::en);
+    buf.write_formatted(&int_part, &Locale::en).unwrap();
 
     let float_part = num.fract();
-    let formatted_float = format!("{float_part:.precision$}")
-        .trim_start_matches('0')
-        .to_string();
+    if precision == 0 || float_part == 0.0 {
+        return;
+    }
 
-    write!(buf, "{formatted_int}{formatted_float}").unwrap();
+    let formatted_float_untrimmed = format!("{float_part:.precision$}");
+    let formatted_float = formatted_float_untrimmed.trim_matches('0');
+    // need to remove both the 0 at the start (0.xxx -> .xxx) and any trailing
+    // zeros (.xx0000 -> .xx); while doing those separately might semantically
+    // make more sense it's a better idea to do it in one operation
+
+    write!(buf, "{formatted_float}").unwrap();
 }
 
 pub fn get_formatted_float(num: f64, precision: usize) -> String {
