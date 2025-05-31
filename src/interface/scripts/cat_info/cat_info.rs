@@ -1,6 +1,6 @@
 use crate::{
     game_data::cat::parsed::{cat::Cat, stats::form::AreaOfEffect},
-    interface::config::Config,
+    interface::{config::Config, scripts::cat_info::abilities::get_abilities},
     wikitext::{
         number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
         template::{Template, TemplateParameter},
@@ -99,7 +99,10 @@ fn get_template(cat: Cat) {
         },
     ));
 
-    t.push_params(TemplateParameter::new("Special Ability Normal", "?"));
+    t.push_params(TemplateParameter::new(
+        "Special Ability Normal",
+        get_abilities(stats),
+    ));
     // oh boy
 
     /*
