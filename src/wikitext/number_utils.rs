@@ -1,4 +1,4 @@
-use num_format::{Locale, ToFormattedString};
+use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
 
 /// Get precision to use when formatting as float.
@@ -32,10 +32,23 @@ pub fn get_precision_f(frames: u32) -> usize {
     }
 }
 
+/// Get the plural of the word based on the amount.
+/// ```
+/// # use rust_wiki::wikitext::number_utils::plural;
+/// assert_eq!(plural(1, "thing", "things"), "thing");
+/// assert_eq!(plural(2, "thing", "things"), "things");
+/// ```
 pub fn plural<'a>(amt: u16, single: &'a str, plural: &'a str) -> &'a str {
     if amt == 1 { single } else { plural }
 }
 
+/// Get the plural of the word based on the amount, using 30 as the singular
+/// value instead of 1.
+/// ```
+/// # use rust_wiki::wikitext::number_utils::plural_f;
+/// assert_eq!(plural_f(30, "thing", "things"), "thing");
+/// assert_eq!(plural_f(60, "thing", "things"), "things");
+/// ```
 pub fn plural_f<'a>(amt: u32, single: &'a str, plural: &'a str) -> &'a str {
     if amt == 30 { single } else { plural }
 }
