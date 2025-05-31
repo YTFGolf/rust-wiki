@@ -229,6 +229,15 @@ impl AttackHits {
             AttackHits::Triple([.., last]) => last.foreswing,
         }
     }
+
+    /// Total damage dealt if all hits land.
+    pub fn total_damage(&self) -> u32 {
+        match self {
+            AttackHits::Single(hits) => hits.iter().map(|hit| hit.damage).sum(),
+            AttackHits::Double(hits) => hits.iter().map(|hit| hit.damage).sum(),
+            AttackHits::Triple(hits) => hits.iter().map(|hit| hit.damage).sum(),
+        }
+    }
 }
 #[cfg(test)]
 // TODO separate modules into files.

@@ -6,7 +6,7 @@ use crate::{
         wiki_utils::get_precision_f,
     },
 };
-use num_format::{Locale, WriteFormatted};
+use num_format::{Locale, ToFormattedString};
 use std::{cmp::max, fmt::Write};
 
 fn plural<'a>(amt: u16, single: &'a str, plural: &'a str) -> &'a str {
@@ -32,15 +32,27 @@ fn seconds_repr(time_f: u32) -> String {
 
 /// `(frames, seconds)`
 fn time_repr(time_f: u32) -> (String, String) {
-    let f = {
-        let mut buf = String::new();
-        buf.write_formatted(&time_f, &Locale::en).unwrap();
-        buf
-    };
-
+    let f = time_f.to_formatted_string(&Locale::en);
     let s = seconds_repr(time_f);
-
     (f, s)
+}
+
+fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
+    let int_part = num.floor() as i64;
+    let formatted_int = int_part.to_formatted_string(&Locale::en);
+
+    let float_part = num.fract();
+    let formatted_float = format!("{float_part:.precision$}")
+        .trim_start_matches('0')
+        .to_string();
+
+    write!(buf, "{formatted_int}{formatted_float}").unwrap();
+}
+
+fn get_formatted_float(num: f64, precision: usize) -> String {
+    let mut buf = String::new();
+    write_formatted_float(&mut buf, num, precision);
+    buf
 }
 
 fn get_template(cat: Cat) {
@@ -111,6 +123,20 @@ fn get_template(cat: Cat) {
         "Hp Normal Lv.MAX",
         format!("{hp} HP", hp = hp_max.to_formatted_string(&Locale::en)),
     ));
+
+    let ap_max = cat
+        .unitlevel
+        .get_stat_at_level(stats.attack.hits.total_damage(), level);
+    let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
+    t.push_params(TemplateParameter::new(
+        "Atk Power Normal Lv.MAX",
+        format!(
+            "{ap} damage<br>({dps} DPS)",
+            ap = ap_max.to_formatted_string(&Locale::en),
+            dps = (get_formatted_float(dps_max, 2)).trim_end_matches('0')
+        ),
+    ));
+
     t.push_params(TemplateParameter::new("Attack type Normal", "?"));
     t.push_params(TemplateParameter::new("Special Ability Normal", "?"));
 
@@ -120,9 +146,6 @@ fn get_template(cat: Cat) {
     'Atk Power Normal': f"{baseStats['ap']:,} damage<br>({baseStats['dps']:,} DPS)",
     'Atk Range Normal': f"{baseStats['rng']:,}",
 
-    'Attack Frequency Normal': f"{baseStats['freq']}f <sub>{f_to_s(baseStats['freq'])} seconds</sub>",
-    'Attack Animation Normal': f"{baseStats['fore']}f <sup>{f_to_s(baseStats['fore'])}s</sup><br>({baseStats['back']}f <sup>{f_to_s(baseStats['back'])}s</sup> backswing)",
-    'Recharging Time Normal': f"{baseStats['rch']} ~ {baseStats['rchT']} seconds",
     'Hp Normal Lv.MAX': f"{cat.getStat(0, 30, 'hp'):,} HP",
     'Atk Power Normal Lv.MAX': f"{cat.getStat(0, 30, 'ap'):,} damage<br>({cat.getStat(0, 30, 'dps'):,} DPS)",
     'Attack type Normal': baseStats['atkType'],
