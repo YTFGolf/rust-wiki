@@ -5,12 +5,12 @@ use crate::{
         meta::stage::variant::StageVariantID as T,
         stage::parsed::{
             stage::Stage,
-            stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
+            stage_enemy::{BossType, EnemyAmount, StageEnemy, MS_SIGN},
         },
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
-    wikitext::text_utils::{extract_name, get_precision_f},
+    wikitext::{number_utils::get_precision_f, text_utils::extract_name},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -23,6 +23,7 @@ fn write_single_spawn_s(buf: &mut String, time_f: u32) {
     assert!(respawn_s < 1_000.0, "Spawn time is above 1,000 seconds!");
     let precision = get_precision_f(time_f);
     write!(buf, "{respawn_s:.precision$}").unwrap();
+    // TODO refactor
 }
 
 /// Write the enemy delay part of the battlegrounds lines.
