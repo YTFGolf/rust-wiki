@@ -7,8 +7,8 @@ use crate::{
         stage::parsed::stage::{ContinueStages, Stage},
     },
     regex_handler::static_regex,
-    wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
-    wikitext::{template::TemplateParameter, wiki_utils::OLD_OR_REMOVED_SUB},
+    wiki_data::stage_wiki_data::{MapWikiData, StageWikiData, STAGE_WIKI_DATA},
+    wikitext::{template::TemplateParameter, wiki_utils::{get_precision, OLD_OR_REMOVED_SUB}},
 };
 use std::borrow::Cow;
 
@@ -123,11 +123,7 @@ fn get_continuation_stages(data: &ContinueStages) -> String {
             chance => {
                 let single_cont_chance: f64 =
                     f64::from(chance) / f64::from(data.stage_ids.1 - data.stage_ids.0 + 1);
-                let precision = if single_cont_chance % 1.0 == 0.0 {
-                    0
-                } else {
-                    1
-                };
+                let precision = get_precision(single_cont_chance, 1);
                 format!("{stage} (''Continuation Stage'', {single_cont_chance:.precision$}%)")
             } // TODO actually write something for precision
         }
