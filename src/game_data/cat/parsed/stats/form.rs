@@ -230,6 +230,37 @@ impl AttackHits {
         }
     }
 }
+#[cfg(test)]
+// TODO separate modules into files.
+mod hit_tests {
+    use super::*;
+    use crate::{TEST_CONFIG, game_data::cat::parsed::cat::Cat};
+
+    fn get_unit_current(id: u32) -> impl Iterator<Item = CatFormStats> {
+        let version = TEST_CONFIG.version.current_version();
+        Cat::get_stats(id, version)
+    }
+
+    /// Foreswing, attack length
+    fn get_hits_vec(id: u32) -> Vec<(u16, u16)> {
+        get_unit_current(id)
+            .map(|cat| {
+                let hits = cat.attack.hits;
+                (hits.foreswing(), hits.attack_length())
+            })
+            .collect::<Vec<_>>()
+    }
+
+    #[test]
+    fn check_basic() {
+        let cat = get_hits_vec(0);
+        let ans = vec![(8, 8), (8, 8), (8, 8)];
+        // single hit means foreswing = attack length
+        assert_eq!(cat, ans);
+    }
+    // check that foreswing is as expected
+    // cat, bahamut, cosmo, dasli, greenshell, CGtG, Phono, Musashi Miyamoto
+}
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Area of the unit's hits.
