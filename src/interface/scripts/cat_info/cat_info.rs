@@ -1,5 +1,5 @@
 use crate::{
-    game_data::cat::parsed::cat::Cat,
+    game_data::cat::parsed::{cat::Cat, stats::form::AreaOfEffect},
     interface::config::Config,
     wikitext::{
         number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
@@ -87,12 +87,21 @@ fn get_template(cat: Cat) {
         format!(
             "{ap} damage<br>({dps} DPS)",
             ap = ap_max.to_formatted_string(&Locale::en),
-            dps = (get_formatted_float(dps_max, 2)).trim_end_matches('0')
+            dps = (get_formatted_float(dps_max, 2)).trim_end_matches('0') // TODO use better methods for this, something like
+                                                                          // `imprecise_float_trim`
         ),
     ));
 
-    t.push_params(TemplateParameter::new("Attack type Normal", "?"));
+    t.push_params(TemplateParameter::new(
+        "Attack type Normal",
+        match stats.attack.aoe {
+            AreaOfEffect::SingleAttack => "Single Attack",
+            AreaOfEffect::AreaAttack => "Area Attack",
+        },
+    ));
+
     t.push_params(TemplateParameter::new("Special Ability Normal", "?"));
+    // oh boy
 
     /*
     'Normal Form name': names[0],
@@ -100,9 +109,6 @@ fn get_template(cat: Cat) {
     'Atk Power Normal': f"{baseStats['ap']:,} damage<br>({baseStats['dps']:,} DPS)",
     'Atk Range Normal': f"{baseStats['rng']:,}",
 
-    'Hp Normal Lv.MAX': f"{cat.getStat(0, 30, 'hp'):,} HP",
-    'Atk Power Normal Lv.MAX': f"{cat.getStat(0, 30, 'ap'):,} damage<br>({cat.getStat(0, 30, 'dps'):,} DPS)",
-    'Attack type Normal': baseStats['atkType'],
     'Special Ability Normal': cat.abilityDesc(0, 0),
      */
 
