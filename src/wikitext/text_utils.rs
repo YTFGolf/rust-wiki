@@ -110,7 +110,6 @@ pub fn get_ordinal(n: u32) -> String {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::wikitext::text_utils::get_ordinal;

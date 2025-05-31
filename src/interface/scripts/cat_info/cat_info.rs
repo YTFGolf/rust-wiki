@@ -1,9 +1,10 @@
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::config::Config,
-    wikitext::{number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
-        template::{Template, TemplateParameter}}
-    ,
+    wikitext::{
+        number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
+        template::{Template, TemplateParameter},
+    },
 };
 use num_format::{Locale, ToFormattedString};
 use std::cmp::max;

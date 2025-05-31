@@ -7,9 +7,10 @@ use crate::{
         stage::parsed::stage::{ContinueStages, Stage},
     },
     regex_handler::static_regex,
-    wiki_data::stage_wiki_data::{MapWikiData, StageWikiData, STAGE_WIKI_DATA},
+    wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
     wikitext::{
-        number_utils::get_float_precision, template::TemplateParameter, text_utils::OLD_OR_REMOVED_SUB
+        number_utils::get_float_precision, template::TemplateParameter,
+        text_utils::OLD_OR_REMOVED_SUB,
     },
 };
 use std::borrow::Cow;

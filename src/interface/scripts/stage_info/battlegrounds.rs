@@ -5,7 +5,7 @@ use crate::{
         meta::stage::variant::StageVariantID as T,
         stage::parsed::{
             stage::Stage,
-            stage_enemy::{BossType, EnemyAmount, StageEnemy, MS_SIGN},
+            stage_enemy::{BossType, EnemyAmount, MS_SIGN, StageEnemy},
         },
     },
     interface::error_handler::InfallibleWrite,
