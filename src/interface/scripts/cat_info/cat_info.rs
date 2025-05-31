@@ -1,59 +1,12 @@
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::config::Config,
-    wikitext::{
-        template::{Template, TemplateParameter},
-        text_utils::get_precision_f,
-    },
+    wikitext::{number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
+        template::{Template, TemplateParameter}}
+    ,
 };
 use num_format::{Locale, ToFormattedString};
-use std::{cmp::max, fmt::Write};
-
-fn plural<'a>(amt: u16, single: &'a str, plural: &'a str) -> &'a str {
-    if amt == 1 { single } else { plural }
-}
-
-fn plural_f<'a>(amt: u32, single: &'a str, plural: &'a str) -> &'a str {
-    if amt == 30 { single } else { plural }
-}
-
-fn write_seconds(buf: &mut String, time_f: u32) {
-    let time_s = f64::from(time_f) / 30.0;
-    assert!(time_s < 1_000.0, "Amount of seconds is above 1,000!");
-    let precision = get_precision_f(time_f);
-    write!(buf, "{time_s:.precision$}").unwrap();
-}
-
-fn seconds_repr(time_f: u32) -> String {
-    let mut buf = String::new();
-    write_seconds(&mut buf, time_f);
-    buf
-}
-
-/// `(frames, seconds)`
-fn time_repr(time_f: u32) -> (String, String) {
-    let f = time_f.to_formatted_string(&Locale::en);
-    let s = seconds_repr(time_f);
-    (f, s)
-}
-
-fn write_formatted_float(buf: &mut String, num: f64, precision: usize) {
-    let int_part = num.floor() as i64;
-    let formatted_int = int_part.to_formatted_string(&Locale::en);
-
-    let float_part = num.fract();
-    let formatted_float = format!("{float_part:.precision$}")
-        .trim_start_matches('0')
-        .to_string();
-
-    write!(buf, "{formatted_int}{formatted_float}").unwrap();
-}
-
-fn get_formatted_float(num: f64, precision: usize) -> String {
-    let mut buf = String::new();
-    write_formatted_float(&mut buf, num, precision);
-    buf
-}
+use std::cmp::max;
 
 fn get_template(cat: Cat) {
     let forms = &cat.forms;
