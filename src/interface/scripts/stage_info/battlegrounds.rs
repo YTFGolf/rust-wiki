@@ -10,30 +10,21 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
-    wikitext::{number_utils::get_precision_f, text_utils::extract_name},
+    wikitext::{number_utils::write_seconds, text_utils::extract_name},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use regex::Regex;
 use std::fmt::Write;
 
-/// Write the given spawn time in seconds;
-fn write_single_spawn_s(buf: &mut String, time_f: u32) {
-    let respawn_s = f64::from(time_f) / 30.0;
-    assert!(respawn_s < 1_000.0, "Spawn time is above 1,000 seconds!");
-    let precision = get_precision_f(time_f);
-    write!(buf, "{respawn_s:.precision$}").unwrap();
-    // TODO refactor
-}
-
 /// Write the enemy delay part of the battlegrounds lines.
 fn write_enemy_delay(buf: &mut String, enemy: &StageEnemy) {
     *buf += ", delay ";
 
-    write_single_spawn_s(buf, enemy.respawn_time.0);
+    write_seconds(buf, enemy.respawn_time.0);
     if enemy.respawn_time.1 > enemy.respawn_time.0 {
         *buf += "~";
-        write_single_spawn_s(buf, enemy.respawn_time.1);
+        write_seconds(buf, enemy.respawn_time.1);
     }
 
     if enemy.respawn_time == (30, 30) {
@@ -133,7 +124,7 @@ fn get_single_enemy_line(
     let is_instant_spawn = enemy.start_frame == 0 || (is_base_hit && !enemy.enforce_start_frame);
     if !is_instant_spawn {
         buf += " after ";
-        write_single_spawn_s(&mut buf, enemy.start_frame);
+        write_seconds(&mut buf, enemy.start_frame);
         if enemy.start_frame == 30 {
             buf += " second<sup>";
         } else {
