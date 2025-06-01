@@ -366,7 +366,62 @@ impl Ability {
     pub const fn has_targets(&self) -> bool {
         self.is_cursable()
     }
+
+    /// Is the ability an immunity?
+    pub const fn is_immunity(&self) -> bool {
+        match self {
+            Ability::StrongAgainst
+            | Ability::Knockback { .. }
+            | Ability::Freeze { .. }
+            | Ability::Slow { .. }
+            | Ability::Resist
+            | Ability::MassiveDamage
+            | Ability::Crit { .. }
+            | Ability::TargetsOnly
+            | Ability::DoubleBounty
+            | Ability::BaseDestroyer
+            | Ability::Wave(_)
+            | Ability::Weaken { .. }
+            | Ability::Strengthen { .. }
+            | Ability::Survives { .. }
+            | Ability::Metal
+            | Ability::WaveBlocker
+            | Ability::ZombieKiller
+            | Ability::WitchKiller
+            | Ability::Kamikaze
+            | Ability::BarrierBreaker { .. }
+            | Ability::EvaAngelKiller
+            | Ability::InsaneResist
+            | Ability::InsaneDamage
+            | Ability::SavageBlow { .. }
+            | Ability::Dodge { .. }
+            | Ability::Surge(_)
+            | Ability::Curse { .. }
+            | Ability::ShieldPierce { .. }
+            | Ability::ColossusSlayer
+            | Ability::Soulstrike
+            | Ability::BehemothSlayer { .. }
+            | Ability::CounterSurge
+            | Ability::ConjureUnit { .. }
+            | Ability::SageSlayer
+            | Ability::MetalKiller { .. }
+            | Ability::Explosion { .. } => false,
+            //
+            Ability::ImmuneToWave
+            | Ability::ImmuneToKB
+            | Ability::ImmuneToFreeze
+            | Ability::ImmuneToSlow
+            | Ability::ImmuneToWeaken
+            | Ability::ImmuneToBossShockwave
+            | Ability::ImmuneToWarp
+            | Ability::ImmuneToCurse
+            | Ability::ImmuneToToxic
+            | Ability::ImmuneToSurge
+            | Ability::ImmuneToExplosion => true,
+        }
+    }
 }
+// Ability::StrongAgainst=>todo!(),Ability::Knockback{..}=>todo!(),Ability::Freeze{..}=>todo!(),Ability::Slow{..}=>todo!(),Ability::Resist=>todo!(),Ability::MassiveDamage=>todo!(),Ability::Crit{..}=>todo!(),Ability::TargetsOnly=>todo!(),Ability::DoubleBounty=>todo!(),Ability::BaseDestroyer=>todo!(),Ability::Wave(_)=>todo!(),Ability::Weaken{..}=>todo!(),Ability::Strengthen{..}=>todo!(),Ability::Survives{..}=>todo!(),Ability::Metal=>todo!(),Ability::ImmuneToWave=>todo!(),Ability::WaveBlocker=>todo!(),Ability::ImmuneToKB=>todo!(),Ability::ImmuneToFreeze=>todo!(),Ability::ImmuneToSlow=>todo!(),Ability::ImmuneToWeaken=>todo!(),Ability::ZombieKiller=>todo!(),Ability::WitchKiller=>todo!(),Ability::ImmuneToBossShockwave=>todo!(),Ability::Kamikaze=>todo!(),Ability::BarrierBreaker{..}=>todo!(),Ability::ImmuneToWarp=>todo!(),Ability::EvaAngelKiller=>todo!(),Ability::ImmuneToCurse=>todo!(),Ability::InsaneResist=>todo!(),Ability::InsaneDamage=>todo!(),Ability::SavageBlow{..}=>todo!(),Ability::Dodge{..}=>todo!(),Ability::Surge(_)=>todo!(),Ability::ImmuneToToxic=>todo!(),Ability::ImmuneToSurge=>todo!(),Ability::Curse{..}=>todo!(),Ability::ShieldPierce{..}=>todo!(),Ability::ColossusSlayer=>todo!(),Ability::Soulstrike=>todo!(),Ability::BehemothSlayer{..}=>todo!(),Ability::CounterSurge=>todo!(),Ability::ConjureUnit{..}=>todo!(),Ability::SageSlayer=>todo!(),Ability::MetalKiller{..}=>todo!(),Ability::Explosion{..}=>todo!(),Ability::ImmuneToExplosion=>todo!(),
 
 fn bool(value: Percent) -> Result<bool, String> {
     match value {
