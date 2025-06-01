@@ -430,7 +430,7 @@ mod tests {
             counter += 1;
 
             let ends_in_multab = repr.ends_with(" on 2nd and 3rd hits");
-            if !raw.is_general() {
+            if !raw.is_passive() {
                 assert!(
                     ends_in_multab,
                     "Ability {raw:?} does not take into account MultiHit with variable activation"

@@ -253,8 +253,8 @@ pub enum Ability {
 }
 
 impl Ability {
-    /// Does the ability apply on every hit regardless?
-    pub const fn is_general(&self) -> bool {
+    /// Does the ability apply at all times or must it be activated?
+    pub const fn is_passive(&self) -> bool {
         match self {
             Self::StrongAgainst
             | Self::Resist
