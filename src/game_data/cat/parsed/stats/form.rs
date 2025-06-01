@@ -8,8 +8,8 @@ use std::{fmt::Display, num::NonZero};
 pub enum EnemyType {
     /// Red.
     Red,
-    /// Float.
-    Float,
+    /// Floating.
+    Floating,
     /// Black.
     Black,
     /// Metal.
@@ -31,7 +31,7 @@ impl Display for EnemyType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let t = match self {
             Self::Red => "Red",
-            Self::Float => "Float",
+            Self::Floating => "Floating",
             Self::Black => "Black",
             Self::Metal => "Metal",
             Self::Traitless => "Traitless",
@@ -54,7 +54,7 @@ impl EnemyType {
             targets.push(Self::Red);
         }
         if bool(fixed.targ_float).unwrap() {
-            targets.push(Self::Float);
+            targets.push(Self::Floating);
         }
         if bool(fixed.targ_black).unwrap() {
             targets.push(Self::Black);
@@ -599,7 +599,7 @@ mod tests {
                 .into(),
                 targets: [
                     E::Red,
-                    E::Float,
+                    E::Floating,
                     E::Black,
                     E::Metal,
                     E::Traitless,
@@ -671,7 +671,7 @@ mod tests {
                 .into(),
                 targets: [
                     E::Red,
-                    E::Float,
+                    E::Floating,
                     E::Black,
                     E::Metal,
                     E::Traitless,
@@ -1052,7 +1052,7 @@ mod tests {
                     tba: 10,
                 },
                 abilities: [A::Knockback { chance: 20 }].into(),
-                targets: [E::Float, E::Angel].into(),
+                targets: [E::Floating, E::Angel].into(),
             },
             CatFormStats {
                 hp: 1600,
@@ -1073,7 +1073,7 @@ mod tests {
                     tba: 150,
                 },
                 abilities: [A::Knockback { chance: 100 }].into(),
-                targets: [E::Float, E::Angel].into(),
+                targets: [E::Floating, E::Angel].into(),
             },
             CatFormStats {
                 hp: 1600,
@@ -1101,7 +1101,7 @@ mod tests {
                     },
                 ]
                 .into(),
-                targets: [E::Float, E::Angel].into(),
+                targets: [E::Floating, E::Angel].into(),
             },
             CatFormStats {
                 hp: 2000,
@@ -1138,7 +1138,7 @@ mod tests {
                     A::SageSlayer,
                 ]
                 .into(),
-                targets: [E::Float, E::Angel].into(),
+                targets: [E::Floating, E::Angel].into(),
             },
         ];
 
