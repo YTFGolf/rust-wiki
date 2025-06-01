@@ -1,6 +1,7 @@
 //! Deals with cat stats.
 
 use super::super::super::{ability::Ability, raw::stats::CombinedCatData};
+use crate::game_data::cat::raw::unitlevel::UnitLevelRaw;
 use std::{fmt::Display, num::NonZero};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -269,6 +270,24 @@ impl AttackHits {
             AttackHits::Single(hits) => hits.iter().map(|hit| hit.damage).sum(),
             AttackHits::Double(hits) => hits.iter().map(|hit| hit.damage).sum(),
             AttackHits::Triple(hits) => hits.iter().map(|hit| hit.damage).sum(),
+        }
+    }
+
+    /// Total damage at level if all hits land.
+    pub fn total_damage_at_level(&self, scaling: &UnitLevelRaw, level: u8) -> u32 {
+        match self {
+            AttackHits::Single(hits) => hits
+                .iter()
+                .map(|hit| scaling.get_stat_at_level(hit.damage, level))
+                .sum(),
+            AttackHits::Double(hits) => hits
+                .iter()
+                .map(|hit| scaling.get_stat_at_level(hit.damage, level))
+                .sum(),
+            AttackHits::Triple(hits) => hits
+                .iter()
+                .map(|hit| scaling.get_stat_at_level(hit.damage, level))
+                .sum(),
         }
     }
 }

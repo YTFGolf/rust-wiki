@@ -121,10 +121,10 @@ fn get_template(cat: Cat) {
         format!("{hp} HP", hp = hp_max.to_formatted_string(&Locale::en)),
     ));
 
-    let ap_max = cat
-        .unitlevel
-        .get_stat_at_level(stats.attack.hits.total_damage(), level);
-    // TODO this is wrong
+    let ap_max = stats
+        .attack
+        .hits
+        .total_damage_at_level(&cat.unitlevel, level);
     let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
     t.push_params(TemplateParameter::new(
         "Atk Power Normal Lv.MAX",
