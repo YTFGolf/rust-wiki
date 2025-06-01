@@ -9,6 +9,7 @@ use crate::{
     interface::{
         config::Config, error_handler::InfallibleWrite, scripts::cat_info::abilities::get_abilities,
     },
+    wiki_data::cat_data::CAT_DATA,
     wikitext::{
         number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
         template::{Template, TemplateParameter},
@@ -37,6 +38,32 @@ fn get_template(cat: Cat) {
         // necessary to avoid overflow
     };
 
+    t.push_params(TemplateParameter::new(
+        "Normal Form name",
+        &CAT_DATA.get_cat(cat.id).normal,
+    ));
+
+    t.push_params(TemplateParameter::new(
+        "Hp Normal",
+        format!("{hp} HP", hp = stats.hp.to_formatted_string(&Locale::en)),
+    ));
+
+    let dmg = stats.attack.hits.total_damage();
+    let dps = f64::from(dmg) / f64::from(frequency) * 30.0;
+    t.push_params(TemplateParameter::new(
+        "Atk Power Normal",
+        format!(
+            "{ap} damage<br>({dps} DPS)",
+            ap = dmg.to_formatted_string(&Locale::en),
+            dps = get_formatted_float(dps, 2)
+        ),
+    ));
+
+    t.push_params(TemplateParameter::new(
+        "Atk Range Normal",
+        stats.attack.standing_range.to_formatted_string(&Locale::en),
+    ));
+
     let (freq_f, freq_s) = time_repr(u32::from(frequency));
     t.push_params(TemplateParameter::new(
         "Attack Frequency Normal",
@@ -48,7 +75,7 @@ fn get_template(cat: Cat) {
 
     t.push_params(TemplateParameter::new(
         "Movement Speed Normal",
-        stats.speed.to_string(),
+        stats.speed.to_formatted_string(&Locale::en),
     ));
 
     t.push_params(TemplateParameter::new(
@@ -97,6 +124,7 @@ fn get_template(cat: Cat) {
     let ap_max = cat
         .unitlevel
         .get_stat_at_level(stats.attack.hits.total_damage(), level);
+    // TODO this is wrong
     let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
     t.push_params(TemplateParameter::new(
         "Atk Power Normal Lv.MAX",
@@ -160,15 +188,6 @@ fn get_template(cat: Cat) {
         "Special Ability Normal",
         abilities.join("<br>\n"),
     ));
-
-    /*
-    'Normal Form name': names[0],
-    'Hp Normal': f"{baseStats['hp']:,} HP",
-    'Atk Power Normal': f"{baseStats['ap']:,} damage<br>({baseStats['dps']:,} DPS)",
-    'Atk Range Normal': f"{baseStats['rng']:,}",
-
-    'Special Ability Normal': cat.abilityDesc(0, 0),
-     */
 
     println!("{t}");
 }
