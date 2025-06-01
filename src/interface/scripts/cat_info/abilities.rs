@@ -325,7 +325,29 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
     }
 
     if !immunities.is_empty() {
-        abilities.push(String::from("Some immunities"));
+        let mut buf = String::new();
+        let mut iter = immunities.into_iter().peekable();
+
+        let first = iter.next().expect("already check is_empty");
+        write!(
+            buf,
+            "[[Special Abilities#Immune to {first}|Immune to {first}]]"
+        )
+        .infallible_write();
+
+        while let Some(immunity) = iter.next() {
+            let separator = match iter.peek() {
+                Some(_) => ",",
+                None => " and",
+            };
+            write!(
+                buf,
+                "{separator} [[Special Abilities#Immune to {immunity}|{immunity}]]"
+            )
+            .infallible_write();
+        }
+
+        abilities.push(buf);
     }
 
     abilities.join("<br>\n")
