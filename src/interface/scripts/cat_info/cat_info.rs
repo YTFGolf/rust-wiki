@@ -8,7 +8,7 @@ use crate::{
     },
     interface::{
         config::Config, error_handler::InfallibleWrite,
-        scripts::cat_info::stats::abilities::util::get_abilities,
+        scripts::cat_info::stats::abilities::range_abilities::get_abilities,
     },
     wiki_data::cat_data::CAT_DATA,
     wikitext::{

@@ -19,6 +19,7 @@ fn get_targets(targets: &[EnemyType]) -> String {
         return format!("[[:Category:{target} Enemies|{target}]]");
     }
 
+    // possibly might have to clone and sort so that traitless comes first
     let mut buf = String::new();
     let mut iter = targets.iter().peekable();
     let first = iter.next().expect("already checked len >= 2");
