@@ -1,6 +1,10 @@
 use super::abilities::{misc_abilities::get_range_ability, pure_abilities::get_pure_abilities};
 use crate::{
-    game_data::cat::parsed::{cat::Cat, stats::form::AreaOfEffect},
+    game_data::cat::parsed::{
+        anim::CatFormAnimData,
+        cat::Cat,
+        stats::form::{AreaOfEffect, CatFormStats},
+    },
     interface::scripts::cat_info::stats::abilities::misc_abilities::get_multihit_ability,
     wiki_data::cat_data::CAT_DATA,
     wikitext::{
@@ -24,10 +28,11 @@ struct Form {
     abilities: String,
 }
 
-pub fn get_template(cat: Cat) {
-    let stats = &cat.forms.stats[0];
-    let anims = &cat.forms.anims[0];
-
+fn get_first_form(
+    cat: &Cat,
+    stats: &CatFormStats,
+    anims: &CatFormAnimData,
+) -> (&'static str, String, String, Form) {
     let level = 30;
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
@@ -124,8 +129,6 @@ pub fn get_template(cat: Cat) {
         abilities.join("<br>\n")
     };
 
-    // template
-
     let form = Form {
         range,
         attack_cycle,
@@ -138,6 +141,15 @@ pub fn get_template(cat: Cat) {
         attack_type,
         abilities,
     };
+
+    (name, base_hp, base_atk, form)
+}
+
+pub fn get_template(cat: Cat) {
+    let stats = &cat.forms.stats[0];
+    let anims = &cat.forms.anims[0];
+
+    let (name, base_hp, base_atk, form) = get_first_form(&cat, stats, anims);
 
     let mut t = Template::named("Cat Stats");
     type P = TemplateParameter;
