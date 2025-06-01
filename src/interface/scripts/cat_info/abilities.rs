@@ -1,7 +1,7 @@
 use crate::{
     game_data::cat::{
         ability::Ability,
-        parsed::stats::form::{CatFormStats, EnemyType},
+        parsed::stats::form::{AttackHits, CatFormStats, EnemyType},
     },
     interface::error_handler::InfallibleWrite,
 };
@@ -33,6 +33,25 @@ fn get_targets(targets: &[EnemyType]) -> String {
     buf
 }
 
+/// Get display for abilities when a cat has multiple hits.
+/// ```
+/// # use rust_wiki::game_data::cat::parsed::stats::form::{AttackHit, AttackHits};
+/// # use rust_wiki::interface::scripts::cat_info::abilities::get_multiple_hit_abilities;
+/// let normal = AttackHits::Single([AttackHit { active_ability: true, ..Default::default() }]);
+/// let multab = get_multiple_hit_abilities;
+/// assert_eq!(multab(normal), "");
+/// ```
+fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
+    match hits {
+        AttackHits::Single([hit1]) => match hit1.active_ability {
+            true => "",
+            false => unreachable!(),
+        },
+        AttackHits::Double([hit1, hit2]) => todo!(),
+        AttackHits::Triple([hit1, hit2, hit3]) => todo!(),
+    }
+}
+
 fn get_ability(link: &str, display: &str) -> String {
     format!("[[Special Abilities#{link}|{display}]]")
 }
@@ -40,26 +59,24 @@ fn get_ability(link: &str, display: &str) -> String {
 /// DOES NOT DO MULTIHIT
 pub fn get_abilities(stats: &CatFormStats) -> String {
     let mut abilities = vec![];
+    // start: multihit, ld, omni
     let mut immunities = vec![];
 
     let targets = get_targets(&stats.targets);
+    let multab = get_multiple_hit_abilities(&stats.attack.hits);
+
+    let abil = get_ability;
 
     for ability in &stats.abilities {
         match ability {
             Ability::StrongAgainst => abilities.push(format!(
                 "{strong} against {targets} enemies (Deals 1.5x damage, only takes 1/2 damage)",
-                strong = get_ability("Strong Against", "Strong")
+                strong = abil("Strong Against", "Strong")
             )),
-            Ability::Knockback { chance } => todo!(),
-            Ability::Freeze { chance, duration } => todo!(),
-            Ability::Slow { chance, duration } => todo!(),
-            Ability::Resist => todo!(),
-            Ability::MassiveDamage => todo!(),
-            Ability::Crit { chance } => todo!(),
-            Ability::TargetsOnly => todo!(),
-            Ability::DoubleBounty => todo!(),
-            Ability::BaseDestroyer => todo!(),
-            Ability::Wave(wave) => todo!(),
+            Ability::Knockback { chance } => abilities.push(format!(
+                "{chance}% chance to {knockback} {targets} enemies{multab}",
+                knockback = abil("Knockback", "knockback")
+            )),
             Ability::Weaken {
                 chance,
                 duration,

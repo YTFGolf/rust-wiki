@@ -92,10 +92,11 @@ fn bool(value: u8) -> Result<bool, String> {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Default)]
 /// Range of an attack.
 pub enum AttackRange {
     /// Range is standing range.
+    #[default]
     Normal,
     /// LD.
     LD {
@@ -126,7 +127,7 @@ impl AttackRange {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Default)]
 /// Single hit of the unit's attack.
 pub struct AttackHit {
     /// Is the ability active on this hit.
