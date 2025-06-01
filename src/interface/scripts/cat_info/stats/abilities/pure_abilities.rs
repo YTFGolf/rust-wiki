@@ -416,7 +416,9 @@ mod tests {
         let abilities = get_pure_abilities(&hits, &cat_abilities, &targets);
 
         let mut raw_iter = cat_abilities.into_iter();
-        let mut repr_iter = abilities.into_iter();
+        let mut repr_iter = abilities.iter();
+
+        let mut counter = 0;
 
         'outer: while let (Some(mut raw), Some(repr)) = (raw_iter.next(), repr_iter.next()) {
             while raw.is_immunity() {
@@ -425,6 +427,7 @@ mod tests {
                     None => break 'outer,
                 };
             }
+            counter += 1;
 
             let ends_in_multab = repr.ends_with(" on 2nd and 3rd hits");
             if !raw.is_general() {
@@ -440,9 +443,10 @@ mod tests {
             }
         }
 
-        // panic!("{abilities:?}");
-        // assert next is immunities
-        // assert next is none
-        todo!()
+        assert_eq!(counter + 1, abilities.len());
+        // i.e. gone over everything but last item in abilities
+
+        const FINAL_IMMUNITY: &str = "[[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]], [[Special Abilities#Immune to Boss Shockwave|Boss Shockwave]], [[Special Abilities#Immune to Warp|Warp]], [[Special Abilities#Immune to Curse|Curse]], [[Special Abilities#Immune to Toxic|Toxic]], [[Special Abilities#Immune to Surge|Surge]] and [[Special Abilities#Immune to Explosions|Explosions]]";
+        assert_eq!(abilities[counter], FINAL_IMMUNITY);
     }
 }
