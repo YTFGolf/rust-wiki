@@ -1,6 +1,6 @@
 use crate::{
     game_data::cat::parsed::cat::Cat,
-    interface::scripts::cat_info::stats::form::get_first_form,
+    interface::scripts::cat_info::stats::form::get_form,
     wiki_data::cat_data::CAT_DATA,
     wikitext::template::{Template, TemplateParameter},
 };
@@ -10,7 +10,7 @@ pub fn get_template(cat: Cat) {
     let anims = &cat.forms.anims[0];
 
     let name = &CAT_DATA.get_cat(cat.id).normal;
-    let form = get_first_form(&cat, stats, anims);
+    let form = get_form(&cat, stats, anims);
 
     let mut t = Template::named("Cat Stats");
     type P = TemplateParameter;

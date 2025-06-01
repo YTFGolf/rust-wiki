@@ -27,7 +27,7 @@ pub struct Form {
     pub abilities: String,
 }
 
-pub fn get_first_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> Form {
+pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> Form {
     let level = 30;
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
