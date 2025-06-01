@@ -7,7 +7,8 @@ use crate::{
         raw::unitlevel::UnitLevelRaw,
     },
     interface::{
-        config::Config, error_handler::InfallibleWrite, scripts::cat_info::abilities::get_abilities,
+        config::Config, error_handler::InfallibleWrite,
+        scripts::cat_info::stats::abilities::util::get_abilities,
     },
     wiki_data::cat_data::CAT_DATA,
     wikitext::{

@@ -12,5 +12,4 @@ pub use config::{
     CONFIG_FILE, Config,
     version_config::{Lang as SLang, VersionConfig},
 };
-pub use scripts::cat_info::abilities::get_multiple_hit_abilities;
 // TODO remove the requirement for some of this being public
