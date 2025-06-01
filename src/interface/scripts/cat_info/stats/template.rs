@@ -16,8 +16,7 @@ pub fn get_template(cat: Cat) {
     let stats = &forms.stats[0];
     let anims = &forms.anims[0];
 
-    let mut t = Template::named("Cat Stats");
-
+    let level = 30;
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
     let backswing = anims.length() - attack_length;
@@ -31,120 +30,105 @@ pub fn get_template(cat: Cat) {
         // necessary to avoid overflow
     };
 
-    t.push_params(TemplateParameter::new(
-        "Normal Form name",
-        &CAT_DATA.get_cat(cat.id).normal,
-    ));
+    // params
 
-    t.push_params(TemplateParameter::new(
-        "Hp Normal",
-        format!("{hp} HP", hp = stats.hp.to_formatted_string(&Locale::en)),
-    ));
-
-    let dmg = stats.attack.hits.total_damage();
-    let dps = f64::from(dmg) / f64::from(frequency) * 30.0;
-    t.push_params(TemplateParameter::new(
-        "Atk Power Normal",
+    let name = &CAT_DATA.get_cat(cat.id).normal;
+    let base_hp = format!("{hp} HP", hp = stats.hp.to_formatted_string(&Locale::en));
+    let base_atk = {
+        let dmg = stats.attack.hits.total_damage();
+        let dps = f64::from(dmg) / f64::from(frequency) * 30.0;
         format!(
             "{ap} damage<br>({dps} DPS)",
             ap = dmg.to_formatted_string(&Locale::en),
             dps = get_formatted_float(dps, 2)
-        ),
-    ));
+        )
+    };
 
-    t.push_params(TemplateParameter::new(
-        "Atk Range Normal",
-        stats.attack.standing_range.to_formatted_string(&Locale::en),
-    ));
-
-    let (freq_f, freq_s) = time_repr(u32::from(frequency));
-    t.push_params(TemplateParameter::new(
-        "Attack Frequency Normal",
+    let range = stats.attack.standing_range.to_formatted_string(&Locale::en);
+    let attack_cycle = {
+        let (freq_f, freq_s) = time_repr(u32::from(frequency));
         format!(
             "{freq_f}f <sub>{freq_s} {seconds}</sub>",
             seconds = plural_f(frequency.into(), "second", "seconds")
-        ),
-    ));
-
-    t.push_params(TemplateParameter::new(
-        "Movement Speed Normal",
-        stats.speed.to_formatted_string(&Locale::en),
-    ));
-
-    t.push_params(TemplateParameter::new(
-        "Knockback Normal",
-        format!(
-            "{kb} {times}",
-            kb = stats.kb,
-            times = plural(stats.kb, "time", "times")
-        ),
-    ));
-
-    let (fore_f, fore_s) = time_repr(u32::from(foreswing));
-    let (back_f, back_s) = time_repr(u32::from(backswing));
-    t.push_params(TemplateParameter::new(
-        "Attack Animation Normal",
-        format!("{fore_f}f <sup>{fore_s}s</sup><br>({back_f}f <sup>{back_s}s</sup> backswing)"),
-    ));
-
-    let max_spawn = stats.respawn_half * 2;
-    let min_spawn = {
-        const MAX_LEVEL_REDUCE_F: u16 = 264;
-        // 8.8 * 30
-        const MIN_SPAWN_AMT: u16 = 60;
-        // 2 seconds
-        max(max_spawn, MAX_LEVEL_REDUCE_F + MIN_SPAWN_AMT) - MAX_LEVEL_REDUCE_F
-        // because this uses unsigned integers, the intuitive `max(2s,
-        // base_spawn - 8.8s)` could loop around to `u32::MAX`, so `max` needs
-        // to be applied beforehand
+        )
     };
-    let max_s = seconds_repr(max_spawn.into());
-    let min_s = seconds_repr(min_spawn.into());
-    t.push_params(TemplateParameter::new(
-        "Recharging Time Normal",
-        format!("{max_s} ~ {min_s} seconds"),
-    ));
-    // no need for plural as min is 2 seconds
 
-    let level = 30;
+    let speed = stats.speed.to_formatted_string(&Locale::en);
+    let knockback = format!(
+        "{kb} {times}",
+        kb = stats.kb,
+        times = plural(stats.kb, "time", "times")
+    );
+    let animation = {
+        let (fore_f, fore_s) = time_repr(u32::from(foreswing));
+        let (back_f, back_s) = time_repr(u32::from(backswing));
+        format!("{fore_f}f <sup>{fore_s}s</sup><br>({back_f}f <sup>{back_s}s</sup> backswing)")
+    };
 
-    let hp_max = cat.unitlevel.get_stat_at_level(stats.hp, level);
-    t.push_params(TemplateParameter::new(
-        "Hp Normal Lv.MAX",
-        format!("{hp} HP", hp = hp_max.to_formatted_string(&Locale::en)),
-    ));
+    let recharge = {
+        let max_spawn = stats.respawn_half * 2;
+        let min_spawn = {
+            const MAX_LEVEL_REDUCE_F: u16 = 264;
+            // 8.8 * 30
+            const MIN_SPAWN_AMT: u16 = 60;
+            // 2 seconds
+            max(max_spawn, MAX_LEVEL_REDUCE_F + MIN_SPAWN_AMT) - MAX_LEVEL_REDUCE_F
+            // because this uses unsigned integers, the intuitive `max(2s,
+            // base_spawn - 8.8s)` could loop around to `u32::MAX`, so `max`
+            // needs to be applied beforehand
+        };
+        let max_s = seconds_repr(max_spawn.into());
+        let min_s = seconds_repr(min_spawn.into());
+        format!("{max_s} ~ {min_s} seconds")
+        // no need for plural as min is 2 seconds
+    };
 
-    let ap_max = stats
-        .attack
-        .hits
-        .total_damage_at_level(&cat.unitlevel, level);
-    let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
-    t.push_params(TemplateParameter::new(
-        "Atk Power Normal Lv.MAX",
+    let hp_max = {
+        let hp_max = cat.unitlevel.get_stat_at_level(stats.hp, level);
+        format!("{hp} HP", hp = hp_max.to_formatted_string(&Locale::en))
+    };
+    let atk_max = {
+        let ap_max = stats
+            .attack
+            .hits
+            .total_damage_at_level(&cat.unitlevel, level);
+        let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
         format!(
             "{ap} damage<br>({dps} DPS)",
             ap = ap_max.to_formatted_string(&Locale::en),
             dps = get_formatted_float(dps_max, 2)
-        ),
-    ));
+        )
+    };
 
-    t.push_params(TemplateParameter::new(
-        "Attack type Normal",
-        match stats.attack.aoe {
-            AreaOfEffect::SingleAttack => "Single Attack",
-            AreaOfEffect::AreaAttack => "Area Attack",
-        },
-    ));
+    let attack_type = match stats.attack.aoe {
+        AreaOfEffect::SingleAttack => "Single Attack",
+        AreaOfEffect::AreaAttack => "Area Attack",
+    };
+    let abilities = {
+        let mut abilities = vec![];
+        abilities.extend(get_multihit_ability(stats, &cat.unitlevel, level));
+        abilities.extend(get_range_ability(&stats.attack.hits));
+        abilities.extend(get_pure_abilities(stats));
+        abilities.join("<br>\n")
+    };
 
-    let mut abilities = vec![];
-    abilities.extend(get_multihit_ability(stats, &cat.unitlevel, level));
-    abilities.extend(get_range_ability(&stats.attack.hits));
-    abilities.extend(get_pure_abilities(stats));
+    let mut t = Template::named("Cat Stats");
+    type P = TemplateParameter;
 
-    t.push_params(TemplateParameter::new(
-        "Special Ability Normal",
-        abilities.join("<br>\n"),
-    ));
+    t.push_params(P::new("Normal Form name", name));
+    t.push_params(P::new("Hp Normal", base_hp));
+    t.push_params(P::new("Atk Power Normal", base_atk));
+
+    t.push_params(P::new("Atk Range Normal", range));
+    t.push_params(P::new("Attack Frequency Normal", attack_cycle));
+    t.push_params(P::new("Movement Speed Normal", speed));
+    t.push_params(P::new("Knockback Normal", knockback));
+    t.push_params(P::new("Attack Animation Normal", animation));
+    t.push_params(P::new("Recharging Time Normal", recharge));
+    t.push_params(P::new("Hp Normal Lv.MAX", hp_max));
+    t.push_params(P::new("Atk Power Normal Lv.MAX", atk_max));
+    t.push_params(P::new("Attack type Normal", attack_type));
+    t.push_params(P::new("Special Ability Normal", abilities));
 
     println!("{t}");
 }
