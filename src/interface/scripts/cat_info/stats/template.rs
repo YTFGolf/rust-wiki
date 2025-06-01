@@ -16,6 +16,9 @@ use num_format::{Locale, ToFormattedString};
 use std::cmp::max;
 
 struct Form {
+    base_hp: String,
+    base_atk: String,
+
     range: String,
     attack_cycle: String,
     speed: String,
@@ -28,13 +31,7 @@ struct Form {
     abilities: String,
 }
 
-struct Form2 {
-    base_hp: String,
-    base_atk: String,
-    form: Form,
-}
-
-fn get_first_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> Form2 {
+fn get_first_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> Form {
     let level = 30;
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
@@ -128,7 +125,9 @@ fn get_first_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> F
         abilities.join("<br>\n")
     };
 
-    let form = Form {
+    Form {
+        base_hp,
+        base_atk,
         range,
         attack_cycle,
         speed,
@@ -139,12 +138,6 @@ fn get_first_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> F
         atk_max,
         attack_type,
         abilities,
-    };
-
-    Form2 {
-        base_hp,
-        base_atk,
-        form,
     }
 }
 
@@ -162,7 +155,6 @@ pub fn get_template(cat: Cat) {
     t.push_params(P::new("Hp Normal", form.base_hp));
     t.push_params(P::new("Atk Power Normal", form.base_atk));
 
-    let form = form.form;
     t.push_params(P::new("Atk Range Normal", form.range));
     t.push_params(P::new("Attack Frequency Normal", form.attack_cycle));
     t.push_params(P::new("Movement Speed Normal", form.speed));
