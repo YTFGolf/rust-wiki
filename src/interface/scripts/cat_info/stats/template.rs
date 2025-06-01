@@ -1,4 +1,4 @@
-use super::abilities::{pure_abilities::get_pure_abilities, range_abilities::get_range_ability};
+use super::abilities::{pure_abilities::get_pure_abilities, misc_abilities::get_range_ability};
 use crate::{
     game_data::cat::{
         parsed::{
