@@ -1,6 +1,6 @@
-use super::{util::{get_ability_single, get_range_repr}, pure_abilities::get_pure_abilities};
+use super::util::{get_ability_single, get_range_repr};
 use crate::{
-    game_data::cat::parsed::stats::form::{AttackHit, AttackHits, AttackRange, CatFormStats},
+    game_data::cat::parsed::stats::form::{AttackHit, AttackHits, AttackRange},
     interface::error_handler::InfallibleWrite,
 };
 use std::fmt::Write;
