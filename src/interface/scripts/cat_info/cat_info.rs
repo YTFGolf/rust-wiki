@@ -19,7 +19,15 @@ fn get_template(cat: Cat) {
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
     let backswing = anims.length() - attack_length;
-    let frequency = attack_length + max(2 * stats.attack.tba - 1, backswing);
+    let frequency = attack_length + {
+        let tba = stats.attack.tba;
+        if tba == 0 {
+            backswing
+        } else {
+            max(2 * tba - 1, backswing)
+        }
+        // necessary to avoid overflow
+    };
 
     let (freq_f, freq_s) = time_repr(u32::from(frequency));
     t.push_params(TemplateParameter::new(
