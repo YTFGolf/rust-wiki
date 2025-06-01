@@ -62,7 +62,7 @@ fn write_hit_3(buf: &mut String, hit3: &AttackHit) {
 }
 
 /// Get LD/Omni ability.
-fn get_range_ability(hits: &AttackHits) -> Option<String> {
+pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
     match hits {
         AttackHits::Single([hit1]) => {
             let mut hit = get_first_hit_range(hit1)?;
@@ -96,10 +96,4 @@ fn get_range_ability(hits: &AttackHits) -> Option<String> {
             Some(hit)
         }
     }
-}
-
-/// Includes LD, Omni and any abilities, but does not include multhit.
-pub fn get_abilities(abilities: &mut Vec<String>, stats: &CatFormStats) {
-    abilities.extend(get_range_ability(&stats.attack.hits));
-    abilities.extend(get_pure_abilities(stats));
 }

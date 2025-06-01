@@ -1,15 +1,15 @@
+use super::stats::abilities::{
+    pure_abilities::get_pure_abilities, range_abilities::get_range_ability,
+};
 use crate::{
     game_data::cat::{
         parsed::{
             cat::Cat,
-            stats::form::{AreaOfEffect, AttackHit, AttackHits},
+            stats::form::{AreaOfEffect, AttackHit, AttackHits, CatFormStats},
         },
         raw::unitlevel::UnitLevelRaw,
     },
-    interface::{
-        config::Config, error_handler::InfallibleWrite,
-        scripts::cat_info::stats::abilities::range_abilities::get_abilities,
-    },
+    interface::{config::Config, error_handler::InfallibleWrite},
     wiki_data::cat_data::CAT_DATA,
     wikitext::{
         number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
@@ -18,6 +18,12 @@ use crate::{
 };
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::{cmp::max, fmt::Write};
+
+/// Includes LD, Omni and any abilities, but does not include multhit.
+fn get_abilities(abilities: &mut Vec<String>, stats: &CatFormStats) {
+    abilities.extend(get_range_ability(&stats.attack.hits));
+    abilities.extend(get_pure_abilities(stats));
+}
 
 fn get_template(cat: Cat) {
     let forms = &cat.forms;
