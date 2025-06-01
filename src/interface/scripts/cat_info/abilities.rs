@@ -290,11 +290,25 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 behemoth = enemy2("Behemoth"),
                 duration = get_duration_repr(u32::from(*dodge_duration))
             )),
-            Ability::CounterSurge => todo!(),
-            Ability::ConjureUnit { id } => todo!(),
-            Ability::SageSlayer => todo!(),
-            Ability::MetalKiller { damage } => todo!(),
-            Ability::Explosion { chance, spawn_quad } => todo!(),
+
+            Ability::CounterSurge => abilities.push(abil2("Counter-Surge")),
+            Ability::ConjureUnit { id } => abilities.push(format!(
+                "When on the battlefield, tap icon again to {conjure} spirit #{id:03}",
+                conjure = abil2("Conjure")
+            )),
+            Ability::SageSlayer => abilities.push(abil2("Sage Slayer")),
+            Ability::MetalKiller { damage } => abilities.push(format!(
+                "{killer} (Deals {damage}% of {metal} enemies' current HP on hit)",
+                killer = abil2("Metal Killer"),
+                metal = enemy2("Metal")
+            )),
+            Ability::Explosion { chance, spawn_quad } => {
+                let position = f64::from(*spawn_quad) / 4.0;
+                abilities.push(format!(
+                    "{chance}% chance to create an [[Explosion]] at {range} range",
+                    range = get_formatted_float(position, 2)
+                ))
+            }
 
             Ability::ImmuneToWave => immunities.push("Waves"),
             Ability::ImmuneToKB => immunities.push("Knockback"),
