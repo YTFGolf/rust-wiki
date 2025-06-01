@@ -1,6 +1,7 @@
 //! Deals with cat/enemy abilities.
 
 use super::raw::stats::CombinedCatData;
+use strum::EnumIter;
 
 /// Configuration values/modifiers for abilities.
 struct Config {
@@ -13,16 +14,17 @@ struct Config {
 
 type Percent = u8;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
 /// Possible type of wave attack.
 pub enum WaveType {
     /// Normal wave.
+    #[default]
     Wave,
     /// Mini wave, 2x speed and 20% damage.
     MiniWave,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
 /// Wave ability.
 pub struct Wave {
     /// Type of wave.
@@ -49,16 +51,17 @@ impl Wave {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
 /// Possible type of surge attack.
 pub enum SurgeType {
     /// Normal surge.
+    #[default]
     Surge,
     /// Mini surge, 20% damage.
     MiniSurge,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
 /// Surge ability.
 pub struct Surge {
     /// Type of surge.
@@ -91,7 +94,7 @@ impl Surge {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, EnumIter)]
 /// Cat or enemy ability.
 pub enum Ability {
     /// Strong against.
