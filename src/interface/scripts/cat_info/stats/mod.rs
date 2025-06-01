@@ -1,3 +1,3 @@
 pub mod abilities;
-pub mod template;
 pub mod form;
+pub mod template;

@@ -35,19 +35,37 @@ fn get_targets(targets: &[EnemyType]) -> String {
 
     buf
 }
+#[cfg(test)]
+mod get_targets_tests {
+    use super::*;
+    use crate::game_data::cat::parsed::stats::form::EnemyType as E;
 
-/// Get display for ability procs when a cat has multiple hits.
-/// ```
-/// # use rust_wiki::game_data::cat::parsed::stats::form::{AttackHit, AttackHits};
-/// # use rust_wiki::get_multiple_hit_abilities;
-/// let multab = get_multiple_hit_abilities;
-/// let normal = AttackHits::Single([AttackHit { active_ability: true, ..Default::default() }]);
-/// assert_eq!(multab(&normal), "");
-/// let unique = AttackHits::Triple([AttackHit { active_ability: false, ..Default::default() },AttackHit { active_ability: true, ..Default::default() },AttackHit { active_ability: true, ..Default::default() }]);
-/// assert_eq!(multab(&unique), " on 2nd and 3rd hits");
-/// ```
+    #[test]
+    fn single() {
+        let targets = [E::Aku];
+        assert_eq!(get_targets(&targets), "[[:Category:Aku Enemies|Aku]]");
+    }
+
+    #[test]
+    fn double() {
+        let targets = [E::Traitless, E::Relic];
+        assert_eq!(
+            get_targets(&targets),
+            "[[:Category:Traitless Enemies|Traitless]] and [[:Category:Relic Enemies|Relic]]"
+        );
+    }
+
+    #[test]
+    fn triple() {
+        let targets = [E::Red, E::Floating, E::Angel];
+        assert_eq!(
+            get_targets(&targets),
+            "[[:Category:Red Enemies|Red]], [[:Category:Floating Enemies|Floating]] and [[:Category:Angel Enemies|Angel]]"
+        );
+    }
+}
+
 fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
-    // TODO should really be a normal test
     match hits {
         AttackHits::Single([hit1]) => match hit1.active_ability {
             true => "",
@@ -73,6 +91,39 @@ fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
             [false, false, true] => " on 3rd hit",
             [false, false, false] => unreachable!(),
         },
+    }
+}
+#[cfg(test)]
+mod multiple_ability_tests {
+    use super::*;
+    use crate::game_data::cat::parsed::stats::form::AttackHit;
+
+    #[test]
+    fn basic() {
+        let normal = AttackHits::Single([AttackHit {
+            active_ability: true,
+            ..Default::default()
+        }]);
+        assert_eq!(get_multiple_hit_abilities(&normal), "");
+    }
+
+    #[test]
+    fn not_first() {
+        let unique = AttackHits::Triple([
+            AttackHit {
+                active_ability: false,
+                ..Default::default()
+            },
+            AttackHit {
+                active_ability: true,
+                ..Default::default()
+            },
+            AttackHit {
+                active_ability: true,
+                ..Default::default()
+            },
+        ]);
+        assert_eq!(get_multiple_hit_abilities(&unique), " on 2nd and 3rd hits");
     }
 }
 
