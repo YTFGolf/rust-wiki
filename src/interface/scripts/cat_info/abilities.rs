@@ -1,10 +1,10 @@
 use crate::{
     game_data::cat::{
-        ability::{Ability, Wave, WaveType},
+        ability::{Ability, Surge, SurgeType, Wave, WaveType},
         parsed::stats::form::{AttackHits, CatFormStats, EnemyType},
     },
     interface::error_handler::InfallibleWrite,
-    wikitext::number_utils::{plural_f, time_repr},
+    wikitext::number_utils::{get_formatted_float, plural_f, time_repr},
 };
 use std::fmt::Write;
 
@@ -104,6 +104,7 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
     let abil = get_ability;
     let abil2 = get_ability_link_display;
     let enemy = get_enemy_category;
+    let enemy2 = |ld| enemy(ld, ld);
     // shorthand makes rest look readable
 
     for ability in &stats.abilities {
@@ -163,6 +164,7 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                     "{chance}% chance to create a level {level} {wave}{multab}"
                 ))
             }
+
             Ability::Weaken {
                 chance,
                 duration,
@@ -220,7 +222,6 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 "Deals {damage} to {targets} enemies",
                 damage = abil("Insane Damage", "insane damage")
             )),
-
             Ability::SavageBlow { chance, damage } => abilities.push(format!(
                 "{chance}% chance to land a {blow} for +{damage}% damage to non-{metal} enemies",
                 blow = abil("Savage Blow", "savage blow"),
@@ -231,7 +232,37 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 dodge = abil("Dodge Attack", "dodge"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
-            Ability::Surge(surge) => todo!(),
+
+            Ability::Surge(Surge {
+                stype,
+                chance,
+                spawn_quad,
+                range_quad,
+                level,
+            }) => {
+                let surge = match stype {
+                    SurgeType::Surge => "[[Surge Attack]]",
+                    SurgeType::MiniSurge => "[[Surge Attack#Mini-Surge|Mini-Surge]]",
+                };
+
+                let at_position = {
+                    let min_range = f64::from(*spawn_quad) / 4.0;
+                    let max_range = min_range + f64::from(*range_quad) / 4.0;
+                    if min_range == max_range {
+                        format!("at {fmt} range", fmt = get_formatted_float(min_range, 2))
+                    } else {
+                        format!(
+                            "between {min_fmt} and {max_fmt} range",
+                            min_fmt = get_formatted_float(min_range, 2),
+                            max_fmt = get_formatted_float(max_range, 2)
+                        )
+                    }
+                };
+
+                abilities.push(format!(
+                    "{chance}% chance to create a level {level} {surge} {at_position}{multab}"
+                ))
+            }
 
             Ability::Curse { chance, duration } => todo!(),
             Ability::ShieldPierce { chance } => todo!(),
