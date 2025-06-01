@@ -262,211 +262,112 @@ pub enum Ability {
 }
 
 impl Ability {
-    // TODO just inline each thing, no reason it has to be like this.
-    #[allow(clippy::match_same_arms)]
-    const fn get_config(&self) -> Config {
-        match self {
-            Self::StrongAgainst => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::Knockback { .. } => Config {
-                is_general: false,
-                is_cursable: true,
-            },
-            Self::Freeze { .. } => Config {
-                is_general: false,
-                is_cursable: true,
-            },
-            Self::Slow { .. } => Config {
-                is_general: false,
-                is_cursable: true,
-            },
-            Self::Resist => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::MassiveDamage => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::Crit { .. } => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::TargetsOnly => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::DoubleBounty => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::BaseDestroyer => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Wave(_) => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::Weaken { .. } => Config {
-                is_general: false,
-                is_cursable: true,
-            },
-            Self::Strengthen { .. } => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Survives { .. } => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Metal => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToWave => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::WaveBlocker => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToKB => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToFreeze => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToSlow => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToWeaken => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ZombieKiller => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::WitchKiller => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToBossShockwave => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Kamikaze => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::BarrierBreaker { .. } => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::ImmuneToWarp => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::EvaAngelKiller => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToCurse => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::InsaneResist => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::InsaneDamage => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::SavageBlow { .. } => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::Dodge { .. } => Config {
-                is_general: true,
-                is_cursable: true,
-            },
-            Self::Surge(_) => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::ImmuneToToxic => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ImmuneToSurge => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Curse { .. } => Config {
-                is_general: false,
-                is_cursable: true,
-            },
-            Self::ShieldPierce { .. } => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::ColossusSlayer => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Soulstrike => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::BehemothSlayer { .. } => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::CounterSurge => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::ConjureUnit { .. } => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::SageSlayer => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::MetalKiller { .. } => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-            Self::Explosion { .. } => Config {
-                is_general: false,
-                is_cursable: false,
-            },
-            Self::ImmuneToExplosion => Config {
-                is_general: true,
-                is_cursable: false,
-            },
-        }
-    }
-}
-
-impl Ability {
     /// Does the ability apply on every hit regardless?
     pub const fn is_general(&self) -> bool {
-        self.get_config().is_general
+        match self {
+            Self::StrongAgainst
+            | Self::Resist
+            | Self::MassiveDamage
+            | Self::TargetsOnly
+            | Self::DoubleBounty
+            | Self::BaseDestroyer
+            | Self::Strengthen { .. }
+            | Self::Survives { .. }
+            | Self::Metal
+            | Self::ImmuneToWave
+            | Self::WaveBlocker
+            | Self::ImmuneToKB
+            | Self::ImmuneToFreeze
+            | Self::ImmuneToSlow
+            | Self::ImmuneToWeaken
+            | Self::ZombieKiller
+            | Self::WitchKiller
+            | Self::ImmuneToBossShockwave
+            | Self::Kamikaze
+            | Self::ImmuneToWarp
+            | Self::EvaAngelKiller
+            | Self::ImmuneToCurse
+            | Self::InsaneResist
+            | Self::InsaneDamage
+            | Self::Dodge { .. }
+            | Self::ImmuneToToxic
+            | Self::ImmuneToSurge
+            | Self::ColossusSlayer
+            | Self::Soulstrike
+            | Self::BehemothSlayer { .. }
+            | Self::CounterSurge
+            | Self::ConjureUnit { .. }
+            | Self::SageSlayer
+            | Self::MetalKiller { .. }
+            | Self::ImmuneToExplosion => true,
+            //
+            Self::Knockback { .. }
+            | Self::Freeze { .. }
+            | Self::Slow { .. }
+            | Self::Crit { .. }
+            | Self::Wave(_)
+            | Self::Weaken { .. }
+            | Self::BarrierBreaker { .. }
+            | Self::SavageBlow { .. }
+            | Self::Surge(_)
+            | Self::Curse { .. }
+            | Self::ShieldPierce { .. }
+            | Self::Explosion { .. } => false,
+        }
     }
 
     /// Is the ability removed by curse?
     pub const fn is_cursable(&self) -> bool {
-        self.get_config().is_cursable
+        match self {
+            Self::StrongAgainst
+            | Self::Knockback { .. }
+            | Self::Freeze { .. }
+            | Self::Slow { .. }
+            | Self::Resist
+            | Self::MassiveDamage
+            | Self::TargetsOnly
+            | Self::Weaken { .. }
+            | Self::InsaneResist
+            | Self::InsaneDamage
+            | Self::Dodge { .. }
+            | Self::Curse { .. } => true,
+            //
+            Self::Crit { .. }
+            | Self::DoubleBounty
+            | Self::BaseDestroyer
+            | Self::Wave(_)
+            | Self::Strengthen { .. }
+            | Self::Survives { .. }
+            | Self::Metal
+            | Self::ImmuneToWave
+            | Self::WaveBlocker
+            | Self::ImmuneToKB
+            | Self::ImmuneToFreeze
+            | Self::ImmuneToSlow
+            | Self::ImmuneToWeaken
+            | Self::ZombieKiller
+            | Self::WitchKiller
+            | Self::ImmuneToBossShockwave
+            | Self::Kamikaze
+            | Self::BarrierBreaker { .. }
+            | Self::ImmuneToWarp
+            | Self::EvaAngelKiller
+            | Self::ImmuneToCurse
+            | Self::SavageBlow { .. }
+            | Self::Surge(_)
+            | Self::ImmuneToToxic
+            | Self::ImmuneToSurge
+            | Self::ShieldPierce { .. }
+            | Self::ColossusSlayer
+            | Self::Soulstrike
+            | Self::BehemothSlayer { .. }
+            | Self::CounterSurge
+            | Self::ConjureUnit { .. }
+            | Self::SageSlayer
+            | Self::MetalKiller { .. }
+            | Self::Explosion { .. }
+            | Self::ImmuneToExplosion => false,
+        }
     }
 
     /// Does the ability have targets when used on a cat? This is equivalent to
