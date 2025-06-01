@@ -1,3 +1,3 @@
 pub mod range_abilities;
 pub mod util;
-pub mod write_abilities;
+pub mod pure_abilities;

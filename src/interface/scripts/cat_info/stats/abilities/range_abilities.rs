@@ -1,4 +1,4 @@
-use super::{util::{get_ability_single, get_range_repr}, write_abilities::get_pure_abilities};
+use super::{util::{get_ability_single, get_range_repr}, pure_abilities::get_pure_abilities};
 use crate::{
     game_data::cat::parsed::stats::form::{AttackHit, AttackHits, AttackRange, CatFormStats},
     interface::error_handler::InfallibleWrite,
