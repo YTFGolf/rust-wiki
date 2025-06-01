@@ -389,3 +389,50 @@ pub fn get_pure_abilities(
 
     abilities
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::game_data::cat::parsed::stats::form::AttackHit;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn test_multab_applies() {
+        let cat_abilities = Ability::iter().collect::<Vec<_>>();
+        let targets = [EnemyType::Red];
+        let hits = AttackHits::Triple([
+            AttackHit {
+                active_ability: false,
+                ..Default::default()
+            },
+            AttackHit {
+                active_ability: true,
+                ..Default::default()
+            },
+            AttackHit {
+                active_ability: true,
+                ..Default::default()
+            },
+        ]);
+
+        let abilities = get_pure_abilities(&hits, &cat_abilities, &targets);
+
+        let mut raw_iter = cat_abilities.into_iter();
+        let mut repr_iter = abilities.into_iter();
+
+        'outer: while let (Some(mut raw), Some(repr)) = (raw_iter.next(), repr_iter.next()) {
+            while raw.is_immunity() {
+                match raw_iter.next() {
+                    Some(r) => raw = r,
+                    None => break 'outer,
+                };
+            }
+            println!("{raw:?}, {repr}");
+        }
+
+        // panic!("{abilities:?}");
+        // assert next is immunities
+        // assert next is none
+        todo!()
+    }
+}
