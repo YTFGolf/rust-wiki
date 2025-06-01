@@ -146,9 +146,6 @@ pub fn get_pure_abilities(
     // shorthand makes rest look readable
 
     for ability in cat_abilities {
-        // TODO remove multab here, instead use ability methods?
-        // use strum::EnumIter to make assertions, first check is_immunity
-        // weaken will intentionally fail the test
         match ability {
             Ability::StrongAgainst => abilities.push(format!(
                 "{strong} against {targets} enemies (Deals 1.5x damage, only takes 1/2 damage)",
@@ -209,7 +206,7 @@ pub fn get_pure_abilities(
                 multiplier,
             } => abilities.push(format!(
                 "{chance}% chance to {weaken} {targets} enemies \
-                to {multiplier}% for {duration}",
+                to {multiplier}% for {duration}{multab}",
                 weaken = abil("Weaken", "weaken"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
@@ -243,7 +240,7 @@ pub fn get_pure_abilities(
                 kamikaze = abil2("Kamikaze")
             )),
             Ability::BarrierBreaker { chance } => abilities.push(format!(
-                "{chance}% chance to {break} {barriers}",
+                "{chance}% chance to {break} {barriers}{multab}",
                 r#break = abil("Barrier Breaker", "break"),
                 barriers = abil("Barrier", "barriers"),
             )),
@@ -261,7 +258,8 @@ pub fn get_pure_abilities(
                 damage = abil("Insane Damage", "insane damage")
             )),
             Ability::SavageBlow { chance, damage } => abilities.push(format!(
-                "{chance}% chance to land a {blow} for +{damage}% damage to non-{metal} enemies",
+                "{chance}% chance to land a {blow} for +{damage}% \
+                damage to non-{metal} enemies{multab}",
                 blow = abil("Savage Blow", "savage blow"),
                 metal = enemy2("Metal")
             )),
@@ -303,12 +301,12 @@ pub fn get_pure_abilities(
             }
 
             Ability::Curse { chance, duration } => abilities.push(format!(
-                "{chance}% chance to {curse} {targets} enemies for {duration}",
+                "{chance}% chance to {curse} {targets} enemies for {duration}{multab}",
                 curse = abil("Curse", "curse"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::ShieldPierce { chance } => abilities.push(format!(
-                "{chance}% chance to instantly {pierce} [[Shield]]s",
+                "{chance}% chance to instantly {pierce} [[Shield]]s{multab}",
                 pierce = abil("Shield Piercing", "pierce")
             )),
             Ability::ColossusSlayer => abilities.push(format!(
@@ -342,7 +340,7 @@ pub fn get_pure_abilities(
             Ability::Explosion { chance, spawn_quad } => {
                 let position = f64::from(*spawn_quad) / 4.0;
                 abilities.push(format!(
-                    "{chance}% chance to create an [[Explosion]] at {range} range",
+                    "{chance}% chance to create an [[Explosion]] at {range} range{multab}",
                     range = get_formatted_float(position, 2)
                 ))
             }
