@@ -107,11 +107,16 @@ fn get_template(cat: Cat) {
         },
     ));
 
+    let mut abilities = {
+        let mut inherent = vec![];
+        //
+        inherent
+    };
+    get_abilities(&mut abilities, stats);
     t.push_params(TemplateParameter::new(
         "Special Ability Normal",
-        get_abilities(stats),
+        abilities.join("<br>\n"),
     ));
-    // oh boy
 
     /*
     'Normal Form name': names[0],

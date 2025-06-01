@@ -1,11 +1,12 @@
 use crate::{
     game_data::cat::{
         ability::{Ability, Surge, SurgeType, Wave, WaveType},
-        parsed::stats::form::{AttackHits, CatFormStats, EnemyType},
+        parsed::stats::form::{AttackHits, AttackRange, CatFormStats, EnemyType},
     },
     interface::error_handler::InfallibleWrite,
     wikitext::number_utils::{get_formatted_float, plural_f, time_repr},
 };
+use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
 fn get_targets(targets: &[EnemyType]) -> String {
@@ -85,15 +86,17 @@ fn get_duration_repr(duration: u32) -> String {
 fn get_ability(link: &str, display: &str) -> String {
     format!("[[Special Abilities#{link}|{display}]]")
 }
-fn get_ability_link_display(link_display: &str) -> String {
+
+fn get_ability_single(link_display: &str) -> String {
     format!("[[Special Abilities#{link_display}|{link_display}]]")
 }
+
 fn get_enemy_category(link: &str, display: &str) -> String {
     format!("[[:Category:{link} Enemies|{display}]]")
 }
 
-/// DOES NOT DO MULTIHIT
-pub fn get_abilities(stats: &CatFormStats) -> String {
+/// Deals with pure abilities, i.e. not multihit, LD or Omni.
+fn get_pure_abilities(stats: &CatFormStats) -> Vec<String> {
     let mut abilities = vec![];
     // start: multihit, ld, omni
     let mut immunities = vec![];
@@ -102,7 +105,7 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
     let multab = get_multiple_hit_abilities(&stats.attack.hits);
 
     let abil = get_ability;
-    let abil2 = get_ability_link_display;
+    let abil2 = get_ability_single;
     let enemy = get_enemy_category;
     let enemy2 = |ld| enemy(ld, ld);
     // shorthand makes rest look readable
@@ -349,5 +352,48 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
         abilities.push(buf);
     }
 
-    abilities.join("<br>\n")
+    abilities
+}
+
+// TODO split into abilities module, so above function can be one single file
+
+fn get_range_repr(min: i16, max: i16) -> String {
+    let mut buf = String::new();
+    buf.write_formatted(&min, &Locale::en).infallible_write();
+    if min == max {
+        return buf;
+    }
+
+    buf.write_char('~').infallible_write();
+    buf.write_formatted(&max, &Locale::en).infallible_write();
+
+    buf
+}
+
+/// Get LD/Omni ability.
+fn get_range_ability(hits: &AttackHits) -> Option<String> {
+    match hits {
+        AttackHits::Single([hit1]) => match hit1.range {
+            AttackRange::Normal => None,
+            AttackRange::LD { base, distance } => Some(format!(
+                "{ld} (Effective range: {range})",
+                ld = get_ability_single("Long Distance"),
+                range = get_range_repr(base, base + distance)
+            )),
+            AttackRange::Omni { base, distance } => Some(format!(
+                "{omni} (Effective range: {range})",
+                omni = get_ability_single("Omni Strike"),
+                range = get_range_repr(base + distance, base)
+            )),
+            AttackRange::Unchanged => None,
+        },
+        AttackHits::Double([hit1, hit2]) => todo!(),
+        AttackHits::Triple([hit1, hit2, hit3]) => todo!(),
+    }
+}
+
+/// Includes LD, Omni and any abilities, but does not include multhit.
+pub fn get_abilities(abilities: &mut Vec<String>, stats: &CatFormStats) {
+    abilities.extend(get_range_ability(&stats.attack.hits));
+    abilities.extend(get_pure_abilities(stats));
 }
