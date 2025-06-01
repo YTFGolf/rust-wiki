@@ -1,8 +1,6 @@
 use super::write_abilities::get_pure_abilities;
 use crate::{
-    game_data::cat::parsed::stats::form::{
-        AttackHit, AttackHits, AttackRange, CatFormStats,
-    },
+    game_data::cat::parsed::stats::form::{AttackHit, AttackHits, AttackRange, CatFormStats},
     interface::error_handler::InfallibleWrite,
     wikitext::number_utils::{plural_f, time_repr},
 };
@@ -60,6 +58,44 @@ fn get_first_hit_range(hit1: &AttackHit) -> Option<String> {
     }
 }
 
+fn write_hit_2(buf: &mut String, hit2: &AttackHit) {
+    match hit2.range {
+        AttackRange::Normal => unreachable!(),
+        AttackRange::Unchanged => (),
+        AttackRange::LD { base, distance } => write!(
+            buf,
+            " on 1st hit, {range} on 2nd hit",
+            range = get_range_repr(base, base + distance)
+        )
+        .infallible_write(),
+        AttackRange::Omni { base, distance } => write!(
+            buf,
+            " on 1st hit, {range} on 2nd hit",
+            range = get_range_repr(base + distance, base)
+        )
+        .infallible_write(),
+    }
+}
+
+fn write_hit_3(buf: &mut String, hit3: &AttackHit) {
+    match hit3.range {
+        AttackRange::Normal => unreachable!(),
+        AttackRange::Unchanged => (),
+        AttackRange::LD { base, distance } => write!(
+            buf,
+            ", {range} on 3rd hit",
+            range = get_range_repr(base, base + distance)
+        )
+        .infallible_write(),
+        AttackRange::Omni { base, distance } => write!(
+            buf,
+            ", {range} on 3rd hit",
+            range = get_range_repr(base + distance, base)
+        )
+        .infallible_write(),
+    }
+}
+
 /// Get LD/Omni ability.
 fn get_range_ability(hits: &AttackHits) -> Option<String> {
     match hits {
@@ -75,25 +111,8 @@ fn get_range_ability(hits: &AttackHits) -> Option<String> {
                 unimplemented!("Hits 1 and 2 are of completely different types")
             }
 
-            match hit2.range {
-                AttackRange::Normal => unreachable!(),
-                AttackRange::Unchanged => (),
-                AttackRange::LD { base, distance } => write!(
-                    hit,
-                    " on 1st hit, {range} on 2nd hit",
-                    range = get_range_repr(base, base + distance)
-                )
-                .infallible_write(),
-                AttackRange::Omni { base, distance } => write!(
-                    hit,
-                    " on 1st hit, {range} on 2nd hit",
-                    range = get_range_repr(base + distance, base)
-                )
-                .infallible_write(),
-            }
-
+            write_hit_2(&mut hit, hit2);
             hit.write_char(')').infallible_write();
-
             Some(hit)
         }
         AttackHits::Triple([hit1, hit2, hit3]) => {
@@ -102,47 +121,13 @@ fn get_range_ability(hits: &AttackHits) -> Option<String> {
             if !hit2.range.has_same_type(&hit3.range) {
                 unimplemented!("Hits 2 and 3 are of incompatible types")
             }
-
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
                 unimplemented!("Hits 1 and 2 are of completely different types")
             }
 
-            match hit2.range {
-                AttackRange::Normal => unreachable!(),
-                AttackRange::Unchanged => (),
-                AttackRange::LD { base, distance } => write!(
-                    hit,
-                    " on 1st hit, {range} on 2nd hit",
-                    range = get_range_repr(base, base + distance)
-                )
-                .infallible_write(),
-                AttackRange::Omni { base, distance } => write!(
-                    hit,
-                    " on 1st hit, {range} on 2nd hit",
-                    range = get_range_repr(base + distance, base)
-                )
-                .infallible_write(),
-            }
-
-            match hit3.range {
-                AttackRange::Normal => unreachable!(),
-                AttackRange::Unchanged => (),
-                AttackRange::LD { base, distance } => write!(
-                    hit,
-                    ", {range} on 3rd hit",
-                    range = get_range_repr(base, base + distance)
-                )
-                .infallible_write(),
-                AttackRange::Omni { base, distance } => write!(
-                    hit,
-                    ", {range} on 3rd hit",
-                    range = get_range_repr(base + distance, base)
-                )
-                .infallible_write(),
-            }
-
+            write_hit_2(&mut hit, hit2);
+            write_hit_3(&mut hit, hit3);
             hit.write_char(')').infallible_write();
-
             Some(hit)
         }
     }
