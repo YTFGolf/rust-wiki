@@ -264,14 +264,32 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 ))
             }
 
-            Ability::Curse { chance, duration } => todo!(),
-            Ability::ShieldPierce { chance } => todo!(),
-            Ability::ColossusSlayer => todo!(),
-            Ability::Soulstrike => todo!(),
+            Ability::Curse { chance, duration } => abilities.push(format!(
+                "{chance}% chance to {curse} {targets} enemies for {duration}",
+                curse = abil("Curse", "curse"),
+                duration = get_duration_repr(u32::from(*duration))
+            )),
+            Ability::ShieldPierce { chance } => abilities.push(format!(
+                "{chance}% chance to instantly {pierce} {shields}",
+                pierce = abil("Shield Piercing", "pierce"),
+                shields = abil("Shield", "shields")
+            )),
+            Ability::ColossusSlayer => abilities.push(format!(
+                "{slayer} (Deals 1.6x damage to {colossus} enemies, only takes 0.7x damage)",
+                slayer = abil2("Colossus Slayer"),
+                colossus = "[[:Category:Colossus Enemies|Colossus]]"
+            )),
+            Ability::Soulstrike => abilities.push(abil2("Soulstrike")),
             Ability::BehemothSlayer {
                 dodge_chance,
                 dodge_duration,
-            } => todo!(),
+            } => abilities.push(format!(
+                "{slayer} ({dodge_chance} chance to dodge \
+                {behemoth} enemies' attacks for {duration})",
+                slayer = abil2("Behemoth Slayer"),
+                behemoth = enemy2("Behemoth"),
+                duration = get_duration_repr(u32::from(*dodge_duration))
+            )),
             Ability::CounterSurge => todo!(),
             Ability::ConjureUnit { id } => todo!(),
             Ability::SageSlayer => todo!(),
