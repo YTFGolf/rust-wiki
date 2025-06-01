@@ -112,14 +112,37 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 freeze = abil("Freeze", "freeze"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
-            Ability::Slow { chance, duration } => abilities.push(format!("...{}", todo!())),
-            Ability::Resist => abilities.push(format!("...{}", todo!())),
-            Ability::MassiveDamage => abilities.push(format!("...{}", todo!())),
-            Ability::Crit { chance } => abilities.push(format!("...{}", todo!())),
-            Ability::TargetsOnly => abilities.push(format!("...{}", todo!())),
-            Ability::DoubleBounty => abilities.push(format!("...{}", todo!())),
-            Ability::BaseDestroyer => abilities.push(format!("...{}", todo!())),
-            Ability::Wave(wave) => abilities.push(format!("...{}", todo!())),
+            Ability::Slow { chance, duration } => abilities.push(format!(
+                "{chance}% chance to {slow} {targets} enemies for {duration}{multab}",
+                slow = abil("Slow", "slow"),
+                duration = get_duration_repr(u32::from(*duration))
+            )),
+            Ability::Resist => abilities.push(format!(
+                "{resistant} to {targets} enemies",
+                resistant = abil2("Resistant")
+            )),
+            Ability::MassiveDamage => abilities.push(format!(
+                "Deals {damage} to {targets} enemies",
+                damage = abil("Massive Damage", "massive damage")
+            )),
+            Ability::Crit { chance } => abilities.push(format!(
+                "{chance}% chance to perform a {crit}{multab}",
+                crit = abil("Critical", "critical hit")
+            )),
+            Ability::TargetsOnly => abilities.push(format!(
+                "{attacks} {targets} enemies",
+                attacks = abil("Attacks Only", "Attacks only")
+            )),
+            Ability::DoubleBounty => abilities.push(format!(
+                "{money} gained when defeating enemies",
+                money = abil("Extra Money", "Double money")
+            )),
+            Ability::BaseDestroyer => abilities.push(abil2("Base Destroyer")),
+            Ability::Wave(Wave {
+                wtype,
+                chance,
+                level,
+            }) => abilities.push(format!("...{}", todo!())),
             Ability::Weaken {
                 chance,
                 duration,
