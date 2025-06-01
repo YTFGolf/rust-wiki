@@ -198,15 +198,39 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 killer = abil2("Witch Killer")
             )),
 
-            Ability::Kamikaze => todo!(),
-            Ability::BarrierBreaker { chance } => todo!(),
+            Ability::Kamikaze => abilities.push(format!(
+                "{kamikaze} (Attacks once, then disappears from the battlefield)",
+                kamikaze = abil2("Kamikaze")
+            )),
+            Ability::BarrierBreaker { chance } => abilities.push(format!(
+                "{chance}% chance to {break} {barriers}",
+                r#break = abil("Barrier Breaker", "break"),
+                barriers = abil("Barrier", "barriers"),
+            )),
+            Ability::EvaAngelKiller => abilities.push(format!(
+                "{killer} (Deals 5x damage to {angels}, only takes 1/5 damage)",
+                killer = abil2("Eva Angel Killer"),
+                angels = enemy("Eva Angel", "Eva Angels")
+            )),
+            Ability::InsaneResist => abilities.push(format!(
+                "{tough} against {targets} enemies",
+                tough = abil("Insanely Tough", "Insanely tough")
+            )),
+            Ability::InsaneDamage => abilities.push(format!(
+                "Deals {damage} to {targets} enemies",
+                damage = abil("Insane Damage", "insane damage")
+            )),
 
-            Ability::EvaAngelKiller => todo!(),
-
-            Ability::InsaneResist => todo!(),
-            Ability::InsaneDamage => todo!(),
-            Ability::SavageBlow { chance, damage } => todo!(),
-            Ability::Dodge { chance, duration } => todo!(),
+            Ability::SavageBlow { chance, damage } => abilities.push(format!(
+                "{chance}% chance to land a {blow} for +{damage}% damage to non-{metal} enemies",
+                blow = abil("Savage Blow", "savage blow"),
+                metal = enemy2("Metal")
+            )),
+            Ability::Dodge { chance, duration } => abilities.push(format!(
+                "{chance}% chance to {dodge} attacks from {targets} enemies for {duration}",
+                dodge = abil("Dodge Attack", "dodge"),
+                duration = get_duration_repr(u32::from(*duration))
+            )),
             Ability::Surge(surge) => todo!(),
 
             Ability::Curse { chance, duration } => todo!(),
