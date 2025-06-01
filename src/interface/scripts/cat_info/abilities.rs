@@ -4,6 +4,7 @@ use crate::{
         parsed::stats::form::{AttackHits, CatFormStats, EnemyType},
     },
     interface::error_handler::InfallibleWrite,
+    wikitext::number_utils::{plural_f, time_repr},
 };
 use std::fmt::Write;
 
@@ -33,7 +34,7 @@ fn get_targets(targets: &[EnemyType]) -> String {
     buf
 }
 
-/// Get display for abilities when a cat has multiple hits.
+/// Get display for ability procs when a cat has multiple hits.
 /// ```
 /// # use rust_wiki::game_data::cat::parsed::stats::form::{AttackHit, AttackHits};
 /// # use rust_wiki::get_multiple_hit_abilities;
@@ -73,6 +74,14 @@ pub fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
     }
 }
 
+fn get_duration_repr(duration: u32) -> String {
+    let (dur_f, dur_s) = time_repr(duration);
+    format!(
+        "{dur_f}f <sub>{dur_s} {seconds}</sub>",
+        seconds = plural_f(duration, "second", "seconds")
+    )
+}
+
 fn get_ability(link: &str, display: &str) -> String {
     format!("[[Special Abilities#{link}|{display}]]")
 }
@@ -98,7 +107,11 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 "{chance}% chance to {knockback} {targets} enemies{multab}",
                 knockback = abil("Knockback", "knockback")
             )),
-            Ability::Freeze { chance, duration } => abilities.push(format!("...{}", todo!())),
+            Ability::Freeze { chance, duration } => abilities.push(format!(
+                "{chance}% chance to {freeze} {targets} enemies for {duration}{multab}",
+                freeze = abil("Freeze", "freeze"),
+                duration = get_duration_repr(u32::from(*duration))
+            )),
             Ability::Slow { chance, duration } => abilities.push(format!("...{}", todo!())),
             Ability::Resist => abilities.push(format!("...{}", todo!())),
             Ability::MassiveDamage => abilities.push(format!("...{}", todo!())),
