@@ -5,9 +5,9 @@ use crate::{
             cat::Cat,
             stats::form::{AreaOfEffect, AttackHit, AttackHits, CatFormStats},
         },
-        raw::unitlevel::UnitLevelRaw,
+        raw::unitlevel::{self, UnitLevelRaw},
     },
-    interface::{config::Config, error_handler::InfallibleWrite},
+    interface::error_handler::InfallibleWrite,
     wiki_data::cat_data::CAT_DATA,
     wikitext::{
         number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
@@ -16,6 +16,47 @@ use crate::{
 };
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::{cmp::max, fmt::Write};
+
+fn write_hit(buf: &mut String, hit: &AttackHit, level: u8, scale: &UnitLevelRaw) {
+    buf.write_formatted(&scale.get_stat_at_level(hit.damage, level), &Locale::en)
+        .infallible_write();
+    buf.write_str(" at ").infallible_write();
+    let (fore_f, fore_s) = time_repr(hit.foreswing.into());
+    write!(buf, "{fore_f}f <sup>{fore_s}s</sup>").infallible_write();
+}
+
+fn get_multihit_ability(scaling: &UnitLevelRaw, stats: &CatFormStats, level: u8) -> Vec<String> {
+    let mut inherent = vec![];
+
+    let multihit = match &stats.attack.hits {
+        AttackHits::Single(_) => None,
+        AttackHits::Double([h1, h2]) => {
+            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
+
+            write_hit(&mut buf, &h1, level, scaling);
+            buf.write_str(", ").infallible_write();
+            write_hit(&mut buf, &h2, level, scaling);
+            buf.write_str(")").infallible_write();
+
+            Some(buf)
+        }
+        AttackHits::Triple([h1, h2, h3]) => {
+            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
+
+            write_hit(&mut buf, &h1, level, scaling);
+            buf.write_str(", ").infallible_write();
+            write_hit(&mut buf, &h2, level, scaling);
+            buf.write_str(", ").infallible_write();
+            write_hit(&mut buf, &h3, level, scaling);
+            buf.write_str(")").infallible_write();
+
+            Some(buf)
+        }
+    };
+
+    inherent.extend(multihit);
+    inherent
+}
 
 pub fn get_template(cat: Cat) {
     let forms = &cat.forms;
@@ -142,7 +183,7 @@ pub fn get_template(cat: Cat) {
         },
     ));
 
-    let mut abilities =  get_multihit_ability(&cat.unitlevel, stats, level) ;
+    let mut abilities = get_multihit_ability(&cat.unitlevel, stats, level);
     abilities.extend(get_range_ability(&stats.attack.hits));
     abilities.extend(get_pure_abilities(stats));
 
@@ -152,45 +193,4 @@ pub fn get_template(cat: Cat) {
     ));
 
     println!("{t}");
-}
-
-fn get_multihit_ability(scaling: &UnitLevelRaw, stats: &CatFormStats, level: u8) -> Vec<String> {
-    let mut inherent = vec![];
-
-    fn write_hit(buf: &mut String, hit: &AttackHit, level: u8, scale: &UnitLevelRaw) {
-        buf.write_formatted(&scale.get_stat_at_level(hit.damage, level), &Locale::en)
-            .infallible_write();
-        buf.write_str(" at ").infallible_write();
-        let (fore_f, fore_s) = time_repr(hit.foreswing.into());
-        write!(buf, "{fore_f}f <sup>{fore_s}s</sup>").infallible_write();
-    }
-
-    let multihit = match &stats.attack.hits {
-        AttackHits::Single(_) => None,
-        AttackHits::Double([h1, h2]) => {
-            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
-
-            write_hit(&mut buf, &h1, level, scaling);
-            buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h2, level, scaling);
-            buf.write_str(")").infallible_write();
-
-            Some(buf)
-        }
-        AttackHits::Triple([h1, h2, h3]) => {
-            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
-
-            write_hit(&mut buf, &h1, level, scaling);
-            buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h2, level, scaling);
-            buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h3, level, scaling);
-            buf.write_str(")").infallible_write();
-
-            Some(buf)
-        }
-    };
-
-    inherent.extend(multihit);
-    inherent
 }
