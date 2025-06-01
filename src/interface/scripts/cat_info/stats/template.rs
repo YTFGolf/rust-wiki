@@ -28,11 +28,14 @@ struct Form {
     abilities: String,
 }
 
-fn get_first_form(
-    cat: &Cat,
-    stats: &CatFormStats,
-    anims: &CatFormAnimData,
-) -> (&'static str, String, String, Form) {
+struct Form2 {
+    name: &'static str,
+    base_hp: String,
+    base_atk: String,
+    form: Form,
+}
+
+fn get_first_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> Form2 {
     let level = 30;
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
@@ -46,8 +49,6 @@ fn get_first_form(
         }
         // necessary to avoid overflow
     };
-
-    // params
 
     let name = &CAT_DATA.get_cat(cat.id).normal;
     let base_hp = format!("{hp} HP", hp = stats.hp.to_formatted_string(&Locale::en));
@@ -142,22 +143,28 @@ fn get_first_form(
         abilities,
     };
 
-    (name, base_hp, base_atk, form)
+    Form2 {
+        name,
+        base_hp,
+        base_atk,
+        form,
+    }
 }
 
 pub fn get_template(cat: Cat) {
     let stats = &cat.forms.stats[0];
     let anims = &cat.forms.anims[0];
 
-    let (name, base_hp, base_atk, form) = get_first_form(&cat, stats, anims);
+    let form = get_first_form(&cat, stats, anims);
 
     let mut t = Template::named("Cat Stats");
     type P = TemplateParameter;
 
-    t.push_params(P::new("Normal Form name", name));
-    t.push_params(P::new("Hp Normal", base_hp));
-    t.push_params(P::new("Atk Power Normal", base_atk));
+    t.push_params(P::new("Normal Form name", form.name));
+    t.push_params(P::new("Hp Normal", form.base_hp));
+    t.push_params(P::new("Atk Power Normal", form.base_atk));
 
+    let form = form.form;
     t.push_params(P::new("Atk Range Normal", form.range));
     t.push_params(P::new("Attack Frequency Normal", form.attack_cycle));
     t.push_params(P::new("Movement Speed Normal", form.speed));
