@@ -3,15 +3,6 @@
 use super::raw::stats::CombinedCatData;
 use strum::EnumIter;
 
-/// Configuration values/modifiers for abilities.
-struct Config {
-    /// Does the ability apply on every hit or only on specified ones (e.g.
-    /// CgtG's KB vs double bounty)?
-    is_general: bool,
-    /// Is the ability removed by curse?
-    is_cursable: bool,
-}
-
 type Percent = u8;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
