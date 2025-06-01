@@ -117,7 +117,11 @@ pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> For
         let mut abilities = vec![];
         abilities.extend(get_multihit_ability(stats, &cat.unitlevel, level));
         abilities.extend(get_range_ability(&stats.attack.hits));
-        abilities.extend(get_pure_abilities(stats));
+        abilities.extend(get_pure_abilities(
+            &stats.attack.hits,
+            &stats.abilities,
+            &stats.targets,
+        ));
         abilities.join("<br>\n")
     };
 

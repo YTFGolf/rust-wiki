@@ -2,7 +2,7 @@ use super::util::{get_ability, get_ability_single, get_duration_repr, get_enemy_
 use crate::{
     game_data::cat::{
         ability::{Ability, Surge, SurgeType, Wave, WaveType},
-        parsed::stats::form::{AttackHits, CatFormStats, EnemyType},
+        parsed::stats::form::{AttackHits, EnemyType},
     },
     interface::error_handler::InfallibleWrite,
     wikitext::number_utils::get_formatted_float,
@@ -128,13 +128,16 @@ mod multiple_ability_tests {
 }
 
 /// Deals with pure abilities, i.e. not multihit, LD or Omni.
-pub fn get_pure_abilities(stats: &CatFormStats) -> Vec<String> {
+pub fn get_pure_abilities(
+    hits: &AttackHits,
+    cat_abilities: &[Ability],
+    targets: &[EnemyType],
+) -> Vec<String> {
     let mut abilities = vec![];
-    // start: multihit, ld, omni
     let mut immunities = vec![];
 
-    let targets = get_targets(&stats.targets);
-    let multab = get_multiple_hit_abilities(&stats.attack.hits);
+    let targets = get_targets(&targets);
+    let multab = get_multiple_hit_abilities(hits);
 
     let abil = get_ability;
     let abil2 = get_ability_single;
@@ -142,7 +145,7 @@ pub fn get_pure_abilities(stats: &CatFormStats) -> Vec<String> {
     let enemy2 = |ld| enemy(ld, ld);
     // shorthand makes rest look readable
 
-    for ability in &stats.abilities {
+    for ability in cat_abilities {
         // TODO remove multab here, instead use ability methods?
         // use strum::EnumIter to make assertions, first check is_immunity
         // weaken will intentionally fail the test
