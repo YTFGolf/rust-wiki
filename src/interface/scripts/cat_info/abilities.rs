@@ -1,6 +1,6 @@
 use crate::{
     game_data::cat::{
-        ability::Ability,
+        ability::{Ability, Wave, WaveType},
         parsed::stats::form::{AttackHits, CatFormStats, EnemyType},
     },
     interface::error_handler::InfallibleWrite,
@@ -85,6 +85,12 @@ fn get_duration_repr(duration: u32) -> String {
 fn get_ability(link: &str, display: &str) -> String {
     format!("[[Special Abilities#{link}|{display}]]")
 }
+fn get_ability_link_display(link_display: &str) -> String {
+    format!("[[Special Abilities#{link_display}|{link_display}]]")
+}
+fn get_enemy_category(link: &str, display: &str) -> String {
+    format!("[[:Category:{link} Enemies|{display}]]")
+}
 
 /// DOES NOT DO MULTIHIT
 pub fn get_abilities(stats: &CatFormStats) -> String {
@@ -96,8 +102,14 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
     let multab = get_multiple_hit_abilities(&stats.attack.hits);
 
     let abil = get_ability;
+    let abil2 = get_ability_link_display;
+    let enemy = get_enemy_category;
+    // shorthand makes rest look readable
 
     for ability in &stats.abilities {
+        // TODO remove multab here, instead use ability methods?
+        // use strum::EnumIter to make assertions, first check is_immunity
+        // weaken will intentionally fail the test
         match ability {
             Ability::StrongAgainst => abilities.push(format!(
                 "{strong} against {targets} enemies (Deals 1.5x damage, only takes 1/2 damage)",
@@ -142,20 +154,49 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 wtype,
                 chance,
                 level,
-            }) => abilities.push(format!("...{}", todo!())),
+            }) => {
+                let wave = match wtype {
+                    WaveType::Wave => "[[Wave Attack]]",
+                    WaveType::MiniWave => "[[Wave Attack#Mini-Wave|Mini-Wave]]",
+                };
+                abilities.push(format!(
+                    "{chance}% chance to create a level {level} {wave}{multab}"
+                ))
+            }
             Ability::Weaken {
                 chance,
                 duration,
                 multiplier,
-            } => todo!(),
-            Ability::Strengthen { hp, multiplier } => todo!(),
-            Ability::Survives { chance } => todo!(),
-            Ability::Metal => todo!(),
-
-            Ability::WaveBlocker => todo!(),
-
-            Ability::ZombieKiller => todo!(),
-            Ability::WitchKiller => todo!(),
+            } => abilities.push(format!(
+                "{chance}% chance to {weaken} {targets} enemies \
+                to {multiplier}% for {duration}",
+                weaken = abil("Weaken", "weaken"),
+                duration = get_duration_repr(u32::from(*duration))
+            )),
+            Ability::Strengthen { hp, multiplier } => abilities.push(format!(
+                "{strengthens} by {multiplier}% at {hp}% health",
+                strengthens = abil("Strengthen", "Strengthens")
+            )),
+            Ability::Survives { chance } => abilities.push(format!(
+                "{chance}% chance to {survive} a lethal strike",
+                survive = abil("Survive", "survive")
+            )),
+            Ability::Metal => abilities.push(format!(
+                "{metal} (Only takes 1 damage from non-\
+                [[Critical Hit|Critical]] or [[Toxic]] attacks)",
+                metal = abil2("Metal")
+            )),
+            Ability::WaveBlocker => abilities.push(abil2("Wave Shield")),
+            Ability::ZombieKiller => abilities.push(format!(
+                "{killer} (stops {zombies} from reviving)",
+                zombies = enemy("Zombie", "Zombies"),
+                killer = abil2("Zombie Killer")
+            )),
+            Ability::WitchKiller => abilities.push(format!(
+                "{killer} (Deals 5x damage to {witches}, only takes 1/10 damage)",
+                witches = enemy("Witch", "Witches"),
+                killer = abil2("Witch Killer")
+            )),
 
             Ability::Kamikaze => todo!(),
             Ability::BarrierBreaker { chance } => todo!(),
