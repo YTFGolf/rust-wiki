@@ -5,7 +5,7 @@ use crate::{
             cat::Cat,
             stats::form::{AreaOfEffect, AttackHit, AttackHits, CatFormStats},
         },
-        raw::unitlevel::{self, UnitLevelRaw},
+        raw::unitlevel::UnitLevelRaw,
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::cat_data::CAT_DATA,
@@ -17,15 +17,16 @@ use crate::{
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::{cmp::max, fmt::Write};
 
-fn write_hit(buf: &mut String, hit: &AttackHit, level: u8, scale: &UnitLevelRaw) {
-    buf.write_formatted(&scale.get_stat_at_level(hit.damage, level), &Locale::en)
+fn write_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level: u8) {
+    let hit_dmg_at_level = &scaling.get_stat_at_level(hit.damage, level);
+    buf.write_formatted(hit_dmg_at_level, &Locale::en)
         .infallible_write();
     buf.write_str(" at ").infallible_write();
     let (fore_f, fore_s) = time_repr(hit.foreswing.into());
     write!(buf, "{fore_f}f <sup>{fore_s}s</sup>").infallible_write();
 }
 
-fn get_multihit_ability(scaling: &UnitLevelRaw, stats: &CatFormStats, level: u8) -> Vec<String> {
+fn get_multihit_ability(stats: &CatFormStats, scaling: &UnitLevelRaw, level: u8) -> Vec<String> {
     let mut inherent = vec![];
 
     let multihit = match &stats.attack.hits {
@@ -33,9 +34,9 @@ fn get_multihit_ability(scaling: &UnitLevelRaw, stats: &CatFormStats, level: u8)
         AttackHits::Double([h1, h2]) => {
             let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
-            write_hit(&mut buf, &h1, level, scaling);
+            write_hit(&mut buf, &h1, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h2, level, scaling);
+            write_hit(&mut buf, &h2, scaling, level);
             buf.write_str(")").infallible_write();
 
             Some(buf)
@@ -43,11 +44,11 @@ fn get_multihit_ability(scaling: &UnitLevelRaw, stats: &CatFormStats, level: u8)
         AttackHits::Triple([h1, h2, h3]) => {
             let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
-            write_hit(&mut buf, &h1, level, scaling);
+            write_hit(&mut buf, &h1, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h2, level, scaling);
+            write_hit(&mut buf, &h2, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h3, level, scaling);
+            write_hit(&mut buf, &h3, scaling, level);
             buf.write_str(")").infallible_write();
 
             Some(buf)
@@ -183,7 +184,7 @@ pub fn get_template(cat: Cat) {
         },
     ));
 
-    let mut abilities = get_multihit_ability(&cat.unitlevel, stats, level);
+    let mut abilities = get_multihit_ability(stats, &cat.unitlevel, level);
     abilities.extend(get_range_ability(&stats.attack.hits));
     abilities.extend(get_pure_abilities(stats));
 
