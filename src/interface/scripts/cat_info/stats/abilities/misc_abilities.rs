@@ -1,8 +1,13 @@
 use super::util::{get_ability_single, get_range_repr};
 use crate::{
-    game_data::cat::parsed::stats::form::{AttackHit, AttackHits, AttackRange},
+    game_data::cat::{
+        parsed::stats::form::{AttackHit, AttackHits, AttackRange, CatFormStats},
+        raw::unitlevel::UnitLevelRaw,
+    },
     interface::error_handler::InfallibleWrite,
+    wikitext::number_utils::time_repr,
 };
+use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
 /// Won't close the set of brackets.
@@ -94,6 +99,47 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
             write_hit_3(&mut hit, hit3);
             hit.write_char(')').infallible_write();
             Some(hit)
+        }
+    }
+}
+
+fn write_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level: u8) {
+    let hit_dmg_at_level = &scaling.get_stat_at_level(hit.damage, level);
+    buf.write_formatted(hit_dmg_at_level, &Locale::en)
+        .infallible_write();
+    buf.write_str(" at ").infallible_write();
+    let (fore_f, fore_s) = time_repr(hit.foreswing.into());
+    write!(buf, "{fore_f}f <sup>{fore_s}s</sup>").infallible_write();
+}
+
+pub fn get_multihit_ability(
+    stats: &CatFormStats,
+    scaling: &UnitLevelRaw,
+    level: u8,
+) -> Option<String> {
+    match &stats.attack.hits {
+        AttackHits::Single(_) => None,
+        AttackHits::Double([h1, h2]) => {
+            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
+
+            write_hit(&mut buf, &h1, scaling, level);
+            buf.write_str(", ").infallible_write();
+            write_hit(&mut buf, &h2, scaling, level);
+            buf.write_str(")").infallible_write();
+
+            Some(buf)
+        }
+        AttackHits::Triple([h1, h2, h3]) => {
+            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
+
+            write_hit(&mut buf, &h1, scaling, level);
+            buf.write_str(", ").infallible_write();
+            write_hit(&mut buf, &h2, scaling, level);
+            buf.write_str(", ").infallible_write();
+            write_hit(&mut buf, &h3, scaling, level);
+            buf.write_str(")").infallible_write();
+
+            Some(buf)
         }
     }
 }
