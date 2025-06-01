@@ -40,15 +40,36 @@ fn get_targets(targets: &[EnemyType]) -> String {
 /// let multab = get_multiple_hit_abilities;
 /// let normal = AttackHits::Single([AttackHit { active_ability: true, ..Default::default() }]);
 /// assert_eq!(multab(&normal), "");
+/// let unique = AttackHits::Triple([AttackHit { active_ability: false, ..Default::default() },AttackHit { active_ability: true, ..Default::default() },AttackHit { active_ability: true, ..Default::default() }]);
+/// assert_eq!(multab(&unique), " on 2nd and 3rd hits");
 /// ```
 pub fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
+    // TODO should really be a normal test
     match hits {
         AttackHits::Single([hit1]) => match hit1.active_ability {
             true => "",
             false => unreachable!(),
         },
-        AttackHits::Double([hit1, hit2]) => todo!(),
-        AttackHits::Triple([hit1, hit2, hit3]) => todo!(),
+        AttackHits::Double([hit1, hit2]) => match [hit1.active_ability, hit2.active_ability] {
+            [true, true] => "",
+            [true, false] => " on 1st hit",
+            [false, true] => " on 2nd hit",
+            [false, false] => unreachable!(),
+        },
+        AttackHits::Triple([hit1, hit2, hit3]) => match [
+            hit1.active_ability,
+            hit2.active_ability,
+            hit3.active_ability,
+        ] {
+            [true, true, true] => "",
+            [true, true, false] => " on 1st and 2nd hits",
+            [true, false, true] => " on 1st and 3rd hits",
+            [false, true, true] => " on 2nd and 3rd hits",
+            [true, false, false] => " on 1st hit",
+            [false, true, false] => " on 2nd hit",
+            [false, false, true] => " on 3rd hit",
+            [false, false, false] => unreachable!(),
+        },
     }
 }
 
@@ -77,6 +98,15 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 "{chance}% chance to {knockback} {targets} enemies{multab}",
                 knockback = abil("Knockback", "knockback")
             )),
+            Ability::Freeze { chance, duration } => abilities.push(format!("...{}", todo!())),
+            Ability::Slow { chance, duration } => abilities.push(format!("...{}", todo!())),
+            Ability::Resist => abilities.push(format!("...{}", todo!())),
+            Ability::MassiveDamage => abilities.push(format!("...{}", todo!())),
+            Ability::Crit { chance } => abilities.push(format!("...{}", todo!())),
+            Ability::TargetsOnly => abilities.push(format!("...{}", todo!())),
+            Ability::DoubleBounty => abilities.push(format!("...{}", todo!())),
+            Ability::BaseDestroyer => abilities.push(format!("...{}", todo!())),
+            Ability::Wave(wave) => abilities.push(format!("...{}", todo!())),
             Ability::Weaken {
                 chance,
                 duration,
