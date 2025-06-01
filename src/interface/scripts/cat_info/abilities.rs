@@ -270,9 +270,8 @@ pub fn get_abilities(stats: &CatFormStats) -> String {
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::ShieldPierce { chance } => abilities.push(format!(
-                "{chance}% chance to instantly {pierce} {shields}",
-                pierce = abil("Shield Piercing", "pierce"),
-                shields = abil("Shield", "shields")
+                "{chance}% chance to instantly {pierce} [[Shield]]s",
+                pierce = abil("Shield Piercing", "pierce")
             )),
             Ability::ColossusSlayer => abilities.push(format!(
                 "{slayer} (Deals 1.6x damage to {colossus} enemies, only takes 0.7x damage)",
