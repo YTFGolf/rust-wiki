@@ -1,4 +1,4 @@
-use super::abilities::{pure_abilities::get_pure_abilities, misc_abilities::get_range_ability};
+use super::abilities::{misc_abilities::get_range_ability, pure_abilities::get_pure_abilities};
 use crate::{
     game_data::cat::{
         parsed::{
@@ -26,10 +26,8 @@ fn write_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level: u
     write!(buf, "{fore_f}f <sup>{fore_s}s</sup>").infallible_write();
 }
 
-fn get_multihit_ability(stats: &CatFormStats, scaling: &UnitLevelRaw, level: u8) -> Vec<String> {
-    let mut inherent = vec![];
-
-    let multihit = match &stats.attack.hits {
+fn get_multihit_ability(stats: &CatFormStats, scaling: &UnitLevelRaw, level: u8) -> Option<String> {
+    match &stats.attack.hits {
         AttackHits::Single(_) => None,
         AttackHits::Double([h1, h2]) => {
             let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
@@ -53,10 +51,7 @@ fn get_multihit_ability(stats: &CatFormStats, scaling: &UnitLevelRaw, level: u8)
 
             Some(buf)
         }
-    };
-
-    inherent.extend(multihit);
-    inherent
+    }
 }
 
 pub fn get_template(cat: Cat) {
@@ -184,7 +179,8 @@ pub fn get_template(cat: Cat) {
         },
     ));
 
-    let mut abilities = get_multihit_ability(stats, &cat.unitlevel, level);
+    let mut abilities = vec![];
+    abilities.extend(get_multihit_ability(stats, &cat.unitlevel, level));
     abilities.extend(get_range_ability(&stats.attack.hits));
     abilities.extend(get_pure_abilities(stats));
 
