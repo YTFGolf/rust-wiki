@@ -36,12 +36,12 @@ fn get_targets(targets: &[EnemyType]) -> String {
 /// Get display for abilities when a cat has multiple hits.
 /// ```
 /// # use rust_wiki::game_data::cat::parsed::stats::form::{AttackHit, AttackHits};
-/// # use rust_wiki::interface::scripts::cat_info::abilities::get_multiple_hit_abilities;
-/// let normal = AttackHits::Single([AttackHit { active_ability: true, ..Default::default() }]);
+/// # use rust_wiki::get_multiple_hit_abilities;
 /// let multab = get_multiple_hit_abilities;
-/// assert_eq!(multab(normal), "");
+/// let normal = AttackHits::Single([AttackHit { active_ability: true, ..Default::default() }]);
+/// assert_eq!(multab(&normal), "");
 /// ```
-fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
+pub fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
     match hits {
         AttackHits::Single([hit1]) => match hit1.active_ability {
             true => "",
