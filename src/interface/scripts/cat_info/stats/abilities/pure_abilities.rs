@@ -322,7 +322,7 @@ pub fn get_pure_abilities(
                 dodge_chance,
                 dodge_duration,
             } => abilities.push(format!(
-                "{slayer} ({dodge_chance} chance to dodge \
+                "{slayer} ({dodge_chance}% chance to dodge \
                 {behemoth} enemies' attacks for {duration})",
                 slayer = abil2("Behemoth Slayer"),
                 behemoth = enemy2("Behemoth"),
