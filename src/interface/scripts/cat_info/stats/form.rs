@@ -15,6 +15,7 @@ use num_format::{Locale, ToFormattedString};
 use std::{cmp::max, fmt::Write};
 
 pub struct FormWithBaseStats {
+    pub stats_level: Option<String>,
     pub base_hp: String,
     pub base_atk: String,
     pub other: Form,
@@ -58,6 +59,15 @@ pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> For
             max(2 * tba - 1, backswing)
         }
         // necessary to avoid overflow
+    };
+
+    let stats_level = match levels_used {
+        (30, 0) => None,
+        (nat, plus) => {
+            let mut buf = String::new();
+            write_level_and_plus(&mut buf, nat, plus);
+            Some(buf)
+        }
     };
 
     let base_hp = format!("{hp} HP", hp = stats.hp.to_formatted_string(&Locale::en));
@@ -149,6 +159,7 @@ pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> For
     };
 
     FormWithBaseStats {
+        stats_level,
         base_hp,
         base_atk,
         other: Form {
