@@ -101,8 +101,11 @@ pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
     let formatted_float_untrimmed = format!("{float_part:.max_precision$}");
     let formatted_float = formatted_float_untrimmed.trim_matches('0');
     // need to remove both the 0 at the start (0.xxx -> .xxx) and any trailing
-    // zeros (.xx0000 -> .xx); while doing those separately might semantically
-    // make more sense it's a better idea to do it in one operation
+    // zeros (.xx0000 -> .xx)
+
+    if formatted_float == "1." {
+        return (int_part + 1).to_formatted_string(&Locale::en);
+    }
     if formatted_float == "." {
         return buf;
     }
