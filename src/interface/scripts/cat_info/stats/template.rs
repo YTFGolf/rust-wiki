@@ -1,12 +1,11 @@
-use std::iter::zip;
-
 use super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
-    interface::scripts::cat_info::stats::form::get_form,
+    interface::{error_handler::InfallibleWrite, scripts::cat_info::stats::form::get_form},
     wiki_data::cat_data::CAT_DATA,
     wikitext::template::{Template, TemplateParameter},
 };
+use std::{fmt::Write, iter::zip};
 
 fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     type P = TemplateParameter;
@@ -87,6 +86,19 @@ pub fn get_template(cat: Cat) {
     let mut t = Template::named("Cat Stats");
 
     add_all_forms(&mut t, &cat);
+    let max_level = {
+        let mut buf = String::from("Lv.");
+        let max = cat.unitbuy.max_levels;
+
+        write!(buf, "{}", max.max_nat).infallible_write();
+        let plus = max.max_plus;
+        if plus > 0 {
+            write!(buf, "+{}", plus).infallible_write();
+        }
+
+        buf
+    };
+    t.push_params(TemplateParameter::new("Lv.MAX", max_level));
 
     println!("{t}");
 }

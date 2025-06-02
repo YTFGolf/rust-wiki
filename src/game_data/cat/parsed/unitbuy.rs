@@ -143,15 +143,15 @@ impl UpgradeCost {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MaxLevels {
     /// Normal level cap.
-    ch1: u8,
+    pub ch1: u8,
     /// Level cap after chap 2.
-    ch2: u8,
+    pub ch2: u8,
     /// Initial plus level cap.
-    initial_plus: u8,
+    pub initial_plus: u8,
     /// Includes Catseyes.
-    max_nat: u8,
+    pub max_nat: u8,
     /// Final level cap.
-    max_plus: u8,
+    pub max_plus: u8,
 }
 impl MaxLevels {
     fn from_unitbuy(unitbuy: &UnitBuyRaw) -> Self {
