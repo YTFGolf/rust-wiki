@@ -130,7 +130,12 @@ pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> For
             &stats.abilities,
             &stats.targets,
         ));
-        abilities.join("<br>\n")
+
+        if abilities.is_empty() {
+            "-".to_string()
+        } else {
+            abilities.join("<br>\n")
+        }
     };
 
     FormWithBaseStats {
