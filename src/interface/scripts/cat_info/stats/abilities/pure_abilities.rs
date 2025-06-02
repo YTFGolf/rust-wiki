@@ -244,9 +244,8 @@ pub fn get_pure_abilities(
                 kamikaze = abil2("Kamikaze")
             )),
             Ability::BarrierBreaker { chance } => abilities.push(format!(
-                "{chance}% chance to {break} {barriers}{multab}",
+                "{chance}% chance to {break} [[Barrier]]s{multab}",
                 r#break = abil("Barrier Breaker", "break"),
-                barriers = abil("Barrier", "barriers"),
             )),
             Ability::EvaAngelKiller => abilities.push(format!(
                 "{killer} (Deals 5x damage to {angels}, only takes 1/5 damage)",
