@@ -2,7 +2,7 @@ use super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
-    wiki_data::cat_data::CAT_DATA,
+    wiki_data::cat_data::{CatName, CAT_DATA},
     wikitext::template::{Template, TemplateParameter},
 };
 use std::iter::zip;
@@ -52,6 +52,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     };
 
     let name = &CAT_DATA.get_cat(cat.id).normal;
+    let name = CatName::clean_cat_name(name);
     t.push_params(P::new("Normal Form name", name));
 
     let form = get_form(&cat, stats, anims, 1);
@@ -65,7 +66,8 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     };
 
     let name = &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap();
-    t.push_params(P::new("Evolved Form name", *name));
+    let name = CatName::clean_cat_name(name);
+    t.push_params(P::new("Evolved Form name", name));
 
     let form = get_form(&cat, stats, anims, 2);
     t.push_params(get_stats_level("2nd stats Level", form.stats_level));
@@ -76,7 +78,8 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     };
 
     let name = &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap();
-    t.push_params(P::new("True Form name", *name));
+    let name = CatName::clean_cat_name(name);
+    t.push_params(P::new("True Form name", name));
 
     let form = get_form(&cat, stats, anims, 3);
     t.push_params(get_stats_level("3rd stats Level", form.stats_level));
@@ -88,7 +91,8 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     // t.push_params("4th stats Level");
     let name = &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap();
-    t.push_params(P::new("Ultra Form name", *name));
+    let name = CatName::clean_cat_name(name);
+    t.push_params(P::new("Ultra Form name", name));
     let form = get_form(&cat, stats, anims, 4);
     write_stats(t, "Ultra", form.other);
 }

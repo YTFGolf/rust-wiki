@@ -26,6 +26,20 @@ pub struct CatName {
     /// Short rarity code.
     pub rarity: String,
 }
+impl CatName {
+    /// Convert unique cat name into actual cat name.
+    pub fn clean_cat_name(name: &str) -> &str {
+        match name {
+            "C&D Swordsman" => "Swordsman",
+            "Cat Bros EX" | "Cat Bros R" | "Cat Bros Sw" => "Cat Bros",
+            "Kitaro Cat & Nezumi-Otoko Cat 2" => "Kitaro Cat & Nezumi-Otoko Cat",
+            "Kabuto Cat Sw" => "Kabuto Cat",
+            "Kuwagata Cat Sw" => "Kuwagata Cat",
+            other => other,
+        }
+        // TODO put in file
+    }
+}
 /// Container for cat data.
 pub struct CatDataContainer {
     names: LazyLock<Vec<CatName>>,
@@ -42,21 +56,8 @@ impl CatDataContainer {
         format!(
             "[[{link}|{name}]]",
             link = cat.page,
-            name = Self::clean_cat_name(&cat.normal),
+            name = CatName::clean_cat_name(&cat.normal),
         )
-    }
-
-    /// Convert unique cat name into actual cat name.
-    fn clean_cat_name(name: &str) -> &str {
-        match name {
-            "C&D Swordsman" => "Swordsman",
-            "Cat Bros EX" | "Cat Bros R" | "Cat Bros Sw" => "Cat Bros",
-            "Kitaro Cat & Nezumi-Otoko Cat 2" => "Kitaro Cat & Nezumi-Otoko Cat",
-            "Kabuto Cat Sw" => "Kabuto Cat",
-            "Kuwagata Cat Sw" => "Kuwagata Cat",
-            other => other,
-        }
-        // TODO put in file
     }
 }
 
