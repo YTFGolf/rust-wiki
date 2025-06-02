@@ -102,20 +102,3 @@ pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
     write_formatted_float(&mut buf, num, max_precision);
     buf
 }
-
-/*
-/// Round a floating-point number to a certain amount of dp.
-/// ```
-/// # use rust_wiki::wikitext::number_utils::round_float;
-/// assert_eq!(round_float(3.0,   2), 3.0);
-/// assert_eq!(round_float(3.1,   2), 3.1);
-/// assert_eq!(round_float(3.11,  2), 3.11);
-/// assert_eq!(round_float(3.111, 2), 3.11);
-/// assert_eq!(round_float(3.199, 2), 3.2);
-/// assert_eq!(round_float(3.475, 2), 3.48);
-/// ```
-pub fn round_float(float: f64, dp: i32) -> f64 {
-    let mult = 10.0_f64.powi(dp);
-    (float * mult).round() / mult
-}
-*/
