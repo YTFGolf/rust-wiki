@@ -23,6 +23,9 @@ fn get_targets(targets: &[EnemyType]) -> String {
     if len == max_type_index + 1 {
         return "all".to_string();
     }
+    if len == max_type_index && !targets.contains(&EnemyType::Floating) {
+        return "non-[[:Category:Floating Enemies|Floating]]".to_string();
+    }
     if len == max_type_index && !targets.contains(&EnemyType::Metal) {
         return "non-[[:Category:Metal Enemies|Metal]]".to_string();
     }
