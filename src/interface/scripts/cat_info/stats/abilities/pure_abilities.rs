@@ -2,7 +2,7 @@ use super::util::{get_ability, get_ability_single, get_duration_repr, get_enemy_
 use crate::{
     game_data::cat::{
         ability::{Ability, Surge, SurgeType, Wave, WaveType},
-        parsed::stats::form::{AttackHits, EnemyType},
+        parsed::stats::form::{AttackHits, EnemyType, LATEST_ENEMY_TYPE},
     },
     interface::error_handler::InfallibleWrite,
     wikitext::number_utils::get_formatted_float,
@@ -17,6 +17,11 @@ fn get_targets(targets: &[EnemyType]) -> String {
     if len == 1 {
         let target = &targets[0];
         return format!("[[:Category:{target} Enemies|{target}]]");
+    }
+
+    let max_type_index = LATEST_ENEMY_TYPE as usize;
+    if len == max_type_index && !targets.contains(&EnemyType::Metal) {
+        return "non-[[:Category:Metal Enemies|Metal]]".to_string();
     }
 
     // possibly might have to clone and sort so that traitless comes first

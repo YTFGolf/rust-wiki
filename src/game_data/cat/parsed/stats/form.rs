@@ -4,6 +4,7 @@ use super::super::super::{ability::Ability, raw::stats::CombinedCatData};
 use crate::game_data::cat::raw::unitlevel::UnitLevelRaw;
 use std::{fmt::Display, num::NonZero};
 
+#[repr(usize)]
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 /// Enemy types that can be targeted.
 pub enum EnemyType {
@@ -27,7 +28,11 @@ pub enum EnemyType {
     Relic,
     /// Aku.
     Aku,
+    // make sure that MAX_VALUE is up-to-date if adding anything new in
 }
+/// Latest entry (therefore highest numerically).
+pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Aku;
+
 impl Display for EnemyType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let t = match self {
