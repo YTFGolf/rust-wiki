@@ -1,11 +1,11 @@
 use super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
-    interface::{error_handler::InfallibleWrite, scripts::cat_info::stats::form::get_form},
+    interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
     wiki_data::cat_data::CAT_DATA,
     wikitext::template::{Template, TemplateParameter},
 };
-use std::{fmt::Write, iter::zip};
+use std::iter::zip;
 
 fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     type P = TemplateParameter;
@@ -80,13 +80,6 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     t.push_params(P::new("Ultra Form name", *name));
     let form = get_form(&cat, stats, anims);
     write_stats(t, "Ultra", form.other);
-}
-
-fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
-    write!(buf, "{}", nat).infallible_write();
-    if plus > 0 {
-        write!(buf, "+{}", plus).infallible_write();
-    }
 }
 
 pub fn get_template(cat: Cat) {

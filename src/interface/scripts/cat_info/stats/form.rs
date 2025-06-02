@@ -5,11 +5,14 @@ use crate::{
         cat::Cat,
         stats::form::{AreaOfEffect, CatFormStats},
     },
-    interface::scripts::cat_info::stats::abilities::misc_abilities::get_multihit_ability,
+    interface::{
+        error_handler::InfallibleWrite,
+        scripts::cat_info::stats::abilities::misc_abilities::get_multihit_ability,
+    },
     wikitext::number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
 };
 use num_format::{Locale, ToFormattedString};
-use std::cmp::max;
+use std::{cmp::max, fmt::Write};
 
 pub struct FormWithBaseStats {
     pub base_hp: String,
@@ -27,6 +30,13 @@ pub struct Form {
     pub atk_max: String,
     pub attack_type: &'static str,
     pub abilities: String,
+}
+
+pub fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
+    write!(buf, "{}", nat).infallible_write();
+    if plus > 0 {
+        write!(buf, "+{}", plus).infallible_write();
+    }
 }
 
 pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> FormWithBaseStats {
