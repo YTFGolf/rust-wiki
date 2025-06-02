@@ -66,8 +66,26 @@ pub fn time_repr(time_f: u32) -> (String, String) {
     (f, s)
 }
 
-/// [`get_formatted_float`] implementation without intermediate allocation.
-pub fn write_formatted_float(buf: &mut String, num: f64, max_precision: usize) {
+/// Get a formatted decimal representation of the number. Due to how rounding
+/// works, a .5 value can give unexpected behaviour.
+/// ```
+/// # use rust_wiki::wikitext::number_utils::get_formatted_float;
+/// assert_eq!(get_formatted_float(3.0,   2), "3");
+/// assert_eq!(get_formatted_float(3.1,   2), "3.1");
+/// assert_eq!(get_formatted_float(3.11,  2), "3.11");
+/// assert_eq!(get_formatted_float(3.111, 2), "3.11");
+/// assert_eq!(get_formatted_float(3.199, 2), "3.2");
+/// assert_eq!(get_formatted_float(3.000001, 2), "3");
+/// assert_eq!(get_formatted_float(1959.9999999999998, 2), "1,960");
+/// // These might be unexpected
+/// assert_eq!(get_formatted_float(3.195, 2), "3.19");
+/// assert_eq!(get_formatted_float(3.185, 2), "3.19");
+/// // This still works
+/// assert_eq!(get_formatted_float(3.1951, 2), "3.2");
+/// ```
+pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
+    let mut buf = String::new();
+
     // e.g. for 3300.3300, will do `buf.write("3,300")` at the top, then below
     // will do `buf.write(".33")`
 
@@ -89,27 +107,6 @@ pub fn write_formatted_float(buf: &mut String, num: f64, max_precision: usize) {
     }
 
     write!(buf, "{formatted_float}").unwrap();
-}
 
-/// Get a formatted decimal representation of the number. Simply a wrapper
-/// around [`write_formatted_float`]. Due to how rounding works, a .5 value can
-/// give unexpected behaviour
-/// ```
-/// # use rust_wiki::wikitext::number_utils::get_formatted_float;
-/// assert_eq!(get_formatted_float(3.0,   2), "3");
-/// assert_eq!(get_formatted_float(3.1,   2), "3.1");
-/// assert_eq!(get_formatted_float(3.11,  2), "3.11");
-/// assert_eq!(get_formatted_float(3.111, 2), "3.11");
-/// assert_eq!(get_formatted_float(3.199, 2), "3.2");
-/// assert_eq!(get_formatted_float(3.000001, 2), "3");
-/// // These might be unexpected
-/// assert_eq!(get_formatted_float(3.195, 2), "3.19");
-/// assert_eq!(get_formatted_float(3.185, 2), "3.19");
-/// // This still works
-/// assert_eq!(get_formatted_float(3.1951, 2), "3.2");
-/// ```
-pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
-    let mut buf = String::new();
-    write_formatted_float(&mut buf, num, max_precision);
     buf
 }
