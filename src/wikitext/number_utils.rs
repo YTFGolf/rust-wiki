@@ -84,6 +84,9 @@ pub fn write_formatted_float(buf: &mut String, num: f64, max_precision: usize) {
     // need to remove both the 0 at the start (0.xxx -> .xxx) and any trailing
     // zeros (.xx0000 -> .xx); while doing those separately might semantically
     // make more sense it's a better idea to do it in one operation
+    if formatted_float == "." {
+        return;
+    }
 
     write!(buf, "{formatted_float}").unwrap();
 }
@@ -98,6 +101,7 @@ pub fn write_formatted_float(buf: &mut String, num: f64, max_precision: usize) {
 /// assert_eq!(get_formatted_float(3.11,  2), "3.11");
 /// assert_eq!(get_formatted_float(3.111, 2), "3.11");
 /// assert_eq!(get_formatted_float(3.199, 2), "3.2");
+/// assert_eq!(get_formatted_float(3.000001, 2), "3");
 /// // These might be unexpected
 /// assert_eq!(get_formatted_float(3.195, 2), "3.19");
 /// assert_eq!(get_formatted_float(3.185, 2), "3.19");
