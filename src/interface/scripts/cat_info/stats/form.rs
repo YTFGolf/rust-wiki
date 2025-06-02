@@ -40,13 +40,22 @@ pub fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
     }
 }
 
-pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> FormWithBaseStats {
+pub fn get_form(
+    cat: &Cat,
+    stats: &CatFormStats,
+    anims: &CatFormAnimData,
+    form_no: u8,
+) -> FormWithBaseStats {
     let max_levels = &cat.unitbuy.max_levels;
     let levels_used = match max_levels.max_nat {
         0..=29 => (max_levels.max_nat, max_levels.max_plus),
         _ => (30, 0),
     };
-    let level = levels_used.0 + levels_used.1;
+    let level = if form_no == 4 {
+        60
+    } else {
+        levels_used.0 + levels_used.1
+    };
 
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();

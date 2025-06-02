@@ -54,7 +54,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     let name = &CAT_DATA.get_cat(cat.id).normal;
     t.push_params(P::new("Normal Form name", name));
 
-    let form = get_form(&cat, stats, anims);
+    let form = get_form(&cat, stats, anims, 1);
     t.push_params(get_stats_level("1st stats Level", form.stats_level));
     t.push_params(P::new("Hp Normal", form.base_hp));
     t.push_params(P::new("Atk Power Normal", form.base_atk));
@@ -67,7 +67,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     let name = &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap();
     t.push_params(P::new("Evolved Form name", *name));
 
-    let form = get_form(&cat, stats, anims);
+    let form = get_form(&cat, stats, anims, 2);
     t.push_params(get_stats_level("2nd stats Level", form.stats_level));
     write_stats(t, "Evolved", form.other);
 
@@ -78,7 +78,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     let name = &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap();
     t.push_params(P::new("True Form name", *name));
 
-    let form = get_form(&cat, stats, anims);
+    let form = get_form(&cat, stats, anims, 3);
     t.push_params(get_stats_level("3rd stats Level", form.stats_level));
     write_stats(t, "True", form.other);
 
@@ -89,7 +89,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     // t.push_params("4th stats Level");
     let name = &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap();
     t.push_params(P::new("Ultra Form name", *name));
-    let form = get_form(&cat, stats, anims);
+    let form = get_form(&cat, stats, anims, 4);
     write_stats(t, "Ultra", form.other);
 }
 
