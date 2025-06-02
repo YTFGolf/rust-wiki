@@ -5,7 +5,6 @@ use crate::{
 
 /// Do thing.
 pub fn do_thing(wiki_id: u32, config: &Config) {
-    println!("{wiki_id:?} {config:?}");
     get_template(Cat::from_wiki_id(wiki_id, &config.version).unwrap());
 }
 

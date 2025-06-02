@@ -11,6 +11,17 @@ use crate::{
 fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     type P = TemplateParameter;
     let f = form_name;
+    // this template is so inconsistent
+
+    let is_normal_form = match form_name {
+        "Normal" => true,
+        _ => false,
+    };
+
+    if !is_normal_form {
+        t.push_params(P::new(format!("Hp {f}"), form.hp_max.clone()));
+        t.push_params(P::new(format!("Atk Power {f}"), form.atk_max.clone()));
+    }
 
     t.push_params(P::new(format!("Atk Range {f}"), form.range));
     t.push_params(P::new(format!("Attack Frequency {f}"), form.attack_cycle));
@@ -18,8 +29,12 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     t.push_params(P::new(format!("Knockback {f}"), form.knockback));
     t.push_params(P::new(format!("Attack Animation {f}"), form.animation));
     t.push_params(P::new(format!("Recharging Time {f}"), form.recharge));
-    t.push_params(P::new(format!("Hp {f} Lv.MAX"), form.hp_max));
-    t.push_params(P::new(format!("Atk Power {f} Lv.MAX"), form.atk_max));
+
+    if is_normal_form {
+        t.push_params(P::new(format!("Hp {f} Lv.MAX"), form.hp_max));
+        t.push_params(P::new(format!("Atk Power {f} Lv.MAX"), form.atk_max));
+    }
+
     t.push_params(P::new(format!("Attack type {f}"), form.attack_type));
     t.push_params(P::new(format!("Special Ability {f}"), form.abilities));
 }
