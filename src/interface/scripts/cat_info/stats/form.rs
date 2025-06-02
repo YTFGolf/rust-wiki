@@ -11,10 +11,12 @@ use crate::{
 use num_format::{Locale, ToFormattedString};
 use std::cmp::max;
 
-pub struct Form {
+pub struct FormWithBaseStats {
     pub base_hp: String,
     pub base_atk: String,
-
+    pub other: Form,
+}
+pub struct Form {
     pub range: String,
     pub attack_cycle: String,
     pub speed: String,
@@ -27,7 +29,7 @@ pub struct Form {
     pub abilities: String,
 }
 
-pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> Form {
+pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> FormWithBaseStats {
     let level = 30;
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
@@ -125,18 +127,20 @@ pub fn get_form(cat: &Cat, stats: &CatFormStats, anims: &CatFormAnimData) -> For
         abilities.join("<br>\n")
     };
 
-    Form {
+    FormWithBaseStats {
         base_hp,
         base_atk,
-        range,
-        attack_cycle,
-        speed,
-        knockback,
-        animation,
-        recharge,
-        hp_max,
-        atk_max,
-        attack_type,
-        abilities,
+        other: Form {
+            range,
+            attack_cycle,
+            speed,
+            knockback,
+            animation,
+            recharge,
+            hp_max,
+            atk_max,
+            attack_type,
+            abilities,
+        },
     }
 }
