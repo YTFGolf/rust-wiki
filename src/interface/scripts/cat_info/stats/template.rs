@@ -82,20 +82,21 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     write_stats(t, "Ultra", form.other);
 }
 
+fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
+    write!(buf, "{}", nat).infallible_write();
+    if plus > 0 {
+        write!(buf, "+{}", plus).infallible_write();
+    }
+}
+
 pub fn get_template(cat: Cat) {
     let mut t = Template::named("Cat Stats");
 
     add_all_forms(&mut t, &cat);
     let max_level = {
-        let mut buf = String::from("Lv.");
         let max = cat.unitbuy.max_levels;
-
-        write!(buf, "{}", max.max_nat).infallible_write();
-        let plus = max.max_plus;
-        if plus > 0 {
-            write!(buf, "+{}", plus).infallible_write();
-        }
-
+        let mut buf = String::from("Lv.");
+        write_level_and_plus(&mut buf, max.max_nat, max.max_plus);
         buf
     };
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
