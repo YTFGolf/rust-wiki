@@ -49,7 +49,8 @@ pub fn write_seconds(buf: &mut String, time_f: u32) {
     let precision = get_precision_f(time_f);
     // technically precision could just be 2 but might as well get the proper
     // precision.
-    write_formatted_float(buf, time_s, precision);
+    buf.write_str(&get_formatted_float(time_s, precision))
+        .unwrap();
 }
 
 /// Get string representation of the time in seconds.
@@ -94,7 +95,7 @@ pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
 
     let float_part = num.fract();
     if max_precision == 0 || float_part == 0.0 {
-        return;
+        return buf;
     }
 
     let formatted_float_untrimmed = format!("{float_part:.max_precision$}");
@@ -103,7 +104,7 @@ pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
     // zeros (.xx0000 -> .xx); while doing those separately might semantically
     // make more sense it's a better idea to do it in one operation
     if formatted_float == "." {
-        return;
+        return buf;
     }
 
     write!(buf, "{formatted_float}").unwrap();
