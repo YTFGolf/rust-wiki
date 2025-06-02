@@ -20,8 +20,14 @@ fn get_targets(targets: &[EnemyType]) -> String {
     }
 
     let max_type_index = LATEST_ENEMY_TYPE as usize;
+    if len == max_type_index + 1 {
+        return "all".to_string();
+    }
     if len == max_type_index && !targets.contains(&EnemyType::Metal) {
         return "non-[[:Category:Metal Enemies|Metal]]".to_string();
+    }
+    if len == max_type_index && !targets.contains(&EnemyType::Traitless) {
+        return "traited".to_string();
     }
 
     // possibly might have to clone and sort so that traitless comes first
