@@ -174,8 +174,7 @@ pub fn get_pure_abilities(
                 damage = abil("Massive Damage", "massive damage")
             )),
             Ability::Crit { chance } => abilities.push(format!(
-                "{chance}% chance to perform a {crit}{multab}",
-                crit = abil("Critical", "critical hit")
+                "{chance}% chance to perform a [[Critical Hit]]{multab}"
             )),
             Ability::TargetsOnly => abilities.push(format!(
                 "{attacks} {targets} enemies",
