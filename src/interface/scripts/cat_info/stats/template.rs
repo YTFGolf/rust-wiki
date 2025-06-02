@@ -38,6 +38,10 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     t.push_params(P::new(format!("Special Ability {f}"), form.abilities));
 }
 
+fn get_stats_level(name: &'static str, value: Option<String>) -> Option<TemplateParameter> {
+    Some(TemplateParameter::new(name, value?))
+}
+
 fn add_all_forms(t: &mut Template, cat: &Cat) {
     type P = TemplateParameter;
 
@@ -46,10 +50,12 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     let Some((stats, anims)) = iter.next() else {
         return;
     };
+
     let name = &CAT_DATA.get_cat(cat.id).normal;
     t.push_params(P::new("Normal Form name", name));
 
     let form = get_form(&cat, stats, anims);
+    t.push_params(get_stats_level("1st stats Level", form.stats_level));
     t.push_params(P::new("Hp Normal", form.base_hp));
     t.push_params(P::new("Atk Power Normal", form.base_atk));
     write_stats(t, "Normal", form.other);
@@ -60,7 +66,9 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     let name = &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap();
     t.push_params(P::new("Evolved Form name", *name));
+
     let form = get_form(&cat, stats, anims);
+    t.push_params(get_stats_level("2nd stats Level", form.stats_level));
     write_stats(t, "Evolved", form.other);
 
     let Some((stats, anims)) = iter.next() else {
@@ -69,13 +77,16 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     let name = &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap();
     t.push_params(P::new("True Form name", *name));
+
     let form = get_form(&cat, stats, anims);
+    t.push_params(get_stats_level("3rd stats Level", form.stats_level));
     write_stats(t, "True", form.other);
 
     let Some((stats, anims)) = iter.next() else {
         return;
     };
 
+    // t.push_params("4th stats Level");
     let name = &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap();
     t.push_params(P::new("Ultra Form name", *name));
     let form = get_form(&cat, stats, anims);
