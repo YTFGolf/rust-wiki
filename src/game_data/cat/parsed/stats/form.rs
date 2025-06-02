@@ -4,7 +4,7 @@ use super::super::super::{ability::Ability, raw::stats::CombinedCatData};
 use crate::game_data::cat::raw::unitlevel::UnitLevelRaw;
 use std::{fmt::Display, num::NonZero};
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 /// Enemy types that can be targeted.
 pub enum EnemyType {
     /// Red.
