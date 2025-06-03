@@ -231,6 +231,16 @@ mod tests {
     }
 
     #[test]
+    fn repeated() {
+        let version = TEST_CONFIG.version.jp();
+
+        let dom = get_all_anims(13, version);
+        let ans = [anim(45), anim(45), anim(12)];
+
+        assert_eq!(&dom, &ans);
+    }
+
+    #[test]
     fn dio() {
         let version = TEST_CONFIG.version.jp();
 
