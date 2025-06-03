@@ -83,7 +83,7 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
             }
 
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
-                log::warn!("Hits 1 and 2 are of completely different types")
+                log::warn!("Hits 1 and 2 are of completely different types");
                 // not needed tbh: either:
                 // - Normal: panics anyway
                 // - Unchanged: valid anyway
@@ -112,7 +112,7 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
                 );
             }
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
-                log::warn!("Hits 1 and 2 are of completely different types")
+                log::warn!("Hits 1 and 2 are of completely different types");
                 // not needed for same reasons as in double
             }
 

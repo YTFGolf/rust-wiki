@@ -210,7 +210,7 @@ pub fn get_pure_abilities(
                 };
                 abilities.push(format!(
                     "{chance}% chance to create a level {level} {wave}{multab}"
-                ))
+                ));
             }
 
             Ability::Weaken {
@@ -309,7 +309,7 @@ pub fn get_pure_abilities(
 
                 abilities.push(format!(
                     "{chance}% chance to create a level {level} {surge} {at_position}{multab}"
-                ))
+                ));
             }
 
             Ability::Curse { chance, duration } => abilities.push(format!(
@@ -339,7 +339,7 @@ pub fn get_pure_abilities(
             )),
 
             Ability::CounterSurge => {
-                abilities.push("[[Surge Attack#Counter-Surge|Counter-Surge]]".to_string())
+                abilities.push("[[Surge Attack#Counter-Surge|Counter-Surge]]".to_string());
             }
             Ability::ConjureUnit { id } => abilities.push(format!(
                 "When on the battlefield, tap icon again to \
@@ -357,7 +357,7 @@ pub fn get_pure_abilities(
                 abilities.push(format!(
                     "{chance}% chance to create an [[Explosion]] at {range} range{multab}",
                     range = get_formatted_float(position, 2)
-                ))
+                ));
             }
 
             Ability::ImmuneToWave => immunities.push("Waves"),
@@ -449,12 +449,12 @@ mod tests {
                 assert!(
                     ends_in_multab,
                     "Ability {raw:?} does not take into account MultiHit with variable activation"
-                )
+                );
             } else {
                 assert!(
                     !ends_in_multab,
                     "Ability {raw:?} takes into account MultiHit with variable activation when it shouldn't"
-                )
+                );
             }
         }
 
