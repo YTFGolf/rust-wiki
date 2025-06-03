@@ -59,7 +59,7 @@ pub fn get_form(
 
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
-    let backswing = anims.length() - attack_length;
+    let backswing = anims.attack.length() - attack_length;
     let frequency = attack_length + {
         let tba = stats.attack.tba;
         if tba == 0 {

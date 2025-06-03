@@ -18,16 +18,23 @@ pub enum AnimDataError {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-/// Data about a unit form's animations.
-pub struct CatFormAnimData {
+/// Data about a single animation.
+pub struct Anim {
     length: u16, // right now all that's needed is the length of the animation
 }
-impl CatFormAnimData {
+impl Anim {
     /// Get length of unit's animations.
     pub fn length(&self) -> u16 {
         // not called `len` to avoid setting off `clippy::len_without_is_empty`
         self.length
     }
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Data about a unit form's animations.
+pub struct CatFormAnimData {
+    /// Attack animation.
+    pub attack: Anim,
 }
 
 /// Get unit animations.
@@ -135,7 +142,9 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
     //     .ok_or(E::EmptyAnimation)?;
 
     Ok(CatFormAnimData {
-        length: len as u16 + 1,
+        attack: Anim {
+            length: len as u16 + 1,
+        },
     })
 }
 
@@ -167,7 +176,9 @@ mod tests {
     }
 
     fn anim(length: u16) -> CatFormAnimData {
-        CatFormAnimData { length }
+        CatFormAnimData {
+            attack: Anim { length },
+        }
     }
 
     #[test]
