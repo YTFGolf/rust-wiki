@@ -105,7 +105,11 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
             }
 
             if !hit2.range.has_same_type(&hit3.range) {
-                unimplemented!("Hits 2 and 3 are of incompatible types")
+                log::warn!(
+                    "Hits 2 and 3 are of incompatible types: {:?} vs {:?}",
+                    hit2.range,
+                    hit3.range
+                );
             }
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
                 log::warn!("Hits 1 and 2 are of completely different types")
