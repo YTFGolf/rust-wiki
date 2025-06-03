@@ -319,4 +319,14 @@ mod tests {
 
         assert_eq!(&courier, &ans);
     }
+
+    #[test]
+    fn kr_exclusive() {
+        let version = TEST_CONFIG.version.jp();
+
+        let crew12 = get_all_anims(182, version);
+        let ans = [anim(111), anim(111)];
+
+        assert_eq!(&crew12, &ans);
+    }
 }
