@@ -3,6 +3,7 @@
 use super::unitbuy::AncientEggInfo;
 use crate::game_data::version::Version;
 use std::{
+    cmp::max,
     fs::File,
     io::{BufRead, BufReader},
 };
@@ -64,25 +65,78 @@ pub fn get_anims(
     Ok(anims)
 }
 
+/*
+animForm = self.anim[form]
+anim = []
+for i, item in enumerate(animForm):
+    if len(item) >= 5:
+        anim.append(animForm[i + animForm[i+1][0] + 1][0] * item[2])
+anim.sort()
+length = anim[-1] + 1
+
+line if len >= 5
+
+for (var k = 0; k < length; k++) {
+    if (maanim[k].length >= 5 && maanim[k + 1][0] != 0) {
+        var value = (maanim[k + maanim[k + 1][0] + 1][0] - maanim[k + 2][0]) * (maanim[k][2] >= 2 ? maanim[k][2] : 1);
+        if (value > maxF) maxF = value;
+    }
+}
+*/
+
 fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
     use AnimDataError as E;
-    const ANIM_LINE_LEN: usize = 4;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
-    let count = BufReader::new(File::open(&qualified).map_err(|_| E::FormNotFound)?)
+
+    let anim_lines = BufReader::new(File::open(&qualified).map_err(|_| E::FormNotFound)?)
         .lines()
         .filter_map(|line| {
-            let line = line.as_ref().ok()?;
-            let count = line.chars().filter(|c| *c == ',').count() + 1;
-            // if has 4 items then has 3 commas
-            if count != ANIM_LINE_LEN {
-                return None;
-            }
-            let frame_no = line.split(',').next()?;
-            frame_no.parse::<u16>().ok()
+            let line = line
+                .ok()?
+                .split(',')
+                .filter_map(|c| c.parse::<i32>().ok())
+                .collect::<Vec<_>>();
+            Some(line)
         })
-        .max()
-        .ok_or(E::EmptyAnimation)?;
-    Ok(CatFormAnimData { length: count + 1 })
+        .collect::<Vec<_>>();
+
+    let mut len = 0;
+    for (i, line) in anim_lines.iter().enumerate() {
+        if line.len() < 5 {
+            continue;
+        }
+
+        let lhs =
+            (&anim_lines)[i + (&anim_lines)[i + 1][0] as usize + 1][0] - (&anim_lines)[i + 2][0];
+        let rhs = if (&anim_lines)[i][2] >= 2 {
+            (&anim_lines)[i][2]
+        } else {
+            1
+        };
+        let value = lhs * rhs;
+        len = max(value, len);
+    }
+    // TODO make this readable, I stole this spaghetti from Donut
+
+    // repeat lines look like
+    // 5,12,4,0,0
+
+    //     .filter_map(|line| {
+    //         const ANIM_LINE_MIN_LEN: usize = 5;
+    //         let line = line.as_ref().ok()?;
+    //         let line = line.split(',').collect::<Vec<_>>();
+    //         if line.len() < ANIM_LINE_MIN_LEN {
+    //             return None;
+    //         }
+    //         let frame_no = line.split(',').next()?;
+    //         frame_no.parse::<u16>().ok()
+    //     })
+    //     .max()
+    //     .ok_or(E::EmptyAnimation)?;
+
+    Ok(CatFormAnimData {
+        length: len as u16 + 1,
+    })
 }
 
 #[cfg(test)]
