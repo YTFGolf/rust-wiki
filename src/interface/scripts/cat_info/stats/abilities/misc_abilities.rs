@@ -143,9 +143,9 @@ pub fn get_multihit_ability(
         AttackHits::Double([h1, h2]) => {
             let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
-            write_hit(&mut buf, &h1, scaling, level);
+            write_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h2, scaling, level);
+            write_hit(&mut buf, h2, scaling, level);
             buf.write_str(")").infallible_write();
 
             Some(buf)
@@ -153,11 +153,11 @@ pub fn get_multihit_ability(
         AttackHits::Triple([h1, h2, h3]) => {
             let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
-            write_hit(&mut buf, &h1, scaling, level);
+            write_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h2, scaling, level);
+            write_hit(&mut buf, h2, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, &h3, scaling, level);
+            write_hit(&mut buf, h3, scaling, level);
             buf.write_str(")").infallible_write();
 
             Some(buf)

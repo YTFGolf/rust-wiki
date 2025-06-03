@@ -150,7 +150,7 @@ pub fn get_pure_abilities(
     let mut abilities = vec![];
     let mut immunities = vec![];
 
-    let targets = get_targets(&targets);
+    let targets = get_targets(targets);
     let multab = get_multiple_hit_abilities(hits);
 
     let abil = get_ability;
