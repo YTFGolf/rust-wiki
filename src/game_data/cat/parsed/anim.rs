@@ -15,6 +15,8 @@ pub enum AnimDataError {
     FormNotFound,
     /// Animation is found but has no frames.
     EmptyAnimation,
+    /// Some weird error.
+    ReadFileError(usize, std::io::Error),
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -104,26 +106,51 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
             .split(',')
             .filter_map(|c| c.parse::<i32>().ok())
             // .ok will ignore the text parts but keep the rest
+            // perhaps using expect is better, either that or do proper looping
             .collect::<Vec<_>>();
         anim_lines.push(split);
     }
 
-    let mut len = 0;
+    /*
+    lines will look like:
+
+    9,12,4,0,0,下半身
+    4
+    0,0,1,0
+    6,255,0,0
+    7,0,1,0
+    11,0,1,0
+    10,12,4,0,0,下半身
+
+    Roughly that's:
+    - Control line
+    - Amount of anim lines
+    - Anim lines
+    */
+
+    /*
+    Control line: idk, idk, (something to do with repeating), idk, idk
+    Anim line: frame, idk, idk, idk
+    */
+
+    let mut max_frame = 0;
     for (i, line) in anim_lines.iter().enumerate() {
         const CONTROL_LINE_LEN: usize = 5;
         if line.len() < CONTROL_LINE_LEN {
             continue;
         }
 
-        let lhs =
-            (&anim_lines)[i + (&anim_lines)[i + 1][0] as usize + 1][0] - (&anim_lines)[i + 2][0];
-        let rhs = if (&anim_lines)[i][2] >= 2 {
-            (&anim_lines)[i][2]
-        } else {
-            1
-        };
-        let value = lhs * rhs;
-        len = max(value, len);
+        let following_lines_amt = (&anim_lines[i + 1])[0] as usize;
+
+        let last_anim_frame = &anim_lines[i + following_lines_amt + 1][0];
+        let first_anim_frame = &anim_lines[i + 2][0];
+
+        let duration = last_anim_frame - first_anim_frame;
+        let repeats = max(line[2], 1);
+        let value = duration * repeats;
+        // still not quite sure I understand but it passes tests so leaving it
+        // for now
+        max_frame = max(value, max_frame);
     }
     // TODO make this readable, I stole this spaghetti from Donut
 
