@@ -340,7 +340,8 @@ pub fn get_pure_abilities(
 
             Ability::CounterSurge => abilities.push(abil2("Counter-Surge")),
             Ability::ConjureUnit { id } => abilities.push(format!(
-                "When on the battlefield, tap icon again to {conjure} spirit #{id:03}",
+                "When on the battlefield, tap icon again to \
+                {conjure} unit {id:03} as its [[#Spirit|spirit]]",
                 conjure = abil2("Conjure")
             )),
             Ability::SageSlayer => abilities.push(abil2("Sage Slayer")),
