@@ -95,21 +95,23 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
     use AnimDataError as E;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
 
-    let anim_lines = BufReader::new(File::open(&qualified).map_err(|_| E::FormNotFound)?)
-        .lines()
-        .filter_map(|line| {
-            let line = line
-                .ok()?
-                .split(',')
-                .filter_map(|c| c.parse::<i32>().ok())
-                .collect::<Vec<_>>();
-            Some(line)
-        })
-        .collect::<Vec<_>>();
+    let file = BufReader::new(File::open(&qualified).map_err(|_| E::FormNotFound)?);
+
+    let mut anim_lines = vec![];
+    for (i, line) in file.lines().enumerate() {
+        let line = line.map_err(|e| AnimDataError::ReadFileError(i, e))?;
+        let split = line
+            .split(',')
+            .filter_map(|c| c.parse::<i32>().ok())
+            // .ok will ignore the text parts but keep the rest
+            .collect::<Vec<_>>();
+        anim_lines.push(split);
+    }
 
     let mut len = 0;
     for (i, line) in anim_lines.iter().enumerate() {
-        if line.len() < 5 {
+        const CONTROL_LINE_LEN: usize = 5;
+        if line.len() < CONTROL_LINE_LEN {
             continue;
         }
 
