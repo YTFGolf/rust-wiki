@@ -338,7 +338,9 @@ pub fn get_pure_abilities(
                 duration = get_duration_repr(u32::from(*dodge_duration))
             )),
 
-            Ability::CounterSurge => abilities.push(abil2("Counter-Surge")),
+            Ability::CounterSurge => {
+                abilities.push("[[Surge Attack#Counter-Surge|Counter-Surge]]".to_string())
+            }
             Ability::ConjureUnit { id } => abilities.push(format!(
                 "When on the battlefield, tap icon again to \
                 {conjure} unit {id:03} as its [[#Spirit|spirit]]",
