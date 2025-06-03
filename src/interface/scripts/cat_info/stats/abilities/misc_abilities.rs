@@ -13,7 +13,7 @@ use std::fmt::Write;
 /// Won't close the set of brackets.
 fn get_first_hit_range(hit1: &AttackHit) -> Option<String> {
     match hit1.range {
-        AttackRange::Normal => None,
+        AttackRange::Normal | AttackRange::Unchanged => None,
         AttackRange::LD { base, distance } => Some(format!(
             "{ld} (Effective range: {range}",
             ld = get_ability_single("Long Distance"),
@@ -24,7 +24,6 @@ fn get_first_hit_range(hit1: &AttackHit) -> Option<String> {
             omni = get_ability_single("Omni Strike"),
             range = get_range_repr(base + distance, base) // distance is negative if is omni
         )),
-        AttackRange::Unchanged => None,
     }
 }
 
