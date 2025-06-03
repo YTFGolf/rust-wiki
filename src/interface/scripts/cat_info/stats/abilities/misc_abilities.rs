@@ -77,6 +77,11 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
         AttackHits::Double([hit1, hit2]) => {
             let mut hit = get_first_hit_range(hit1)?;
 
+            if hit1.range == hit2.range {
+                hit += ")";
+                return Some(hit);
+            }
+
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
                 log::warn!("Hits 1 and 2 are of completely different types")
                 // not needed tbh: either:
@@ -93,6 +98,11 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
         }
         AttackHits::Triple([hit1, hit2, hit3]) => {
             let mut hit = get_first_hit_range(hit1)?;
+
+            if hit1.range == hit2.range && hit1.range == hit3.range {
+                hit += ")";
+                return Some(hit);
+            }
 
             if !hit2.range.has_same_type(&hit3.range) {
                 unimplemented!("Hits 2 and 3 are of incompatible types")
