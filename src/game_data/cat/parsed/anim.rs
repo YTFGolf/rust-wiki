@@ -130,10 +130,11 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
 
         let duration = last_anim_frame - first_anim_frame;
         let repeats = max(line[2], 1);
-        let value = duration * repeats;
-        // still not quite sure I understand what this is doing but it passes
-        // tests so leaving it for now
-        max_frame = max(value, max_frame);
+        // make sure is at least 1, clamp would semantically mean more but
+        // doesn't exist here...
+
+        let last_frame_used = duration * repeats + first_anim_frame;
+        max_frame = max(last_frame_used, max_frame);
     }
 
     Ok(CatFormAnimData {
