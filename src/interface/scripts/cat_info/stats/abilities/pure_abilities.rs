@@ -296,8 +296,10 @@ pub fn get_pure_abilities(
                 let at_position = {
                     let min_range = f64::from(*spawn_quad) / 4.0;
                     let max_range = min_range + f64::from(*range_quad) / 4.0;
-                    if min_range == max_range {
+                    if *range_quad == 0 {
                         format!("at {fmt} range", fmt = get_formatted_float(min_range, 2))
+                        // where min = max, just comparing floats is a bit
+                        // cringe and clippy complains
                     } else {
                         format!(
                             "between {min_fmt} and {max_fmt} range",
