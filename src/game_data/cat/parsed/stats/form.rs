@@ -455,8 +455,8 @@ impl CatFormStats {
             price: fixed.price,
             respawn_half: fixed.respawn,
             attack: Attack::from_combined(combined),
-            abilities: Ability::get_all_abilities(combined).into(),
-            targets: EnemyType::get_all_targets(combined).into(),
+            abilities: Ability::get_all_abilities(combined),
+            targets: EnemyType::get_all_targets(combined),
         }
     }
 }
@@ -634,8 +634,7 @@ mod tests {
                     }),
                     A::ImmuneToWave,
                     A::ImmuneToSurge,
-                ])
-                .into(),
+                ]),
                 targets: [
                     E::Red,
                     E::Floating,
@@ -706,8 +705,7 @@ mod tests {
                     A::ImmuneToWave,
                     A::ImmuneToCurse,
                     A::ImmuneToSurge,
-                ])
-                .into(),
+                ]),
                 targets: [
                     E::Red,
                     E::Floating,
@@ -782,8 +780,7 @@ mod tests {
                     A::ImmuneToSlow,
                     A::ImmuneToWeaken,
                     A::ImmuneToSurge,
-                ])
-                .into(),
+                ]),
                 targets: [E::Traitless].into(),
             },
             CatFormStats {
@@ -840,8 +837,7 @@ mod tests {
                     A::ImmuneToCurse,
                     A::ImmuneToToxic,
                     A::ImmuneToSurge,
-                ])
-                .into(),
+                ]),
                 targets: [E::Traitless].into(),
             },
         ];
@@ -1057,8 +1053,7 @@ mod tests {
                 A::ImmuneToWeaken,
                 A::ImmuneToWarp,
                 A::ImmuneToSurge,
-            ])
-            .into(),
+            ]),
             targets: [].into(),
         };
 
