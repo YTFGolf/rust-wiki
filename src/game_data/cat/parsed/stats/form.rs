@@ -140,10 +140,7 @@ impl AttackRange {
             | (Self::Omni { .. }, Self::Omni { .. })
             | (Self::Unchanged, Self::Unchanged) => true,
 
-            (Self::Normal, _)
-            | (Self::LD { .. }, _)
-            | (Self::Omni { .. }, _)
-            | (Self::Unchanged, _) => false,
+            (Self::Normal | Self::LD { .. } | Self::Omni { .. } | Self::Unchanged, _) => false,
         }
     }
 }
