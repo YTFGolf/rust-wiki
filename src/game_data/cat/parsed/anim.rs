@@ -248,6 +248,16 @@ mod tests {
     }
 
     #[test]
+    fn multihit() {
+        let version = TEST_CONFIG.version.jp();
+
+        let delinquent = get_all_anims(31, version);
+        let ans = [anim(73), anim(66), anim(66)];
+
+        assert_eq!(&delinquent, &ans);
+    }
+
+    #[test]
     fn dio() {
         let version = TEST_CONFIG.version.jp();
 
