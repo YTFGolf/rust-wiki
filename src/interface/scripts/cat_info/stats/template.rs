@@ -12,10 +12,7 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     let f = form_name;
     // this template is so inconsistent
 
-    let is_normal_form = match form_name {
-        "Normal" => true,
-        _ => false,
-    };
+    let is_normal_form = matches!(form_name, "Normal");
 
     if !is_normal_form {
         t.push_params(P::new(format!("Hp {f}"), form.hp_max.clone()));
