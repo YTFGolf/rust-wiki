@@ -102,7 +102,7 @@ pub fn get_form(
     let speed = stats.speed.to_formatted_string(&Locale::en);
     let knockback = format!(
         "{kb} {times}",
-        kb = stats.kb,
+        kb = stats.kb.to_formatted_string(&Locale::en),
         times = plural(stats.kb, "time", "times")
     );
     let animation = {
