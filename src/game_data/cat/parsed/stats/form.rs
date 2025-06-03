@@ -135,15 +135,15 @@ impl AttackRange {
     /// Do both attack ranges have the same type?
     pub fn has_same_type(&self, other: &Self) -> bool {
         match (self, other) {
-            (Self::Normal, Self::Normal) => true,
-            (Self::LD { .. }, Self::LD { .. }) => true,
-            (Self::Omni { .. }, Self::Omni { .. }) => true,
-            (Self::Unchanged, Self::Unchanged) => true,
+            (Self::Normal, Self::Normal)
+            | (Self::LD { .. }, Self::LD { .. })
+            | (Self::Omni { .. }, Self::Omni { .. })
+            | (Self::Unchanged, Self::Unchanged) => true,
 
-            (Self::Normal, _) => false,
-            (Self::LD { .. }, _) => false,
-            (Self::Omni { .. }, _) => false,
-            (Self::Unchanged, _) => false,
+            (Self::Normal, _)
+            | (Self::LD { .. }, _)
+            | (Self::Omni { .. }, _)
+            | (Self::Unchanged, _) => false,
         }
     }
 }
