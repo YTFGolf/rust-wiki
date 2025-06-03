@@ -124,6 +124,9 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
         }
 
         let following_lines_amt = (&anim_lines[i + 1])[0] as usize;
+        if following_lines_amt == 0 {
+            continue;
+        }
 
         let last_anim_frame = &anim_lines[i + following_lines_amt + 1][0];
         let first_anim_frame = &anim_lines[i + 2][0];
