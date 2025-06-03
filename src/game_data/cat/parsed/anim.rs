@@ -74,25 +74,6 @@ pub fn get_anims(
     Ok(anims)
 }
 
-/*
-animForm = self.anim[form]
-anim = []
-for i, item in enumerate(animForm):
-    if len(item) >= 5:
-        anim.append(animForm[i + animForm[i+1][0] + 1][0] * item[2])
-anim.sort()
-length = anim[-1] + 1
-
-line if len >= 5
-
-for (var k = 0; k < length; k++) {
-    if (maanim[k].length >= 5 && maanim[k + 1][0] != 0) {
-        var value = (maanim[k + maanim[k + 1][0] + 1][0] - maanim[k + 2][0]) * (maanim[k][2] >= 2 ? maanim[k][2] : 1);
-        if (value > maxF) maxF = value;
-    }
-}
-*/
-
 fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
     use AnimDataError as E;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
@@ -106,10 +87,12 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
             .split(',')
             .filter_map(|c| c.parse::<i32>().ok())
             // .ok will ignore the text parts but keep the rest
-            // perhaps using expect is better, either that or do proper looping
+            // perhaps is better to do trimming and then check is numeric before
+            // checking but that's effort tbh
             .collect::<Vec<_>>();
         anim_lines.push(split);
     }
+    let anim_lines = anim_lines;
 
     /*
     lines will look like:
@@ -148,31 +131,14 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
         let duration = last_anim_frame - first_anim_frame;
         let repeats = max(line[2], 1);
         let value = duration * repeats;
-        // still not quite sure I understand but it passes tests so leaving it
-        // for now
+        // still not quite sure I understand what this is doing but it passes
+        // tests so leaving it for now
         max_frame = max(value, max_frame);
     }
-    // TODO make this readable, I stole this spaghetti from Donut
-
-    // repeat lines look like
-    // 5,12,4,0,0
-
-    //     .filter_map(|line| {
-    //         const ANIM_LINE_MIN_LEN: usize = 5;
-    //         let line = line.as_ref().ok()?;
-    //         let line = line.split(',').collect::<Vec<_>>();
-    //         if line.len() < ANIM_LINE_MIN_LEN {
-    //             return None;
-    //         }
-    //         let frame_no = line.split(',').next()?;
-    //         frame_no.parse::<u16>().ok()
-    //     })
-    //     .max()
-    //     .ok_or(E::EmptyAnimation)?;
 
     Ok(CatFormAnimData {
         attack: Anim {
-            length: len as u16 + 1,
+            length: max_frame as u16 + 1,
         },
     })
 }
