@@ -34,9 +34,9 @@ pub struct Form {
 }
 
 pub fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
-    write!(buf, "{}", nat).infallible_write();
+    write!(buf, "{nat}").infallible_write();
     if plus > 0 {
-        write!(buf, "+{}", plus).infallible_write();
+        write!(buf, "+{plus}").infallible_write();
     }
 }
 
