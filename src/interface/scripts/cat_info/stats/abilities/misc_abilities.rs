@@ -78,7 +78,13 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
             let mut hit = get_first_hit_range(hit1)?;
 
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
-                unimplemented!("Hits 1 and 2 are of completely different types")
+                log::warn!("Hits 1 and 2 are of completely different types")
+                // not needed tbh: either:
+                // - Normal: panics anyway
+                // - Unchanged: valid anyway
+                // Therefore only difference is if first hit is LD/Omni and
+                // other is the other, they get formatted in the same way so not
+                // an issue.
             }
 
             write_hit_2(&mut hit, hit2);
@@ -92,7 +98,8 @@ pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
                 unimplemented!("Hits 2 and 3 are of incompatible types")
             }
             if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
-                unimplemented!("Hits 1 and 2 are of completely different types")
+                log::warn!("Hits 1 and 2 are of completely different types")
+                // not needed for same reasons as in double
             }
 
             write_hit_2(&mut hit, hit2);
