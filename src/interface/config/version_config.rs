@@ -4,8 +4,30 @@ use crate::game_data::version::{
     Version,
     lang::{self, MultiLangVersionContainer, VersionLanguage},
 };
-use serde::{Deserialize, Serialize};
-use std::{env::home_dir, path::PathBuf};
+use serde::{
+    Deserialize, Serialize,
+    de::{self},
+};
+use std::{env::home_dir, path::PathBuf, str::FromStr};
+
+impl<'de> Deserialize<'de> for VersionLanguage {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        FromStr::from_str(&s).map_err(de::Error::custom)
+    }
+}
+
+impl Serialize for VersionLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.collect_str(self)
+    }
+}
 
 const TOTAL_VERSIONS: usize = 2;
 #[derive(Debug, Default, Deserialize, Serialize)]

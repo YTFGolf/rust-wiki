@@ -1,16 +1,15 @@
 //! Defines a version's language.
 
 use super::Version;
-use serde::{Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error("invalid language: {0:?}")]
 /// Represents an invalid language code.
 pub struct InvalidLanguage(pub String);
 
 /// Default language.
-#[derive(Debug, Default, Deserialize, Serialize, Clone, Copy)]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug, Default, Clone, Copy)]
 #[repr(usize)]
 pub enum VersionLanguage {
     /// English.
