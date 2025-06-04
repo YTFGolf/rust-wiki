@@ -25,19 +25,20 @@ pub fn parse_general_stage_id(selector: &str) -> Result<StageID, StageTypeParseE
         Err(e) => return Err(e),
     }
 
-    match parse_stage_selector(selector) {
-        Ok(id) => return Ok(id),
-        Err(StageTypeParseError::InvalidFormat) => (),
-        Err(e) => return Err(e),
-    }
-
     match parse_stage_ref(selector) {
         Ok(id) => return Ok(id),
         Err(StageTypeParseError::InvalidFormat) => (),
         Err(e) => return Err(e),
     }
 
-    Err(StageTypeParseError::InvalidFormat)
+    parse_stage_selector(selector)
+    // If you put a file name/db ref into this function, it returns invalid
+    // matcher. It needs to be able to work with 1 (challenge battle,
+    // filibuster), 2 (eoc, aku realms, labyrinth) or 3 separate words, so it
+    // thinks a file name/reference is trying to do the first case.
+
+    // The simplest solution is to just make this function go last, because the
+    // other 2 functions already actually try to do some validation.
 }
 
 /// Stage file Regex pattern that works for most stages. Used in
