@@ -8,7 +8,7 @@ use std::{fmt::Display, str::FromStr};
 /// Represents an invalid language code.
 pub struct InvalidLanguage(pub String);
 
-/// Default language.
+/// Version's language.
 #[derive(Debug, Clone, Copy)]
 #[repr(usize)]
 pub enum VersionLanguage {
