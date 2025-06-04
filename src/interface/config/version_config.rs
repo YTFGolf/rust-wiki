@@ -74,6 +74,37 @@ impl Default for VersionConfig {
 }
 
 impl VersionConfig {
+    /// So the other functions don't need to duplicate this switch statement.
+    fn get_lang_path_ptr(&self, lang: VersionLanguage) -> *const String {
+        let path = match lang {
+            VersionLanguage::EN => &self.enpath,
+            VersionLanguage::JP => &self.jppath,
+        };
+        path as *const String
+    }
+
+    /// Get the filepath of the decrypted contents for this language.
+    fn get_lang_path_mut(&mut self, lang: VersionLanguage) -> &mut String {
+        let path = self.get_lang_path_ptr(lang) as *mut String;
+        unsafe { &mut *path }
+        // safety: idk if this is undefined behaviour or not, rust doesn't do a
+        // great job of defining undefined behaviour and unsafe really is not
+        // ergonomic
+
+        // tbf at least rust doesn't give me a warning about this one unlike if
+        // I tried to directly convert the pointer from an `&T`
+
+        // maybe I should just use a macro instead
+    }
+
+    /// [`Self::get_lang_path_mut`] but immutable.
+    fn get_lang_path(&self, lang: VersionLanguage) -> &String {
+        unsafe { &*self.get_lang_path_ptr(lang) }
+        // safety: this has gotta be safe right
+    }
+}
+
+impl VersionConfig {
     fn expand_home(dir: &str) -> PathBuf {
         if dir == "~" || dir.is_empty() {
             home_dir().unwrap()
@@ -88,11 +119,7 @@ impl VersionConfig {
     pub fn init_all(&mut self) {
         const LANGS: [VersionLanguage; TOTAL_VERSIONS] = [VersionLanguage::EN, VersionLanguage::JP];
         for lang in LANGS {
-            let location = match lang {
-                VersionLanguage::EN => &self.enpath,
-                VersionLanguage::JP => &self.jppath,
-            };
-            let location = Self::expand_home(location);
+            let location = Self::expand_home(self.get_lang_path(lang));
             self.versions[lang as usize] = Some(Version::new(location, lang, None));
         }
     }
@@ -135,6 +162,7 @@ impl VersionConfig {
         self.version(VersionLanguage::JP)
     }
 }
+
 impl MultiLangVersionContainer for VersionConfig {
     fn lang_default(&self) -> &Version {
         self.current_version()
@@ -149,10 +177,8 @@ impl VersionConfig {
     /// Set the path of the current version to `path`. Must be called before
     /// [`init_all`][VersionConfig::init_all] or it will do nothing.
     pub fn set_current_path(&mut self, path: String) {
-        match self.lang {
-            VersionLanguage::EN => self.enpath = path,
-            VersionLanguage::JP => self.jppath = path,
-        }
+        let p = self.get_lang_path_mut(self.lang);
+        *p = path;
     }
 
     /// Set the version's `lang`.
