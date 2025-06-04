@@ -8,7 +8,7 @@ use crate::game_data::stage::raw::stage_data::StageData;
 /// # use rust_wiki::game_data::enemy::raw_encounters::stage_contains_enemy;
 /// # use rust_wiki::game_data::stage::{raw::stage_data::StageData, stage_util::get_stage_files};
 /// # use rust_wiki::game_data::version::Version;
-/// # use rust_wiki::VersionLanguage;
+/// # use rust_wiki::game_data::version::lang::VersionLanguage;
 /// # let version = Version::new("~", VersionLanguage::EN, Some("1.0".into()));
 /// let abs_enemy_id = 2;
 /// let all_stages = get_stage_files(&version)

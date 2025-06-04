@@ -67,7 +67,7 @@ impl Version {
     /// ```rust,no_run
     /// use rust_wiki::game_data::map::cached::map_option::MapOption;
     /// # use rust_wiki::game_data::version::Version;
-    /// # use rust_wiki::VersionLanguage;
+    /// # use rust_wiki::game_data::version::lang::VersionLanguage;
     /// # use rust_wiki::game_data::meta::stage::map_id::MapID;
     ///
     /// let version = Version::new("~", VersionLanguage::EN, Some("1.0".into()));
