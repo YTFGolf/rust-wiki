@@ -477,7 +477,7 @@ mod tests {
 
     #[test]
     fn test_stage_type_error() {
-        assert_eq!(parse_general_stage_id("unknown 0"), None);
+        assert_eq!(parse_general_stage_id("unknown 0"), Err(E::UnknownMatcher));
         assert_eq!(parse_stage_file("file no exist"), Err(E::InvalidFormat));
         assert_eq!(parse_stage_ref("not a reference"), Err(E::InvalidFormat));
     }
