@@ -14,21 +14,30 @@ use regex::Regex;
 use std::sync::LazyLock;
 
 /// Parse string of unknown format into a [`StageID`].
-pub fn parse_general_stage_id(selector: &str) -> Option<StageID> {
+pub fn parse_general_stage_id(selector: &str) -> Result<StageID, StageTypeParseError> {
     // Could check selectors before functions (using everybody's favourite
     // technical debt: Regexes!) but this only really gets done on a mass scale
     // from files, so just put that one first lol.
-    if let Ok(st) = parse_stage_file(selector) {
-        return Some(st);
-    }
-    if let Ok(st) = parse_stage_selector(selector) {
-        return Some(st);
-    }
-    if let Ok(st) = parse_stage_ref(selector) {
-        return Some(st);
+
+    match parse_stage_file(selector) {
+        Ok(id) => return Ok(id),
+        Err(StageTypeParseError::InvalidFormat) => (),
+        Err(e) => return Err(e),
     }
 
-    None
+    match parse_stage_selector(selector) {
+        Ok(id) => return Ok(id),
+        Err(StageTypeParseError::InvalidFormat) => (),
+        Err(e) => return Err(e),
+    }
+
+    match parse_stage_ref(selector) {
+        Ok(id) => return Ok(id),
+        Err(StageTypeParseError::InvalidFormat) => (),
+        Err(e) => return Err(e),
+    }
+
+    Err(StageTypeParseError::InvalidFormat)
 }
 
 /// Stage file Regex pattern that works for most stages. Used in
