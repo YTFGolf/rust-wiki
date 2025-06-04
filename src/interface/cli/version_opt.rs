@@ -24,8 +24,7 @@ impl ConfigMerge for VersionOptions {
         }
 
         if let Some(lang) = &self.lang {
-            let str_val = format!("{lang:?}");
-            version.set_lang(serde_json::from_str(&str_val).unwrap());
+            version.set_lang(lang.parse().unwrap());
         }
 
         version.init_all();
