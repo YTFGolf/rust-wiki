@@ -129,7 +129,7 @@ pub struct StageData<'a> {
 
 #[derive(Debug, thiserror::Error)]
 /// Error when getting data from file name.
-pub enum FromFileError {
+pub enum FromSelectorError {
     /// File selector doesn't work.
     #[error(transparent)]
     InvalidSelector(#[from] StageTypeParseError),
@@ -143,10 +143,10 @@ impl<'a> StageData<'_> {
     pub fn from_file_name(
         selector: &str,
         version: &'a Version,
-    ) -> Result<StageData<'a>, FromFileError> {
+    ) -> Result<StageData<'a>, FromSelectorError> {
         match parse_stage_file(selector) {
-            Ok(id) => Self::from_id(id, version).map_err(FromFileError::DataParseError),
-            Err(e) => Err(FromFileError::InvalidSelector(e)),
+            Ok(id) => Self::from_id(id, version).map_err(FromSelectorError::DataParseError),
+            Err(e) => Err(FromSelectorError::InvalidSelector(e)),
         }
     }
 
@@ -446,7 +446,7 @@ mod tests {
         // I could use the actual numbers but idc
         assert!(matches!(
             no_file,
-            FromFileError::DataParseError(FullCSVError::FileOpenError { .. })
+            FromSelectorError::DataParseError(FullCSVError::FileOpenError { .. })
         ));
 
         assert!(
