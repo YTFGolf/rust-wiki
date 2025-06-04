@@ -2,35 +2,10 @@
 
 use crate::game_data::version::{
     Version,
-    lang::{self, MultiLangVersionContainer},
+    lang::{self, MultiLangVersionContainer, VersionLanguage},
 };
 use serde::{Deserialize, Serialize};
-use std::{env::home_dir, fmt::Display, path::PathBuf};
-
-/// Default language.
-#[derive(Debug, Default, Deserialize, Serialize, Clone, Copy)]
-#[serde(rename_all = "lowercase")]
-#[repr(usize)]
-pub enum Lang {
-    /// English.
-    EN,
-    #[default]
-    /// Japanese.
-    JP,
-    // should this be JA?
-}
-
-impl Display for Lang {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let lang = match self {
-            Self::EN => "en",
-            Self::JP => "ja",
-        };
-        f.write_str(lang)?;
-
-        Ok(())
-    }
-}
+use std::{env::home_dir, path::PathBuf};
 
 const TOTAL_VERSIONS: usize = 2;
 #[derive(Debug, Default, Deserialize, Serialize)]
@@ -45,7 +20,7 @@ const TOTAL_VERSIONS: usize = 2;
 /// assert!(matches!(new_vc.try_current_version(), Some(_)));
 /// ```
 pub struct VersionConfig {
-    lang: Lang,
+    lang: VersionLanguage,
     enpath: String,
     jppath: String,
 
@@ -78,11 +53,11 @@ impl VersionConfig {
 
     /// Initialise all versions.
     pub fn init_all(&mut self) {
-        const LANGS: [Lang; TOTAL_VERSIONS] = [Lang::EN, Lang::JP];
+        const LANGS: [VersionLanguage; TOTAL_VERSIONS] = [VersionLanguage::EN, VersionLanguage::JP];
         for lang in LANGS {
             let location = match lang {
-                Lang::EN => &self.enpath,
-                Lang::JP => &self.jppath,
+                VersionLanguage::EN => &self.enpath,
+                VersionLanguage::JP => &self.jppath,
             };
             let location = Self::expand_home(location);
             self.versions[lang as usize] = Some(Version::new(location, lang, None));
@@ -90,14 +65,14 @@ impl VersionConfig {
     }
 
     /// Get configured language.
-    pub fn lang(&self) -> Lang {
+    pub fn lang(&self) -> VersionLanguage {
         self.lang
     }
 }
 
 impl VersionConfig {
     /// Try to get version.
-    pub fn try_version(&self, lang: Lang) -> Option<&Version> {
+    pub fn try_version(&self, lang: VersionLanguage) -> Option<&Version> {
         self.versions[lang as usize].as_ref()
     }
 
@@ -107,7 +82,7 @@ impl VersionConfig {
     }
 
     /// Get game version.
-    pub fn version(&self, lang: Lang) -> &Version {
+    pub fn version(&self, lang: VersionLanguage) -> &Version {
         self.try_version(lang)
             .expect("config has not been properly initialised")
     }
@@ -119,12 +94,12 @@ impl VersionConfig {
 
     /// Get English version.
     pub fn en(&self) -> &Version {
-        self.version(Lang::EN)
+        self.version(VersionLanguage::EN)
     }
 
     /// Get Japanese version.
     pub fn jp(&self) -> &Version {
-        self.version(Lang::JP)
+        self.version(VersionLanguage::JP)
     }
 }
 impl MultiLangVersionContainer for VersionConfig {
@@ -142,13 +117,13 @@ impl VersionConfig {
     /// [`init_all`][VersionConfig::init_all] or it will do nothing.
     pub fn set_current_path(&mut self, path: String) {
         match self.lang {
-            Lang::EN => self.enpath = path,
-            Lang::JP => self.jppath = path,
+            VersionLanguage::EN => self.enpath = path,
+            VersionLanguage::JP => self.jppath = path,
         }
     }
 
     /// Set the version's `lang`.
-    pub fn set_lang(&mut self, lang: Lang) {
+    pub fn set_lang(&mut self, lang: VersionLanguage) {
         self.lang = lang;
     }
 }

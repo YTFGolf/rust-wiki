@@ -1,47 +1,44 @@
 //! Defines a version's language.
 
 use super::Version;
-use crate::SLang;
+use serde::{Deserialize, Serialize};
+use std::{fmt::Display, str::FromStr};
 
 #[derive(Debug)]
 /// Represents an invalid language code.
 pub struct InvalidLanguage(pub String);
 
-#[derive(Debug, Clone, Copy)]
-/// Version's language.
+/// Default language.
+#[derive(Debug, Default, Deserialize, Serialize, Clone, Copy)]
+#[serde(rename_all = "lowercase")]
+#[repr(usize)]
 pub enum VersionLanguage {
     /// English.
     EN,
     /// Japanese.
+    #[default]
     JP,
+    // should this be JA?
 }
-use VersionLanguage as V;
-// TODO merge with VersionConfig's lang.
 
-impl TryFrom<&str> for VersionLanguage {
-    type Error = InvalidLanguage;
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        let val_lower = value.to_lowercase();
-        match val_lower.as_str() {
-            "en" => Ok(V::EN),
-            "jp" | "ja" => Ok(V::JP),
-            _ => Err(InvalidLanguage(val_lower)),
-        }
+impl Display for VersionLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let lang = match self {
+            Self::EN => "en",
+            Self::JP => "ja",
+        };
+        f.write_str(lang)
     }
 }
-impl From<SLang> for VersionLanguage {
-    fn from(value: SLang) -> Self {
-        match value {
-            SLang::EN => Self::EN,
-            SLang::JP => Self::JP,
-        }
-    }
-}
-impl From<VersionLanguage> for SLang {
-    fn from(value: VersionLanguage) -> Self {
-        match value {
-            VersionLanguage::EN => Self::EN,
-            VersionLanguage::JP => Self::JP,
+
+impl FromStr for VersionLanguage {
+    type Err = InvalidLanguage;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let s_lower = s.to_lowercase();
+        match s_lower.as_str() {
+            "en" => Ok(Self::EN),
+            "jp" | "ja" => Ok(Self::JP),
+            _ => Err(InvalidLanguage(s_lower)),
         }
     }
 }
