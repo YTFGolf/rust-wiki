@@ -20,3 +20,5 @@ pub enum StageTypeParseError {
     #[error("unrecognised selector format")]
     InvalidFormat,
 }
+
+// could perhaps give more context for UnkownMatcher and InvalidNumber
