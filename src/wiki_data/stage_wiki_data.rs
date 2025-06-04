@@ -246,8 +246,8 @@ mod tests {
         for i in 0.. {
             let d = Stage::from_id_current(StageID::from_components(T::Extra, i, 0));
             match d {
-                None => break,
-                Some(_) => max_index = i,
+                Ok(_) => max_index = i,
+                Err(_) => break,
             }
         }
         let rdr = csv::ReaderBuilder::new()

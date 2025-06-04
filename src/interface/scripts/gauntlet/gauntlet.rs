@@ -303,8 +303,8 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     for i in 0..100 {
         let id = StageID::from_map(map_id.clone(), i);
         let stage = match Stage::from_id(id, config.version.current_version()) {
-            Some(stage) => stage,
-            None => break,
+            Ok(stage) => stage,
+            Err(_) => break,
         };
         stages.push(stage);
     }
