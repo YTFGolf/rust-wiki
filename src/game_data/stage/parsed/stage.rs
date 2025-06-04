@@ -2,13 +2,14 @@
 
 use super::stage_enemy::StageEnemy;
 use crate::game_data::{
+    csv::FullCSVError,
     map::{
         cached::{map_option::MapOptionCSV, special_rules::SpecialRule},
         raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
     },
     meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
     stage::raw::{
-        stage_data::StageData,
+        stage_data::{FromSelectorError, StageData},
         stage_option::{
             StageOptionCSV,
             charagroups::{CharaGroup, CharaGroups},
@@ -349,18 +350,18 @@ fn u8_to_bool(n: u8) -> bool {
 
 impl Stage {
     /// Create a new stage object from `selector`.
-    pub fn from_selector(selector: &str, version: &Version) -> Option<Self> {
-        Self::from_id(parse_general_stage_id(selector)?, version)
+    pub fn from_selector(selector: &str, version: &Version) -> Result<Self, FromSelectorError> {
+        Self::from_id(parse_general_stage_id(selector)?, version).map_err(From::from)
     }
 
     /// Create new stage object from id.
-    pub fn from_id(id: StageID, version: &Version) -> Option<Self> {
-        Some(StageData::from_id(id, version).ok()?.into())
+    pub fn from_id(id: StageID, version: &Version) -> Result<Self, FullCSVError> {
+        Ok(StageData::from_id(id, version)?.into())
     }
 
     /// Create a new stage object from `selector` in current version.
     #[cfg(test)]
-    pub fn from_id_current(id: StageID) -> Option<Self> {
+    pub fn from_id_current(id: StageID) -> Result<Self, FullCSVError> {
         use crate::TEST_CONFIG;
         Self::from_id(id, TEST_CONFIG.version.current_version())
     }
