@@ -9,13 +9,12 @@ use std::{fmt::Display, str::FromStr};
 pub struct InvalidLanguage(pub String);
 
 /// Default language.
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 #[repr(usize)]
 pub enum VersionLanguage {
     /// English.
     EN,
     /// Japanese.
-    #[default]
     JP,
     // should this be JA?
 }

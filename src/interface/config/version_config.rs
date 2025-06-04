@@ -26,7 +26,7 @@ where
 }
 
 const TOTAL_VERSIONS: usize = 2;
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 /// Configuration for Versions.
 ///
 /// Make sure to initialise the config before it is read.
@@ -38,7 +38,10 @@ const TOTAL_VERSIONS: usize = 2;
 /// assert!(matches!(new_vc.try_current_version(), Some(_)));
 /// ```
 pub struct VersionConfig {
-    #[serde(serialize_with = "serialize_lang", deserialize_with = "deserialize_lang")]
+    #[serde(
+        serialize_with = "serialize_lang",
+        deserialize_with = "deserialize_lang"
+    )]
     lang: VersionLanguage,
     enpath: String,
     jppath: String,
@@ -54,6 +57,17 @@ impl Clone for VersionConfig {
             enpath: self.enpath.clone(),
             jppath: self.jppath.clone(),
 
+            versions: Default::default(),
+        }
+    }
+}
+
+impl Default for VersionConfig {
+    fn default() -> Self {
+        Self {
+            lang: VersionLanguage::JP,
+            enpath: Default::default(),
+            jppath: Default::default(),
             versions: Default::default(),
         }
     }
