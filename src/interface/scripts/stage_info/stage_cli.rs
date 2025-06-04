@@ -88,15 +88,13 @@ impl CommandExec for StageInfoOptions {
             0 => &input("Input file selector: "),
             _ => &self.selector.join(" "),
         };
-        println!(
-            "{}",
-            get_stage_info(
-                &Stage::from_selector(selector, config.version.current_version()).unwrap_or_else(
-                    || panic!("Selector {selector:?} doesn't correspond to a real stage.")
-                ),
-                config
-            )
-        );
+
+        let stage = Stage::from_selector(selector, config.version.current_version());
+        let stage = match stage {
+            Ok(stage) => stage,
+            Err(e) => panic!("Error when getting info for stage {selector:?}: {e}"),
+        };
+        println!("{}", get_stage_info(&stage, config));
     }
 }
 
