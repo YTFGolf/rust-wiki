@@ -177,7 +177,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic = "Selector \" 0 0\" doesn't correspond to a real stage."]
+    #[should_panic = "Error when getting info for stage \" 0 0\": unknown variant name"]
     fn invalid_selector() {
         const ARGS: [&str; 3] = ["run_program", "stage", " 0 0"];
         let cli = Cli::parse_from(ARGS.iter());
