@@ -19,12 +19,13 @@ pub struct VersionOptions {
 impl ConfigMerge for VersionOptions {
     fn merge(&self, config: &mut Config) {
         let version = &mut config.version;
-        if let Some(path) = &self.path {
-            version.set_current_path(path.clone());
-        }
 
         if let Some(lang) = &self.lang {
             version.set_lang(lang.parse().unwrap());
+        }
+
+        if let Some(path) = &self.path {
+            version.set_current_path(path.clone());
         }
 
         version.init_all();
