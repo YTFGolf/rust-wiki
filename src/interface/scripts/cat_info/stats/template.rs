@@ -2,7 +2,7 @@ use super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
-    wiki_data::cat_data::{CatName, CAT_DATA},
+    wiki_data::cat_data::{CAT_DATA, CatName},
     wikitext::template::{Template, TemplateParameter},
 };
 use std::iter::zip;

@@ -1,7 +1,6 @@
 //! Deals with getting information about a certain version of the game.
 
 use super::{lang::VersionLanguage, version_data::CacheableVersionData};
-use crate::SLang;
 use std::{
     any::{Any, TypeId},
     path::{Path, PathBuf},
@@ -27,13 +26,13 @@ pub struct Version {
 }
 impl Version {
     /// Create new Version object.
-    pub fn new<P>(location: P, language: SLang, number: Option<String>) -> Self
+    pub fn new<P>(location: P, language: VersionLanguage, number: Option<String>) -> Self
     where
         PathBuf: From<P>,
     {
         Self {
             location: PathBuf::from(location),
-            _language: language.into(),
+            _language: language,
             _number: number.unwrap_or_default(),
 
             version_data: Mutex::from(Vec::new()),
@@ -68,10 +67,10 @@ impl Version {
     /// ```rust,no_run
     /// use rust_wiki::game_data::map::cached::map_option::MapOption;
     /// # use rust_wiki::game_data::version::Version;
-    /// # use rust_wiki::SLang;
+    /// # use rust_wiki::VersionLanguage;
     /// # use rust_wiki::game_data::meta::stage::map_id::MapID;
     ///
-    /// let version = Version::new("~", SLang::EN, Some("1.0".into()));
+    /// let version = Version::new("~", VersionLanguage::EN, Some("1.0".into()));
     /// let map_option = version.get_cached_file::<MapOption>();
     /// let earthshaker_option = map_option.get_map(&MapID::from_numbers(0, 0));
     /// ```
