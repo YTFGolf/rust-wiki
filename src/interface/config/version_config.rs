@@ -10,23 +10,19 @@ use serde::{
 };
 use std::{env::home_dir, path::PathBuf, str::FromStr};
 
-impl<'de> Deserialize<'de> for VersionLanguage {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        FromStr::from_str(&s).map_err(de::Error::custom)
-    }
+pub fn deserialize_lang<'de, D>(deserializer: D) -> Result<VersionLanguage, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    FromStr::from_str(&s).map_err(de::Error::custom)
 }
-
-impl Serialize for VersionLanguage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.collect_str(self)
-    }
+#[allow(clippy::trivially_copy_pass_by_ref)]
+pub fn serialize_lang<S>(lang: &VersionLanguage, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    serializer.collect_str(lang)
 }
 
 const TOTAL_VERSIONS: usize = 2;
@@ -42,6 +38,7 @@ const TOTAL_VERSIONS: usize = 2;
 /// assert!(matches!(new_vc.try_current_version(), Some(_)));
 /// ```
 pub struct VersionConfig {
+    #[serde(serialize_with = "serialize_lang", deserialize_with = "deserialize_lang")]
     lang: VersionLanguage,
     enpath: String,
     jppath: String,
