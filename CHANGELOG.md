@@ -15,11 +15,24 @@ subheading.
 
 ### Added
 
+- Cat stats table.
+
 ### Fixed
+
+- `get_formatted_float`:
+  - When `round(num, precision) = 1.0`, now returns `(num + 1).to_string()`.
+  - When `round(num, precision) = 0.0`, now returns `num.to_string()`.
 
 ### Changed
 
+- Anim now applies to all types of animation, although only attack is done.
+- Stage ID `parse_general_stage_id` returns a result instead of option.
+
 ### Removed
+
+- Config language; replaced with `VersionLanguage`.
+- `write_formatted_float`: didn't know how to deal with the case where
+  `num.prec$f` is `1.0` other than to remove this function entirely.
 
 ## [0.6.1] - 2025-05-31
 
