@@ -15,6 +15,16 @@ subheading.
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.6.2] - 2025-06-07
+
+### Added
+
 - Cat stats table.
 
 ### Fixed
@@ -278,7 +288,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.1...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.2...dev
+[0.6.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...v0.6.0
 [0.5.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.3...v0.5.4
