@@ -25,7 +25,7 @@ where
     serializer.collect_str(lang)
 }
 
-const TOTAL_VERSIONS: usize = 2;
+const TOTAL_VERSIONS: usize = 4;
 #[derive(Debug, Deserialize, Serialize)]
 /// Configuration for Versions.
 ///
@@ -126,7 +126,12 @@ impl VersionConfig {
 
     /// Initialise all versions.
     pub fn init_all(&mut self) {
-        const LANGS: [VersionLanguage; TOTAL_VERSIONS] = [VersionLanguage::EN, VersionLanguage::JP];
+        const LANGS: [VersionLanguage; TOTAL_VERSIONS] = [
+            VersionLanguage::EN,
+            VersionLanguage::JP,
+            VersionLanguage::KR,
+            VersionLanguage::TW,
+        ];
         for lang in LANGS {
             let location = Self::expand_home(self.get_lang_path(lang));
             self.versions[lang as usize] = Some(Version::new(location, lang, None));
