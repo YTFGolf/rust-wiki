@@ -2,7 +2,7 @@
 
 use crate::game_data::version::{
     Version,
-    lang::{self, MultiLangVersionContainer, VersionLanguage},
+    lang::{self, MultiLangContainer, MultiLangVersionContainer, VersionLanguage},
 };
 use serde::{
     Deserialize, Serialize,
@@ -25,7 +25,6 @@ where
     serializer.collect_str(lang)
 }
 
-const TOTAL_VERSIONS: usize = 4;
 #[derive(Debug, Deserialize, Serialize)]
 /// Configuration for Versions.
 ///
@@ -49,7 +48,7 @@ pub struct VersionConfig {
     twpath: String,
 
     #[serde(skip)]
-    versions: [Option<Version>; TOTAL_VERSIONS],
+    versions: MultiLangContainer<Option<Version>>,
 }
 
 impl Clone for VersionConfig {
@@ -126,7 +125,7 @@ impl VersionConfig {
 
     /// Initialise all versions.
     pub fn init_all(&mut self) {
-        const LANGS: [VersionLanguage; TOTAL_VERSIONS] = [
+        const LANGS: MultiLangContainer<VersionLanguage> = [
             VersionLanguage::EN,
             VersionLanguage::JP,
             VersionLanguage::KR,
