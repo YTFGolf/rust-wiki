@@ -9,7 +9,7 @@ use std::{fmt::Display, str::FromStr};
 pub struct InvalidLanguage(pub String);
 
 /// Version's language.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(usize)]
 pub enum VersionLanguage {
     /// English.

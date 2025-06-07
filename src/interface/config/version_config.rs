@@ -186,3 +186,20 @@ impl VersionConfig {
         self.lang = lang;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_set_path() {
+        let mut version = VersionConfig::default();
+        assert_eq!(version.lang, VersionLanguage::JP);
+        assert_eq!(version.get_lang_path(version.lang), "");
+
+        version.set_current_path("###".to_string());
+        assert_eq!(version.get_lang_path(version.lang), "###");
+        // just to ensure that this works, since it relies on something that may
+        // or may not be undefined behaviour idk
+    }
+}
