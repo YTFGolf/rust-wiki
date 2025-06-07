@@ -118,11 +118,12 @@ impl Cat {
         let stats = Self::get_stats(id, version_cont.lang_default()).collect::<Vec<_>>();
 
         let get = |ver| get_anims(id, ver, amt_forms, egg_data);
-        let anims = match get(version_cont.get_lang(VersionLanguage::EN)) {
-            Ok(anims) => anims,
-            Err(_) => get(version_cont.get_lang(VersionLanguage::JP)).unwrap(),
+
+        let anims = get(version_cont.get_lang(VersionLanguage::EN))
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP))).unwrap();
             // unwrap is probably a bad idea here
-        };
 
         assert!(stats.len() >= amt_forms);
         assert!(anims.len() >= amt_forms);
