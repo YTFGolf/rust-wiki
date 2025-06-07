@@ -62,6 +62,11 @@ pub fn get_form(
 
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
+    assert!(
+        anims.attack.length() > attack_length,
+        "Attack animation length mismatch: {} < {attack_length}",
+        anims.attack.length()
+    );
     let backswing = anims.attack.length() - attack_length;
     let frequency = attack_length + {
         let tba = stats.attack.tba;
