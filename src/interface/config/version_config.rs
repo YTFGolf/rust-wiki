@@ -163,6 +163,16 @@ impl VersionConfig {
     pub fn jp(&self) -> &Version {
         self.version(VersionLanguage::JP)
     }
+
+    /// Get Korean version.
+    pub fn kr(&self) -> &Version {
+        self.version(VersionLanguage::KR)
+    }
+
+    /// Get Taiwanese version.
+    pub fn tw(&self) -> &Version {
+        self.version(VersionLanguage::TW)
+    }
 }
 
 impl MultiLangVersionContainer for VersionConfig {
