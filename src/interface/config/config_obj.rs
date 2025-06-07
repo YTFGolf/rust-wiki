@@ -27,6 +27,7 @@ use std::{
   trait each subcommand option type could implement)
 */
 // TODO FIX THIS
+// https://github.com/toml-rs/toml/issues/376
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
 // needs to take an &Level due to how serialize works
