@@ -45,6 +45,8 @@ pub struct VersionConfig {
     lang: VersionLanguage,
     enpath: String,
     jppath: String,
+    krpath: String,
+    twpath: String,
 
     #[serde(skip)]
     versions: [Option<Version>; TOTAL_VERSIONS],
@@ -56,6 +58,8 @@ impl Clone for VersionConfig {
             lang: self.lang,
             enpath: self.enpath.clone(),
             jppath: self.jppath.clone(),
+            krpath: self.krpath.clone(),
+            twpath: self.twpath.clone(),
 
             versions: Default::default(),
         }
@@ -68,6 +72,9 @@ impl Default for VersionConfig {
             lang: VersionLanguage::JP,
             enpath: Default::default(),
             jppath: Default::default(),
+            krpath: Default::default(),
+            twpath: Default::default(),
+
             versions: Default::default(),
         }
     }
@@ -79,6 +86,8 @@ impl VersionConfig {
         let path = match lang {
             VersionLanguage::EN => &self.enpath,
             VersionLanguage::JP => &self.jppath,
+            VersionLanguage::KR => &self.krpath,
+            VersionLanguage::TW => &self.twpath,
         };
         path as *const String
     }
