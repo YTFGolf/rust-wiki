@@ -122,8 +122,9 @@ impl Cat {
         let anims = get(version_cont.get_lang(VersionLanguage::EN))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
-            .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP))).unwrap();
-            // unwrap is probably a bad idea here
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP)))
+            .unwrap();
+        // unwrap is probably a bad idea here
 
         assert!(stats.len() >= amt_forms);
         assert!(anims.len() >= amt_forms);

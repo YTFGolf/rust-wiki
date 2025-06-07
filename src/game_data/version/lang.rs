@@ -53,6 +53,9 @@ impl FromStr for VersionLanguage {
 /// Total amount of languages available.
 pub const TOTAL_LANGS: usize = 4;
 
+/// Type that can hold data for all available languages.
+pub type MultiLangContainer<T> = [T; TOTAL_LANGS];
+
 /// Struct that can hold game data for multiple languages.
 pub trait MultiLangVersionContainer {
     /// Get a "default" version.
