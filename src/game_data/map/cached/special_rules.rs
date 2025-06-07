@@ -233,7 +233,7 @@ impl From<RawRuleData> for SpecialRule {
 }
 
 /// Map of all map ids to their special rules.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct SpecialRules {
     map: HashMap<u32, SpecialRule>,
 }
@@ -255,10 +255,10 @@ impl From<RulesMap> for SpecialRules {
 }
 impl CacheableVersionData for SpecialRules {
     fn init_data(path: &std::path::Path) -> Self {
-        let data: RulesMap = serde_json::from_reader(
-            File::open(path.join("DataLocal/SpecialRulesMap.json")).unwrap(),
-        )
-        .unwrap();
+        let Ok(file) = File::open(path.join("DataLocal/SpecialRulesMap.json")) else {
+            return Self::default();
+        };
+        let data: RulesMap = serde_json::from_reader(file).unwrap();
         data.into()
     }
 }
