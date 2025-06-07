@@ -2,6 +2,7 @@
 
 use super::Version;
 use std::{fmt::Display, str::FromStr};
+use strum::EnumIter;
 
 #[derive(Debug, thiserror::Error)]
 #[error("invalid language: {0:?}")]
@@ -9,7 +10,7 @@ use std::{fmt::Display, str::FromStr};
 pub struct InvalidLanguage(pub String);
 
 /// Version's language.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
 #[repr(usize)]
 pub enum VersionLanguage {
     /// English.
@@ -49,10 +50,25 @@ impl FromStr for VersionLanguage {
     }
 }
 
+/// Total amount of languages available.
+pub const TOTAL_LANGS: usize = 4;
+
 /// Struct that can hold game data for multiple languages.
 pub trait MultiLangVersionContainer {
     /// Get a "default" version.
     fn lang_default(&self) -> &Version;
     /// Get the version that corresponds to the appropriate language.
     fn get_lang(&self, lang: VersionLanguage) -> &Version;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn test_total_langs() {
+        let count = VersionLanguage::iter().map(|l| l as usize).max().unwrap();
+        assert_eq!(count + 1, TOTAL_LANGS);
+    }
 }
