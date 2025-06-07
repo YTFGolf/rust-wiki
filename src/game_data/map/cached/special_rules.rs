@@ -276,6 +276,10 @@ mod tests {
         // both for unused special rule and for string version
         let version = TEST_CONFIG.version.current_version();
         let rules = version.get_cached_file::<SpecialRules>();
+
+        assert!(!rules.map.is_empty());
+        // make sure hasn't defaulted
+
         for rule in &rules.map {
             for rtype in &rule.1.rule_type {
                 if let RuleType::Placeholder(n) = rtype {
