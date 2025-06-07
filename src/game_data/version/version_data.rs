@@ -12,3 +12,7 @@ pub trait CacheableVersionData: Debug + Send + Sync {
     where
         Self: Sized;
 }
+
+// possible alternative is to make all things have to return a result, which at
+// least gives version a chance to drop the mutex before panicking, or
+// realistically would be `unwrap_or_default`ing
