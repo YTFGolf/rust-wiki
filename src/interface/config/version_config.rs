@@ -80,35 +80,24 @@ impl Default for VersionConfig {
 }
 
 impl VersionConfig {
-    /// So the other functions don't need to duplicate this switch statement.
-    fn get_lang_path_ptr(&self, lang: VersionLanguage) -> *const String {
-        let path = match lang {
-            VersionLanguage::EN => &self.enpath,
-            VersionLanguage::JP => &self.jppath,
-            VersionLanguage::KR => &self.krpath,
-            VersionLanguage::TW => &self.twpath,
-        };
-        path as *const String
-    }
-
     /// Get the filepath of the decrypted contents for this language.
     fn get_lang_path_mut(&mut self, lang: VersionLanguage) -> &mut String {
-        let path = self.get_lang_path_ptr(lang) as *mut String;
-        unsafe { &mut *path }
-        // safety: idk if this is undefined behaviour or not, rust doesn't do a
-        // great job of defining undefined behaviour and unsafe really is not
-        // ergonomic
-
-        // tbf at least rust doesn't give me a warning about this one unlike if
-        // I tried to directly convert the pointer from an `&T`
-
-        // maybe I should just use a macro instead
+        match lang {
+            VersionLanguage::EN => &mut self.enpath,
+            VersionLanguage::JP => &mut self.jppath,
+            VersionLanguage::KR => &mut self.krpath,
+            VersionLanguage::TW => &mut self.twpath,
+        }
     }
 
     /// [`Self::get_lang_path_mut`] but immutable.
     fn get_lang_path(&self, lang: VersionLanguage) -> &String {
-        unsafe { &*self.get_lang_path_ptr(lang) }
-        // safety: this has gotta be safe right
+        match lang {
+            VersionLanguage::EN => &self.enpath,
+            VersionLanguage::JP => &self.jppath,
+            VersionLanguage::KR => &self.krpath,
+            VersionLanguage::TW => &self.twpath,
+        }
     }
 }
 
@@ -197,22 +186,5 @@ impl VersionConfig {
     /// Set the version's `lang`.
     pub fn set_lang(&mut self, lang: VersionLanguage) {
         self.lang = lang;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_set_path() {
-        let mut version = VersionConfig::default();
-        assert_eq!(version.lang, VersionLanguage::JP);
-        assert_eq!(version.get_lang_path(version.lang), "");
-
-        version.set_current_path("###".to_string());
-        assert_eq!(version.get_lang_path(version.lang), "###");
-        // just to ensure that this works, since it relies on something that may
-        // or may not be undefined behaviour idk
     }
 }
