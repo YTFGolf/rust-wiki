@@ -269,6 +269,10 @@ mod tests {
             i += 1;
         }
 
-        assert_eq!(max_index, i - 1, "Not all ex stages are in ContinueStages!");
+        assert_eq!(
+            max_index,
+            i - 1,
+            "Mismatch between amount of ex stages in files and stages in ContinueStages.csv!"
+        );
     }
 }
