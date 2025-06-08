@@ -2,7 +2,10 @@
 
 use crate::{
     game_data::{
-        map::raw::csv_types::{TreasureCSV, TreasureType as T},
+        map::{
+            parsed::map::ResetType,
+            raw::csv_types::{TreasureCSV, TreasureType as T},
+        },
         stage::parsed::stage::{Stage, StageRewards},
     },
     interface::error_handler::InfallibleWrite,
@@ -10,19 +13,18 @@ use crate::{
     wikitext::{number_utils::get_formatted_float, template::TemplateParameter},
 };
 use num_format::{Locale, WriteFormatted};
-use std::fmt::Write;
+use std::{fmt::Write, num::NonZeroU32};
 
 /// Is the reward a cat unit/true form.
 fn is_unit_drop(id: u32) -> bool {
     (1_000..30_000).contains(&id)
 }
+
+const ONCE: &str = "1 time";
+const UNLIMITED: &str = "unlimited";
 /// Get the drop limit of the item.
 fn drop_limit(id: u32) -> &'static str {
-    if is_unit_drop(id) {
-        "1 time"
-    } else {
-        "unlimited"
-    }
+    if is_unit_drop(id) { ONCE } else { UNLIMITED }
 }
 
 /// Write item name and amount e.g. `50,000 XP` or `Treasure Radar +1`.
@@ -44,13 +46,30 @@ fn write_name_and_amount(buf: &mut String, id: u32, amt: u32) {
 }
 
 /// When treasure type is first item drops once then rest are all unlimited.
-fn once_then_unlimited(rewards: &StageRewards) -> String {
+fn once_then_unlimited(
+    rewards: &StageRewards,
+    reset_type: ResetType,
+    max_clears: Option<NonZeroU32>,
+) -> String {
     let mut buf = String::new();
     let t = &rewards.treasure_drop;
 
     buf.write_str("- ").infallible_write();
     write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
-    write!(buf, " ({}%, 1 time)", t[0].item_chance).unwrap();
+
+    let amount = if matches!(max_clears, Some(nz) if nz.get() == 1)
+        && matches!(
+            reset_type,
+            ResetType::ResetRewards | ResetType::ResetRewardsAndClear
+        ) {
+        // TODO if-let chain in 2024
+        // special case that makes the output less confusing, see the linked
+        // template for full explanation
+        "unlimited{{TreasureAdjustment}}"
+    } else {
+        ONCE
+    };
+    write!(buf, " ({}%, {amount})", t[0].item_chance).unwrap();
 
     let mut total_allowed: f64 = 100.0;
     for item in &t[1..] {
@@ -201,7 +220,7 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
     let rewards = stage.rewards.as_ref()?;
 
     let treasure_text = match rewards.treasure_type {
-        T::OnceThenUnlimited => once_then_unlimited(rewards),
+        T::OnceThenUnlimited => once_then_unlimited(rewards, stage.reset_type, stage.max_clears),
         T::AllUnlimited => all_unlimited(rewards),
         T::UnclearMaybeRaw => single_raw(rewards),
         T::GuaranteedOnce => guaranteed_once(rewards),

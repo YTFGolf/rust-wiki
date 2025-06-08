@@ -10,7 +10,7 @@ use std::num::NonZeroU32;
 use strum::FromRepr;
 
 #[repr(u8)]
-#[derive(Debug, PartialEq, FromRepr)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, FromRepr)]
 /// What happens when event ends. Event can be ended by reaching max clears or
 /// by the timer running out.
 pub enum ResetType {
