@@ -221,10 +221,15 @@ pub fn battlegrounds(stage: &Stage) -> String {
         is_base_hit: bool,
         enemies_dupe: &[u32],
     ) -> String {
+        let len = enemies.len();
         enemies
             .iter()
             .filter_map(|e| {
-                if e.id == MS_SIGN && e.start_frame == 27_000 && e.boss_type == BossType::None {
+                if len > 1
+                    && e.id == MS_SIGN
+                    && e.start_frame == 27_000
+                    && e.boss_type == BossType::None
+                {
                     None
                 } else {
                     Some(get_single_enemy_line(
