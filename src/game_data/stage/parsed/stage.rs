@@ -5,6 +5,7 @@ use crate::game_data::{
     csv::FullCSVError,
     map::{
         cached::{map_option::MapOptionCSV, special_rules::SpecialRule},
+        parsed::map::ResetType,
         raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
     },
     meta::stage::{stage_id::StageID, stage_types::parse::parse_stage::parse_general_stage_id},
@@ -212,6 +213,8 @@ pub struct Stage {
     /// Rewards available.
     pub rewards: Option<StageRewards>,
 
+    /// How the map resets once cleared.
+    pub reset_type: ResetType,
     /// Max stage clears before map disappears.
     pub max_clears: Option<NonZeroU32>,
     /// Gauntlet cooldown.
@@ -293,17 +296,20 @@ impl From<StageData<'_>> for Stage {
             rewards = None;
         }
 
+        let reset_type: ResetType;
         let max_clears: Option<NonZeroU32>;
         let cooldown: Option<NonZeroU32>;
         let star_mask: Option<u16>;
         let crown_data: Option<CrownData>;
 
         if let Some(data) = map_option_data {
+            reset_type = ResetType::from(data.reset_type);
             max_clears = NonZeroU32::new(data.max_clears);
             cooldown = NonZeroU32::new(data.cooldown);
             star_mask = Some(data.star_mask);
             crown_data = Some(CrownData::from(&data));
         } else {
+            reset_type = ResetType::None;
             max_clears = None;
             cooldown = None;
             star_mask = None;
@@ -329,6 +335,7 @@ impl From<StageData<'_>> for Stage {
             xp,
             rewards,
 
+            reset_type,
             max_clears,
             cooldown,
             star_mask,
