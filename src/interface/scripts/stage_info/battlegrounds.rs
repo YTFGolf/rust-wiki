@@ -168,6 +168,7 @@ fn get_enemy_spawns(
     let mut enemies_dupe = vec![];
     for enemy in &stage.enemies {
         if let Some((_id, mag)) = enemies_mags.iter().find(|(id, _mag)| *id == enemy.id) {
+            // i.e. if there is a magnification already in `enemies_mags`
             if *mag != enemy.magnification {
                 enemies_dupe.push(enemy.id);
             }
@@ -175,7 +176,7 @@ fn get_enemy_spawns(
             enemies_mags.push((enemy.id, enemy.magnification));
         }
 
-        if is_default_spawn(enemy) {
+        if enemy.is_base || is_default_spawn(enemy) {
             default_spawn.push(enemy);
             continue;
         }
