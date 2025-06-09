@@ -140,6 +140,12 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
         max_frame = max(last_frame_used, max_frame);
     }
 
+    if max_frame == 0 {
+        return Err(AnimDataError::EmptyAnimation);
+    }
+    // can be assumed that 0f wouldn't appear naturally so must only appear if
+    // the animation is empty
+
     Ok(CatFormAnimData {
         attack: Anim {
             length: max_frame as u16 + 1,
