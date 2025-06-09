@@ -1,7 +1,7 @@
 //! Deals with cat data.
 
 use super::{
-    anim::{CatFormAnimData, get_anims},
+    anim::{AnimDataError, CatFormAnimData, get_anims},
     stats::form::CatFormStats,
     unitbuy::{AncientEggInfo, UnitBuy},
 };
@@ -60,6 +60,13 @@ pub enum CatDataError {
     UnitBuyNotFound,
     /// No data in `unitlevel.csv`.
     UnitLevelNotFound,
+    /// Error with unit animations.
+    AnimationError {
+        /// Number of the form the error occurred on.
+        form_num: usize,
+        /// Exact error that occurred.
+        source: AnimDataError,
+    },
 }
 
 impl Cat {
@@ -89,7 +96,7 @@ impl Cat {
         let egg_data = &unitbuy.misc.egg_info;
 
         let amt_forms = Self::get_amt_forms(id, is_summon, has_true, has_ultra);
-        let forms = Self::get_forms(id, version_cont, amt_forms, egg_data);
+        let forms = Self::get_forms(id, version_cont, amt_forms, egg_data)?;
 
         Ok(Self {
             id,
@@ -114,7 +121,7 @@ impl Cat {
         version_cont: &T,
         amt_forms: usize,
         egg_data: &AncientEggInfo,
-    ) -> CatForms {
+    ) -> Result<CatForms, CatDataError> {
         let stats = Self::get_stats(id, version_cont.lang_default()).collect::<Vec<_>>();
 
         let get = |ver| get_anims(id, ver, amt_forms, egg_data);
@@ -123,17 +130,16 @@ impl Cat {
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP)))
-            .unwrap();
-        // unwrap is probably a bad idea here
+            .map_err(|(source, form_num)| CatDataError::AnimationError { form_num, source })?;
 
         assert!(stats.len() >= amt_forms);
         assert!(anims.len() >= amt_forms);
 
-        CatForms {
+        Ok(CatForms {
             amt_forms,
             stats,
             anims,
-        }
+        })
     }
 
     /// Get stats for each form.
@@ -175,6 +181,9 @@ mod tests {
             match Cat::from_wiki_id(id, &TEST_CONFIG.version) {
                 Ok(_) => (),
                 Err(E::UnitBuyNotFound | E::UnitLevelNotFound) => break,
+                Err(E::AnimationError { form_num, source }) => {
+                    panic!("Error for unit #{id:03} on form {form_num}: {source:?}");
+                }
             }
         }
     }
