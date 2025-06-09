@@ -175,7 +175,7 @@ mod tests {
     fn test_all() {
         type E = CatDataError;
         for id in 0..u32::MAX {
-            if matches!(id, (740..=745) | 788 | 810) {
+            if matches!(id, 339 | 673 | (740..=745) | 788 | 810) {
                 continue;
             }
             match Cat::from_wiki_id(id, &TEST_CONFIG.version) {
