@@ -339,6 +339,23 @@ mod tests {
 
     #[test]
     fn once_then_many() {
+        let new_year_finale =
+            Stage::from_id_current(StageID::from_components(StageVariantID::Event, 184, 4))
+                .unwrap();
+        assert_eq!(
+            treasure(&new_year_finale),
+            Some(TemplateParameter::new(
+                "treasure",
+                "- [[Cat Capsule#Lucky Capsule G|Lucky Ticket G]] +3 (100%, 1 time)<br>\n\
+                - [[Cat Capsule#Lucky Capsule G|Lucky Ticket G]] +2 (30%, unlimited)<br>\n\
+                - [[Cat Capsule#Lucky Capsule G|Lucky Ticket G]] +1 (70%, unlimited)"
+            ))
+        );
+        assert_eq!(score_rewards(&new_year_finale), None);
+    }
+
+    #[test]
+    fn once_then_many_with_reset_type() {
         let merciless_xp =
             Stage::from_id_current(StageID::from_components(StageVariantID::Event, 155, 0))
                 .unwrap();
@@ -346,7 +363,7 @@ mod tests {
             treasure(&merciless_xp),
             Some(TemplateParameter::new(
                 "treasure",
-                "- 2,030,000 XP (10%, 1 time)<br>\n\
+                "- 2,030,000 XP (10%, unlimited{{TreasureAdjustment}})<br>\n\
                 - 1,020,000 XP (30%, unlimited)<br>\n\
                 - 510,000 XP (70%, unlimited)"
             ))
