@@ -350,8 +350,8 @@ mod tests {
                 TemplateParameter::new("prev stage", "N/A"),
                 TemplateParameter::new(
                     "next stage",
-                    "[[Volcano Province]]<br>\n\
-                    [[Doge Disturbance (Sweet Potato Province)|Doge Disturbance]] (''Invasion Stage'')"
+                    "[[Ahosan Domain]]<br>\n\
+                    [[Doge's Rebellion (Satsuma Imo Domain)|Doge's Rebellion]] (''Invasion Stage'')"
                 )
             ]
         );
