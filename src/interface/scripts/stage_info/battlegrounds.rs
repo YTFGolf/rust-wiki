@@ -214,18 +214,20 @@ pub fn battlegrounds(stage: &Stage) -> String {
     let (default_spawn, other_spawn, enemies_dupe) =
         get_enemy_spawns(stage, is_default_spawn, is_dojo);
 
+    let total_enemies = stage.enemies.len();
+
     // this is not an abstraction, this is a convenience. having a bool here
     // only works because I always know it's a bool
     fn stringify_enemy_list(
         enemies: &[&StageEnemy],
         is_base_hit: bool,
         enemies_dupe: &[u32],
+        total_enemies: usize,
     ) -> String {
-        let len = enemies.len();
         enemies
             .iter()
             .filter_map(|e| {
-                if len > 1
+                if total_enemies > 1
                     && e.id == MS_SIGN
                     && e.start_frame == 27_000
                     && e.boss_type == BossType::None
@@ -247,7 +249,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
     if stage.is_base_indestructible {
         buf += "*The enemy base is indestructible until the boss is defeated.\n";
     }
-    buf += &stringify_enemy_list(&default_spawn, false, &enemies_dupe);
+    buf += &stringify_enemy_list(&default_spawn, false, &enemies_dupe, total_enemies);
 
     for other in other_spawn {
         if !is_dojo {
@@ -258,7 +260,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
                 buf += "\n";
             }
             writeln!(buf, "*When the base reaches {hp}% HP:", hp = other.0).unwrap();
-            buf += &stringify_enemy_list(&other.1, true, &enemies_dupe);
+            buf += &stringify_enemy_list(&other.1, true, &enemies_dupe, total_enemies);
             continue;
         }
 
@@ -266,7 +268,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
         buf.write_formatted(&other.0, &Locale::en)
             .infallible_write();
         buf += " damage:\n";
-        buf += &stringify_enemy_list(&other.1, true, &enemies_dupe);
+        buf += &stringify_enemy_list(&other.1, true, &enemies_dupe, total_enemies);
     }
 
     buf
