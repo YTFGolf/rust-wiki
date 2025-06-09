@@ -156,10 +156,10 @@ pub enum RuleNameLabel {
     PlusOneUber,
     /// Mega Cat Cannon.
     MegaCatCannon,
-    /// 等速直線運動
-    等速直線運動,
-    /// プラスワン EX
-    プラスワンEX,
+    /// Uniform Motion.
+    UniformMotion,
+    /// Plus One: Special.
+    PlusOneSpecial,
     /// Placeholder.
     Placeholder(String),
 }
@@ -175,8 +175,8 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName006" => Self::SpecialClearance,
             "SpecialRuleName007" => Self::PlusOneUber,
             "SpecialRuleName008" => Self::MegaCatCannon,
-            "SpecialRuleName009" => Self::等速直線運動,
-            "SpecialRuleName010" => Self::プラスワンEX,
+            "SpecialRuleName009" => Self::UniformMotion,
+            "SpecialRuleName010" => Self::PlusOneSpecial,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -194,8 +194,8 @@ impl RuleNameLabel {
             RuleNameLabel::SpecialClearance => "Special Clearance",
             RuleNameLabel::PlusOneUber => "Plus One: Uber",
             RuleNameLabel::MegaCatCannon => "Mega Cat Cannon",
-            RuleNameLabel::等速直線運動 => "等速直線運動",
-            RuleNameLabel::プラスワンEX => "プラスワン EX",
+            RuleNameLabel::UniformMotion => "Uniform Motion",
+            RuleNameLabel::PlusOneSpecial => "Plus One: Special",
             RuleNameLabel::Placeholder(label) => {
                 panic!("Error: unknown special rule label {label:?}")
             }
