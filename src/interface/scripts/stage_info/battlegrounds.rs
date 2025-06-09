@@ -293,6 +293,16 @@ mod tests {
     }
 
     #[test]
+    fn test_ms_sign_only() {
+        let tada = Stage::from_id_current(StageID::from_components(T::Extra, 63, 0)).unwrap();
+        assert_eq!(tada.enemies.len(), 1);
+        assert_eq!(
+            battlegrounds(&tada),
+            "*Infinite [[Ms. Sign]]s spawn after 900 seconds<sup>27,000f</sup>, delay 900 seconds<sup>27,000f</sup>."
+        );
+    }
+
+    #[test]
     fn test_show_mag_and_ms_sign() {
         let star_ocean = Stage::from_id_current(StageID::from_components(T::SoL, 15, 7)).unwrap();
         assert_eq!(
