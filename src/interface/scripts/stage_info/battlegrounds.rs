@@ -790,4 +790,77 @@ mod tests {
             **9 [[Fireworks Guys (High-Yield)]] spawn, delay 3.33~10 seconds<sup>100f~300f</sup>."
         );
     }
+
+    #[test]
+    fn test_dojo_with_different_bhp() {
+        let talent_tournament =
+            Stage::from_id_current(StageID::from_components(T::RankingDojo, 30, 0)).unwrap();
+        // bhp is 100, but base still spawns at beginning
+
+        assert_eq!(
+            battlegrounds(&talent_tournament),
+            "*The enemy base here is a [[Talent Orb Castle (Enemy Base)|Talent Orb Castle]].\n\
+            *1 [[Mr. Puffington]] (100%) spawns after 160 seconds<sup>4,800f</sup>.\n\
+            *1 [[Scissoroo]] (1,200%) spawns after 156.67 seconds<sup>4,700f</sup>.\n\
+            *2 [[Sir Rel]]s (150%) spawn after 156.67 seconds<sup>4,700f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *2 [[Gabriel]]s (500%) spawn after 156.67 seconds<sup>4,700f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *1 [[Sir Rel]] (150%) spawns after 143.33 seconds<sup>4,300f</sup>.\n\
+            *2 [[Gabriel]]s (500%) spawn after 140 seconds<sup>4,200f</sup>, delay 3.33~6.67 seconds<sup>100f~200f</sup>.\n\
+            *2 [[Kroxo]]s (2,400%) spawn after 133.33 seconds<sup>4,000f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *2 [[Sir Rel]]s (150%) spawn after 133.33 seconds<sup>4,000f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
+            *2 [[Gabriel]]s (500%) spawn after 123.33 seconds<sup>3,700f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *1 [[Cala Maria]] (100%) spawns after 123.33 seconds<sup>3,700f</sup>.\n\
+            *Infinite [[Sir Rel]]s (150%) spawn after 116.67 seconds<sup>3,500f</sup>, delay 16.67~20 seconds<sup>500f~600f</sup>.\n\
+            *2 [[Kroxo]]s (2,400%) spawn after 116.67 seconds<sup>3,500f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
+            *2 [[Gabriel]]s (500%) spawn after 103.33 seconds<sup>3,100f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *2 [[Kroxo]]s (2,400%) spawn after 100 seconds<sup>3,000f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *1 [[Scissoroo]] (1,200%) spawns after 100 seconds<sup>3,000f</sup>.\n\
+            *2 [[Gabriel]]s (500%) spawn after 93.33 seconds<sup>2,800f</sup>, delay 10~13.33 seconds<sup>300f~400f</sup>.\n\
+            *2 [[Sir Rel]]s (100%) spawn after 93.33 seconds<sup>2,800f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
+            *2 [[Kroxo]]s (1,400%) spawn after 86.67 seconds<sup>2,600f</sup>, delay 16.67~20 seconds<sup>500f~600f</sup>.\n\
+            *1 [[Scissoroo]] (800%) spawns after 80 seconds<sup>2,400f</sup>.\n\
+            *Infinite [[Gabriel]]s (300%) spawn after 73.33 seconds<sup>2,200f</sup>, delay 16.67~20 seconds<sup>500f~600f</sup>.\n\
+            *1 [[Scissoroo]] (800%) spawns after 66.67 seconds<sup>2,000f</sup>.\n\
+            *1 [[Cala Maria]] (100%) spawns after 60 seconds<sup>1,800f</sup>.\n\
+            *2 [[Gabriel]]s (300%) spawn after 60 seconds<sup>1,800f</sup>, delay 16.67~20 seconds<sup>500f~600f</sup>.\n\
+            *1 [[Scissoroo]] (800%) spawns after 60 seconds<sup>1,800f</sup>.\n\
+            *2 [[Gabriel]]s (300%) spawn after 50 seconds<sup>1,500f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *Infinite [[Kroxo]]s (1,400%) spawn after 33.33 seconds<sup>1,000f</sup>, delay 16.67~20 seconds<sup>500f~600f</sup>.\n\
+            *2 [[Scissoroo]]s (800%) spawn after 33.33 seconds<sup>1,000f</sup>, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
+            *2 [[Gabriel]]s (300%) spawn after 26.67 seconds<sup>800f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
+            *2 [[Scissoroo]]s (800%) spawn after 23.33 seconds<sup>700f</sup>, delay 20~23.33 seconds<sup>600f~700f</sup>.\n\
+            *2 [[Gabriel]]s (300%) spawn after 10 seconds<sup>300f</sup>, delay 13.33~16.67 seconds<sup>400f~500f</sup>.\n\
+            *3 [[Kroxo]]s (1,400%) spawn after 6.67 seconds<sup>200f</sup>, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *When the base takes 200,000 damage:\n\
+            **1 [[Bun Bun Symbiote]] (200%) spawns as the boss.\n\
+            **4 [[Gabriel]]s (300%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            **6 [[Kroxo]]s (1,400%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            *When the base takes 500,000 damage:\n\
+            **1 [[St. Dober]] (100%) spawns as the boss.\n\
+            **4 [[Gabriel]]s (300%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            **1 [[Scissoroo]] (1,400%) spawns.\n\
+            *When the base takes 900,000 damage:\n\
+            **1 [[Crustaceous Scissorex]] (100%) spawns as the boss.\n\
+            **5 [[Gabriel]]s (500%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            **1 [[Mr. Puffington]] (100%) spawns.\n\
+            *When the base takes 1,400,000 damage:\n\
+            **1 [[Cala Maria]] (100%) spawns as the boss.\n\
+            **2 [[Sir Rel]]s (100%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            **1 [[Scissoroo]] (1,400%) spawns.\n\
+            *When the base takes 2,000,000 damage:\n\
+            **1 [[Crustaceous Scissorex]] (100%) spawns as the boss.\n\
+            **2 [[Sir Rel]]s (150%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            **1 [[Bun Bun Symbiote]] (400%) spawns.\n\
+            *When the base takes 2,500,000 damage:\n\
+            **1 [[St. Dober]] (150%) spawns as the boss.\n\
+            **8 [[Gabriel]]s (500%) spawn, delay 10~13.33 seconds<sup>300f~400f</sup>.\n\
+            **1 [[Bun Bun Symbiote]] (500%) spawns.\n\
+            **1 [[Cala Maria]] (150%) spawns.\n\
+            *When the base takes 3,000,000 damage:\n\
+            **1 [[Crustaceous Scissorex]] (150%) spawns as the boss.\n\
+            **1 [[Mr. Puffington]] (150%) spawns.\n\
+            **3 [[Sir Rel]]s (150%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
+            **8 [[Kroxo]]s (2,600%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>."
+        )
+    }
 }
