@@ -83,9 +83,9 @@ pub struct ScoreRewardsCSV {
 /// All descriptions are purely speculative based on BCU code; if you have
 /// access to the game you may want to actually check what is said here.
 pub enum TreasureType {
-    /// E.g. Merciless XP: first item is only available once. After that
-    /// works exactly the same as
-    /// [AllUnlimited][TreasureType::AllUnlimited].
+    /// E.g. Merciless XP, Lucky Ticket G stages: first item is only available
+    /// once. After that works exactly the same as
+    /// [`AllUnlimited`][TreasureType::AllUnlimited].
     OnceThenUnlimited = 1,
     /// Default e.g. Catfruit Jubilee.
     ///
@@ -93,7 +93,7 @@ pub enum TreasureType {
     /// chances are (50, 25, 12.5).
     AllUnlimited = 0,
     /// Appears to just be a single unlimited raw value. Difference between
-    /// this and [AllUnlimited][TreasureType::AllUnlimited] is unclear.
+    /// this and [`AllUnlimited`][TreasureType::AllUnlimited] is unclear.
     ///
     /// There are no occurrences of this value being used on stages with
     /// multiple treasure rewards as of 13.6.0.
@@ -105,7 +105,7 @@ pub enum TreasureType {
     /// total sum). The exact mechanism is unclear but this seems to be the
     /// case.
     GuaranteedOnce = -3,
-    /// Same as [GuaranteedOnce][TreasureType::GuaranteedOnce] but with
+    /// Same as [`GuaranteedOnce`][TreasureType::GuaranteedOnce] but with
     /// unlimited rewards.
     GuaranteedUnlimited = -4,
 }
