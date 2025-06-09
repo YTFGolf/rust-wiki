@@ -248,7 +248,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
 
     let mut buf = String::new();
     if stage.is_base_indestructible {
-        buf += "*The enemy base is indestructible until the boss is defeated.\n";
+        buf += "*The enemy base is protected by a [[Base Barrier]] until the boss is defeated.\n";
     }
     buf += &stringify_enemy_list(&default_spawn, false, &enemies_dupe, total_enemies);
 
@@ -450,7 +450,7 @@ mod tests {
         assert!(disaster_strikes.is_base_indestructible);
         assert_eq!(
             battlegrounds(&disaster_strikes),
-            "*The enemy base is indestructible until the boss is defeated.\n\
+            "*The enemy base is protected by a [[Base Barrier]] until the boss is defeated.\n\
             *1 [[Baa Baa]] spawns after 0.67 seconds<sup>20f</sup>.\n\
             *2 [[Jackie Peng]]s spawn after 3.33 seconds<sup>100f</sup>, delay 30 seconds<sup>900f</sup>.\n\
             *1 [[Mysterious Calamity]] spawns as the boss after 20 seconds<sup>600f</sup>.\n\
