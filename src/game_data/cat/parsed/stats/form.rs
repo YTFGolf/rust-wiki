@@ -511,6 +511,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 450,
                     tba: 240,
+                    cooldown: 479,
                 },
                 abilities: [].into(),
                 targets: [].into(),
@@ -532,6 +533,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 450,
                     tba: 240,
+                    cooldown: 479,
                 },
                 abilities: [].into(),
                 targets: [].into(),
@@ -567,6 +569,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 200,
                     tba: 0,
+                    cooldown: 0,
                 },
                 abilities: [].into(),
                 targets: [].into(),
@@ -623,6 +626,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 500,
                     tba: 0,
+                    cooldown: 0,
                 },
                 abilities: sorted(vec![
                     A::Slow {
@@ -693,6 +697,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 500,
                     tba: 0,
+                    cooldown: 0,
                 },
                 abilities: sorted(vec![
                     A::Slow {
@@ -770,6 +775,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 300,
                     tba: 0,
+                    cooldown: 0,
                 },
                 abilities: sorted(vec![
                     A::MassiveDamage,
@@ -821,6 +827,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 300,
                     tba: 0,
+                    cooldown: 0,
                 },
                 abilities: sorted(vec![
                     A::MassiveDamage,
@@ -873,6 +880,7 @@ mod tests {
                     aoe: AreaOfEffect::SingleAttack,
                     standing_range: 160,
                     tba: 50,
+                    cooldown: 99,
                 },
                 abilities: [A::Crit { chance: 15 }].into(),
                 targets: [].into(),
@@ -894,6 +902,7 @@ mod tests {
                     aoe: AreaOfEffect::SingleAttack,
                     standing_range: 160,
                     tba: 50,
+                    cooldown: 99,
                 },
                 abilities: [A::Crit { chance: 15 }].into(),
                 targets: [].into(),
@@ -915,6 +924,7 @@ mod tests {
                     aoe: AreaOfEffect::SingleAttack,
                     standing_range: 160,
                     tba: 50,
+                    cooldown: 99,
                 },
                 abilities: [
                     A::Crit { chance: 20 },
@@ -959,6 +969,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 400,
                     tba: 86,
+                    cooldown: 171,
                 },
                 abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
                 targets: [E::Red].into(),
@@ -983,6 +994,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 400,
                     tba: 86,
+                    cooldown: 171,
                 },
                 abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
                 targets: [E::Red].into(),
@@ -1007,6 +1019,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 400,
                     tba: 72,
+                    cooldown: 143,
                 },
                 abilities: [
                     A::MassiveDamage,
@@ -1047,6 +1060,7 @@ mod tests {
                 aoe: AreaOfEffect::SingleAttack,
                 standing_range: 140,
                 tba: 0,
+                cooldown: 0,
             },
             abilities: sorted(vec![
                 A::Kamikaze,
@@ -1088,6 +1102,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 200,
                     tba: 10,
+                    cooldown: 19,
                 },
                 abilities: [A::Knockback { chance: 20 }].into(),
                 targets: [E::Floating, E::Angel].into(),
@@ -1109,6 +1124,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 850,
                     tba: 150,
+                    cooldown: 299,
                 },
                 abilities: [A::Knockback { chance: 100 }].into(),
                 targets: [E::Floating, E::Angel].into(),
@@ -1130,6 +1146,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 850,
                     tba: 150,
+                    cooldown: 299,
                 },
                 abilities: [
                     A::Knockback { chance: 100 },
@@ -1161,6 +1178,7 @@ mod tests {
                     aoe: AreaOfEffect::AreaAttack,
                     standing_range: 850,
                     tba: 150,
+                    cooldown: 299,
                 },
                 abilities: [
                     A::Knockback { chance: 100 },
