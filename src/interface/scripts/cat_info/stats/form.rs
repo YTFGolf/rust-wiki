@@ -68,15 +68,7 @@ pub fn get_form(
         anims.attack.length()
     );
     let backswing = anims.attack.length() - attack_length;
-    let frequency = attack_length + {
-        let tba = stats.attack.tba;
-        if tba == 0 {
-            backswing
-        } else {
-            max(2 * tba - 1, backswing)
-        }
-        // necessary to avoid overflow
-    };
+    let frequency = attack_length + max(stats.attack.cooldown, backswing);
 
     let stats_level = match levels_used {
         (30, 0) => None,
