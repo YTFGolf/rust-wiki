@@ -397,7 +397,7 @@ pub struct Attack {
     ///
     /// This is an interval, so cycle is `foreswing + max(backswing, 2 * tba -
     /// 1)`. Backswing is not a stat, it is the length of the unit's animation.
-    pub tba: u16,
+    tba: u16,
     /// Min cooldown between attacks.
     pub cooldown: u16,
 }
