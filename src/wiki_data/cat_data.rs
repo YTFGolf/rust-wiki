@@ -30,7 +30,6 @@ impl CatName {
     /// Convert unique cat name into actual cat name.
     pub fn clean_cat_name(name: &str) -> &str {
         match name {
-            "C&D Swordsman" => "Swordsman",
             "Cat Bros EX" | "Cat Bros R" | "Cat Bros Sw" => "Cat Bros",
             "Kitaro Cat & Nezumi-Otoko Cat 2" => "Kitaro Cat & Nezumi-Otoko Cat",
             "Kabuto Cat Sw" => "Kabuto Cat",
