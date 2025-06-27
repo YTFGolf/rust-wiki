@@ -20,7 +20,7 @@ pub struct ParseNode<'a> {
 
 /// Parses the string format into a Vec of ParseNodes.
 // #[deprecated]
-pub fn parse_info_format(format: &str) -> Vec<ParseNode> {
+pub fn parse_info_format(format: &str) -> Vec<ParseNode<'_>> {
     let mut parsed = vec![];
     let mut format = format;
     while let Some(mut n) = format.find("${") {

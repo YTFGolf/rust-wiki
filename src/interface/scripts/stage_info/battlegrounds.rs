@@ -161,7 +161,7 @@ fn get_enemy_spawns(
     stage: &Stage,
     is_default_spawn: fn(&StageEnemy) -> bool,
     is_dojo: bool,
-) -> (Vec<&StageEnemy>, Vec<OtherSpawnItem>, Vec<u32>) {
+) -> (Vec<&StageEnemy>, Vec<OtherSpawnItem<'_>>, Vec<u32>) {
     let mut default_spawn: Vec<&StageEnemy> = vec![];
     let mut other_spawn: Vec<OtherSpawnItem> = vec![];
     let mut enemies_mags = vec![];
