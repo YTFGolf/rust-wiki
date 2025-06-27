@@ -57,12 +57,12 @@ fn once_then_unlimited(
     buf.write_str("- ").infallible_write();
     write_name_and_amount(&mut buf, t[0].item_id, t[0].item_amt);
 
-    let amount = if matches!(max_clears, Some(nz) if nz.get() == 1)
+    let amount = if let Some(num) = max_clears
+        && num.get() == 1
         && matches!(
             reset_type,
             ResetType::ResetRewards | ResetType::ResetRewardsAndClear
         ) {
-        // TODO if-let chain in 2024
         // special case that makes the output less confusing, see the linked
         // template for full explanation
         "unlimited{{TreasureAdjustment}}"

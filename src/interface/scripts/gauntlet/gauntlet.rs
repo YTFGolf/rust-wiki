@@ -132,14 +132,13 @@ impl Display for StageRange {
 
 /// Get ids of all enemies in the stage.
 fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
-    // if let Some(rewards) = stage1.rewards
-    if stage.rewards.is_some() && !stage.rewards.as_ref().unwrap().score_rewards.is_empty() {
-        todo!(
+    if let Some(rewards) = &stage.rewards
+        && rewards.score_rewards.is_empty()
+    {
+        unimplemented!(
             "Stage {id} has score rewards which are currently not supported with gauntlets",
             id = stage.id
         );
-        // TODO something about score rewards
-        // TODO if let chain
     }
 
     let mut enemies_by_id = vec![];

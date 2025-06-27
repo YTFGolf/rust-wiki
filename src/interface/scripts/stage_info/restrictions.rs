@@ -225,11 +225,11 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
 
     if restrictions.len() == 1 {
         let restriction = &restrictions[0];
-        if restriction.crowns_applied != Crowns::All
-            && stage.crown_data.is_some()
-            && (stage.crown_data.as_ref().unwrap().max_difficulty > non_zero_u8(1)
+
+        if let Some(data) = &stage.crown_data
+            && restriction.crowns_applied != Crowns::All
+            && (data.max_difficulty > non_zero_u8(1)
                 || restriction.crowns_applied != Crowns::One(non_zero_u8(1)))
-        // TODO use if-let chains in 2024 version when it stabilises
         // invalidate if either:
         // - stage has multiple crowns available and the restriction does not
         //   apply to all crowns
