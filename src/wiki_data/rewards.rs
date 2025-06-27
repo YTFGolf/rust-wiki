@@ -33,6 +33,7 @@ impl TreasureMap {
 pub static TREASURE_DATA: TreasureMap = TreasureMap {
     map: LazyLock::new(get_treasure_data),
 };
+// TODO support Gatyaitembuy.csv
 
 fn get_treasure_data() -> MapStructure {
     let rdr = csv::ReaderBuilder::new()
