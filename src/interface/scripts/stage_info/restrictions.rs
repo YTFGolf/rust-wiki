@@ -228,17 +228,17 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
 
         if let Some(data) = &stage.crown_data
             && restriction.crowns_applied != Crowns::All
-            && (data.max_difficulty > non_zero_u8(1)
-                || restriction.crowns_applied != Crowns::One(non_zero_u8(1)))
-        // invalidate if either:
-        // - stage has multiple crowns available and the restriction does not
-        //   apply to all crowns
-        // - stage has only 1 crown available and the restriction does not apply
-        //   to that crown (i.e. crowns isn't equal to All and isn't equal to
-        //   One(1))
-        // I don't expect any stage to have these problems but it's better to be
-        // safe than sorry (the Rust way!).
+            && (
+                data.max_difficulty > non_zero_u8(1) ||
+                // stage has multiple crowns and restriction does not apply to
+                // all of them
+                restriction.crowns_applied != Crowns::One(non_zero_u8(1))
+                // stage only has 1 crown (checked by previous condition) and
+                // restriction doesn't apply to it
+            )
         {
+            // I don't expect any stage to have either of these problems but
+            // it's better to be safe than sorry (the Rust way!).
             panic!("Unexpected crown error in stage: {stage:?}");
         }
 
