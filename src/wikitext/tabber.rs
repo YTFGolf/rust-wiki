@@ -2,10 +2,11 @@
 
 use std::fmt::Display;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Default)]
 /// Type of tabber.
 pub enum TabberType {
     /// `<tabber>`.
+    #[default]
     Tabber,
     /// `{{#tag:tabber|`.
     SubTabber,
@@ -31,7 +32,7 @@ impl Display for TabberTab {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Default)]
 /// Tabber container.
 pub struct Tabber {
     /// Type of tabber.

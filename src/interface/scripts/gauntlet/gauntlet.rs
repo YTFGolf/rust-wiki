@@ -314,7 +314,13 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
 /// Get full tabber for gauntlet map.
 fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
-    let gauntlet_tabs = stages_tab_info(&stages).unwrap_or_default();
+    let gauntlet_tabs = match stages_tab_info(&stages) {
+        Some(tabs) => tabs,
+        None => {
+            log::warn!("All stages are different");
+            return Tabber::default();
+        }
+    };
     let len = gauntlet_tabs.len();
     // amount of tabs, useful to know for the logging warning below
     let stage0 = &stages[0];
