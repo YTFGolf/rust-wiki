@@ -4,7 +4,7 @@ use crate::game_data::version::version_data::CacheableVersionData;
 use csv::{ByteRecord, Error};
 use std::{fmt::Debug, path::Path};
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, Default)]
 #[allow(missing_docs)]
 pub struct UnitBuyRaw {
     pub stage_available: u8,

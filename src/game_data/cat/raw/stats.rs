@@ -23,7 +23,7 @@ type Bool = u8;
 /// CSV data about a cat.
 pub type CombinedCatData = (CatCSV, CatCSV2);
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, Default)]
 #[allow(missing_docs)]
 /// Fixed CSV data.
 pub struct CatCSV {

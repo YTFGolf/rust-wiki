@@ -3,7 +3,7 @@
 use crate::game_data::version::version_data::CacheableVersionData;
 use std::path::Path;
 
-#[derive(Debug, serde::Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, serde::Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
 /// Level-up scale multiplier per 10 levels.
 ///
 /// All values are multiplied by 100 to avoid using floats.
