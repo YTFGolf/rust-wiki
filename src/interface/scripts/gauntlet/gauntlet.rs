@@ -133,7 +133,7 @@ impl Display for StageRange {
 /// Get ids of all enemies in the stage.
 fn get_enemies_by_id(stage: &Stage) -> Vec<u32> {
     if let Some(rewards) = &stage.rewards
-        && rewards.score_rewards.is_empty()
+        && !rewards.score_rewards.is_empty()
     {
         unimplemented!(
             "Stage {id} has score rewards which are currently not supported with gauntlets",
