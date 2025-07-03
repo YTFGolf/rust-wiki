@@ -71,20 +71,19 @@ pub enum RuleType {
     TrustFund(Single),
     /// Param is frames that global cooldown is set to.
     CooldownEquality(Single),
-    /// Limit each rarity to specified amount of deploys.
+    /// Limit each rarity to specified amount of simultaneous deploys.
     ///
     /// Used in Only One Rarity, where each param is 1.
     RarityLimit(Rarity),
     /// Param is global unit cost.
     CheapLabor(Single),
-    /// Restrict either the price or the cooldown of enemies in each rarity.
+    /// Restrict the price of units in each rarity.
     ///
     /// Used in multiple different Colosseum rules. A rarity's value is its
-    /// cost/cd as a percentage of its usual.
-    RestrictPriceOrCd1(Rarity),
-    /// See [RuleType::RestrictPriceOrCd1]. Since these never appear
-    /// individually, it's impossible to tell them apart.
-    RestrictPriceOrCd2(Rarity),
+    /// cost as a percentage of its usual.
+    RestrictPrice(Rarity),
+    /// Same as [RestrictPrice][RuleType::RestrictPrice] but for cooldown.
+    RestrictCd(Rarity),
     /// Param is max units that can be spawned in battle.
     DeployLimit(Single),
     /// Spawn extra cats automatically.
@@ -112,8 +111,8 @@ impl From<RawRuleItem> for RuleType {
             //
             3 => Self::RarityLimit(Self::to_arr(params)),
             4 => Self::CheapLabor(Self::to_arr(params)),
-            5 => Self::RestrictPriceOrCd1(Self::to_arr(params)),
-            6 => Self::RestrictPriceOrCd2(Self::to_arr(params)),
+            5 => Self::RestrictPrice(Self::to_arr(params)),
+            6 => Self::RestrictCd(Self::to_arr(params)),
             7 => Self::DeployLimit(Self::to_arr(params)),
             8 => Self::AwesomeCatSpawn(Self::to_arr(params)),
             9 => Self::AwesomeCatCannon(Self::to_arr(params)),
@@ -160,6 +159,8 @@ pub enum RuleNameLabel {
     UniformMotion,
     /// Plus One: Special.
     PlusOneSpecial,
+    /// 限定超特売 超激レア
+    限定超特売超激レア,
     /// Placeholder.
     Placeholder(String),
 }
@@ -177,6 +178,7 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName008" => Self::MegaCatCannon,
             "SpecialRuleName009" => Self::UniformMotion,
             "SpecialRuleName010" => Self::PlusOneSpecial,
+            "SpecialRuleName011" => Self::限定超特売超激レア,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -196,6 +198,7 @@ impl RuleNameLabel {
             RuleNameLabel::MegaCatCannon => "Mega Cat Cannon",
             RuleNameLabel::UniformMotion => "Uniform Motion",
             RuleNameLabel::PlusOneSpecial => "Plus One: Special",
+            RuleNameLabel::限定超特売超激レア => "限定超特売 超激レア",
             RuleNameLabel::Placeholder(label) => {
                 panic!("Error: unknown special rule label {label:?}")
             }
