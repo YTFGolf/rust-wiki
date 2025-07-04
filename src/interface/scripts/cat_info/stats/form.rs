@@ -68,7 +68,9 @@ pub fn get_form(
         anims.attack.length()
     );
     let backswing = anims.attack.length() - attack_length;
-    let frequency = attack_length + max(stats.attack.cooldown, backswing);
+    let frequency_alt = attack_length + max(stats.attack.cooldown, backswing);
+    let frequency = max(anims.attack.length(), attack_length + stats.attack.cooldown);
+    assert_eq!(frequency, frequency_alt);
 
     let stats_level = match levels_used {
         (30, 0) => None,
