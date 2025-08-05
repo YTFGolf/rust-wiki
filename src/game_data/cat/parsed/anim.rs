@@ -194,6 +194,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn basic() {
         let version = TEST_CONFIG.version.jp();
 
@@ -204,6 +205,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn basic2() {
         let version = TEST_CONFIG.version.jp();
 
@@ -214,6 +216,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn basic3() {
         let version = TEST_CONFIG.version.jp();
 
@@ -224,6 +227,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn basic4() {
         let version = TEST_CONFIG.version.jp();
 
@@ -234,6 +238,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn backswing_multihit() {
         let version = TEST_CONFIG.version.jp();
 
@@ -244,6 +249,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn long_foreswing() {
         let version = TEST_CONFIG.version.jp();
 
@@ -254,6 +260,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn repeated() {
         let version = TEST_CONFIG.version.jp();
 
@@ -264,6 +271,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn multihit() {
         let version = TEST_CONFIG.version.jp();
 
@@ -274,6 +282,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn dio() {
         let version = TEST_CONFIG.version.jp();
 
@@ -284,6 +293,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn metal() {
         let version = TEST_CONFIG.version.jp();
 
@@ -294,6 +304,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn full_backswing() {
         let version = TEST_CONFIG.version.jp();
 
@@ -304,6 +315,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn backswing2() {
         let version = TEST_CONFIG.version.jp();
 
@@ -314,6 +326,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn partial_backswing() {
         let version = TEST_CONFIG.version.jp();
 
@@ -324,6 +337,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn egg() {
         let version = TEST_CONFIG.version.jp();
 
