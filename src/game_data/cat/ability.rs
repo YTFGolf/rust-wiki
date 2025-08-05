@@ -1208,18 +1208,46 @@ mod tests {
     fn test_soulstrike() {
         let mighty_sphinx = get_unit(715);
 
-        let ans = vec![
-            A::Resist,
-            A::Weaken {
-                chance: 50,
-                duration: 120,
-                multiplier: 50,
-            },
-            A::ZombieKiller,
-            A::Soulstrike,
+        let form_abilities = [
+            vec![
+                A::Resist,
+                A::Weaken {
+                    chance: 50,
+                    duration: 120,
+                    multiplier: 50,
+                },
+                A::ZombieKiller,
+                A::Soulstrike,
+            ],
+            vec![
+                A::Resist,
+                A::Weaken {
+                    chance: 50,
+                    duration: 120,
+                    multiplier: 50,
+                },
+                A::ZombieKiller,
+                A::Soulstrike,
+            ],
+            vec![
+                A::Knockback { chance: 50 },
+                A::Resist,
+                A::Wave(Wave {
+                    wtype: WaveType::Wave,
+                    chance: 100,
+                    level: 3,
+                }),
+                A::Weaken {
+                    chance: 50,
+                    duration: 120,
+                    multiplier: 50,
+                },
+                A::ZombieKiller,
+                A::Soulstrike,
+            ],
         ];
 
-        for form in mighty_sphinx {
+        for (form, ans) in zip(mighty_sphinx, form_abilities) {
             assert_eq!(form, ans);
         }
     }
