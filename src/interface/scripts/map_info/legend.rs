@@ -176,11 +176,25 @@ pub fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Ve
     let mut i = 0;
     while let Some(stage) = map_wiki_data.get(i) {
         let stage_id = StageID::from_map(map_data.id.clone(), i);
+
+        // link=link|name at end of image
+        let link_part = {
+            let stagelink = extract_link(&stage.name);
+            let mut l = format!("link={stagelink}");
+
+            let stagename = extract_name(&stage.name);
+            if stagename != stagelink {
+                write!(l, "|{stagename}").infallible_write();
+            }
+
+            l
+        };
+
         write!(
             buf,
             "\n|-\n\
             ! scope=\"row\" | Stage {stagenum2}\n\
-            | [[File:Mapsn{mapnum:03} {stagenum:02} {code} en.png|200px|link={stagename}]]\n\
+            | [[File:Mapsn{mapnum:03} {stagenum:02} {code} en.png|200px|{link_part}]]\n\
             | [[File:Mapsn{mapnum:03} {stagenum:02} {code} ja.png|200px|?]]\n\
             | ?\n\
             | {energy} {{{{EnergyIcon}}}}",
@@ -192,7 +206,6 @@ pub fn stage_table(map_data: &GameMap, map_wiki_data: &MapWikiData, version: &Ve
                 .fixed_data
                 .energy
                 .to_formatted_string(&Locale::en),
-            stagename = extract_link(&stage.name)
         )
         .unwrap();
 
