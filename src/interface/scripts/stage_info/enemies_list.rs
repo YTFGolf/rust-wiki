@@ -653,7 +653,7 @@ mod tests {
         assert_eq!(
             enemies_list(&wanderer_trial, true),
             vec![
-                TemplateParameter::new("base", "{{Magnification|Scarecrow|0}}"),
+                TemplateParameter::new("base", "{{Magnification|Dummy|0}}"),
                 TemplateParameter::new(
                     "enemies",
                     "{{Magnification|One Horn|0\n\

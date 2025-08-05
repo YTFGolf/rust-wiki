@@ -603,7 +603,7 @@ mod tests {
         // nearly 200 lines lmao
         assert_eq!(
             battlegrounds(&anniv_11),
-            "*The enemy base here is an [[11th Anniversary Scarecrow (Enemy Base)|11th Anniversary Scarecrow]].\n\
+            "*The enemy base here is an [[11th Anniversary Dummy (Enemy Base)|11th Anniversary Dummy]].\n\
             *Infinite [[Fireworks Guys (High-Yield)]] spawn after 3.33 seconds<sup>100f</sup>, delay 8~10 seconds<sup>240f~300f</sup>.\n\
             *When the base takes 1,000 damage:\n\
             **1 [[Le'boin]] (100%) spawns as the boss.\n\

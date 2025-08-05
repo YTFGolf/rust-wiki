@@ -128,7 +128,7 @@ pub const DOJO: &str = "{{Stage Info
 |stage location = [[File:Mapname000 t en.png]]
 |energy = 0
 |enemy castle hp = Unlimited
-|base = {{Magnification|Scarecrow|0}}
+|base = {{Magnification|Dummy|0}}
 |enemies = {{Magnification|One Horn|0
 |Doge Dark|0
 |St. Pigge the 2nd|0
