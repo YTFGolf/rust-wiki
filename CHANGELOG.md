@@ -13,15 +13,43 @@ subheading.
 
 ## [Unreleased]
 
+Probably a bit too big for a single update.
+
+### 14.5/14.6
+
+- Added support for
+  [fallback](https://github.com/YTFGolf/bc-data-fallback/tree/main) data. Sets
+  `Fallback` as a valid language to achieve this. See issue #16.
+
 ### 14.4
 
 - Updated special rules.
 
 ### Added
 
+- TW/KR support.
+- `AnimationError` enum for cat animations.
+- Reset type to parsed stage; now Merciless XP displays top reward as being
+  unlimited.
+- `MultiLangContainer` to abstract size of container.
+- Colosseum map data.
+- `stage_table` now properly customises the link part.
+
 ### Fixed
 
+- Empty animations return an error.
+- Animation tests now use fallback data instead of JP.
+- Bases are no longer said to spawn after base hit (issue #11).
+
 ### Changed
+
+- `cooldown` for parsed cat `Form`, replaces old `tba`.
+- `SpecialRules::init_data` will initialise a `Default` if the file is not
+  found.
+- Use proper attack cycle calculation rather than cringe backswing calculation.
+- Warn if all `gauntlet` stages are different rather than doing nothing.
+- Ms. Sign on Ta-Da! works properly now.
+- Use Lux Ori's better base barrier intro.
 
 ### Removed
 
