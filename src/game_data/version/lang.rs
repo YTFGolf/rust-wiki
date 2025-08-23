@@ -22,6 +22,8 @@ pub enum VersionLanguage {
     KR,
     /// Taiwanese.
     TW,
+    /// Fallback data.
+    Fallback,
 }
 
 impl Display for VersionLanguage {
@@ -31,6 +33,7 @@ impl Display for VersionLanguage {
             Self::JP => "ja",
             Self::KR => "kr",
             Self::TW => "tw",
+            Self::Fallback => "fallback",
         };
         f.write_str(lang)
     }
@@ -45,13 +48,14 @@ impl FromStr for VersionLanguage {
             "jp" | "ja" => Ok(Self::JP),
             "kr" => Ok(Self::KR),
             "tw" => Ok(Self::TW),
+            "fallback" => Ok(Self::Fallback),
             _ => Err(InvalidLanguage(s_lower)),
         }
     }
 }
 
 /// Total amount of languages available.
-pub const TOTAL_LANGS: usize = 4;
+pub const TOTAL_LANGS: usize = 5;
 
 /// Type that can hold data for all available languages.
 pub type MultiLangContainer<T> = [T; TOTAL_LANGS];

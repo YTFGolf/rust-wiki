@@ -46,6 +46,7 @@ pub struct VersionConfig {
     jppath: String,
     krpath: String,
     twpath: String,
+    fallbackpath: String,
 
     #[serde(skip)]
     versions: MultiLangContainer<Option<Version>>,
@@ -59,6 +60,7 @@ impl Clone for VersionConfig {
             jppath: self.jppath.clone(),
             krpath: self.krpath.clone(),
             twpath: self.twpath.clone(),
+            fallbackpath: self.fallbackpath.clone(),
 
             versions: Default::default(),
         }
@@ -73,6 +75,7 @@ impl Default for VersionConfig {
             jppath: Default::default(),
             krpath: Default::default(),
             twpath: Default::default(),
+            fallbackpath: Default::default(),
 
             versions: Default::default(),
         }
@@ -87,6 +90,7 @@ impl VersionConfig {
             VersionLanguage::JP => &mut self.jppath,
             VersionLanguage::KR => &mut self.krpath,
             VersionLanguage::TW => &mut self.twpath,
+            VersionLanguage::Fallback => &mut self.fallbackpath,
         }
     }
 
@@ -97,6 +101,7 @@ impl VersionConfig {
             VersionLanguage::JP => &self.jppath,
             VersionLanguage::KR => &self.krpath,
             VersionLanguage::TW => &self.twpath,
+            VersionLanguage::Fallback => &self.fallbackpath,
         }
     }
 }
@@ -119,6 +124,7 @@ impl VersionConfig {
             VersionLanguage::JP,
             VersionLanguage::KR,
             VersionLanguage::TW,
+            VersionLanguage::Fallback,
         ];
         for lang in LANGS {
             let location = Self::expand_home(self.get_lang_path(lang));
