@@ -130,6 +130,7 @@ impl Cat {
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP)))
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::Fallback)))
             .map_err(|(source, form_num)| CatDataError::AnimationError { form_num, source })?;
 
         assert!(stats.len() >= amt_forms);

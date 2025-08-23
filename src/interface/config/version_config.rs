@@ -179,6 +179,11 @@ impl VersionConfig {
     pub fn tw(&self) -> &Version {
         self.version(VersionLanguage::TW)
     }
+
+    /// Get fallback version.
+    pub fn fallback(&self) -> &Version {
+        self.version(VersionLanguage::Fallback)
+    }
 }
 
 impl MultiLangVersionContainer for VersionConfig {
