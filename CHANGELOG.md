@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.7.0] - 2025-08-24
+
 Probably a bit too big for a single update.
 
 ### 14.5/14.6
@@ -40,6 +50,7 @@ Probably a bit too big for a single update.
 - Empty animations return an error.
 - Animation tests now use fallback data instead of JP.
 - Bases are no longer said to spawn after base hit (issue #11).
+- Ms. Sign on Ta-Da! works properly now.
 
 ### Changed
 
@@ -48,10 +59,7 @@ Probably a bit too big for a single update.
   found.
 - Use proper attack cycle calculation rather than cringe backswing calculation.
 - Warn if all `gauntlet` stages are different rather than doing nothing.
-- Ms. Sign on Ta-Da! works properly now.
 - Use Lux Ori's better base barrier intro.
-
-### Removed
 
 ## [0.6.2] - 2025-06-07
 
@@ -320,7 +328,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.2...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.0...dev
+[0.7.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.5.4...v0.6.0
