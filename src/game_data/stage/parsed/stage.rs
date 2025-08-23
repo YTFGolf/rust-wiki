@@ -237,6 +237,7 @@ impl From<StageData<'_>> for Stage {
         let map_option_data = data.get_map_option_data();
         let ex_invasion = data.get_ex_option_data();
         let rules = data.get_special_rules_data().cloned();
+        log::debug!("{rules:?}");
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = data.get_stage_option_data() {
