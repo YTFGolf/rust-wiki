@@ -194,9 +194,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn basic() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let cat = get_all_anims(0, version);
         let ans = [anim(18), anim(16), anim(16)];
@@ -205,9 +204,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn basic2() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let tank = get_all_anims(1, version);
         let ans = [anim(16), anim(16), anim(16)];
@@ -216,9 +214,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn basic3() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let titan = get_all_anims(8, version);
         let ans = [anim(26), anim(32), anim(32)];
@@ -227,9 +224,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn basic4() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let actress = get_all_anims(9, version);
         let ans = [anim(12), anim(16), anim(16)];
@@ -238,9 +234,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn backswing_multihit() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let bahamut = get_all_anims(25, version);
         let ans = [anim(151), anim(151), anim(93)];
@@ -249,9 +244,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn long_foreswing() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let cancan = get_all_anims(32, version);
         let ans = [anim(46), anim(46), anim(46)];
@@ -260,9 +254,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn repeated() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let dom = get_all_anims(13, version);
         let ans = [anim(45), anim(45), anim(12)];
@@ -271,9 +264,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn multihit() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let delinquent = get_all_anims(31, version);
         let ans = [anim(73), anim(66), anim(66)];
@@ -282,9 +274,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn dio() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let dio = get_all_anims(177, version);
         let ans = [anim(146), anim(146), anim(165), anim(175)];
@@ -293,9 +284,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn metal() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let metal = get_all_anims(200, version);
         let ans = [anim(18), anim(16)];
@@ -304,9 +294,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn full_backswing() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let dasli = get_all_anims(543, version);
         let ans = [anim(171), anim(174)];
@@ -315,9 +304,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn backswing2() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let cat_modoki = get_all_anims(626, version);
         let ans = [anim(10), anim(10)];
@@ -326,9 +314,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn partial_backswing() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let sfeline = get_all_anims(643, version);
         let ans = [anim(31), anim(31), anim(74)];
@@ -337,9 +324,8 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn egg() {
-        let version = TEST_CONFIG.version.jp();
+        let version = TEST_CONFIG.version.fallback();
 
         let courier = get_all_anims(658, version);
         let ans = [anim(76), anim(76), anim(61)];
@@ -348,16 +334,10 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn kr_exclusive() {
         let version = TEST_CONFIG.version.kr();
 
-        let Ok(crew12) = try_all_anims(182, version) else {
-            return;
-            // unfortunately this is just very difficult to test because kr
-            // version will not always have the appropriate files and JP
-            // definitely won't
-        };
+        let crew12 = get_all_anims(182, version);
         let ans = [anim(111), anim(111)];
 
         assert_eq!(&crew12, &ans);
