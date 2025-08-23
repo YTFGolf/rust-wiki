@@ -12,7 +12,8 @@ pub struct VersionOptions {
     path: Option<String>,
 
     #[arg(long)]
-    /// Language. Use EN or JP.
+    /// Language. Use EN or JP or TW or KR or Fallback or actually fix this for
+    /// the love of god.
     lang: Option<String>,
     // TODO make an enum
 }
