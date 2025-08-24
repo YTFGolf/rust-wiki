@@ -46,7 +46,6 @@ pub fn get_anims(
     amt_forms: usize,
     egg_data: &AncientEggInfo,
 ) -> Result<Vec<CatFormAnimData>, (AnimDataError, usize)> {
-    // needs to be tested with en first, then do jp if en doesn't work
     let (form1, form2) = match egg_data {
         AncientEggInfo::None => (
             format!("{wiki_id:03}_f02.maanim"),
@@ -183,6 +182,7 @@ mod tests {
         get_anims(id, version, amt, &egg)
     }
 
+    #[track_caller]
     fn get_all_anims(id: u32, version: &Version) -> Vec<CatFormAnimData> {
         try_all_anims(id, version).unwrap()
     }
@@ -335,7 +335,7 @@ mod tests {
 
     #[test]
     fn kr_exclusive() {
-        let version = TEST_CONFIG.version.kr();
+        let version = TEST_CONFIG.version.fallback();
 
         let crew12 = get_all_anims(182, version);
         let ans = [anim(111), anim(111)];
