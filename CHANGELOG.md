@@ -21,6 +21,8 @@ subheading.
 
 ### Removed
 
+- Animations no longer attempt to use TW/KR data.
+
 ## [0.7.0] - 2025-08-24
 
 Probably a bit too big for a single update.
