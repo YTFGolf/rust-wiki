@@ -127,8 +127,8 @@ impl Cat {
         let get = |ver| get_anims(id, ver, amt_forms, egg_data);
 
         let anims = get(version_cont.get_lang(VersionLanguage::EN))
-            .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
-            .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
+            // .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
+            // .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::Fallback)))
             .map_err(|(source, form_num)| CatDataError::AnimationError { form_num, source })?;
