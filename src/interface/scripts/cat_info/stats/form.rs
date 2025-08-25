@@ -47,7 +47,8 @@ pub fn get_form(
     form_no: u8,
 ) -> FormWithBaseStats {
     let max_levels = &cat.unitbuy.max_levels;
-    log::debug!("{cat:#?}");
+    log::debug!("{cat:?}");
+    // don't have all information yet so debug in case info is needed
 
     let nat_and_plus = (max_levels.max_nat, max_levels.max_plus);
     let levels_used = match nat_and_plus {

@@ -238,6 +238,8 @@ impl From<StageData<'_>> for Stage {
         let ex_invasion = data.get_ex_option_data();
         let rules = data.get_special_rules_data().cloned();
         log::debug!("{rules:?}");
+        // debug to reveal how the stage's rule works, useful for updates which
+        // add a new rule
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = data.get_stage_option_data() {

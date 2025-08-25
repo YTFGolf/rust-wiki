@@ -1,0 +1,5 @@
+- trace: use this to figure out where something's gone wrong
+- debug: use this to reveal internal information that is useful to people writing code
+- info: normal messages to the user about what is going on
+- warning: message that the user should be keenly aware of
+- error: tells the user why something failed

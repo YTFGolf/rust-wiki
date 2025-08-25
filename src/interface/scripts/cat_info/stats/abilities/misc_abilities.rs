@@ -67,6 +67,8 @@ fn write_hit_3(buf: &mut String, hit3: &AttackHit) {
 
 /// Get LD/Omni ability.
 pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
+    // TODO fix this for mighty carrowsell
+    // some struct goes here that indicates ld and omni ability
     match hits {
         AttackHits::Single([hit1]) => {
             let mut hit = get_first_hit_range(hit1)?;
