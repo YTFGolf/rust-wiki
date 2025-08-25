@@ -3,7 +3,10 @@ use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
     wiki_data::cat_data::{CAT_DATA, CatName},
-    wikitext::template::{Template, TemplateParameter},
+    wikitext::{
+        template::{Template, TemplateParameter},
+        text_utils::get_ordinal,
+    },
 };
 use std::iter::zip;
 
@@ -75,21 +78,12 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
         let form = get_form(cat, stats, anims, form_variant as u8);
 
-        let ord = match form_variant {
-            F::Normal => "1st",
-            F::Evolved => "2nd",
-            F::True => "3rd",
-            F::Ultra => "4th",
-        };
+        let ord = get_ordinal(form_variant as u32);
+        t.push_params(form.stats_level.map(|lv| {
+            let name = format!("{ord} stats Level");
+            TemplateParameter::new(name, lv)
+        }));
 
-        fn get_stats_level(name: String, value: Option<String>) -> Option<TemplateParameter> {
-            Some(TemplateParameter::new(name, value?))
-        }
-
-        t.push_params(get_stats_level(
-            format!("{ord} stats Level"),
-            form.stats_level,
-        ));
         if form_variant == F::Normal {
             t.push_params(P::new("Hp Normal", form.base_hp));
             t.push_params(P::new("Atk Power Normal", form.base_atk));
