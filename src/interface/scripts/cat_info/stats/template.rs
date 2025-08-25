@@ -94,17 +94,17 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     write_stats(t, "Ultra", form.other);
 }
 
-pub fn get_template(cat: Cat) {
+pub fn get_template(cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats");
 
     add_all_forms(&mut t, &cat);
     let max_level = {
-        let max = cat.unitbuy.max_levels;
+        let max = &cat.unitbuy.max_levels;
         let mut buf = String::from("Lv.");
         write_level_and_plus(&mut buf, max.max_nat, max.max_plus);
         buf
     };
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
 
-    println!("{t}");
+    t
 }

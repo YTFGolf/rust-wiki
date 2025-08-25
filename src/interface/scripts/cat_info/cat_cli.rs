@@ -6,7 +6,7 @@ use crate::interface::{
         cli_util::{CommandExec, ConfigMerge},
         version_opt::VersionOptions,
     },
-    config::Config,
+    config::Config, scripts::cat_info::cat_info::get_info,
 };
 use clap::Args;
 
@@ -38,6 +38,7 @@ impl CommandExec for CatInfoOptions {
             Some(id) => id,
         };
 
-        crate::interface::scripts::cat_info::cat_info::do_thing(id, config);
+        let info = get_info(id, config).unwrap();
+        println!("{info}");
     }
 }
