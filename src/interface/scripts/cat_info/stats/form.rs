@@ -51,6 +51,7 @@ pub fn get_form(
 
     let nat_and_plus = (max_levels.max_nat, max_levels.max_plus);
     let levels_used = match nat_and_plus {
+        (1, 30) => (1, 30),
         (1, 29..) => (1, 29),
         (0..=29, _) => (max_levels.max_nat, max_levels.max_plus),
         _ => (30, 0),
