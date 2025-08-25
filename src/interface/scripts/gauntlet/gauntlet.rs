@@ -317,7 +317,7 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let gauntlet_tabs = match stages_tab_info(&stages) {
         Some(tabs) => tabs,
         None => {
-            log::warn!("All stages are different");
+            log::warn!("Gauntlet: all stages are different");
             return Tabber::default();
         }
     };

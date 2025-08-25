@@ -233,6 +233,7 @@ pub fn battlegrounds(stage: &Stage) -> String {
                     && e.start_frame == 27_000
                     && e.boss_type == BossType::None
                 {
+                    log::info!("Battlegrounds: skipping Ms. Sign");
                     None
                 } else {
                     Some(get_single_enemy_line(
