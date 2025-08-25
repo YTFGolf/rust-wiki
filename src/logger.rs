@@ -44,20 +44,20 @@ impl log::Log for Logger {
 
         match record.level() {
             Level::Error => eprintln!(
-                "{red}Error{blank}: {args}",
+                "[{red}error{blank}] - {args}",
                 red = Color::Red,
                 blank = Color::Blank,
                 args = record.args()
             ),
             Level::Warn => eprintln!(
-                "{yellow}Warning{blank}: {args}",
+                "[{yellow}warning{blank}] - {args}",
                 yellow = Color::Yellow,
                 blank = Color::Blank,
                 args = record.args()
             ),
-            Level::Info => eprintln!("{}", record.args()),
+            Level::Info => eprintln!("[info] - {}", record.args()),
             Level::Debug => eprintln!(
-                "{blue}Debug{blank}: {args}",
+                "[{blue}debug{blank}] - {args}",
                 blue = Color::Blue,
                 blank = Color::Blank,
                 args = record.args()
