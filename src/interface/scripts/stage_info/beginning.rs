@@ -8,7 +8,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::enemy_data::ENEMY_DATA,
-    wikitext::text_utils::{OLD_OR_REMOVED_SUB, extract_name, get_ordinal},
+    wikitext::text_utils::{OLD_OR_REMOVED_SUB, extract_name, get_small_ordinal},
 };
 use std::{collections::HashSet, fmt::Write};
 
@@ -37,7 +37,7 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
         return format!(
             "'''{extracted_name}''' is the {num} [[Arena of Honor]] of the [[Catclaw Dojo]].",
             extracted_name = extract_name(&data.stage_name.name),
-            num = get_ordinal(stage.id.map().num() + 1)
+            num = get_small_ordinal(stage.id.map().num() + 1)
         );
     }
 
@@ -55,10 +55,10 @@ pub fn intro(stage: &Stage, data: &StageWikiDataContainer) -> String {
             buf.write_str("only").infallible_write();
         }
         (n, None) => {
-            write!(buf, "{ord} and final", ord = get_ordinal(n + 1)).unwrap();
+            write!(buf, "{ord} and final", ord = get_small_ordinal(n + 1)).unwrap();
         }
         (n, Some(_)) => {
-            write!(buf, "{ord}", ord = get_ordinal(n + 1)).unwrap();
+            write!(buf, "{ord}", ord = get_small_ordinal(n + 1)).unwrap();
         }
     }
     // only/nth/nth and final

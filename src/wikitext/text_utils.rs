@@ -84,17 +84,34 @@ pub fn extract_link(link: &str) -> &str {
     }
 }
 
-/// Get the ordinal number corresponding to `n` (e.g. 1 = "first").
-pub fn get_ordinal(n: u32) -> String {
-    assert!((1..1000).contains(&n));
-
+/// Get the ordinal number corresponding to `n`. Small numbers (<10) are written
+/// out.
+/// ```
+/// # use rust_wiki::wikitext::text_utils::get_small_ordinal;
+/// assert_eq!(get_small_ordinal(1), "first");
+/// ```
+pub fn get_small_ordinal(n: u32) -> String {
     const SMALL_ORDS: [&str; 9] = [
         "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
     ];
 
-    if n as usize <= SMALL_ORDS.len() {
-        return SMALL_ORDS[n as usize - 1].to_string();
+    let m = n as usize;
+    if (1..=SMALL_ORDS.len()).contains(&m) {
+        SMALL_ORDS[m - 1].to_string()
+    } else {
+        get_ordinal(n)
     }
+}
+
+/// Get the ordinal number corresponding to `n`. Small numbers (<10) are written
+/// out.
+/// ```
+/// # use rust_wiki::wikitext::text_utils::get_ordinal;
+/// assert_eq!(get_ordinal(1), "1st");
+/// ```
+pub fn get_ordinal(n: u32) -> String {
+    assert!((1..1000).contains(&n));
+    // to avoid having to format the number
 
     let m = n % 100;
     if (11..=13).contains(&m) {
@@ -112,48 +129,48 @@ pub fn get_ordinal(n: u32) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::wikitext::text_utils::get_ordinal;
+    use crate::wikitext::text_utils::get_small_ordinal;
 
     #[test]
     #[should_panic = "assertion failed: (1..1000).contains(&n)"]
     fn ordinal_0() {
         let n = 0;
-        get_ordinal(n);
+        get_small_ordinal(n);
     }
 
     #[test]
     fn ordinal_small() {
         let n = 4;
-        assert_eq!(get_ordinal(n), "fourth");
+        assert_eq!(get_small_ordinal(n), "fourth");
     }
 
     #[test]
     fn ordinal_12() {
         let n = 12;
-        assert_eq!(get_ordinal(n), "12th");
+        assert_eq!(get_small_ordinal(n), "12th");
     }
 
     #[test]
     fn ordinal_large() {
         let n = 42;
-        assert_eq!(get_ordinal(n), "42nd");
+        assert_eq!(get_small_ordinal(n), "42nd");
     }
 
     #[test]
     fn ordinal_large_small() {
         let n = 91;
-        assert_eq!(get_ordinal(n), "91st");
+        assert_eq!(get_small_ordinal(n), "91st");
     }
 
     #[test]
     fn ordinal_100() {
         let n = 100;
-        assert_eq!(get_ordinal(n), "100th");
+        assert_eq!(get_small_ordinal(n), "100th");
     }
 
     #[test]
     fn ordinal_113() {
         let n = 113;
-        assert_eq!(get_ordinal(n), "113th");
+        assert_eq!(get_small_ordinal(n), "113th");
     }
 }
