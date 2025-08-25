@@ -35,63 +35,67 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     t.push_params(P::new(format!("Special Ability {f}"), form.abilities));
 }
 
-fn get_stats_level(name: &'static str, value: Option<String>) -> Option<TemplateParameter> {
-    Some(TemplateParameter::new(name, value?))
-}
-
 fn add_all_forms(t: &mut Template, cat: &Cat) {
     type P = TemplateParameter;
 
-    let mut iter = zip(&cat.forms.stats, &cat.forms.anims).take(cat.forms.amt_forms);
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+    enum CatForm {
+        Normal = 1,
+        Evolved = 2,
+        True = 3,
+        Ultra = 4,
+    }
+    impl CatForm {
+        fn as_str(&self) -> &'static str {
+            match &self {
+                Self::Normal => "Normal",
+                Self::Evolved => "Evolved",
+                Self::True => "True",
+                Self::Ultra => "Ultra",
+            }
+        }
+    }
+    use CatForm as F;
 
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
+    let forms = [F::Normal, F::Evolved, F::True, F::Ultra];
+    let iter = zip(&cat.forms.stats, &cat.forms.anims).take(cat.forms.amt_forms);
 
-    let name = &CAT_DATA.get_cat(cat.id).normal;
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Normal Form name", name));
+    for (form_variant, stats_and_anims) in zip(forms, iter) {
+        let name = match form_variant {
+            F::Normal => &CAT_DATA.get_cat(cat.id).normal,
+            F::Evolved => &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap(),
+            F::True => &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap(),
+            F::Ultra => &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap(),
+        };
+        let name = CatName::clean_cat_name(name);
 
-    let form = get_form(cat, stats, anims, 1);
-    t.push_params(get_stats_level("1st stats Level", form.stats_level));
-    t.push_params(P::new("Hp Normal", form.base_hp));
-    t.push_params(P::new("Atk Power Normal", form.base_atk));
-    write_stats(t, "Normal", form.other);
+        let form_str = form_variant.as_str();
+        let (stats, anims) = stats_and_anims;
+        t.push_params(P::new(format!("{form_str} Form name"), name));
 
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
+        let form = get_form(cat, stats, anims, form_variant as u8);
 
-    let name = &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap();
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Evolved Form name", name));
+        let ord = match form_variant {
+            F::Normal => "1st",
+            F::Evolved => "2nd",
+            F::True => "3rd",
+            F::Ultra => "4th",
+        };
 
-    let form = get_form(cat, stats, anims, 2);
-    t.push_params(get_stats_level("2nd stats Level", form.stats_level));
-    write_stats(t, "Evolved", form.other);
+        fn get_stats_level(name: String, value: Option<String>) -> Option<TemplateParameter> {
+            Some(TemplateParameter::new(name, value?))
+        }
 
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
-
-    let name = &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap();
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("True Form name", name));
-
-    let form = get_form(cat, stats, anims, 3);
-    t.push_params(get_stats_level("3rd stats Level", form.stats_level));
-    write_stats(t, "True", form.other);
-
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
-
-    // t.push_params("4th stats Level");
-    let name = &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap();
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Ultra Form name", name));
-    let form = get_form(cat, stats, anims, 4);
-    write_stats(t, "Ultra", form.other);
+        t.push_params(get_stats_level(
+            format!("{ord} stats Level"),
+            form.stats_level,
+        ));
+        if form_variant == F::Normal {
+            t.push_params(P::new("Hp Normal", form.base_hp));
+            t.push_params(P::new("Atk Power Normal", form.base_atk));
+        }
+        write_stats(t, form_str, form.other);
+    }
 }
 
 pub fn get_template(cat: &Cat) -> Template {
