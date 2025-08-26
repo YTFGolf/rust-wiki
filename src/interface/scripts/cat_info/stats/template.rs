@@ -1,6 +1,6 @@
 use super::form::Form;
 use crate::{
-    game_data::cat::parsed::cat::Cat,
+    game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
     interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
     wiki_data::cat_data::{CAT_DATA, CatName},
     wikitext::{
@@ -10,7 +10,7 @@ use crate::{
 };
 use std::iter::zip;
 
-fn write_stats(t: &mut Template, form_name: &str, form: Form) {
+fn write_val_stats(t: &mut Template, form_name: &str, form: Form) {
     type P = TemplateParameter;
     let f = form_name;
     // this template is so inconsistent
@@ -42,6 +42,52 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
 
     t.push_params(P::new(format!("{f} Attack Type"), form.attack_type));
     t.push_params(P::new(format!("{f} Abilities"), form.abilities));
+}
+
+fn write_stats(t: &mut Template, form_name: &str, stats: &CatFormStats, anims: &CatFormAnimData) {
+    type P = TemplateParameter;
+    let f = form_name;
+
+    t.push_params(P::new(format!("{f} Base HP"), stats.hp.to_string()));
+    t.push_params(P::new(
+        format!("{f} Base AP"),
+        stats
+            .attack
+            .hits
+            .iter()
+            .map(|hit| hit.damage.to_string())
+            .collect::<Vec<_>>()
+            .join(","),
+    ));
+
+    t.push_params(P::new(
+        format!("{f} Range"),
+        stats.attack.standing_range.to_string(),
+    ));
+    t.push_params(P::new(
+        format!("{f} Foreswing"),
+        stats
+            .attack
+            .hits
+            .iter()
+            .map(|hit| hit.foreswing.to_string())
+            .collect::<Vec<_>>()
+            .join(","),
+    ));
+    t.push_params(P::new(
+        format!("{f} Attack Cooldown"),
+        stats.attack.cooldown.to_string(),
+    ));
+    t.push_params(P::new(
+        format!("{f} Attack Length"),
+        anims.attack.length().to_string(),
+    ));
+    t.push_params(P::new(format!("{f} Speed"), stats.speed.to_string()));
+    t.push_params(P::new(format!("{f} KB"), stats.kb.to_string()));
+    t.push_params(P::new(
+        format!("{f} Recharge"),
+        (stats.respawn_half * 2).to_string(),
+    ));
 }
 
 fn add_all_forms(t: &mut Template, cat: &Cat) {
@@ -82,9 +128,9 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
         let name = form_variant.name(cat.id);
         let name = CatName::clean_cat_name(name);
 
-        let form_str = form_variant.as_str();
+        let form_name = form_variant.as_str();
         let (stats, anims) = stats_and_anims;
-        t.push_params(P::new(format!("{form_str} Form name"), name));
+        t.push_params(P::new(format!("{form_name} Form name"), name));
 
         let form = get_form(cat, stats, anims, form_variant as u8);
 
@@ -94,11 +140,12 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
             TemplateParameter::new(name, lv)
         }));
 
+        write_stats(t, form_name, stats, anims);
         if form_variant == F::Normal {
             t.push_params(P::new("val-Normal-Health", form.base_hp));
             t.push_params(P::new("val-Normal-Attack Power", form.base_atk));
         }
-        write_stats(t, form_str, form.other);
+        write_val_stats(t, form_name, form.other);
     }
 }
 
