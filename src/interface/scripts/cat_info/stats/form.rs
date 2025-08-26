@@ -152,8 +152,8 @@ pub fn get_form(
     };
 
     let attack_type = match stats.attack.aoe {
-        AreaOfEffect::SingleAttack => "Single Attack",
-        AreaOfEffect::AreaAttack => "Area Attack",
+        AreaOfEffect::SingleAttack => "Single",
+        AreaOfEffect::AreaAttack => "Area",
     };
     let abilities = {
         let mut abilities = vec![];

@@ -1,13 +1,17 @@
 use super::form::Form;
 use crate::{
     game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
-    interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
+    interface::{
+        error_handler::InfallibleWrite,
+        scripts::cat_info::stats::form::{get_form, write_level_and_plus},
+    },
     wiki_data::cat_data::{CAT_DATA, CatName},
     wikitext::{
         template::{Template, TemplateParameter},
         text_utils::get_ordinal,
     },
 };
+use std::fmt::Write;
 use std::iter::zip;
 
 fn write_val_stats(t: &mut Template, form_name: &str, form: Form) {
@@ -130,7 +134,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
         let form_name = form_variant.as_str();
         let (stats, anims) = stats_and_anims;
-        t.push_params(P::new(format!("{form_name} Form name"), name));
+        t.push_params(P::new(format!("{form_name} Name"), name));
 
         let form = get_form(cat, stats, anims, form_variant as u8);
 
@@ -141,6 +145,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
         }));
 
         write_stats(t, form_name, stats, anims);
+        t.push_params(P::new("validation", "on"));
         if form_variant == F::Normal {
             t.push_params(P::new("val-Normal-Health", form.base_hp));
             t.push_params(P::new("val-Normal-Attack Power", form.base_atk));
@@ -159,6 +164,43 @@ pub fn get_template(cat: &Cat) -> Template {
         write_level_and_plus(&mut buf, max.max_nat, max.max_plus);
         buf
     };
+
+    let scaling = {
+        let mut buf = String::new();
+
+        let mut iter = cat.unitlevel.iter().peekable();
+        let mut last_count = 1;
+        let mut last_id = iter.next().expect("length is always 20");
+        while let Some(scale) = iter.next() {
+            if last_id == scale {
+                last_count += 1;
+                continue;
+            }
+
+            match last_count {
+                ..=0 => unreachable!(),
+                1 => write!(buf, "{last_id}").infallible_write(),
+                2.. => write!(buf, "{last_id}x{last_count}").infallible_write(),
+            }
+
+            if iter.peek().is_some() {
+                buf += ",";
+            }
+
+            last_count = 1;
+            last_id = scale;
+        }
+
+        match last_count {
+            ..=0 => (),
+            1 => write!(buf, "{last_id}").infallible_write(),
+            2.. => write!(buf, "{last_id}x{last_count}").infallible_write(),
+        }
+
+        buf
+    };
+
+    t.push_params(TemplateParameter::new("Scaling", scaling));
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
 
     t
