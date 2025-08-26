@@ -154,17 +154,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     }
 }
 
-pub fn get_template(cat: &Cat) -> Template {
-    let mut t = Template::named("Cat Stats");
-
-    add_all_forms(&mut t, &cat);
-    let max_level = {
-        let max = &cat.unitbuy.max_levels;
-        let mut buf = String::from("Lv.");
-        write_level_and_plus(&mut buf, max.max_nat, max.max_plus);
-        buf
-    };
-
+fn get_scaling(cat: &Cat) -> String {
     let scaling = {
         let mut buf = String::new();
 
@@ -199,6 +189,21 @@ pub fn get_template(cat: &Cat) -> Template {
 
         buf
     };
+    scaling
+}
+
+pub fn get_template(cat: &Cat) -> Template {
+    let mut t = Template::named("Cat Stats");
+
+    add_all_forms(&mut t, &cat);
+    let max_level = {
+        let max = &cat.unitbuy.max_levels;
+        let mut buf = String::from("Lv.");
+        write_level_and_plus(&mut buf, max.max_nat, max.max_plus);
+        buf
+    };
+
+    let scaling = get_scaling(cat);
 
     t.push_params(TemplateParameter::new("Scaling", scaling));
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
