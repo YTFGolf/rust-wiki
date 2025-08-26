@@ -423,6 +423,7 @@ impl Ability {
 }
 // Ability::StrongAgainst=>(),Ability::Knockback{..}=>(),Ability::Freeze{..}=>(),Ability::Slow{..}=>(),Ability::Resist=>(),Ability::MassiveDamage=>(),Ability::Crit{..}=>(),Ability::TargetsOnly=>(),Ability::DoubleBounty=>(),Ability::BaseDestroyer=>(),Ability::Wave(_)=>(),Ability::Weaken{..}=>(),Ability::Strengthen{..}=>(),Ability::Survives{..}=>(),Ability::Metal=>(),Ability::ImmuneToWave=>(),Ability::WaveBlocker=>(),Ability::ImmuneToKB=>(),Ability::ImmuneToFreeze=>(),Ability::ImmuneToSlow=>(),Ability::ImmuneToWeaken=>(),Ability::ZombieKiller=>(),Ability::WitchKiller=>(),Ability::ImmuneToBossShockwave=>(),Ability::Kamikaze=>(),Ability::BarrierBreaker{..}=>(),Ability::ImmuneToWarp=>(),Ability::EvaAngelKiller=>(),Ability::ImmuneToCurse=>(),Ability::InsaneResist=>(),Ability::InsaneDamage=>(),Ability::SavageBlow{..}=>(),Ability::Dodge{..}=>(),Ability::Surge(_)=>(),Ability::ImmuneToToxic=>(),Ability::ImmuneToSurge=>(),Ability::Curse{..}=>(),Ability::ShieldPierce{..}=>(),Ability::ColossusSlayer=>(),Ability::Soulstrike=>(),Ability::BehemothSlayer{..}=>(),Ability::CounterSurge=>(),Ability::ConjureUnit{..}=>(),Ability::SageSlayer=>(),Ability::MetalKiller{..}=>(),Ability::Explosion{..}=>(),Ability::ImmuneToExplosion=>(),
 impl Ability {
+    /// Get the proper name of the ability.
     pub const fn name(&self) -> &'static str {
         // this is all in nyankoPictureBook2_en.csv ... is it really important
         // to have it here then?
