@@ -145,7 +145,6 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
         }));
 
         write_stats(t, form_name, stats, anims);
-        t.push_params(P::new("validation", "on"));
         if form_variant == F::Normal {
             t.push_params(P::new("val-Normal-Health", form.base_hp));
             t.push_params(P::new("val-Normal-Attack Power", form.base_atk));
@@ -205,8 +204,12 @@ pub fn get_template(cat: &Cat) -> Template {
 
     let scaling = get_scaling(cat);
 
-    t.push_params(TemplateParameter::new("Scaling", scaling));
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
+    t.push_params(TemplateParameter::new("Scaling", scaling));
+    t.push_params(TemplateParameter::new("validation", "on"));
 
-    t
+    let (title, mut items) = t.deconstruct();
+    items.sort_by_key(|x| x.key.starts_with("val-"));
+
+    Template::new(title, items)
 }
