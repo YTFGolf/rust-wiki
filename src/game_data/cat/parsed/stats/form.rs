@@ -248,49 +248,54 @@ impl AttackHits {
     }
 }
 impl AttackHits {
-    /// Public foreswing value.
-    pub fn foreswing(&self) -> u16 {
+    /// Iterate through hits.
+    pub fn iter(&self) -> impl Iterator<Item = &AttackHit> {
+        match self {
+            AttackHits::Single(hits) => hits.iter(),
+            AttackHits::Double(hits) => hits.iter(),
+            AttackHits::Triple(hits) => hits.iter(),
+        }
+    }
+
+    /// Get first hit.
+    pub fn first(&self) -> &AttackHit {
         match self {
             AttackHits::Single([first])
             | AttackHits::Double([first, ..])
-            | AttackHits::Triple([first, ..]) => first.foreswing,
+            | AttackHits::Triple([first, ..]) => first,
         }
+    }
+
+    /// Get last hit.
+    pub fn last(&self) -> &AttackHit {
+        match self {
+            AttackHits::Single([last])
+            | AttackHits::Double([.., last])
+            | AttackHits::Triple([.., last]) => last,
+        }
+    }
+}
+impl AttackHits {
+    /// Public foreswing value.
+    pub fn foreswing(&self) -> u16 {
+        self.first().foreswing
     }
 
     /// Time between attack starting and final hit connecting.
     pub fn attack_length(&self) -> u16 {
-        match self {
-            AttackHits::Single([last])
-            | AttackHits::Double([.., last])
-            | AttackHits::Triple([.., last]) => last.foreswing,
-        }
+        self.last().foreswing
     }
 
     /// Total damage dealt if all hits land.
     pub fn total_damage(&self) -> u32 {
-        match self {
-            AttackHits::Single(hits) => hits.iter().map(|hit| hit.damage).sum(),
-            AttackHits::Double(hits) => hits.iter().map(|hit| hit.damage).sum(),
-            AttackHits::Triple(hits) => hits.iter().map(|hit| hit.damage).sum(),
-        }
+        self.iter().map(|hit| hit.damage).sum()
     }
 
     /// Total damage at level if all hits land.
     pub fn total_damage_at_level(&self, scaling: &UnitLevelRaw, level: u8) -> u32 {
-        match self {
-            AttackHits::Single(hits) => hits
-                .iter()
-                .map(|hit| scaling.get_stat_at_level(hit.damage, level))
-                .sum(),
-            AttackHits::Double(hits) => hits
-                .iter()
-                .map(|hit| scaling.get_stat_at_level(hit.damage, level))
-                .sum(),
-            AttackHits::Triple(hits) => hits
-                .iter()
-                .map(|hit| scaling.get_stat_at_level(hit.damage, level))
-                .sum(),
-        }
+        self.iter()
+            .map(|hit| scaling.get_stat_at_level(hit.damage, level))
+            .sum()
     }
 }
 #[cfg(test)]
