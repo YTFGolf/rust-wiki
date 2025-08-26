@@ -160,45 +160,46 @@ pub fn get_pure_abilities(
     // shorthand makes rest look readable
 
     for ability in cat_abilities {
+        let icon = String::from("{{AbilityIcon|") + ability.name() + "}}";
         match ability {
             Ability::StrongAgainst => abilities.push(format!(
-                "{strong} against {targets} enemies (Deals 1.5x damage, only takes 1/2 damage)",
+                "{icon} {strong} against {targets} enemies (Deals 1.5x damage, only takes 1/2 damage)",
                 strong = abil("Strong Against", "Strong")
             )),
             Ability::Knockback { chance } => abilities.push(format!(
-                "{chance}% chance to {knockback} {targets} enemies{multab}",
+                "{icon} {chance}% chance to {knockback} {targets} enemies{multab}",
                 knockback = abil("Knockback", "knockback")
             )),
             Ability::Freeze { chance, duration } => abilities.push(format!(
-                "{chance}% chance to {freeze} {targets} enemies for {duration}{multab}",
+                "{icon} {chance}% chance to {freeze} {targets} enemies for {duration}{multab}",
                 freeze = abil("Freeze", "freeze"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::Slow { chance, duration } => abilities.push(format!(
-                "{chance}% chance to {slow} {targets} enemies for {duration}{multab}",
+                "{icon} {chance}% chance to {slow} {targets} enemies for {duration}{multab}",
                 slow = abil("Slow", "slow"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::Resist => abilities.push(format!(
-                "{resistant} to {targets} enemies",
+                "{icon} {resistant} to {targets} enemies",
                 resistant = abil2("Resistant")
             )),
             Ability::MassiveDamage => abilities.push(format!(
-                "Deals {damage} to {targets} enemies",
+                "{icon} Deals {damage} to {targets} enemies",
                 damage = abil("Massive Damage", "massive damage")
             )),
             Ability::Crit { chance } => abilities.push(format!(
-                "{chance}% chance to perform a [[Critical Hit]]{multab}"
+                "{icon} {chance}% chance to perform a [[Critical Hit]]{multab}"
             )),
             Ability::TargetsOnly => abilities.push(format!(
-                "{attacks} {targets} enemies",
+                "{icon} {attacks} {targets} enemies",
                 attacks = abil("Attacks Only", "Attacks only")
             )),
             Ability::DoubleBounty => abilities.push(format!(
-                "{money} gained when defeating enemies",
+                "{icon} {money} gained when defeating enemies",
                 money = abil("Extra Money", "Double money")
             )),
-            Ability::BaseDestroyer => abilities.push(abil2("Base Destroyer")),
+            Ability::BaseDestroyer => abilities.push(icon + " " + &abil2("Base Destroyer")),
             Ability::Wave(Wave {
                 wtype,
                 chance,
@@ -209,7 +210,7 @@ pub fn get_pure_abilities(
                     WaveType::MiniWave => "[[Wave Attack#Mini-Wave|Mini-Wave]]",
                 };
                 abilities.push(format!(
-                    "{chance}% chance to create a level {level} {wave}{multab}"
+                    "{icon} {chance}% chance to create a level {level} {wave}{multab}"
                 ));
             }
 
@@ -218,65 +219,65 @@ pub fn get_pure_abilities(
                 duration,
                 multiplier,
             } => abilities.push(format!(
-                "{chance}% chance to {weaken} {targets} enemies \
+                "{icon} {chance}% chance to {weaken} {targets} enemies \
                 to {multiplier}% for {duration}{multab}",
                 weaken = abil("Weaken", "weaken"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::Strengthen { hp, multiplier } => abilities.push(format!(
-                "{strengthens} by {multiplier}% at {hp}% health",
+                "{icon} {strengthens} by {multiplier}% at {hp}% health",
                 strengthens = abil("Strengthen", "Strengthens")
             )),
             Ability::Survives { chance } => abilities.push(format!(
-                "{chance}% chance to {survive} a lethal strike",
+                "{icon} {chance}% chance to {survive} a lethal strike",
                 survive = abil("Survive", "survive")
             )),
             Ability::Metal => abilities.push(format!(
-                "{metal} (Only takes 1 damage from non-\
+                "{icon} {metal} (Only takes 1 damage from non-\
                 [[Critical Hit|Critical]] or [[Toxic]] attacks)",
                 metal = abil2("Metal")
             )),
-            Ability::WaveBlocker => abilities.push(abil2("Wave Shield")),
+            Ability::WaveBlocker => abilities.push(icon + " " + &abil2("Wave Shield")),
             Ability::ZombieKiller => abilities.push(format!(
-                "{killer} (stops {zombies} from reviving)",
+                "{icon} {killer} (stops {zombies} from reviving)",
                 zombies = enemy("Zombie", "Zombies"),
                 killer = abil2("Zombie Killer")
             )),
             Ability::WitchKiller => abilities.push(format!(
-                "{killer} (Deals 5x damage to {witches}, only takes 1/10 damage)",
+                "{icon} {killer} (Deals 5x damage to {witches}, only takes 1/10 damage)",
                 witches = enemy("Witch", "Witches"),
                 killer = abil2("Witch Killer")
             )),
 
             Ability::Kamikaze => abilities.push(format!(
-                "{kamikaze} (Attacks once, then disappears from the battlefield)",
+                "{icon} {kamikaze} (Attacks once, then disappears from the battlefield)",
                 kamikaze = abil2("Kamikaze")
             )),
             Ability::BarrierBreaker { chance } => abilities.push(format!(
-                "{chance}% chance to {break} [[Barrier]]s{multab}",
+                "{icon} {chance}% chance to {break} [[Barrier]]s{multab}",
                 r#break = abil("Barrier Breaker", "break"),
             )),
             Ability::EvaAngelKiller => abilities.push(format!(
-                "{killer} (Deals 5x damage to {angels}, only takes 1/5 damage)",
+                "{icon} {killer} (Deals 5x damage to {angels}, only takes 1/5 damage)",
                 killer = abil2("Eva Angel Killer"),
                 angels = enemy("Eva Angel", "Eva Angels")
             )),
             Ability::InsaneResist => abilities.push(format!(
-                "{tough} against {targets} enemies",
+                "{icon} {tough} against {targets} enemies",
                 tough = abil("Insanely Tough", "Insanely tough")
             )),
             Ability::InsaneDamage => abilities.push(format!(
-                "Deals {damage} to {targets} enemies",
+                "{icon} Deals {damage} to {targets} enemies",
                 damage = abil("Insane Damage", "insane damage")
             )),
             Ability::SavageBlow { chance, damage } => abilities.push(format!(
-                "{chance}% chance to land a {blow} for +{damage}% \
+                "{icon} {chance}% chance to land a {blow} for +{damage}% \
                 damage to non-{metal} enemies{multab}",
                 blow = abil("Savage Blow", "savage blow"),
                 metal = enemy2("Metal")
             )),
             Ability::Dodge { chance, duration } => abilities.push(format!(
-                "{chance}% chance to {dodge} attacks from {targets} enemies for {duration}",
+                "{icon} {chance}% chance to {dodge} attacks from {targets} enemies for {duration}",
                 dodge = abil("Dodge Attack", "dodge"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
@@ -310,30 +311,30 @@ pub fn get_pure_abilities(
                 };
 
                 abilities.push(format!(
-                    "{chance}% chance to create a level {level} {surge} {at_position}{multab}"
+                    "{icon} {chance}% chance to create a level {level} {surge} {at_position}{multab}"
                 ));
             }
 
             Ability::Curse { chance, duration } => abilities.push(format!(
-                "{chance}% chance to {curse} {targets} enemies for {duration}{multab}",
+                "{icon} {chance}% chance to {curse} {targets} enemies for {duration}{multab}",
                 curse = abil("Curse", "curse"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::ShieldPierce { chance } => abilities.push(format!(
-                "{chance}% chance to instantly {pierce} [[Shield]]s{multab}",
+                "{icon} {chance}% chance to instantly {pierce} [[Shield]]s{multab}",
                 pierce = abil("Shield Piercing", "pierce")
             )),
             Ability::ColossusSlayer => abilities.push(format!(
-                "{slayer} (Deals 1.6x damage to {colossus} enemies, only takes 0.7x damage)",
+                "{icon} {slayer} (Deals 1.6x damage to {colossus} enemies, only takes 0.7x damage)",
                 slayer = abil2("Colossus Slayer"),
                 colossus = "[[:Category:Colossus Enemies|Colossus]]"
             )),
-            Ability::Soulstrike => abilities.push(abil2("Soulstrike")),
+            Ability::Soulstrike => abilities.push(icon + " " + &abil2("Soulstrike")),
             Ability::BehemothSlayer {
                 dodge_chance,
                 dodge_duration,
             } => abilities.push(format!(
-                "{slayer} ({dodge_chance}% chance to dodge \
+                "{icon} {slayer} ({dodge_chance}% chance to dodge \
                 {behemoth} enemies' attacks for {duration})",
                 slayer = abil2("Behemoth Slayer"),
                 behemoth = enemy2("Behemoth"),
@@ -341,23 +342,23 @@ pub fn get_pure_abilities(
             )),
 
             Ability::CounterSurge => {
-                abilities.push("[[Surge Attack#Counter-Surge|Counter-Surge]]".to_string());
+                abilities.push(icon + " [[Surge Attack#Counter-Surge|Counter-Surge]]");
             }
             Ability::ConjureUnit { id } => abilities.push(format!(
-                "When on the battlefield, tap icon again to \
+                "{icon} When on the battlefield, tap icon again to \
                 {conjure} unit {id:03} as its [[#Spirit|spirit]]",
                 conjure = abil2("Conjure")
             )),
-            Ability::SageSlayer => abilities.push(abil2("Sage Slayer")),
+            Ability::SageSlayer => abilities.push(icon + " " + &abil2("Sage Slayer")),
             Ability::MetalKiller { damage } => abilities.push(format!(
-                "{killer} (Deals {damage}% of {metal} enemies' current HP on hit)",
+                "{icon} {killer} (Deals {damage}% of {metal} enemies' current HP on hit)",
                 killer = abil2("Metal Killer"),
                 metal = enemy2("Metal")
             )),
             Ability::Explosion { chance, spawn_quad } => {
                 let position = f64::from(*spawn_quad) / 4.0;
                 abilities.push(format!(
-                    "{chance}% chance to create an [[Explosion]] at {range} range{multab}",
+                    "{icon} {chance}% chance to create an [[Explosion]] at {range} range{multab}",
                     range = get_formatted_float(position, 2)
                 ));
             }
