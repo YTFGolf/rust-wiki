@@ -51,6 +51,35 @@ pub struct UnitLevelRaw {
 }
 
 impl UnitLevelRaw {
+    /// Iterate through each level scale multiplier.
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = u8> {
+        [
+            self.until_10,
+            self.until_20,
+            self.until_30,
+            self.until_40,
+            self.until_50,
+            self.until_60,
+            self.until_70,
+            self.until_80,
+            self.until_90,
+            self.until_100,
+            self.until_110,
+            self.until_120,
+            self.until_130,
+            self.until_140,
+            self.until_150,
+            self.until_160,
+            self.until_170,
+            self.until_180,
+            self.until_190,
+            self.until_200,
+        ]
+        .into_iter()
+    }
+}
+
+impl UnitLevelRaw {
     fn up_to_10(level: u8, until: u8) -> f64 {
         f64::from(level) * f64::from(until) / 100.0
     }
@@ -77,6 +106,7 @@ impl UnitLevelRaw {
             };
         }
 
+        // should probably refactor this to use `.iter()`
         level_split!(self.until_20);
         level_split!(self.until_30);
         level_split!(self.until_40);
