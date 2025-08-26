@@ -422,6 +422,61 @@ impl Ability {
     }
 }
 // Ability::StrongAgainst=>(),Ability::Knockback{..}=>(),Ability::Freeze{..}=>(),Ability::Slow{..}=>(),Ability::Resist=>(),Ability::MassiveDamage=>(),Ability::Crit{..}=>(),Ability::TargetsOnly=>(),Ability::DoubleBounty=>(),Ability::BaseDestroyer=>(),Ability::Wave(_)=>(),Ability::Weaken{..}=>(),Ability::Strengthen{..}=>(),Ability::Survives{..}=>(),Ability::Metal=>(),Ability::ImmuneToWave=>(),Ability::WaveBlocker=>(),Ability::ImmuneToKB=>(),Ability::ImmuneToFreeze=>(),Ability::ImmuneToSlow=>(),Ability::ImmuneToWeaken=>(),Ability::ZombieKiller=>(),Ability::WitchKiller=>(),Ability::ImmuneToBossShockwave=>(),Ability::Kamikaze=>(),Ability::BarrierBreaker{..}=>(),Ability::ImmuneToWarp=>(),Ability::EvaAngelKiller=>(),Ability::ImmuneToCurse=>(),Ability::InsaneResist=>(),Ability::InsaneDamage=>(),Ability::SavageBlow{..}=>(),Ability::Dodge{..}=>(),Ability::Surge(_)=>(),Ability::ImmuneToToxic=>(),Ability::ImmuneToSurge=>(),Ability::Curse{..}=>(),Ability::ShieldPierce{..}=>(),Ability::ColossusSlayer=>(),Ability::Soulstrike=>(),Ability::BehemothSlayer{..}=>(),Ability::CounterSurge=>(),Ability::ConjureUnit{..}=>(),Ability::SageSlayer=>(),Ability::MetalKiller{..}=>(),Ability::Explosion{..}=>(),Ability::ImmuneToExplosion=>(),
+impl Ability {
+    pub const fn name(&self) -> &'static str {
+        // this is all in nyankoPictureBook2_en.csv ... is it really important
+        // to have it here then?
+        match self {
+            Ability::StrongAgainst => "Strong Against",
+            Ability::Knockback { .. } => "Knockback",
+            Ability::Freeze { .. } => "Freeze",
+            Ability::Slow { .. } => "Slow",
+            Ability::Resist => "Resistant",
+            Ability::MassiveDamage => "Massive Damage",
+            Ability::Crit { .. } => "Critical",
+            Ability::TargetsOnly => "Attacks Only",
+            Ability::DoubleBounty => "Extra Money",
+            Ability::BaseDestroyer => "Base Destroyer",
+            Ability::Wave(_) => "Wave Attack",
+            Ability::Weaken { .. } => "Weaken",
+            Ability::Strengthen { .. } => "Strengthen",
+            Ability::Survives { .. } => "Survive",
+            Ability::Metal => "Metal",
+            Ability::ImmuneToWave => "Immune to Waves",
+            Ability::WaveBlocker => "Wave Shield",
+            Ability::ImmuneToKB => "Immune to Knockback",
+            Ability::ImmuneToFreeze => "Immune to Freeze",
+            Ability::ImmuneToSlow => "Immune to Slow",
+            Ability::ImmuneToWeaken => "Immune to Weaken",
+            Ability::ZombieKiller => "Zombie Killer",
+            Ability::WitchKiller => "Witch Killer",
+            Ability::ImmuneToBossShockwave => "Immune to Boss Shockwave",
+            Ability::Kamikaze => "Kamikaze",
+            Ability::BarrierBreaker { .. } => "Barrier Breaker",
+            Ability::ImmuneToWarp => "Immune to Warp",
+            Ability::EvaAngelKiller => "Eva Angel Killer",
+            Ability::ImmuneToCurse => "Immune to Curse",
+            Ability::InsaneResist => "Insanely Tough",
+            Ability::InsaneDamage => "Insane Damage",
+            Ability::SavageBlow { .. } => "Savage Blow",
+            Ability::Dodge { .. } => "Dodge Attack",
+            Ability::Surge(_) => "Surge Attacks",
+            Ability::ImmuneToToxic => "Immune to Toxic",
+            Ability::ImmuneToSurge => "Immune to Surge",
+            Ability::Curse { .. } => "Curse",
+            Ability::ShieldPierce { .. } => "Shield Piercing",
+            Ability::ColossusSlayer => "Colossus Slayer",
+            Ability::Soulstrike => "Soulstrike",
+            Ability::BehemothSlayer { .. } => "Behemoth Slayer",
+            Ability::CounterSurge => "Counter-Surge",
+            Ability::ConjureUnit { .. } => "Conjure",
+            Ability::SageSlayer => "Sage Slayer",
+            Ability::MetalKiller { .. } => "Metal Killer",
+            Ability::Explosion { .. } => "Explosion",
+            Ability::ImmuneToExplosion => "Immune to Explosions",
+        }
+    }
+}
 
 fn bool(value: Percent) -> Result<bool, String> {
     match value {
