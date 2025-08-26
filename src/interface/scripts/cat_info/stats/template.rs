@@ -49,12 +49,21 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
         Ultra = 4,
     }
     impl CatForm {
-        fn as_str(&self) -> &'static str {
-            match &self {
+        fn as_str(self) -> &'static str {
+            match self {
                 Self::Normal => "Normal",
                 Self::Evolved => "Evolved",
                 Self::True => "True",
                 Self::Ultra => "Ultra",
+            }
+        }
+
+        fn name(self, id: u32) -> &'static str {
+            match self {
+                Self::Normal => &CAT_DATA.get_cat(id).normal,
+                Self::Evolved => &CAT_DATA.get_cat(id).evolved.as_ref().unwrap(),
+                Self::True => &CAT_DATA.get_cat(id).true_form.as_ref().unwrap(),
+                Self::Ultra => &CAT_DATA.get_cat(id).ultra.as_ref().unwrap(),
             }
         }
     }
@@ -64,12 +73,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     let iter = zip(&cat.forms.stats, &cat.forms.anims).take(cat.forms.amt_forms);
 
     for (form_variant, stats_and_anims) in zip(forms, iter) {
-        let name = match form_variant {
-            F::Normal => &CAT_DATA.get_cat(cat.id).normal,
-            F::Evolved => &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap(),
-            F::True => &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap(),
-            F::Ultra => &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap(),
-        };
+        let name = form_variant.name(cat.id);
         let name = CatName::clean_cat_name(name);
 
         let form_str = form_variant.as_str();
