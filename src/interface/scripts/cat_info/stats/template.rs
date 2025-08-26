@@ -18,24 +18,30 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     let is_normal_form = matches!(form_name, "Normal");
 
     if !is_normal_form {
-        t.push_params(P::new(format!("Hp {f}"), form.hp_max.clone()));
-        t.push_params(P::new(format!("Atk Power {f}"), form.atk_max.clone()));
+        t.push_params(P::new(format!("val-{f}-Health"), form.hp_max.clone()));
+        t.push_params(P::new(
+            format!("val-{f}-Attack Power"),
+            form.atk_max.clone(),
+        ));
     }
 
-    t.push_params(P::new(format!("Atk Range {f}"), form.range));
-    t.push_params(P::new(format!("Attack Frequency {f}"), form.attack_cycle));
-    t.push_params(P::new(format!("Movement Speed {f}"), form.speed));
-    t.push_params(P::new(format!("Knockback {f}"), form.knockback));
-    t.push_params(P::new(format!("Attack Animation {f}"), form.animation));
-    t.push_params(P::new(format!("Recharging Time {f}"), form.recharge));
+    t.push_params(P::new(format!("val-{f}-Attack Range"), form.range));
+    t.push_params(P::new(
+        format!("val-{f}-Attack Frequency"),
+        form.attack_cycle,
+    ));
+    t.push_params(P::new(format!("val-{f}-Movement Speed"), form.speed));
+    t.push_params(P::new(format!("val-{f}-Knockback"), form.knockback));
+    t.push_params(P::new(format!("val-{f}-Attack Animation"), form.animation));
+    t.push_params(P::new(format!("val-{f}-Recharge Time"), form.recharge));
 
     if is_normal_form {
-        t.push_params(P::new(format!("Hp {f} Lv.MAX"), form.hp_max));
-        t.push_params(P::new(format!("Atk Power {f} Lv.MAX"), form.atk_max));
+        t.push_params(P::new(format!("val-{f}-MaxHP"), form.hp_max));
+        t.push_params(P::new(format!("val-{f}-MaxAttack"), form.atk_max));
     }
 
-    t.push_params(P::new(format!("Attack type {f}"), form.attack_type));
-    t.push_params(P::new(format!("Special Ability {f}"), form.abilities));
+    t.push_params(P::new(format!("{f} Attack Type"), form.attack_type));
+    t.push_params(P::new(format!("{f} Abilities"), form.abilities));
 }
 
 fn add_all_forms(t: &mut Template, cat: &Cat) {
@@ -89,8 +95,8 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
         }));
 
         if form_variant == F::Normal {
-            t.push_params(P::new("Hp Normal", form.base_hp));
-            t.push_params(P::new("Atk Power Normal", form.base_atk));
+            t.push_params(P::new("val-Normal-Health", form.base_hp));
+            t.push_params(P::new("val-Normal-Attack Power", form.base_atk));
         }
         write_stats(t, form_str, form.other);
     }
