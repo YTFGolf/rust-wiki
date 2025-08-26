@@ -89,6 +89,11 @@ impl Template {
         self.params.extend(params);
         self
     }
+
+    /// Get back parameter values.
+    pub fn deconstruct(self) -> (StringValue, Vec<TemplateParameter>) {
+        (self.name, self.params)
+    }
 }
 
 impl Display for Template {
