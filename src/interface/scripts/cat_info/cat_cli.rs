@@ -6,7 +6,8 @@ use crate::interface::{
         cli_util::{CommandExec, ConfigMerge},
         version_opt::VersionOptions,
     },
-    config::Config, scripts::cat_info::cat_info::get_info,
+    config::Config,
+    scripts::cat_info::cat_info::get_info,
 };
 use clap::Args;
 

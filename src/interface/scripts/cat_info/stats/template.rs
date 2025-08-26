@@ -11,8 +11,7 @@ use crate::{
         text_utils::get_ordinal,
     },
 };
-use std::fmt::Write;
-use std::iter::zip;
+use std::{fmt::Write, iter::zip};
 
 fn write_val_stats(t: &mut Template, form_name: &str, form: Form) {
     type P = TemplateParameter;
