@@ -33,7 +33,6 @@ fn get_targets(targets: &[EnemyType]) -> String {
         return "traited".to_string();
     }
 
-    // possibly might have to clone and sort so that traitless comes first
     let mut buf = String::new();
     let mut iter = targets.iter().peekable();
     let first = iter.next().expect("already checked len >= 2");
@@ -363,44 +362,48 @@ pub fn get_pure_abilities(
                 ));
             }
 
-            Ability::ImmuneToWave => immunities.push("Waves"),
-            Ability::ImmuneToKB => immunities.push("Knockback"),
-            Ability::ImmuneToFreeze => immunities.push("Freeze"),
-            Ability::ImmuneToSlow => immunities.push("Slow"),
-            Ability::ImmuneToWeaken => immunities.push("Weaken"),
-            Ability::ImmuneToBossShockwave => immunities.push("Boss Shockwave"),
-            Ability::ImmuneToWarp => immunities.push("Warp"),
-            Ability::ImmuneToCurse => immunities.push("Curse"),
-            Ability::ImmuneToToxic => immunities.push("Toxic"),
-            Ability::ImmuneToSurge => immunities.push("Surge"),
-            Ability::ImmuneToExplosion => immunities.push("Explosions"),
+            Ability::ImmuneToWave => immunities.push((ability, "Waves")),
+            Ability::ImmuneToKB => immunities.push((ability, "Knockback")),
+            Ability::ImmuneToFreeze => immunities.push((ability, "Freeze")),
+            Ability::ImmuneToSlow => immunities.push((ability, "Slow")),
+            Ability::ImmuneToWeaken => immunities.push((ability, "Weaken")),
+            Ability::ImmuneToBossShockwave => immunities.push((ability, "Boss Shockwave")),
+            Ability::ImmuneToWarp => immunities.push((ability, "Warp")),
+            Ability::ImmuneToCurse => immunities.push((ability, "Curse")),
+            Ability::ImmuneToToxic => immunities.push((ability, "Toxic")),
+            Ability::ImmuneToSurge => immunities.push((ability, "Surge")),
+            Ability::ImmuneToExplosion => immunities.push((ability, "Explosions")),
         }
     }
 
     if !immunities.is_empty() {
-        let mut buf = String::new();
+        let mut icons_buf = String::new();
+        let mut text_buf = String::new();
         let mut iter = immunities.into_iter().peekable();
 
-        let first = iter.next().expect("already check is_empty");
+        let (icon, first) = iter.next().expect("already check is_empty");
+        write!(icons_buf, "{{{{AbilityIcon|{i}}}}}", i = icon.name()).infallible_write();
         write!(
-            buf,
+            text_buf,
             "[[Special Abilities#Immune to {first}|Immune to {first}]]"
         )
         .infallible_write();
 
-        while let Some(immunity) = iter.next() {
+        while let Some((icon, immunity)) = iter.next() {
+            write!(icons_buf, "{{{{AbilityIcon|{i}}}}}", i = icon.name()).infallible_write();
+
             let separator = match iter.peek() {
                 Some(_) => ",",
                 None => " and",
             };
             write!(
-                buf,
+                text_buf,
                 "{separator} [[Special Abilities#Immune to {immunity}|{immunity}]]"
             )
             .infallible_write();
         }
 
-        abilities.push(buf);
+        abilities.push(icons_buf + " " + &text_buf);
     }
 
     abilities
@@ -464,7 +467,7 @@ mod tests {
         assert_eq!(counter + 1, abilities.len());
         // i.e. gone over everything but last item in abilities
 
-        const FINAL_IMMUNITY: &str = "[[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]], [[Special Abilities#Immune to Boss Shockwave|Boss Shockwave]], [[Special Abilities#Immune to Warp|Warp]], [[Special Abilities#Immune to Curse|Curse]], [[Special Abilities#Immune to Toxic|Toxic]], [[Special Abilities#Immune to Surge|Surge]] and [[Special Abilities#Immune to Explosions|Explosions]]";
+        const FINAL_IMMUNITY: &str = "{{AbilityIcon|Immune to Waves}}{{AbilityIcon|Immune to Knockback}}{{AbilityIcon|Immune to Freeze}}{{AbilityIcon|Immune to Slow}}{{AbilityIcon|Immune to Weaken}}{{AbilityIcon|Immune to Boss Shockwave}}{{AbilityIcon|Immune to Warp}}{{AbilityIcon|Immune to Curse}}{{AbilityIcon|Immune to Toxic}}{{AbilityIcon|Immune to Surge}}{{AbilityIcon|Immune to Explosions}} [[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]], [[Special Abilities#Immune to Boss Shockwave|Boss Shockwave]], [[Special Abilities#Immune to Warp|Warp]], [[Special Abilities#Immune to Curse|Curse]], [[Special Abilities#Immune to Toxic|Toxic]], [[Special Abilities#Immune to Surge|Surge]] and [[Special Abilities#Immune to Explosions|Explosions]]";
         assert_eq!(abilities[counter], FINAL_IMMUNITY);
     }
 
