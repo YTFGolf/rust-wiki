@@ -15,12 +15,12 @@ fn get_first_hit_range(hit1: &AttackHit) -> Option<String> {
     match hit1.range {
         AttackRange::Normal | AttackRange::Unchanged => None,
         AttackRange::LD { base, distance } => Some(format!(
-            "{ld} (Effective range: {range}",
+            "{{{{AbilityIcon|Long Distance}}}} {ld} (Effective range: {range}",
             ld = get_ability_single("Long Distance"),
             range = get_range_repr(base, base + distance)
         )),
         AttackRange::Omni { base, distance } => Some(format!(
-            "{omni} (Effective range: {range}",
+            "{{{{AbilityIcon|Long Distance}}}} {omni} (Effective range: {range}",
             omni = get_ability_single("Omni Strike"),
             range = get_range_repr(base + distance, base) // distance is negative if is omni
         )),
@@ -142,7 +142,8 @@ pub fn get_multihit_ability(
     match &stats.attack.hits {
         AttackHits::Single(_) => None,
         AttackHits::Double([h1, h2]) => {
-            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
+            let mut buf =
+                "{{AbilityIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
             write_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
@@ -152,7 +153,8 @@ pub fn get_multihit_ability(
             Some(buf)
         }
         AttackHits::Triple([h1, h2, h3]) => {
-            let mut buf = "[[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
+            let mut buf =
+                "{{AbilityIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
             write_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
