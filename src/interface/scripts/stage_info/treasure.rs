@@ -50,6 +50,7 @@ fn once_then_unlimited(
     rewards: &StageRewards,
     reset_type: ResetType,
     max_clears: Option<NonZeroU32>,
+    cooldown: Option<NonZeroU32>,
 ) -> String {
     let mut buf = String::new();
     let t = &rewards.treasure_drop;
@@ -62,9 +63,21 @@ fn once_then_unlimited(
         && matches!(
             reset_type,
             ResetType::ResetRewards | ResetType::ResetRewardsAndClear
-        ) {
-        // special case that makes the output less confusing, see the linked
-        // template for full explanation
+        )
+        && cooldown.is_none()
+    {
+        // Where:
+        // - max clears is 1
+        // - cooldown is null
+        // Then immediately upon clearing the stage, the map will become
+        // unavailable. If the stage's reset type resets the rewards, then all
+        // the rewards will be refreshed once the map becomes unavailable.
+        //
+        // If these 2 things are combined, then despite technically the reward
+        // being only available once, every time you clear the stage the reward
+        // is available.
+        //
+        // See TreasureAdjustment template for full explanation.
         "unlimited{{TreasureAdjustment}}"
     } else {
         ONCE
@@ -220,7 +233,9 @@ pub fn treasure(stage: &Stage) -> Option<TemplateParameter> {
     let rewards = stage.rewards.as_ref()?;
 
     let treasure_text = match rewards.treasure_type {
-        T::OnceThenUnlimited => once_then_unlimited(rewards, stage.reset_type, stage.max_clears),
+        T::OnceThenUnlimited => {
+            once_then_unlimited(rewards, stage.reset_type, stage.max_clears, stage.cooldown)
+        }
         T::AllUnlimited => all_unlimited(rewards),
         T::UnclearMaybeRaw => single_raw(rewards),
         T::GuaranteedOnce => guaranteed_once(rewards),
