@@ -10,29 +10,6 @@ use crate::{
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
-/*
-Need to do a load of tests
-
-Top-level assert: hit 2 is unchanged iff hit 3 is unchanged
-
-If normal: None
-If unchanged: same as hit 1 (panic if found on hit 1)
-If LD: add to ld buffer
-If Omni: add to omni buffer
-
-Store hit1
-If normal store None
-If LD/Omni then is Some(thing)
-If unchanged panic
-
-Go to next hit
-If normal ensure hit1 is normal
-If unchanged then do nothing (top-level assert checks that unchanged is
-invariant)
-If omni add to omni buffer
-If LD add to LD buffer
-*/
-
 fn range_ability_text(hits_buf: Vec<(usize, String)>, abil: &str) -> Option<String> {
     let mut iter = hits_buf.into_iter();
     let f = iter.next()?;
@@ -65,17 +42,7 @@ fn range_ability_text(hits_buf: Vec<(usize, String)>, abil: &str) -> Option<Stri
     Some(buf)
 }
 
-pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
-    match hits {
-        AttackHits::Triple([.., hit2, hit3]) => {
-            if hit2.range == AttackRange::Unchanged || hit3.range == AttackRange::Unchanged {
-                assert_eq!(hit2.range, hit3.range);
-            }
-        }
-        _ => (),
-    }
-    // just check that hit 2 is unchanged iff hit 3 is unchanged/non-existent
-
+fn get_range_ability_different(hits: &AttackHits) -> Vec<String> {
     let mut ranges = vec![];
 
     let mut ld_buf = vec![];
@@ -86,7 +53,7 @@ pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
 
     match hit1.range {
         AttackRange::Normal => (),
-        AttackRange::Unchanged => panic!("Hit 1 is unchanged!"),
+        AttackRange::Unchanged => unreachable!(),
         AttackRange::LD { base, distance } => {
             ld_buf.push((i + 1, get_range_repr(base, base + distance)))
         }
@@ -99,10 +66,7 @@ pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
     while let Some((i, hit)) = iter.next() {
         match hit.range {
             AttackRange::Normal => assert_eq!(hit.range, hit1.range),
-            AttackRange::Unchanged => (),
-            // no need to act when unchanged as the top-level assert statement
-            // checks that hit 2 and hit 3 must have same range (or that hit 3
-            // doesn't exist)
+            AttackRange::Unchanged => unreachable!(),
             AttackRange::LD { base, distance } => {
                 ld_buf.push((i + 1, get_range_repr(base, base + distance)))
             }
@@ -117,6 +81,53 @@ pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
     ranges.extend(range_ability_text(omni_buf, "Omni Strike"));
 
     ranges
+}
+
+fn get_range_ability_same(hit1: &AttackHit) -> Option<String> {
+    match hit1.range {
+        AttackRange::Normal => None,
+        AttackRange::Unchanged => panic!("Hit 1 is unchanged!"),
+        AttackRange::LD { base, distance } => {
+            let abil = "Long Distance";
+            let t = format!(
+                "{{{{AbilityIcon|{abil}}}}} {link} (Effective range: {range})",
+                range = get_range_repr(base, base + distance),
+                link = get_ability_single(abil)
+            );
+            Some(t)
+        }
+        AttackRange::Omni { base, distance } => {
+            let abil = "Omni Strike";
+            let t = format!(
+                "{{{{AbilityIcon|{abil}}}}} {link} (Effective range: {range})",
+                range = get_range_repr(base + distance, base),
+                // distance is negative if is omni
+                link = get_ability_single(abil)
+            );
+            Some(t)
+        }
+    }
+}
+
+pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
+    match hits {
+        AttackHits::Single([hit1]) => get_range_ability_same(hit1).into_iter().collect(),
+        AttackHits::Double([hit1, hit2]) => {
+            if hit2.range == AttackRange::Unchanged {
+                get_range_ability_same(hit1).into_iter().collect()
+            } else {
+                get_range_ability_different(hits)
+            }
+        }
+        AttackHits::Triple([hit1, hit2, hit3]) => {
+            if hit2.range == AttackRange::Unchanged || hit3.range == AttackRange::Unchanged {
+                assert_eq!(hit2.range, hit3.range);
+                get_range_ability_same(hit1).into_iter().collect()
+            } else {
+                get_range_ability_different(hits)
+            }
+        }
+    }
 }
 
 fn write_mh_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level: u8) {
@@ -161,3 +172,6 @@ pub fn get_multihit_ability(
         }
     }
 }
+
+// TODO need to do a load of tests
+// cat, Bahamut, Cyberpunk, Kasli (first form), Phonoa, Carrowsell, Hanasaka
