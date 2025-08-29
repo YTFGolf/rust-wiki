@@ -140,11 +140,11 @@ fn write_mh_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level
 }
 
 pub fn get_multihit_ability(
-    stats: &CatFormStats,
+    hits: &AttackHits,
     scaling: &UnitLevelRaw,
     level: u8,
 ) -> Option<String> {
-    match &stats.attack.hits {
+    match hits {
         AttackHits::Single(_) => None,
         AttackHits::Double([h1, h2]) => {
             let mut buf =

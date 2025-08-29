@@ -157,7 +157,7 @@ pub fn get_form(
     };
     let abilities = {
         let mut abilities = vec![];
-        abilities.extend(get_multihit_ability(stats, &cat.unitlevel, level));
+        abilities.extend(get_multihit_ability(&stats.attack.hits, &cat.unitlevel, level));
         abilities.extend(get_range_ability(&stats.attack.hits));
         abilities.extend(get_pure_abilities(
             &stats.attack.hits,
