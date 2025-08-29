@@ -175,3 +175,23 @@ pub fn get_multihit_ability(
 
 // TODO need to do a load of tests
 // cat, Bahamut, Cyberpunk, Kasli (first form), Phonoa, Carrowsell, Hanasaka
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{TEST_CONFIG, game_data::cat::parsed::cat::Cat};
+
+    fn get_stats(id: u32) -> Cat {
+        Cat::from_wiki_id(id, &TEST_CONFIG.version).unwrap()
+    }
+
+    #[test]
+    fn basic() {
+        let cat = get_stats(0);
+        let form = &cat.forms.stats[2];
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &cat.unitlevel, 30),
+            None
+        );
+    }
+}
