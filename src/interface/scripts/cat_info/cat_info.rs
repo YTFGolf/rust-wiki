@@ -23,5 +23,5 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<String, CatDataError> {
 /*
 talents
 combos
-desc (will need to make other parts better)
+desc
 */

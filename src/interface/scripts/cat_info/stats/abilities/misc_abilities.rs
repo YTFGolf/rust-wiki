@@ -5,127 +5,121 @@ use crate::{
         raw::unitlevel::UnitLevelRaw,
     },
     interface::error_handler::InfallibleWrite,
-    wikitext::number_utils::time_repr,
+    wikitext::{number_utils::time_repr, text_utils::get_ordinal},
 };
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
-/// Won't close the set of brackets.
-fn get_first_hit_range(hit1: &AttackHit) -> Option<String> {
-    match hit1.range {
-        AttackRange::Normal | AttackRange::Unchanged => None,
-        AttackRange::LD { base, distance } => Some(format!(
-            "{{{{AbilityIcon|Long Distance}}}} {ld} (Effective range: {range}",
-            ld = get_ability_single("Long Distance"),
-            range = get_range_repr(base, base + distance)
-        )),
-        AttackRange::Omni { base, distance } => Some(format!(
-            "{{{{AbilityIcon|Long Distance}}}} {omni} (Effective range: {range}",
-            omni = get_ability_single("Omni Strike"),
-            range = get_range_repr(base + distance, base) // distance is negative if is omni
-        )),
+/*
+Need to do a load of tests
+
+Top-level assert: hit 2 is unchanged iff hit 3 is unchanged
+
+If normal: None
+If unchanged: same as hit 1 (panic if found on hit 1)
+If LD: add to ld buffer
+If Omni: add to omni buffer
+
+Store hit1
+If normal store None
+If LD/Omni then is Some(thing)
+If unchanged panic
+
+Go to next hit
+If normal ensure hit1 is normal
+If unchanged then do nothing (top-level assert checks that unchanged is
+invariant)
+If omni add to omni buffer
+If LD add to LD buffer
+*/
+
+fn range_ability_text(hits_buf: Vec<(usize, String)>, abil: &str) -> Option<String> {
+    let mut iter = hits_buf.into_iter();
+    let f = iter.next()?;
+
+    let mut buf = format!(
+        "{{{{AbilityIcon|{abil}}}}} {link} (Effective range: ",
+        link = get_ability_single(abil)
+    );
+
+    write!(
+        buf,
+        "{range} on {nth} hit",
+        range = f.1,
+        nth = get_ordinal(f.0 as u32)
+    )
+    .infallible_write();
+
+    while let Some(f) = iter.next() {
+        write!(
+            buf,
+            ", {range} on {nth} hit",
+            range = f.1,
+            nth = get_ordinal(f.0 as u32)
+        )
+        .infallible_write();
     }
+
+    buf += ")";
+
+    Some(buf)
 }
 
-fn write_hit_2(buf: &mut String, hit2: &AttackHit) {
-    match hit2.range {
-        AttackRange::Normal => unreachable!(),
-        AttackRange::Unchanged => (),
-        AttackRange::LD { base, distance } => write!(
-            buf,
-            " on 1st hit, {range} on 2nd hit",
-            range = get_range_repr(base, base + distance)
-        )
-        .infallible_write(),
-        AttackRange::Omni { base, distance } => write!(
-            buf,
-            " on 1st hit, {range} on 2nd hit",
-            range = get_range_repr(base + distance, base)
-        )
-        .infallible_write(),
-    }
-}
-
-fn write_hit_3(buf: &mut String, hit3: &AttackHit) {
-    match hit3.range {
-        AttackRange::Normal => unreachable!(),
-        AttackRange::Unchanged => (),
-        AttackRange::LD { base, distance } => write!(
-            buf,
-            ", {range} on 3rd hit",
-            range = get_range_repr(base, base + distance)
-        )
-        .infallible_write(),
-        AttackRange::Omni { base, distance } => write!(
-            buf,
-            ", {range} on 3rd hit",
-            range = get_range_repr(base + distance, base)
-        )
-        .infallible_write(),
-    }
-}
-
-/// Get LD/Omni ability.
-pub fn get_range_ability(hits: &AttackHits) -> Option<String> {
-    // TODO fix this for mighty carrowsell
-    // some struct goes here that indicates ld and omni ability
+pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
     match hits {
-        AttackHits::Single([hit1]) => {
-            let mut hit = get_first_hit_range(hit1)?;
-            hit += ")";
-            Some(hit)
+        AttackHits::Triple([.., hit2, hit3]) => {
+            if hit2.range == AttackRange::Unchanged || hit3.range == AttackRange::Unchanged {
+                assert_eq!(hit2.range, hit3.range);
+            }
         }
-        AttackHits::Double([hit1, hit2]) => {
-            let mut hit = get_first_hit_range(hit1)?;
+        _ => (),
+    }
+    // just check that hit 2 is unchanged iff hit 3 is unchanged/non-existent
 
-            if hit1.range == hit2.range {
-                hit += ")";
-                return Some(hit);
-            }
+    let mut ranges = vec![];
 
-            if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
-                log::warn!("Hits 1 and 2 are of completely different types");
-                // not needed tbh: either:
-                // - Normal: panics anyway
-                // - Unchanged: valid anyway
-                // Therefore only difference is if first hit is LD/Omni and
-                // other is the other, they get formatted in the same way so not
-                // an issue.
-            }
+    let mut ld_buf = vec![];
+    let mut omni_buf = vec![];
 
-            write_hit_2(&mut hit, hit2);
-            hit.write_char(')').infallible_write();
-            Some(hit)
+    let mut iter = hits.iter().enumerate();
+    let (i, hit1) = iter.next().expect("will always be at least length 1");
+
+    match hit1.range {
+        AttackRange::Normal => (),
+        AttackRange::Unchanged => panic!("Hit 1 is unchanged!"),
+        AttackRange::LD { base, distance } => {
+            ld_buf.push((i + 1, get_range_repr(base, base + distance)))
         }
-        AttackHits::Triple([hit1, hit2, hit3]) => {
-            let mut hit = get_first_hit_range(hit1)?;
-
-            if hit1.range == hit2.range && hit1.range == hit3.range {
-                hit += ")";
-                return Some(hit);
-            }
-
-            if !hit2.range.has_same_type(&hit3.range) {
-                log::warn!(
-                    "Hits 2 and 3 are of incompatible types: {:?} vs {:?}",
-                    hit2.range,
-                    hit3.range
-                );
-            }
-            if !(hit2.range == AttackRange::Unchanged || hit1.range.has_same_type(&hit2.range)) {
-                log::warn!("Hits 1 and 2 are of completely different types");
-                // not needed for same reasons as in double
-            }
-
-            write_hit_2(&mut hit, hit2);
-            write_hit_3(&mut hit, hit3);
-            hit.write_char(')').infallible_write();
-            Some(hit)
+        AttackRange::Omni { base, distance } => {
+            omni_buf.push((i + 1, get_range_repr(base + distance, base)))
+            // distance is negative if is omni
         }
     }
+
+    while let Some((i, hit)) = iter.next() {
+        match hit.range {
+            AttackRange::Normal => assert_eq!(hit.range, hit1.range),
+            AttackRange::Unchanged => (),
+            // no need to act when unchanged as the top-level assert statement
+            // checks that hit 2 and hit 3 must have same range (or that hit 3
+            // doesn't exist)
+            AttackRange::LD { base, distance } => {
+                ld_buf.push((i + 1, get_range_repr(base, base + distance)))
+            }
+            AttackRange::Omni { base, distance } => {
+                omni_buf.push((i + 1, get_range_repr(base + distance, base)))
+                // distance is negative if is omni
+            }
+        }
+    }
+
+    ranges.extend(range_ability_text(ld_buf, "Long Distance"));
+    ranges.extend(range_ability_text(omni_buf, "Omni Strike"));
+
+    ranges
 }
 
-fn write_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level: u8) {
+fn write_mh_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level: u8) {
     let hit_dmg_at_level = &scaling.get_stat_at_level(hit.damage, level);
     buf.write_formatted(hit_dmg_at_level, &Locale::en)
         .infallible_write();
@@ -145,9 +139,9 @@ pub fn get_multihit_ability(
             let mut buf =
                 "{{AbilityIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
-            write_hit(&mut buf, h1, scaling, level);
+            write_mh_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, h2, scaling, level);
+            write_mh_hit(&mut buf, h2, scaling, level);
             buf.write_str(")").infallible_write();
 
             Some(buf)
@@ -156,11 +150,11 @@ pub fn get_multihit_ability(
             let mut buf =
                 "{{AbilityIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]] (".to_string();
 
-            write_hit(&mut buf, h1, scaling, level);
+            write_mh_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, h2, scaling, level);
+            write_mh_hit(&mut buf, h2, scaling, level);
             buf.write_str(", ").infallible_write();
-            write_hit(&mut buf, h3, scaling, level);
+            write_mh_hit(&mut buf, h3, scaling, level);
             buf.write_str(")").infallible_write();
 
             Some(buf)
