@@ -1,7 +1,7 @@
 use super::util::{get_ability_single, get_range_repr};
 use crate::{
     game_data::cat::{
-        parsed::stats::form::{AttackHit, AttackHits, AttackRange, CatFormStats},
+        parsed::stats::form::{AttackHit, AttackHits, AttackRange},
         raw::unitlevel::UnitLevelRaw,
     },
     interface::error_handler::InfallibleWrite,
@@ -173,16 +173,17 @@ pub fn get_multihit_ability(
     }
 }
 
-// TODO need to do a load of tests
-// cat, Bahamut, Cyberpunk, Kasli (first form), Phonoa, Carrowsell, Hanasaka
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{TEST_CONFIG, game_data::cat::parsed::cat::Cat};
 
     const MULTI_HIT_INTRO: &str =
-        "{{AttackIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]]";
+        "{{AbilityIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]]";
+    const LD_INTRO: &str =
+        "{{AbilityIcon|Long Distance}} [[Special Abilities#Long Distance|Long Distance]]";
+    const OMNI_INTRO: &str =
+        "{{AbilityIcon|Omni Strike}} [[Special Abilities#Omni Strike|Omni Strike]]";
 
     fn get_stats(id: u32) -> Cat {
         Cat::from_wiki_id(id, &TEST_CONFIG.version).unwrap()
@@ -199,7 +200,6 @@ mod tests {
         assert_eq!(get_range_ability(&form.attack.hits), Vec::<String>::new());
     }
 
-    // cat, Bahamut, Cyberpunk, Kasli (first form), Phonoa, Carrowsell, Hanasaka
     #[test]
     fn multi_no_ld() {
         let bahamut = get_stats(25);
@@ -211,4 +211,94 @@ mod tests {
             Some(format!("{MULTI_HIT_INTRO} ({mh})"))
         );
         assert_eq!(get_range_ability(&form.attack.hits), Vec::<String>::new());
+    }
+
+    #[test]
+    fn ld_no_multi() {
+        let cyberpunk = get_stats(35);
+        let form = &cyberpunk.forms.stats[2];
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &cyberpunk.unitlevel, 30),
+            None
+        );
+        assert_eq!(
+            get_range_ability(&form.attack.hits),
+            vec![format!("{LD_INTRO} (Effective range: 800~1,200)")]
+        );
+    }
+
+    #[test]
+    fn multi_and_ld() {
+        let kasli = get_stats(529);
+        let form = &kasli.forms.stats[0];
+
+        let mh = "3,400 at 48f <sup>1.6s</sup>, 6,800 at 67f <sup>2.23s</sup>";
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &kasli.unitlevel, 30),
+            Some(format!("{MULTI_HIT_INTRO} ({mh})"))
+        );
+        assert_eq!(
+            get_range_ability(&form.attack.hits),
+            vec![format!("{LD_INTRO} (Effective range: 200~500)")]
+        );
+    }
+
+    #[test]
+    fn multi_and_ld_multiple() {
+        let phonoa = get_stats(690);
+        let form = &phonoa.forms.stats[1];
+
+        let mh = "10,200 at 70f <sup>2.33s</sup>, 10,200 at 80f <sup>2.67s</sup>, 10,200 at 90f <sup>3s</sup>";
+        let ld = "Effective range: 250~600 on 1st hit, 450~800 on 2nd hit, 590~1,000 on 3rd hit";
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &phonoa.unitlevel, 30),
+            Some(format!("{MULTI_HIT_INTRO} ({mh})"))
+        );
+        assert_eq!(
+            get_range_ability(&form.attack.hits),
+            vec![format!("{LD_INTRO} ({ld})")]
+        );
+    }
+
+    #[test]
+    fn ld_then_omni() {
+        let carrowsell = get_stats(674);
+        let form = &carrowsell.forms.stats[2];
+
+        let mh = "17,000 at 85f <sup>2.83s</sup>, 17,000 at 89f <sup>2.97s</sup>, 17,000 at 93f <sup>3.1s</sup>";
+        let ld = "Effective range: 1~401 on 1st hit";
+        let omni = "Effective range: -35~435 on 2nd hit, -70~470 on 3rd hit";
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &carrowsell.unitlevel, 30),
+            Some(format!("{MULTI_HIT_INTRO} ({mh})"))
+        );
+        assert_eq!(
+            get_range_ability(&form.attack.hits),
+            vec![
+                format!("{LD_INTRO} ({ld})"),
+                format!("{OMNI_INTRO} ({omni})"),
+            ]
+        );
+    }
+
+    #[test]
+    fn omni_and_ld() {
+        let hanasaka = get_stats(769);
+        let form = &hanasaka.forms.stats[1];
+
+        let mh = "6,970 at 30f <sup>1s</sup>, 6,970 at 50f <sup>1.67s</sup>, 20,060 at 100f <sup>3.33s</sup>";
+        let ld = "Effective range: -230~0 on 2nd hit";
+        let omni = "Effective range: 0~230 on 1st hit, -230~230 on 3rd hit";
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &hanasaka.unitlevel, 30),
+            Some(format!("{MULTI_HIT_INTRO} ({mh})"))
+        );
+        assert_eq!(
+            get_range_ability(&form.attack.hits),
+            vec![
+                format!("{LD_INTRO} ({ld})"),
+                format!("{OMNI_INTRO} ({omni})"),
+            ]
+        );
+    }
 }
