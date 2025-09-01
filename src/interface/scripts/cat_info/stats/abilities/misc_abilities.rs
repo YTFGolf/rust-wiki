@@ -181,6 +181,9 @@ mod tests {
     use super::*;
     use crate::{TEST_CONFIG, game_data::cat::parsed::cat::Cat};
 
+    const MULTI_HIT_INTRO: &str =
+        "{{AttackIcon|Multi-Hit}} [[Special Abilities#Multi-Hit|Multi-Hit]]";
+
     fn get_stats(id: u32) -> Cat {
         Cat::from_wiki_id(id, &TEST_CONFIG.version).unwrap()
     }
@@ -193,5 +196,19 @@ mod tests {
             get_multihit_ability(&form.attack.hits, &cat.unitlevel, 30),
             None
         );
+        assert_eq!(get_range_ability(&form.attack.hits), Vec::<String>::new());
     }
+
+    // cat, Bahamut, Cyberpunk, Kasli (first form), Phonoa, Carrowsell, Hanasaka
+    #[test]
+    fn multi_no_ld() {
+        let bahamut = get_stats(25);
+        let form = &bahamut.forms.stats[2];
+
+        let mh = "85,000 at 5f <sup>0.17s</sup>, 3,400 at 10f <sup>0.33s</sup>, 5,100 at 20f <sup>0.67s</sup>";
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &bahamut.unitlevel, 30),
+            Some(format!("{MULTI_HIT_INTRO} ({mh})"))
+        );
+        assert_eq!(get_range_ability(&form.attack.hits), Vec::<String>::new());
 }
