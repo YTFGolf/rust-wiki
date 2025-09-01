@@ -15,9 +15,20 @@ subheading.
 
 ### Added
 
+- Ability icons to cat stats.
+- `AttackHits::iter`, `UnitLevelRaw::iter`.
+- New format for cat info.
+
 ### Fixed
 
+- Changed how omni and ld are displayed for cats (see issue #15).
+- Cats with max level 1+30 will have stats shown at that level.
+- Added gauntlet cooldown check to TreasureAdjustment condition.
+
 ### Changed
+
+- Separated `get_ordinal` and `get_small_ordinal`.
+- Logger format.
 
 ### Removed
 
