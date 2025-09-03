@@ -7,9 +7,17 @@ use std::{fmt::Debug, path::Path};
 #[derive(Debug, serde::Deserialize, Default)]
 #[allow(missing_docs)]
 pub struct UnitBuyRaw {
+    /// Amount of stages to clear in chapter before unit is available (e.g. 0
+    /// for most cats, 48 for Bahamut).
     pub stage_available: u8,
+    /// Amount of [`Self::unlock_currency`] that unit requires to be unlocked.
     pub unlock_cost: u16,
+    /// Cost to upgrade to level 1.
+    ///
+    /// You can't actually upgrade to level 1, but this number is used to
+    /// calculate the cost of upgrading to level 11, 21 etc.
     pub upgrade_to_1: u32,
+    /// Cost to upgrade to level 2.
     pub upgrade_to_2: u32,
     pub upgrade_to_3: u32,
     pub upgrade_to_4: u32,
@@ -21,30 +29,44 @@ pub struct UnitBuyRaw {
     // 10
     pub upgrade_to_9: u32,
     pub upgrade_to_10: u32,
+    /// 0 = xp, 1 = catfood, 2 = capsule/free/"other".
     pub unlock_currency: u8,
-    // appears to be 0 = xp, 1 = catfood, 2 = capsule/free
+    /// 0 = normal, 1 = special, etc.
     pub rarity: u8,
+    /// Order in the Cat Guide.
     pub cro_order: i32,
+    /// 2 for bahamut, 1 for actress, mr, panties, skirt, valk.
     pub chap_available: u8,
-    // 2 for bahamut, 1 for actress, mr, panties, skirt, valk
     pub sell_xp: u32,
     _uk17: u8,
+    /// Level cap after chapter 2.
     pub max_xp_level_ch2: u8,
+    /// Initial max plus level. Is extended through user rank rewards.
     pub initial_max_plus: u8,
 
     // 20
+    /// What level the unit evolves into their true form, 100 for Superfeline
+    /// and 30 for other normal cats; -1 for all others.
     pub evol_level: i8,
-    // only exists for normal cats, 100 for sf and 30 for others. -1 for all
-    // other cats.
+    /// 2 for iron wall, 10 for everyone else. Probably level they evolve into
+    /// evolved form.
     _uk21: u8,
-    // 2 for iron wall, 10 for everyone else
+    /// Level cap before chapter 2.
     pub max_xp_level_ch1: u8,
+    /// ID of tf evolution.
     pub true_num: u32,
     pub ultra_num: u32,
+    /// Level that Catfruit evolution becomes available. -1 if CF evolution is
+    /// impossible.
+    // need to check what happens when evol_level exists with this. evol_level
+    // takes priority in code currently
     pub true_cf_evol_level: i8,
     pub ultra_cf_evol_level: i8,
+    /// XP to evolve to true form.
     pub true_evol_xp: u32,
+    /// ID of first item required to upgrade to tf.
     pub true_cf_item1: u8,
+    /// Amount of first item required to upgrade to tf.
     pub true_cf_cost1: u8,
 
     // 30
@@ -69,9 +91,10 @@ pub struct UnitBuyRaw {
     pub ultra_cf_cost4: u8,
     pub ultra_cf_item5: u8,
     pub ultra_cf_cost5: u8,
+    /// -1 for normal cats, 30 for every cat that can go to 30. 31 for iron
+    /// wall, 21 for Metal, 2 for units with max level 1. Perhaps first catseye
+    /// level?
     _uk49: i8,
-    // -1 for normal cats, 30 for every cat that can go to 30. 31 for iron wall,
-    // 21 for Metal, 2 for units with max level 1. Perhaps first catseye level?
 
     // 50
     pub max_nat_level: u8,
@@ -80,20 +103,21 @@ pub struct UnitBuyRaw {
     _uk53: u16,
     _uk54: u16,
     _uk55: u8,
+    /// 0 for normals and metal cat, 2 for everyone else.
     _uk56: u8,
-    // is 0 for normals and metal cat, 2 for everyone else
+    /// E.g. `90500` for 09.05.00 = 9.5.0.
     pub update_released: i64,
-    // e.g. `90500` for 09.05.00 = 9.5.0
     pub sell_np: u8,
     _uk59: u32,
 
     // 60
+    /// 1 for superfeline, 0 for everyone else.
     _uk60: u8,
-    // is 1 if cat is superfeline
     pub ancient_egg_id_norm: i8,
     pub ancient_egg_id_evo: i8,
 
     #[serde(default)]
+    /// Placeholder to avoid errors when new updates come around.
     pub rest: Vec<i32>,
 }
 
