@@ -379,6 +379,8 @@ pub fn get_pure_abilities(
     if !immunities.is_empty() {
         let mut icons_buf = String::new();
         let mut text_buf = String::new();
+        let buf_separator = if immunities.len() > 5 { "<br>" } else { " " };
+
         let mut iter = immunities.into_iter().peekable();
 
         let (icon, first) = iter.next().expect("already check is_empty");
@@ -404,7 +406,7 @@ pub fn get_pure_abilities(
         }
         icons_buf += "}}";
 
-        abilities.push(icons_buf + " " + &text_buf);
+        abilities.push(icons_buf + buf_separator + &text_buf);
     }
 
     abilities
@@ -468,7 +470,7 @@ mod tests {
         assert_eq!(counter + 1, abilities.len());
         // i.e. gone over everything but last item in abilities
 
-        const FINAL_IMMUNITY: &str = "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Boss Shockwave|Immune to Warp|Immune to Curse|Immune to Toxic|Immune to Surge|Immune to Explosions}} [[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]], [[Special Abilities#Immune to Boss Shockwave|Boss Shockwave]], [[Special Abilities#Immune to Warp|Warp]], [[Special Abilities#Immune to Curse|Curse]], [[Special Abilities#Immune to Toxic|Toxic]], [[Special Abilities#Immune to Surge|Surge]] and [[Special Abilities#Immune to Explosions|Explosions]]";
+        const FINAL_IMMUNITY: &str = "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Boss Shockwave|Immune to Warp|Immune to Curse|Immune to Toxic|Immune to Surge|Immune to Explosions}}<br>[[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]], [[Special Abilities#Immune to Boss Shockwave|Boss Shockwave]], [[Special Abilities#Immune to Warp|Warp]], [[Special Abilities#Immune to Curse|Curse]], [[Special Abilities#Immune to Toxic|Toxic]], [[Special Abilities#Immune to Surge|Surge]] and [[Special Abilities#Immune to Explosions|Explosions]]";
         assert_eq!(abilities[counter], FINAL_IMMUNITY);
     }
 
@@ -497,7 +499,10 @@ mod tests {
                 ability.contains("{{AbilityIcon|"),
                 "{ability:?} does not contain the AbilityIcon template"
             );
-            assert!(ability.contains("}} "),);
+            assert!(
+                ability.contains("}} ") || ability.contains("}}<br>"),
+                "{ability:?} does not have required substring"
+            );
         }
     }
 }
