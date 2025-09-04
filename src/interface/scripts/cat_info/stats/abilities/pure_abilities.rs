@@ -415,7 +415,10 @@ pub fn get_pure_abilities(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::game_data::cat::parsed::stats::form::AttackHit;
+    use crate::{
+        TEST_CONFIG,
+        game_data::cat::parsed::{cat::Cat, stats::form::AttackHit},
+    };
     use strum::IntoEnumIterator;
 
     #[test]
@@ -505,4 +508,57 @@ mod tests {
             );
         }
     }
+
+    // --- Testing specific units ---
+
+    fn get_stats(id: u32) -> Cat {
+        Cat::from_wiki_id(id, &TEST_CONFIG.version).unwrap()
+    }
+
+    #[test]
+    fn immunity_boundary_no_space() {
+        let mitama = get_stats(318);
+        let form = &mitama.forms.stats[1];
+
+        let lines = get_pure_abilities(&form.attack.hits, &form.abilities, &form.targets);
+        let immunities = &lines[lines.len() - 1];
+        assert_eq!(
+            immunities,
+            "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken}} [[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]] and [[Special Abilities#Immune to Weaken|Weaken]]"
+        );
+    }
+
+    #[test]
+    fn immunity_boundary_break_line() {
+        let curling = get_stats(324);
+        let form = &curling.forms.stats[0];
+
+        let lines = get_pure_abilities(&form.attack.hits, &form.abilities, &form.targets);
+        let immunities = &lines[lines.len() - 1];
+        assert_eq!(
+            immunities,
+            "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Warp}}<br>[[Special Abilities#Immune to Waves|Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]] and [[Special Abilities#Immune to Warp|Warp]]"
+        );
+    }
+
+    /*
+    #[test]
+    fn test_units() {
+        for i in 0..=782 {
+            let a = get_stats(i);
+            for (j, form) in a.forms.stats.iter().enumerate() {
+                let lines = get_pure_abilities(&form.attack.hits, &form.abilities, &form.targets);
+                let Some(immunities) = lines.last() else {
+                    continue;
+                };
+
+                let l = immunities.split("}}").next().unwrap().matches('|').count();
+                if l != 6 {
+                    continue;
+                }
+                panic!("{i}, {j}",);
+            }
+        }
+    }
+    */
 }
