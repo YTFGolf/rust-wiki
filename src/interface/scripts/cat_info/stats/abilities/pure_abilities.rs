@@ -382,7 +382,7 @@ pub fn get_pure_abilities(
         let mut iter = immunities.into_iter().peekable();
 
         let (icon, first) = iter.next().expect("already check is_empty");
-        write!(icons_buf, "{{{{AbilityIcon|{i}}}}}", i = icon.name()).infallible_write();
+        write!(icons_buf, "{{{{AbilityIcon|{i}", i = icon.name()).infallible_write();
         write!(
             text_buf,
             "[[Special Abilities#Immune to {first}|Immune to {first}]]"
@@ -390,7 +390,7 @@ pub fn get_pure_abilities(
         .infallible_write();
 
         while let Some((icon, immunity)) = iter.next() {
-            write!(icons_buf, "{{{{AbilityIcon|{i}}}}}", i = icon.name()).infallible_write();
+            write!(icons_buf, "|{i}", i = icon.name()).infallible_write();
 
             let separator = match iter.peek() {
                 Some(_) => ",",
@@ -402,6 +402,7 @@ pub fn get_pure_abilities(
             )
             .infallible_write();
         }
+        icons_buf += "}}";
 
         abilities.push(icons_buf + " " + &text_buf);
     }
