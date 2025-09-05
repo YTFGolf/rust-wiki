@@ -113,14 +113,18 @@ pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
     match hits {
         AttackHits::Single([hit1]) => get_range_ability_same(hit1).into_iter().collect(),
         AttackHits::Double([hit1, hit2]) => {
-            if hit2.range == AttackRange::Unchanged {
+            if hit2.range == AttackRange::Unchanged || hit2.range == hit1.range {
                 get_range_ability_same(hit1).into_iter().collect()
             } else {
                 get_range_ability_different(hits)
             }
         }
         AttackHits::Triple([hit1, hit2, hit3]) => {
-            if hit2.range == AttackRange::Unchanged || hit3.range == AttackRange::Unchanged {
+            if hit2.range == AttackRange::Unchanged
+                || hit3.range == AttackRange::Unchanged
+                || hit2.range == hit1.range
+                || hit3.range == hit1.range
+            {
                 assert_eq!(hit2.range, hit3.range);
                 get_range_ability_same(hit1).into_iter().collect()
             } else {
@@ -299,6 +303,24 @@ mod tests {
                 format!("{LD_INTRO} ({ld})"),
                 format!("{OMNI_INTRO} ({omni})"),
             ]
+        );
+    }
+
+    #[test]
+    fn ld_should_be_unchanged() {
+        let dynasaurus = get_stats(763);
+        // 3 hits with manually inputted range, but all ranges are 150~700 so
+        // should behave the same as if the ranges were unchanged
+        let form = &dynasaurus.forms.stats[0];
+
+        let mh = "11,900 at 55f <sup>1.83s</sup>, 11,900 at 65f <sup>2.17s</sup>, 11,900 at 75f <sup>2.5s</sup>";
+        assert_eq!(
+            get_multihit_ability(&form.attack.hits, &dynasaurus.unitlevel, 30),
+            Some(format!("{MULTI_HIT_INTRO} ({mh})"))
+        );
+        assert_eq!(
+            get_range_ability(&form.attack.hits),
+            vec![format!("{LD_INTRO} (Effective range: 150~700)"),]
         );
     }
 }
