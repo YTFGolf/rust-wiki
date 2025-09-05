@@ -4,6 +4,7 @@ use super::{
     map_config::MapConfig, stage_config::StageConfig, version_config::VersionConfig,
     wiki_config::WikiConfig,
 };
+use crate::interface::config::cat_config::CatConfig;
 use log::Level;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -54,6 +55,9 @@ pub struct Config {
     pub stage_info: StageConfig,
     /// Config for `map_info`.
     pub map_info: MapConfig,
+    /// Config for `cat_info`.
+    #[serde(default)]
+    pub cat_info: CatConfig,
 }
 
 impl Default for Config {
@@ -65,6 +69,7 @@ impl Default for Config {
             version: Default::default(),
             stage_info: Default::default(),
             map_info: Default::default(),
+            cat_info: Default::default(),
         }
     }
 }
