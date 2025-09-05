@@ -6,10 +6,7 @@ use crate::{
         scripts::cat_info::stats::form::{get_form, write_level_and_plus},
     },
     wiki_data::cat_data::{CAT_DATA, CatName},
-    wikitext::{
-        template::{Template, TemplateParameter},
-        text_utils::get_ordinal,
-    },
+    wikitext::template::{Template, TemplateParameter},
 };
 use std::{fmt::Write, iter::zip};
 
@@ -137,9 +134,8 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
         let form = get_form(cat, stats, anims, form_variant as u8);
 
-        let ord = get_ordinal(form_variant as u32);
         t.push_params(form.stats_level.map(|lv| {
-            let name = format!("{ord} stats Level");
+            let name = format!("{form_name} Stats Level");
             TemplateParameter::new(name, lv)
         }));
 
@@ -191,7 +187,7 @@ fn get_scaling(cat: &Cat) -> String {
 }
 
 pub fn get_template(cat: &Cat) -> Template {
-    let mut t = Template::named("Cat Stats");
+    let mut t = Template::named("Cat Stats 0.1");
 
     add_all_forms(&mut t, &cat);
     let max_level = {
