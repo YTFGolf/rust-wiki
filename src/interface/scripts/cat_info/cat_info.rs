@@ -11,7 +11,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<String, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
 
     let template;
-    if true {
+    if config.cat_info.use_old_template {
         template = get_old_template(&cat).to_string();
     } else {
         template = get_template(&cat).to_string();

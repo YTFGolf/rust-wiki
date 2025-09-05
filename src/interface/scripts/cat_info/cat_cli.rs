@@ -17,6 +17,10 @@ pub struct CatInfoOptions {
     /// Cat id.
     pub id: String,
 
+    #[arg(long)]
+    /// Use old template format.
+    pub old: bool,
+
     #[command(flatten)]
     /// Global options.
     pub base: BaseOptions,
@@ -28,6 +32,8 @@ impl ConfigMerge for CatInfoOptions {
     fn merge(&self, config: &mut Config) {
         self.base.merge(config);
         self.version.merge(config);
+
+        config.cat_info.use_old_template = self.old;
     }
 }
 impl CommandExec for CatInfoOptions {
