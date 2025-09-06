@@ -438,7 +438,10 @@ impl Ability {
             Ability::TargetsOnly => "Attacks Only",
             Ability::DoubleBounty => "Extra Money",
             Ability::BaseDestroyer => "Base Destroyer",
-            Ability::Wave(_) => "Wave Attack",
+            Ability::Wave(wave) => match wave.wtype {
+                WaveType::Wave => "Wave Attack",
+                WaveType::MiniWave => "Mini-Wave",
+            },
             Ability::Weaken { .. } => "Weaken",
             Ability::Strengthen { .. } => "Strengthen",
             Ability::Survives { .. } => "Survive",
@@ -461,7 +464,10 @@ impl Ability {
             Ability::InsaneDamage => "Insane Damage",
             Ability::SavageBlow { .. } => "Savage Blow",
             Ability::Dodge { .. } => "Dodge Attack",
-            Ability::Surge(_) => "Surge Attacks",
+            Ability::Surge(surge) => match surge.stype {
+                SurgeType::Surge => "Surge Attacks",
+                SurgeType::MiniSurge => "Mini-Surge",
+            },
             Ability::ImmuneToToxic => "Immune to Toxic",
             Ability::ImmuneToSurge => "Immune to Surge",
             Ability::Curse { .. } => "Curse",
