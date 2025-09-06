@@ -53,8 +53,8 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     let form = get_form(cat, stats, anims, 1);
     t.push_params(get_stats_level("Normal Stats Level", form.stats_level));
-    t.push_params(P::new("Hp Normal", form.base_hp));
-    t.push_params(P::new("Atk Power Normal", form.base_atk));
+    t.push_params(P::new("Normal Health", form.base_hp));
+    t.push_params(P::new("Normal Attack Power", form.base_atk));
     write_stats(t, "Normal", form.other);
 
     let Some((stats, anims)) = iter.next() else {
