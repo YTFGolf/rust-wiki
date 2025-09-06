@@ -10,29 +10,28 @@ use std::iter::zip;
 fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     type P = TemplateParameter;
     let f = form_name;
-    // this template is so inconsistent
 
     let is_normal_form = matches!(form_name, "Normal");
 
     if !is_normal_form {
-        t.push_params(P::new(format!("Hp {f}"), form.hp_max.clone()));
-        t.push_params(P::new(format!("Atk Power {f}"), form.atk_max.clone()));
+        t.push_params(P::new(format!("{f} Health"), form.hp_max.clone()));
+        t.push_params(P::new(format!("{f} Attack Power"), form.atk_max.clone()));
     }
 
-    t.push_params(P::new(format!("Atk Range {f}"), form.range));
-    t.push_params(P::new(format!("Attack Frequency {f}"), form.attack_cycle));
-    t.push_params(P::new(format!("Movement Speed {f}"), form.speed));
-    t.push_params(P::new(format!("Knockback {f}"), form.knockback));
-    t.push_params(P::new(format!("Attack Animation {f}"), form.animation));
-    t.push_params(P::new(format!("Recharging Time {f}"), form.recharge));
+    t.push_params(P::new(format!("{f} Attack Range"), form.range));
+    t.push_params(P::new(format!("{f} Attack Frequency"), form.attack_cycle));
+    t.push_params(P::new(format!("{f} Movement Speed"), form.speed));
+    t.push_params(P::new(format!("{f} Knockback"), form.knockback));
+    t.push_params(P::new(format!("{f} Attack Animation"), form.animation));
+    t.push_params(P::new(format!("{f} Recharge Time"), form.recharge));
 
     if is_normal_form {
-        t.push_params(P::new(format!("Hp {f} Lv.MAX"), form.hp_max));
-        t.push_params(P::new(format!("Atk Power {f} Lv.MAX"), form.atk_max));
+        t.push_params(P::new(format!("{f} MaxHP"), form.hp_max));
+        t.push_params(P::new(format!("{f} MaxAttack"), form.atk_max));
     }
 
-    t.push_params(P::new(format!("Attack type {f}"), form.attack_type));
-    t.push_params(P::new(format!("Special Ability {f}"), form.abilities));
+    t.push_params(P::new(format!("{f} Attack Type"), form.attack_type));
+    t.push_params(P::new(format!("{f} Abilities"), form.abilities));
 }
 
 fn get_stats_level(name: &'static str, value: Option<String>) -> Option<TemplateParameter> {
@@ -50,10 +49,10 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     let name = &CAT_DATA.get_cat(cat.id).normal;
     let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Normal Form name", name));
+    t.push_params(P::new("Normal Name", name));
 
     let form = get_form(cat, stats, anims, 1);
-    t.push_params(get_stats_level("1st stats Level", form.stats_level));
+    t.push_params(get_stats_level("Normal Stats Level", form.stats_level));
     t.push_params(P::new("Hp Normal", form.base_hp));
     t.push_params(P::new("Atk Power Normal", form.base_atk));
     write_stats(t, "Normal", form.other);
@@ -64,10 +63,10 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     let name = &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap();
     let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Evolved Form name", name));
+    t.push_params(P::new("Evolved Name", name));
 
     let form = get_form(cat, stats, anims, 2);
-    t.push_params(get_stats_level("2nd stats Level", form.stats_level));
+    t.push_params(get_stats_level("Evolved Stats Level", form.stats_level));
     write_stats(t, "Evolved", form.other);
 
     let Some((stats, anims)) = iter.next() else {
@@ -76,20 +75,20 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     let name = &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap();
     let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("True Form name", name));
+    t.push_params(P::new("True Name", name));
 
     let form = get_form(cat, stats, anims, 3);
-    t.push_params(get_stats_level("3rd stats Level", form.stats_level));
+    t.push_params(get_stats_level("True Stats Level", form.stats_level));
     write_stats(t, "True", form.other);
 
     let Some((stats, anims)) = iter.next() else {
         return;
     };
 
-    // t.push_params("4th stats Level");
+    // t.push_params("Ultra Stats Level");
     let name = &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap();
     let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Ultra Form name", name));
+    t.push_params(P::new("Ultra Name", name));
     let form = get_form(cat, stats, anims, 4);
     write_stats(t, "Ultra", form.other);
 }
