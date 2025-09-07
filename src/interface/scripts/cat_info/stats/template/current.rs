@@ -7,7 +7,7 @@ use crate::{
         error_handler::InfallibleWrite,
         scripts::cat_info::stats::form::{get_form, write_level_and_plus},
     },
-    wiki_data::cat_data::{CAT_DATA, CatName},
+    wiki_data::cat_data::CatName,
     wikitext::template::{Template, TemplateParameter},
 };
 use std::{fmt::Write, iter::zip};
@@ -94,34 +94,7 @@ fn write_stats(t: &mut Template, form_name: &str, stats: &CatFormStats, anims: &
 
 fn add_all_forms(t: &mut Template, cat: &Cat) {
     type P = TemplateParameter;
-
-    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-    enum CatForm {
-        Normal = 1,
-        Evolved = 2,
-        True = 3,
-        Ultra = 4,
-    }
-    impl CatForm {
-        fn as_str(self) -> &'static str {
-            match self {
-                Self::Normal => "Normal",
-                Self::Evolved => "Evolved",
-                Self::True => "True",
-                Self::Ultra => "Ultra",
-            }
-        }
-
-        fn name(self, id: u32) -> &'static str {
-            match self {
-                Self::Normal => &CAT_DATA.get_cat(id).normal,
-                Self::Evolved => &CAT_DATA.get_cat(id).evolved.as_ref().unwrap(),
-                Self::True => &CAT_DATA.get_cat(id).true_form.as_ref().unwrap(),
-                Self::Ultra => &CAT_DATA.get_cat(id).ultra.as_ref().unwrap(),
-            }
-        }
-    }
-    use CatForm as F;
+    use super::template_util::CatForm as F;
 
     let forms = [F::Normal, F::Evolved, F::True, F::Ultra];
     let iter = zip(&cat.forms.stats, &cat.forms.anims).take(cat.forms.amt_forms);
