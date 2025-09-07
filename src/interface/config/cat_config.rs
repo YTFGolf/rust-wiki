@@ -6,4 +6,5 @@ use serde::{Deserialize, Serialize};
 /// Config for cat info.
 pub struct CatConfig {
     pub use_old_template: bool,
+    // TODO manual/old flags
 }

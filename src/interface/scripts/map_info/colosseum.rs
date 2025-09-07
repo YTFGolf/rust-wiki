@@ -1,8 +1,11 @@
+//! Colosseum map info.
+
 use crate::{
     Config, game_data::map::parsed::map::GameMap,
     interface::scripts::map_info::event::get_event_map, regex_handler::static_regex,
 };
 
+/// Get colosseum map info.
 pub fn get_colosseum_map(map: &GameMap, config: &Config) -> String {
     let m = get_event_map(map, config);
 

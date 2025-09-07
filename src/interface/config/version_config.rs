@@ -10,7 +10,7 @@ use serde::{
 };
 use std::{env::home_dir, path::PathBuf, str::FromStr};
 
-pub fn deserialize_lang<'de, D>(deserializer: D) -> Result<VersionLanguage, D::Error>
+fn deserialize_lang<'de, D>(deserializer: D) -> Result<VersionLanguage, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
@@ -18,7 +18,7 @@ where
     FromStr::from_str(&s).map_err(de::Error::custom)
 }
 #[allow(clippy::trivially_copy_pass_by_ref)]
-pub fn serialize_lang<S>(lang: &VersionLanguage, serializer: S) -> Result<S::Ok, S::Error>
+fn serialize_lang<S>(lang: &VersionLanguage, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
 {

@@ -1,3 +1,5 @@
+//! Legend map info.
+
 use super::map_info::reference;
 use crate::{
     game_data::{
