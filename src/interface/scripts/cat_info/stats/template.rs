@@ -1,3 +1,5 @@
+//! Module for Cat Stats template.
+
 use super::form::Form;
 use crate::{
     game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
@@ -186,6 +188,7 @@ fn get_scaling(cat: &Cat) -> String {
     scaling
 }
 
+/// Get full template.
 pub fn get_template(cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats 0.1");
 

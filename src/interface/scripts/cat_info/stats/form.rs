@@ -1,3 +1,5 @@
+//! Data about a form to put in stats table.
+
 use super::abilities::{misc_abilities::get_range_ability, pure_abilities::get_pure_abilities};
 use crate::{
     game_data::cat::parsed::{
@@ -194,7 +196,6 @@ pub fn get_form(
                 kamikaze = get_ability_single("Kamikaze")
             ))
         }
-
         abilities.extend(get_multihit_ability(
             &stats.attack.hits,
             &cat.unitlevel,

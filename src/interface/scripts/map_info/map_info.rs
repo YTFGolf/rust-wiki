@@ -1,3 +1,5 @@
+//! Map info script.
+
 use super::{event::get_event_map, legend::get_legend_map};
 use crate::{
     game_data::{

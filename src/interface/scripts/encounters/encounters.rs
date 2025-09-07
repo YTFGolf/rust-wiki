@@ -1,3 +1,5 @@
+//! Main module for encounters script.
+
 use super::{
     chapter::{Chapter, Group, Stage},
     section::{DisplayType, SectionRef},

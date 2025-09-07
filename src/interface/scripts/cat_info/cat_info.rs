@@ -1,3 +1,5 @@
+//! Script for cat info.
+
 use crate::{
     game_data::cat::parsed::cat::{Cat, CatDataError},
     interface::{

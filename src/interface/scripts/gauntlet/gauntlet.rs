@@ -1,3 +1,5 @@
+//! Gauntlet script.
+
 use super::super::{
     map_info::map_info::reference,
     stage_info::{

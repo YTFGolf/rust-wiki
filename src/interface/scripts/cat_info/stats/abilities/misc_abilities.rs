@@ -1,3 +1,5 @@
+//! Miscellaneous abilities (LD/Omni/Multihit).
+
 use super::util::{get_ability_single, get_range_repr};
 use crate::{
     game_data::cat::{
@@ -109,6 +111,7 @@ fn get_range_ability_same(hit1: &AttackHit) -> Option<String> {
     }
 }
 
+/// Get range ability text (ld/omni).
 pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
     match hits {
         AttackHits::Single([hit1]) => get_range_ability_same(hit1).into_iter().collect(),
@@ -143,6 +146,7 @@ fn write_mh_hit(buf: &mut String, hit: &AttackHit, scaling: &UnitLevelRaw, level
     write!(buf, "{fore_f}f <sup>{fore_s}s</sup>").infallible_write();
 }
 
+/// Get string representation of multihit ability.
 pub fn get_multihit_ability(
     hits: &AttackHits,
     scaling: &UnitLevelRaw,

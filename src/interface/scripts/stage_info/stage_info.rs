@@ -1,3 +1,5 @@
+//! Root module for stage info script.
+
 use super::{
     super::format_parser::{ParseType, parse_info_format},
     variables::{DEFAULT_FORMAT, get_stage_variable},
@@ -25,7 +27,7 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> impl Display {
 }
 
 /// Get stage info based on specified format.
-pub fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
+fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
     let parsed = parse_info_format(format);
     let mut buf = String::new();
     let stage_wiki_data = get_stage_wiki_data(&stage.id);

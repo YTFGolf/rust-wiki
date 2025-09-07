@@ -1,3 +1,5 @@
+//! Get manual Cat Stats template.
+
 use super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
@@ -93,6 +95,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     write_stats(t, "Ultra", form.other);
 }
 
+/// Get manual cat stats template.
 pub fn get_old_template(cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats Manual");
 

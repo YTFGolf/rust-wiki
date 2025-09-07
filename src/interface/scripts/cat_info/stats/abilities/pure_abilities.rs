@@ -1,3 +1,5 @@
+//! Pure abilities (i.e. not kamikaze/ld/omni/multihit).
+
 use super::util::{get_ability, get_ability_single, get_duration_repr, get_enemy_category};
 use crate::{
     game_data::cat::{
