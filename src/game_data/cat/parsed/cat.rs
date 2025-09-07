@@ -1,7 +1,5 @@
 //! Deals with cat data.
 
-use std::iter::zip;
-
 use super::{
     anim::{AnimDataError, CatFormAnimData, get_anims},
     stats::form::CatFormStats,
@@ -22,6 +20,7 @@ use crate::game_data::{
         lang::{MultiLangVersionContainer, VersionLanguage},
     },
 };
+use std::iter::zip;
 
 #[derive(Debug)]
 /// Data about individual forms of the cat.

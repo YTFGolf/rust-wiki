@@ -2,4 +2,5 @@
 
 pub mod cat_cli;
 pub mod cat_info;
+pub mod form_util;
 pub mod stats;

@@ -5,7 +5,10 @@ use crate::{
     game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
     interface::{
         error_handler::InfallibleWrite,
-        scripts::cat_info::stats::form::{get_form, write_level_and_plus},
+        scripts::cat_info::{
+            form_util::CatForm,
+            stats::form::{get_form, write_level_and_plus},
+        },
     },
     wiki_data::cat_data::CatName,
     wikitext::template::{Template, TemplateParameter},
@@ -94,7 +97,7 @@ fn write_stats(t: &mut Template, form_name: &str, stats: &CatFormStats, anims: &
 
 fn add_all_forms(t: &mut Template, cat: &Cat) {
     type P = TemplateParameter;
-    use super::template_util::CatForm as F;
+    type F = CatForm;
 
     let forms = [F::Normal, F::Evolved, F::True, F::Ultra];
     let iter = cat.forms.iter();
