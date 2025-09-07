@@ -4,7 +4,7 @@ use crate::{
     game_data::cat::parsed::cat::{Cat, CatDataError},
     interface::{
         config::Config,
-        scripts::cat_info::stats::{template::get_template, template_manual::get_old_template},
+        scripts::cat_info::stats::template::{current::get_template, manual::get_old_template},
     },
 };
 

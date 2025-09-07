@@ -1,6 +1,6 @@
 //! Get manual Cat Stats template.
 
-use super::form::Form;
+use super::super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},

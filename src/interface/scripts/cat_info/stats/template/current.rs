@@ -1,6 +1,6 @@
 //! Module for Cat Stats template.
 
-use super::form::Form;
+use super::super::form::Form;
 use crate::{
     game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
     interface::{
