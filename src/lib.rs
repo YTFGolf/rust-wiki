@@ -2,7 +2,7 @@
 //! Rust because why not.
 #![warn(missing_docs)]
 pub mod game_data;
-mod interface;
+pub mod interface;
 pub mod logger;
 pub mod regex_handler;
 pub mod wiki_data;

@@ -1,9 +1,9 @@
 //! Deals with the interface of the project.
 
-mod cli;
-mod config;
-mod error_handler;
-mod scripts;
+pub mod cli;
+pub mod config;
+pub mod error_handler;
+pub mod scripts;
 
 pub use cli::commands::Cli;
 #[cfg(test)]
