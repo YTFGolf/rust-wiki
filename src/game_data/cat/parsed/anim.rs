@@ -25,8 +25,13 @@ pub struct Anim {
     length: u16, // right now all that's needed is the length of the animation
 }
 impl Anim {
+    /// Construct new [`Anim`] object.
+    pub const fn new(length: u16) -> Self {
+        Self { length }
+    }
+
     /// Get length of unit's animations.
-    pub fn length(&self) -> u16 {
+    pub const fn length(&self) -> u16 {
         // not called `len` to avoid setting off `clippy::len_without_is_empty`
         self.length
     }
@@ -146,9 +151,7 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
     // the animation is empty
 
     Ok(CatFormAnimData {
-        attack: Anim {
-            length: max_frame as u16 + 1,
-        },
+        attack: Anim::new(max_frame as u16 + 1),
     })
 }
 
