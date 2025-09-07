@@ -97,7 +97,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
     use super::template_util::CatForm as F;
 
     let forms = [F::Normal, F::Evolved, F::True, F::Ultra];
-    let iter = zip(&cat.forms.stats, &cat.forms.anims).take(cat.forms.amt_forms);
+    let iter = cat.forms.iter();
 
     for (form_variant, stats_and_anims) in zip(forms, iter) {
         let name = form_variant.name(cat.id);
@@ -107,7 +107,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
         let (stats, anims) = stats_and_anims;
         t.push_params(P::new(format!("{form_name} Name"), name));
 
-        let form = get_form(cat, stats, anims, form_variant as u8);
+        let form = get_form(cat, stats, anims, form_variant);
 
         t.push_params(form.stats_level.map(|lv| {
             let name = format!("{form_name} Stats Level");

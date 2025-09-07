@@ -1,5 +1,7 @@
 //! Deals with cat data.
 
+use std::iter::zip;
+
 use super::{
     anim::{AnimDataError, CatFormAnimData, get_anims},
     stats::form::CatFormStats,
@@ -34,6 +36,12 @@ pub struct CatForms {
     /// Animation data for each form.
     pub anims: Vec<CatFormAnimData>,
     // desc
+}
+impl CatForms {
+    /// Get an iterator over the unit's forms and animations.
+    pub fn iter(&self) -> impl Iterator<Item = (&CatFormStats, &CatFormAnimData)> {
+        zip(&self.stats, &self.anims).take(self.amt_forms)
+    }
 }
 
 #[derive(Debug)]

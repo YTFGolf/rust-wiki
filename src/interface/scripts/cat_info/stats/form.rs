@@ -9,8 +9,9 @@ use crate::{
     },
     interface::{
         error_handler::InfallibleWrite,
-        scripts::cat_info::stats::abilities::{
-            misc_abilities::get_multihit_ability, util::get_ability_single,
+        scripts::cat_info::stats::{
+            abilities::{misc_abilities::get_multihit_ability, util::get_ability_single},
+            template::template_util::CatForm,
         },
     },
     wikitext::number_utils::{
@@ -74,7 +75,7 @@ pub fn get_form(
     cat: &Cat,
     stats: &CatFormStats,
     anims: &CatFormAnimData,
-    form_no: u8,
+    form_variant: CatForm,
 ) -> FormWithBaseStats {
     let max_levels = &cat.unitbuy.max_levels;
     log::debug!("{cat:?}");
@@ -87,7 +88,7 @@ pub fn get_form(
         (0..=29, _) => (max_levels.max_nat, max_levels.max_plus),
         _ => (30, 0),
     };
-    let level = if form_no == 4 {
+    let level = if form_variant == CatForm::Ultra {
         60
     } else {
         levels_used.0 + levels_used.1
