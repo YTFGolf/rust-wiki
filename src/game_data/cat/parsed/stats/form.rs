@@ -405,10 +405,12 @@ pub struct Attack {
     tba: u16,
     /// Min cooldown between attacks.
     pub cooldown: u16,
+    /// Does the unit die after attacking once.
+    pub kamikaze: bool,
 }
 impl Attack {
     fn from_combined(combined: &CombinedCatData) -> Self {
-        let (fixed, _) = combined;
+        let (fixed, var) = combined;
         // could possibly use strum here
         let aoe = match fixed.is_area {
             0 => AreaOfEffect::SingleAttack,
@@ -425,6 +427,7 @@ impl Attack {
             standing_range: fixed.range,
             tba,
             cooldown,
+            kamikaze: var.kamikaze != 0,
         }
     }
 }
@@ -517,6 +520,7 @@ mod tests {
                     standing_range: 450,
                     tba: 240,
                     cooldown: 479,
+                    kamikaze: false,
                 },
                 abilities: [].into(),
                 targets: [].into(),
@@ -539,6 +543,7 @@ mod tests {
                     standing_range: 450,
                     tba: 240,
                     cooldown: 479,
+                    kamikaze: false,
                 },
                 abilities: [].into(),
                 targets: [].into(),
@@ -575,6 +580,7 @@ mod tests {
                     standing_range: 200,
                     tba: 0,
                     cooldown: 0,
+                    kamikaze: false,
                 },
                 abilities: [].into(),
                 targets: [].into(),
@@ -632,6 +638,7 @@ mod tests {
                     standing_range: 500,
                     tba: 0,
                     cooldown: 0,
+                    kamikaze: false,
                 },
                 abilities: sorted(vec![
                     A::Slow {
@@ -703,6 +710,7 @@ mod tests {
                     standing_range: 500,
                     tba: 0,
                     cooldown: 0,
+                    kamikaze: false,
                 },
                 abilities: sorted(vec![
                     A::Slow {
@@ -781,6 +789,7 @@ mod tests {
                     standing_range: 300,
                     tba: 0,
                     cooldown: 0,
+                    kamikaze: false,
                 },
                 abilities: sorted(vec![
                     A::MassiveDamage,
@@ -833,6 +842,7 @@ mod tests {
                     standing_range: 300,
                     tba: 0,
                     cooldown: 0,
+                    kamikaze: false,
                 },
                 abilities: sorted(vec![
                     A::MassiveDamage,
@@ -886,6 +896,7 @@ mod tests {
                     standing_range: 160,
                     tba: 50,
                     cooldown: 99,
+                    kamikaze: false,
                 },
                 abilities: [A::Crit { chance: 15 }].into(),
                 targets: [].into(),
@@ -908,6 +919,7 @@ mod tests {
                     standing_range: 160,
                     tba: 50,
                     cooldown: 99,
+                    kamikaze: false,
                 },
                 abilities: [A::Crit { chance: 15 }].into(),
                 targets: [].into(),
@@ -930,6 +942,7 @@ mod tests {
                     standing_range: 160,
                     tba: 50,
                     cooldown: 99,
+                    kamikaze: false,
                 },
                 abilities: [
                     A::Crit { chance: 20 },
@@ -975,6 +988,7 @@ mod tests {
                     standing_range: 400,
                     tba: 86,
                     cooldown: 171,
+                    kamikaze: false,
                 },
                 abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
                 targets: [E::Red].into(),
@@ -1000,6 +1014,7 @@ mod tests {
                     standing_range: 400,
                     tba: 86,
                     cooldown: 171,
+                    kamikaze: false,
                 },
                 abilities: [A::MassiveDamage, A::EvaAngelKiller].into(),
                 targets: [E::Red].into(),
@@ -1025,6 +1040,7 @@ mod tests {
                     standing_range: 400,
                     tba: 72,
                     cooldown: 143,
+                    kamikaze: false,
                 },
                 abilities: [
                     A::MassiveDamage,
@@ -1066,6 +1082,7 @@ mod tests {
                 standing_range: 140,
                 tba: 0,
                 cooldown: 0,
+                kamikaze: true,
             },
             abilities: sorted(vec![
                 A::ImmuneToWave,
@@ -1107,6 +1124,7 @@ mod tests {
                     standing_range: 200,
                     tba: 10,
                     cooldown: 19,
+                    kamikaze: false,
                 },
                 abilities: [A::Knockback { chance: 20 }].into(),
                 targets: [E::Floating, E::Angel].into(),
@@ -1129,6 +1147,7 @@ mod tests {
                     standing_range: 850,
                     tba: 150,
                     cooldown: 299,
+                    kamikaze: false,
                 },
                 abilities: [A::Knockback { chance: 100 }].into(),
                 targets: [E::Floating, E::Angel].into(),
@@ -1151,6 +1170,7 @@ mod tests {
                     standing_range: 850,
                     tba: 150,
                     cooldown: 299,
+                    kamikaze: false,
                 },
                 abilities: [
                     A::Knockback { chance: 100 },
@@ -1183,6 +1203,7 @@ mod tests {
                     standing_range: 850,
                     tba: 150,
                     cooldown: 299,
+                    kamikaze: false,
                 },
                 abilities: [
                     A::Knockback { chance: 100 },

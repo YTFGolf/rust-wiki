@@ -7,7 +7,9 @@ use crate::{
     },
     interface::{
         error_handler::InfallibleWrite,
-        scripts::cat_info::stats::abilities::misc_abilities::get_multihit_ability,
+        scripts::cat_info::stats::abilities::{
+            misc_abilities::get_multihit_ability, util::get_ability_single,
+        },
     },
     wikitext::number_utils::{
         get_formatted_float, plural, plural_f, seconds_repr, time_repr, time_repr_i32,
@@ -78,14 +80,11 @@ pub fn get_form(
         );
     }
 
-    // let backswing = anim_length - attack_length;
-    // let frequency_alt = attack_length + max(stats.attack.cooldown, backswing);
-    let frequency_opt = if can_attack {
+    let frequency_opt = if can_attack && !stats.attack.kamikaze {
         Some(max(anim_length, attack_length + stats.attack.cooldown))
     } else {
         None
     };
-    // assert_eq!(frequency, frequency_alt);
 
     let stats_level = match levels_used {
         (30, 0) => None,
@@ -121,6 +120,8 @@ pub fn get_form(
             "{freq_f}f <sub>{freq_s} {seconds}</sub>",
             seconds = plural_f(frequency.into(), "second", "seconds")
         )
+    } else if can_attack {
+        "-".to_string()
     } else {
         "Cannot attack".to_string()
     };
@@ -186,6 +187,14 @@ pub fn get_form(
     };
     let abilities = {
         let mut abilities = vec![];
+
+        if stats.attack.kamikaze {
+            abilities.push(format!(
+                "{{{{AbilityIcon|Kamikaze}}}} {kamikaze} (Attacks once, then disappears from the battlefield)",
+                kamikaze = get_ability_single("Kamikaze")
+            ))
+        }
+
         abilities.extend(get_multihit_ability(
             &stats.attack.hits,
             &cat.unitlevel,
