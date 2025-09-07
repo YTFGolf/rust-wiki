@@ -20,25 +20,48 @@ use crate::{
 use num_format::{Locale, ToFormattedString};
 use std::{cmp::max, fmt::Write};
 
+/// Container for cat form data. Includes form's base stats and stats level.
+///
+/// Struct is used so that this can work in a parameter-name-agnostic fashion
+/// (i.e. it works fine whether parameter name is "Normal Health" or
+/// "val-Normal-Health" or whatever the old template's name for it was). All
+/// info is formatted strings.
 pub struct FormWithBaseStats {
+    /// Level cat's stats are shown at.
     pub stats_level: Option<String>,
+    /// Cat's base HP.
     pub base_hp: String,
+    /// Cat's base attack/dps.
     pub base_atk: String,
+    /// Rest of form data.
     pub other: Form,
 }
+
+/// Parameter-name-agnostic container for formatted Cat Stats info.
 pub struct Form {
+    /// Standing range.
     pub range: String,
+    /// Attack cycle in frames and seconds.
     pub attack_cycle: String,
+    /// Unit speed.
     pub speed: String,
+    /// Knockbacks.
     pub knockback: String,
+    /// Foreswing/backswing.
     pub animation: String,
+    /// Recharge time (max ~ min seconds).
     pub recharge: String,
+    /// HP at max level.
     pub hp_max: String,
+    /// AP at max level.
     pub atk_max: String,
+    /// Single/Area.
     pub attack_type: &'static str,
+    /// List of cat abilities.
     pub abilities: String,
 }
 
+/// Write natural and plus level to a buffer. If `plus` is 0, only writes `nat`.
 pub fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
     write!(buf, "{nat}").infallible_write();
     if plus > 0 {
@@ -46,6 +69,7 @@ pub fn write_level_and_plus(buf: &mut String, nat: u8, plus: u8) {
     }
 }
 
+/// Get all of the [`FormWithBaseStats`] data for the cat form.
 pub fn get_form(
     cat: &Cat,
     stats: &CatFormStats,
