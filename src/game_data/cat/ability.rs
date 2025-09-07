@@ -370,117 +370,116 @@ impl Ability {
     /// Is the ability an immunity?
     pub const fn is_immunity(&self) -> bool {
         match self {
-            Ability::StrongAgainst
-            | Ability::Knockback { .. }
-            | Ability::Freeze { .. }
-            | Ability::Slow { .. }
-            | Ability::Resist
-            | Ability::MassiveDamage
-            | Ability::Crit { .. }
-            | Ability::TargetsOnly
-            | Ability::DoubleBounty
-            | Ability::BaseDestroyer
-            | Ability::Wave(_)
-            | Ability::Weaken { .. }
-            | Ability::Strengthen { .. }
-            | Ability::Survives { .. }
-            | Ability::Metal
-            | Ability::WaveBlocker
-            | Ability::ZombieKiller
-            | Ability::WitchKiller
-            | Ability::Kamikaze
-            | Ability::BarrierBreaker { .. }
-            | Ability::EvaAngelKiller
-            | Ability::InsaneResist
-            | Ability::InsaneDamage
-            | Ability::SavageBlow { .. }
-            | Ability::Dodge { .. }
-            | Ability::Surge(_)
-            | Ability::Curse { .. }
-            | Ability::ShieldPierce { .. }
-            | Ability::ColossusSlayer
-            | Ability::Soulstrike
-            | Ability::BehemothSlayer { .. }
-            | Ability::CounterSurge
-            | Ability::ConjureUnit { .. }
-            | Ability::SageSlayer
-            | Ability::MetalKiller { .. }
-            | Ability::Explosion { .. } => false,
+            Self::StrongAgainst
+            | Self::Knockback { .. }
+            | Self::Freeze { .. }
+            | Self::Slow { .. }
+            | Self::Resist
+            | Self::MassiveDamage
+            | Self::Crit { .. }
+            | Self::TargetsOnly
+            | Self::DoubleBounty
+            | Self::BaseDestroyer
+            | Self::Wave(_)
+            | Self::Weaken { .. }
+            | Self::Strengthen { .. }
+            | Self::Survives { .. }
+            | Self::Metal
+            | Self::WaveBlocker
+            | Self::ZombieKiller
+            | Self::WitchKiller
+            | Self::Kamikaze
+            | Self::BarrierBreaker { .. }
+            | Self::EvaAngelKiller
+            | Self::InsaneResist
+            | Self::InsaneDamage
+            | Self::SavageBlow { .. }
+            | Self::Dodge { .. }
+            | Self::Surge(_)
+            | Self::Curse { .. }
+            | Self::ShieldPierce { .. }
+            | Self::ColossusSlayer
+            | Self::Soulstrike
+            | Self::BehemothSlayer { .. }
+            | Self::CounterSurge
+            | Self::ConjureUnit { .. }
+            | Self::SageSlayer
+            | Self::MetalKiller { .. }
+            | Self::Explosion { .. } => false,
             //
-            Ability::ImmuneToWave
-            | Ability::ImmuneToKB
-            | Ability::ImmuneToFreeze
-            | Ability::ImmuneToSlow
-            | Ability::ImmuneToWeaken
-            | Ability::ImmuneToBossShockwave
-            | Ability::ImmuneToWarp
-            | Ability::ImmuneToCurse
-            | Ability::ImmuneToToxic
-            | Ability::ImmuneToSurge
-            | Ability::ImmuneToExplosion => true,
+            Self::ImmuneToWave
+            | Self::ImmuneToKB
+            | Self::ImmuneToFreeze
+            | Self::ImmuneToSlow
+            | Self::ImmuneToWeaken
+            | Self::ImmuneToBossShockwave
+            | Self::ImmuneToWarp
+            | Self::ImmuneToCurse
+            | Self::ImmuneToToxic
+            | Self::ImmuneToSurge
+            | Self::ImmuneToExplosion => true,
         }
     }
 }
-// Ability::StrongAgainst=>(),Ability::Knockback{..}=>(),Ability::Freeze{..}=>(),Ability::Slow{..}=>(),Ability::Resist=>(),Ability::MassiveDamage=>(),Ability::Crit{..}=>(),Ability::TargetsOnly=>(),Ability::DoubleBounty=>(),Ability::BaseDestroyer=>(),Ability::Wave(_)=>(),Ability::Weaken{..}=>(),Ability::Strengthen{..}=>(),Ability::Survives{..}=>(),Ability::Metal=>(),Ability::ImmuneToWave=>(),Ability::WaveBlocker=>(),Ability::ImmuneToKB=>(),Ability::ImmuneToFreeze=>(),Ability::ImmuneToSlow=>(),Ability::ImmuneToWeaken=>(),Ability::ZombieKiller=>(),Ability::WitchKiller=>(),Ability::ImmuneToBossShockwave=>(),Ability::Kamikaze=>(),Ability::BarrierBreaker{..}=>(),Ability::ImmuneToWarp=>(),Ability::EvaAngelKiller=>(),Ability::ImmuneToCurse=>(),Ability::InsaneResist=>(),Ability::InsaneDamage=>(),Ability::SavageBlow{..}=>(),Ability::Dodge{..}=>(),Ability::Surge(_)=>(),Ability::ImmuneToToxic=>(),Ability::ImmuneToSurge=>(),Ability::Curse{..}=>(),Ability::ShieldPierce{..}=>(),Ability::ColossusSlayer=>(),Ability::Soulstrike=>(),Ability::BehemothSlayer{..}=>(),Ability::CounterSurge=>(),Ability::ConjureUnit{..}=>(),Ability::SageSlayer=>(),Ability::MetalKiller{..}=>(),Ability::Explosion{..}=>(),Ability::ImmuneToExplosion=>(),
+// Self::StrongAgainst=>(),Self::Knockback{..}=>(),Self::Freeze{..}=>(),Self::Slow{..}=>(),Self::Resist=>(),Self::MassiveDamage=>(),Self::Crit{..}=>(),Self::TargetsOnly=>(),Self::DoubleBounty=>(),Self::BaseDestroyer=>(),Self::Wave(_)=>(),Self::Weaken{..}=>(),Self::Strengthen{..}=>(),Self::Survives{..}=>(),Self::Metal=>(),Self::ImmuneToWave=>(),Self::WaveBlocker=>(),Self::ImmuneToKB=>(),Self::ImmuneToFreeze=>(),Self::ImmuneToSlow=>(),Self::ImmuneToWeaken=>(),Self::ZombieKiller=>(),Self::WitchKiller=>(),Self::ImmuneToBossShockwave=>(),Self::Kamikaze=>(),Self::BarrierBreaker{..}=>(),Self::ImmuneToWarp=>(),Self::EvaAngelKiller=>(),Self::ImmuneToCurse=>(),Self::InsaneResist=>(),Self::InsaneDamage=>(),Self::SavageBlow{..}=>(),Self::Dodge{..}=>(),Self::Surge(_)=>(),Self::ImmuneToToxic=>(),Self::ImmuneToSurge=>(),Self::Curse{..}=>(),Self::ShieldPierce{..}=>(),Self::ColossusSlayer=>(),Self::Soulstrike=>(),Self::BehemothSlayer{..}=>(),Self::CounterSurge=>(),Self::ConjureUnit{..}=>(),Self::SageSlayer=>(),Self::MetalKiller{..}=>(),Self::Explosion{..}=>(),Self::ImmuneToExplosion=>(),
 impl Ability {
     /// Get the proper name of the ability.
     pub const fn name(&self) -> &'static str {
         // this is all in nyankoPictureBook2_en.csv ... is it really important
         // to have it here then?
         match self {
-            Ability::StrongAgainst => "Strong Against",
-            Ability::Knockback { .. } => "Knockback",
-            Ability::Freeze { .. } => "Freeze",
-            Ability::Slow { .. } => "Slow",
-            Ability::Resist => "Resistant",
-            Ability::MassiveDamage => "Massive Damage",
-            Ability::Crit { .. } => "Critical",
-            Ability::TargetsOnly => "Attacks Only",
-            Ability::DoubleBounty => "Extra Money",
-            Ability::BaseDestroyer => "Base Destroyer",
-            Ability::Wave(wave) => match wave.wtype {
+            Self::StrongAgainst => "Strong Against",
+            Self::Knockback { .. } => "Knockback",
+            Self::Freeze { .. } => "Freeze",
+            Self::Slow { .. } => "Slow",
+            Self::Resist => "Resistant",
+            Self::MassiveDamage => "Massive Damage",
+            Self::Crit { .. } => "Critical",
+            Self::TargetsOnly => "Attacks Only",
+            Self::DoubleBounty => "Extra Money",
+            Self::BaseDestroyer => "Base Destroyer",
+            Self::Wave(wave) => match wave.wtype {
                 WaveType::Wave => "Wave Attack",
                 WaveType::MiniWave => "Mini-Wave",
             },
-            Ability::Weaken { .. } => "Weaken",
-            Ability::Strengthen { .. } => "Strengthen",
-            Ability::Survives { .. } => "Survive",
-            Ability::Metal => "Metal",
-            Ability::ImmuneToWave => "Immune to Waves",
-            Ability::WaveBlocker => "Wave Shield",
-            Ability::ImmuneToKB => "Immune to Knockback",
-            Ability::ImmuneToFreeze => "Immune to Freeze",
-            Ability::ImmuneToSlow => "Immune to Slow",
-            Ability::ImmuneToWeaken => "Immune to Weaken",
-            Ability::ZombieKiller => "Zombie Killer",
-            Ability::WitchKiller => "Witch Killer",
-            Ability::ImmuneToBossShockwave => "Immune to Boss Shockwave",
-            Ability::Kamikaze => "Kamikaze",
-            Ability::BarrierBreaker { .. } => "Barrier Breaker",
-            Ability::ImmuneToWarp => "Immune to Warp",
-            Ability::EvaAngelKiller => "Eva Angel Killer",
-            Ability::ImmuneToCurse => "Immune to Curse",
-            Ability::InsaneResist => "Insanely Tough",
-            Ability::InsaneDamage => "Insane Damage",
-            Ability::SavageBlow { .. } => "Savage Blow",
-            Ability::Dodge { .. } => "Dodge Attack",
-            Ability::Surge(surge) => match surge.stype {
+            Self::Weaken { .. } => "Weaken",
+            Self::Strengthen { .. } => "Strengthen",
+            Self::Survives { .. } => "Survive",
+            Self::Metal => "Metal",
+            Self::ImmuneToWave => "Immune to Waves",
+            Self::WaveBlocker => "Wave Shield",
+            Self::ImmuneToKB => "Immune to Knockback",
+            Self::ImmuneToFreeze => "Immune to Freeze",
+            Self::ImmuneToSlow => "Immune to Slow",
+            Self::ImmuneToWeaken => "Immune to Weaken",
+            Self::ZombieKiller => "Zombie Killer",
+            Self::WitchKiller => "Witch Killer",
+            Self::ImmuneToBossShockwave => "Immune to Boss Shockwave",
+            Self::BarrierBreaker { .. } => "Barrier Breaker",
+            Self::ImmuneToWarp => "Immune to Warp",
+            Self::EvaAngelKiller => "Eva Angel Killer",
+            Self::ImmuneToCurse => "Immune to Curse",
+            Self::InsaneResist => "Insanely Tough",
+            Self::InsaneDamage => "Insane Damage",
+            Self::SavageBlow { .. } => "Savage Blow",
+            Self::Dodge { .. } => "Dodge Attack",
+            Self::Surge(surge) => match surge.stype {
                 SurgeType::Surge => "Surge Attacks",
                 SurgeType::MiniSurge => "Mini-Surge",
             },
-            Ability::ImmuneToToxic => "Immune to Toxic",
-            Ability::ImmuneToSurge => "Immune to Surge",
-            Ability::Curse { .. } => "Curse",
-            Ability::ShieldPierce { .. } => "Shield Piercing",
-            Ability::ColossusSlayer => "Colossus Slayer",
-            Ability::Soulstrike => "Soulstrike",
-            Ability::BehemothSlayer { .. } => "Behemoth Slayer",
-            Ability::CounterSurge => "Counter-Surge",
-            Ability::ConjureUnit { .. } => "Conjure",
-            Ability::SageSlayer => "Sage Slayer",
-            Ability::MetalKiller { .. } => "Metal Killer",
-            Ability::Explosion { .. } => "Explosion",
-            Ability::ImmuneToExplosion => "Immune to Explosions",
+            Self::ImmuneToToxic => "Immune to Toxic",
+            Self::ImmuneToSurge => "Immune to Surge",
+            Self::Curse { .. } => "Curse",
+            Self::ShieldPierce { .. } => "Shield Piercing",
+            Self::ColossusSlayer => "Colossus Slayer",
+            Self::Soulstrike => "Soulstrike",
+            Self::BehemothSlayer { .. } => "Behemoth Slayer",
+            Self::CounterSurge => "Counter-Surge",
+            Self::ConjureUnit { .. } => "Conjure",
+            Self::SageSlayer => "Sage Slayer",
+            Self::MetalKiller { .. } => "Metal Killer",
+            Self::Explosion { .. } => "Explosion",
+            Self::ImmuneToExplosion => "Immune to Explosions",
         }
     }
 }
