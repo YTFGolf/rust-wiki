@@ -9,9 +9,9 @@ use crate::{
     },
     interface::{
         error_handler::InfallibleWrite,
-        scripts::cat_info::stats::{
-            abilities::{misc_abilities::get_multihit_ability, util::get_ability_single},
-            template::template_util::CatForm,
+        scripts::cat_info::{
+            form_util::CatForm,
+            stats::abilities::{misc_abilities::get_multihit_ability, util::get_ability_single},
         },
     },
     wikitext::number_utils::{
