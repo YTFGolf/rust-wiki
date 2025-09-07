@@ -6,11 +6,14 @@ use super::{
     unitbuy::{AncientEggInfo, UnitBuy},
 };
 use crate::game_data::{
-    cat::raw::{
-        stats::read_data_file,
-        unitbuy::UnitBuyContainer,
-        unitexp::XPCostScale,
-        unitlevel::{UnitLevelContainer, UnitLevelRaw},
+    cat::{
+        parsed::anim::Anim,
+        raw::{
+            stats::read_data_file,
+            unitbuy::UnitBuyContainer,
+            unitexp::XPCostScale,
+            unitlevel::{UnitLevelContainer, UnitLevelRaw},
+        },
     },
     version::{
         Version,
@@ -130,8 +133,31 @@ impl Cat {
             // .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
             // .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
             .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP)))
-            .or_else(|_| get(version_cont.get_lang(VersionLanguage::Fallback)))
-            .map_err(|(source, form_num)| CatDataError::AnimationError { form_num, source })?;
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::Fallback)));
+
+        let anims = match anims {
+            Ok(a) => a,
+            Err((AnimDataError::EmptyAnimation, _)) if amt_forms == 1 => {
+                // if animation is empty AND the amount of forms is 1, then this
+                // is iron wall/cheetah
+                const DEFAULT: CatFormAnimData = CatFormAnimData {
+                    attack: Anim::new(1),
+                    // Attack animation is either 0 or 1f depending on how you
+                    // want to count, my thinking is it ends on frame 0 so it
+                    // must be 1f. If the attack ended on frame 1 then it would
+                    // be active for both frame 0 and for frame 1, which is a
+                    // total of 2 frames, so if it ends on frame 0 surely it's 1
+                    // frame long?
+                };
+
+                vec![DEFAULT]
+            }
+            Err((source, form_num)) => {
+                // unfortunately couldn't just use a nice and convenient map_err
+                // because Cheetah Cat must be taken into account.
+                return Err(CatDataError::AnimationError { form_num, source });
+            }
+        };
 
         assert!(stats.len() >= amt_forms);
         assert!(anims.len() >= amt_forms);
@@ -176,9 +202,6 @@ mod tests {
     fn test_all() {
         type E = CatDataError;
         for id in 0..u32::MAX {
-            if matches!(id, 339 | 673) {
-                continue;
-            }
             match Cat::from_wiki_id(id, &TEST_CONFIG.version) {
                 Ok(_) => (),
                 Err(E::UnitBuyNotFound | E::UnitLevelNotFound) => break,
