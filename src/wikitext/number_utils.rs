@@ -67,6 +67,17 @@ pub fn time_repr(time_f: u32) -> (String, String) {
     (f, s)
 }
 
+/// [`time_repr`] with [`i32`] input.
+pub fn time_repr_i32(time_f: i32) -> (String, String) {
+    if time_f >= 0 {
+        time_repr(time_f as u32)
+    } else {
+        assert_ne!(time_f, -30, "Don't want '-1 second' so throwing error.");
+        let (f, s) = time_repr(time_f.abs() as u32);
+        ("-".to_string() + &f, "-".to_string() + &s)
+    }
+}
+
 /// Get a formatted decimal representation of the number. Due to how rounding
 /// works, a .5 value can give unexpected behaviour.
 /// ```
