@@ -247,11 +247,6 @@ pub fn get_pure_abilities(
                 witches = enemy("Witch", "Witches"),
                 killer = abil2("Witch Killer")
             )),
-
-            Ability::Kamikaze => abilities.push(format!(
-                "{icon} {kamikaze} (Attacks once, then disappears from the battlefield)",
-                kamikaze = abil2("Kamikaze")
-            )),
             Ability::BarrierBreaker { chance } => abilities.push(format!(
                 "{icon} {chance}% chance to {break} [[Barrier]]s{multab}",
                 r#break = abil("Barrier Breaker", "break"),

@@ -167,8 +167,6 @@ pub enum Ability {
     WitchKiller,
     /// Immune to boss shockwave.
     ImmuneToBossShockwave,
-    /// Kamikaze.
-    Kamikaze,
     /// Break starred alien barriers.
     BarrierBreaker {
         /// Chance to break barriers.
@@ -274,7 +272,6 @@ impl Ability {
             | Self::ZombieKiller
             | Self::WitchKiller
             | Self::ImmuneToBossShockwave
-            | Self::Kamikaze
             | Self::ImmuneToWarp
             | Self::EvaAngelKiller
             | Self::ImmuneToCurse
@@ -339,7 +336,6 @@ impl Ability {
             | Self::ZombieKiller
             | Self::WitchKiller
             | Self::ImmuneToBossShockwave
-            | Self::Kamikaze
             | Self::BarrierBreaker { .. }
             | Self::ImmuneToWarp
             | Self::EvaAngelKiller
@@ -388,7 +384,6 @@ impl Ability {
             | Self::WaveBlocker
             | Self::ZombieKiller
             | Self::WitchKiller
-            | Self::Kamikaze
             | Self::BarrierBreaker { .. }
             | Self::EvaAngelKiller
             | Self::InsaneResist
@@ -421,7 +416,7 @@ impl Ability {
         }
     }
 }
-// Self::StrongAgainst=>(),Self::Knockback{..}=>(),Self::Freeze{..}=>(),Self::Slow{..}=>(),Self::Resist=>(),Self::MassiveDamage=>(),Self::Crit{..}=>(),Self::TargetsOnly=>(),Self::DoubleBounty=>(),Self::BaseDestroyer=>(),Self::Wave(_)=>(),Self::Weaken{..}=>(),Self::Strengthen{..}=>(),Self::Survives{..}=>(),Self::Metal=>(),Self::ImmuneToWave=>(),Self::WaveBlocker=>(),Self::ImmuneToKB=>(),Self::ImmuneToFreeze=>(),Self::ImmuneToSlow=>(),Self::ImmuneToWeaken=>(),Self::ZombieKiller=>(),Self::WitchKiller=>(),Self::ImmuneToBossShockwave=>(),Self::Kamikaze=>(),Self::BarrierBreaker{..}=>(),Self::ImmuneToWarp=>(),Self::EvaAngelKiller=>(),Self::ImmuneToCurse=>(),Self::InsaneResist=>(),Self::InsaneDamage=>(),Self::SavageBlow{..}=>(),Self::Dodge{..}=>(),Self::Surge(_)=>(),Self::ImmuneToToxic=>(),Self::ImmuneToSurge=>(),Self::Curse{..}=>(),Self::ShieldPierce{..}=>(),Self::ColossusSlayer=>(),Self::Soulstrike=>(),Self::BehemothSlayer{..}=>(),Self::CounterSurge=>(),Self::ConjureUnit{..}=>(),Self::SageSlayer=>(),Self::MetalKiller{..}=>(),Self::Explosion{..}=>(),Self::ImmuneToExplosion=>(),
+// Self::StrongAgainst=>(),Self::Knockback{..}=>(),Self::Freeze{..}=>(),Self::Slow{..}=>(),Self::Resist=>(),Self::MassiveDamage=>(),Self::Crit{..}=>(),Self::TargetsOnly=>(),Self::DoubleBounty=>(),Self::BaseDestroyer=>(),Self::Wave(_)=>(),Self::Weaken{..}=>(),Self::Strengthen{..}=>(),Self::Survives{..}=>(),Self::Metal=>(),Self::ImmuneToWave=>(),Self::WaveBlocker=>(),Self::ImmuneToKB=>(),Self::ImmuneToFreeze=>(),Self::ImmuneToSlow=>(),Self::ImmuneToWeaken=>(),Self::ZombieKiller=>(),Self::WitchKiller=>(),Self::ImmuneToBossShockwave=>(),Self::BarrierBreaker{..}=>(),Self::ImmuneToWarp=>(),Self::EvaAngelKiller=>(),Self::ImmuneToCurse=>(),Self::InsaneResist=>(),Self::InsaneDamage=>(),Self::SavageBlow{..}=>(),Self::Dodge{..}=>(),Self::Surge(_)=>(),Self::ImmuneToToxic=>(),Self::ImmuneToSurge=>(),Self::Curse{..}=>(),Self::ShieldPierce{..}=>(),Self::ColossusSlayer=>(),Self::Soulstrike=>(),Self::BehemothSlayer{..}=>(),Self::CounterSurge=>(),Self::ConjureUnit{..}=>(),Self::SageSlayer=>(),Self::MetalKiller{..}=>(),Self::Explosion{..}=>(),Self::ImmuneToExplosion=>(),
 impl Ability {
     /// Get the proper name of the ability.
     pub const fn name(&self) -> &'static str {
@@ -615,10 +610,6 @@ impl Ability {
 
         if bool(variable.immune_boss_shockwave).unwrap() {
             abilities.push(Self::ImmuneToBossShockwave);
-        }
-
-        if variable.kamikaze != 0 {
-            abilities.push(Self::Kamikaze);
         }
 
         if chance(variable.barrier_break_chance) {
@@ -1048,7 +1039,6 @@ mod tests {
 
         let form_abilities = [
             vec![
-                A::Kamikaze,
                 A::Freeze {
                     chance: 100,
                     duration: 150,
@@ -1070,7 +1060,6 @@ mod tests {
                 A::ImmuneToSurge,
             ],
             vec![
-                A::Kamikaze,
                 A::Freeze {
                     chance: 100,
                     duration: 200,
@@ -1092,7 +1081,6 @@ mod tests {
                 A::ImmuneToSurge,
             ],
             vec![
-                A::Kamikaze,
                 A::Knockback { chance: 100 },
                 A::Freeze {
                     chance: 100,

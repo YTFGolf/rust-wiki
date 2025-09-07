@@ -1068,7 +1068,6 @@ mod tests {
                 cooldown: 0,
             },
             abilities: sorted(vec![
-                A::Kamikaze,
                 A::ImmuneToWave,
                 A::ImmuneToKB,
                 A::ImmuneToFreeze,
