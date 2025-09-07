@@ -9,7 +9,9 @@ use crate::{
         error_handler::InfallibleWrite,
         scripts::cat_info::stats::abilities::misc_abilities::get_multihit_ability,
     },
-    wikitext::number_utils::{get_formatted_float, plural, plural_f, seconds_repr, time_repr},
+    wikitext::number_utils::{
+        get_formatted_float, plural, plural_f, seconds_repr, time_repr, time_repr_i32,
+    },
 };
 use num_format::{Locale, ToFormattedString};
 use std::{cmp::max, fmt::Write};
@@ -65,15 +67,25 @@ pub fn get_form(
 
     let foreswing = stats.attack.hits.foreswing();
     let attack_length = stats.attack.hits.attack_length();
-    assert!(
-        anims.attack.length() > attack_length,
-        "Attack animation length mismatch: {} <= {attack_length}",
-        anims.attack.length()
-    );
-    let backswing = anims.attack.length() - attack_length;
-    let frequency_alt = attack_length + max(stats.attack.cooldown, backswing);
-    let frequency = max(anims.attack.length(), attack_length + stats.attack.cooldown);
-    assert_eq!(frequency, frequency_alt);
+    let anim_length = anims.attack.length();
+
+    let can_attack = anim_length > attack_length;
+    // if animation is shorter than foreswing then unit cannot attack
+    // unclear if should be > or >=
+    if !can_attack {
+        log::info!(
+            "Attack animation length mismatch: {anim_length} <= {attack_length}. Unit cannot attack.",
+        );
+    }
+
+    // let backswing = anim_length - attack_length;
+    // let frequency_alt = attack_length + max(stats.attack.cooldown, backswing);
+    let frequency_opt = if can_attack {
+        Some(max(anim_length, attack_length + stats.attack.cooldown))
+    } else {
+        None
+    };
+    // assert_eq!(frequency, frequency_alt);
 
     let stats_level = match levels_used {
         (30, 0) => None,
@@ -87,21 +99,30 @@ pub fn get_form(
     let base_hp = format!("{hp} HP", hp = stats.hp.to_formatted_string(&Locale::en));
     let base_atk = {
         let dmg = stats.attack.hits.total_damage();
-        let dps = f64::from(dmg) / f64::from(frequency) * 30.0;
-        format!(
-            "{ap} damage<br>({dps} DPS)",
-            ap = dmg.to_formatted_string(&Locale::en),
-            dps = get_formatted_float(dps, 2)
-        )
+        let mut buf = format!("{ap} damage", ap = dmg.to_formatted_string(&Locale::en),);
+
+        if let Some(frequency) = frequency_opt {
+            let dps_init = f64::from(dmg) / f64::from(frequency) * 30.0;
+            write!(
+                buf,
+                "<br>({dps} DPS)",
+                dps = get_formatted_float(dps_init, 2)
+            )
+            .infallible_write();
+        }
+
+        buf
     };
 
     let range = stats.attack.standing_range.to_formatted_string(&Locale::en);
-    let attack_cycle = {
+    let attack_cycle = if let Some(frequency) = frequency_opt {
         let (freq_f, freq_s) = time_repr(u32::from(frequency));
         format!(
             "{freq_f}f <sub>{freq_s} {seconds}</sub>",
             seconds = plural_f(frequency.into(), "second", "seconds")
         )
+    } else {
+        "Cannot attack".to_string()
     };
 
     let speed = stats.speed.to_formatted_string(&Locale::en);
@@ -112,7 +133,8 @@ pub fn get_form(
     );
     let animation = {
         let (fore_f, fore_s) = time_repr(u32::from(foreswing));
-        let (back_f, back_s) = time_repr(u32::from(backswing));
+        let backswing = anim_length as i32 - attack_length as i32;
+        let (back_f, back_s) = time_repr_i32(backswing);
         format!("{fore_f}f <sup>{fore_s}s</sup><br>({back_f}f <sup>{back_s}s</sup> backswing)")
     };
 
@@ -143,12 +165,19 @@ pub fn get_form(
             .attack
             .hits
             .total_damage_at_level(&cat.unitlevel, level);
-        let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
-        format!(
-            "{ap} damage<br>({dps} DPS)",
-            ap = ap_max.to_formatted_string(&Locale::en),
-            dps = get_formatted_float(dps_max, 2)
-        )
+        let mut buf = format!("{ap} damage", ap = ap_max.to_formatted_string(&Locale::en),);
+
+        if let Some(frequency) = frequency_opt {
+            let dps_max = f64::from(ap_max) / f64::from(frequency) * 30.0;
+            write!(
+                buf,
+                "<br>({dps} DPS)",
+                dps = get_formatted_float(dps_max, 2)
+            )
+            .infallible_write();
+        }
+
+        buf
     };
 
     let attack_type = match stats.attack.aoe {
