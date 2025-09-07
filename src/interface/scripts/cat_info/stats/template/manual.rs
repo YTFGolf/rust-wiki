@@ -4,7 +4,7 @@ use super::super::form::Form;
 use crate::{
     game_data::cat::parsed::cat::Cat,
     interface::scripts::cat_info::stats::form::{get_form, write_level_and_plus},
-    wiki_data::cat_data::{CAT_DATA, CatName},
+    wiki_data::cat_data::CatName,
     wikitext::template::{Template, TemplateParameter},
 };
 use std::iter::zip;
@@ -36,63 +36,34 @@ fn write_stats(t: &mut Template, form_name: &str, form: Form) {
     t.push_params(P::new(format!("{f} Abilities"), form.abilities));
 }
 
-fn get_stats_level(name: &'static str, value: Option<String>) -> Option<TemplateParameter> {
-    Some(TemplateParameter::new(name, value?))
-}
-
 fn add_all_forms(t: &mut Template, cat: &Cat) {
     type P = TemplateParameter;
+    use super::template_util::CatForm as F;
 
-    let mut iter = zip(&cat.forms.stats, &cat.forms.anims).take(cat.forms.amt_forms);
+    let forms = [F::Normal, F::Evolved, F::True, F::Ultra];
+    let iter = cat.forms.iter();
 
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
+    for (form_variant, stats_and_anims) in zip(forms, iter) {
+        let name = form_variant.name(cat.id);
+        let name = CatName::clean_cat_name(name);
 
-    let name = &CAT_DATA.get_cat(cat.id).normal;
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Normal Name", name));
+        let form_name = form_variant.as_str();
+        let (stats, anims) = stats_and_anims;
+        t.push_params(P::new(format!("{form_name} Name"), name));
 
-    let form = get_form(cat, stats, anims, 1);
-    t.push_params(get_stats_level("Normal Stats Level", form.stats_level));
-    t.push_params(P::new("Normal Health", form.base_hp));
-    t.push_params(P::new("Normal Attack Power", form.base_atk));
-    write_stats(t, "Normal", form.other);
+        let form = get_form(cat, stats, anims, form_variant);
 
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
+        t.push_params(form.stats_level.map(|lv| {
+            let name = format!("{form_name} Stats Level");
+            TemplateParameter::new(name, lv)
+        }));
 
-    let name = &CAT_DATA.get_cat(cat.id).evolved.as_ref().unwrap();
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Evolved Name", name));
-
-    let form = get_form(cat, stats, anims, 2);
-    t.push_params(get_stats_level("Evolved Stats Level", form.stats_level));
-    write_stats(t, "Evolved", form.other);
-
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
-
-    let name = &CAT_DATA.get_cat(cat.id).true_form.as_ref().unwrap();
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("True Name", name));
-
-    let form = get_form(cat, stats, anims, 3);
-    t.push_params(get_stats_level("True Stats Level", form.stats_level));
-    write_stats(t, "True", form.other);
-
-    let Some((stats, anims)) = iter.next() else {
-        return;
-    };
-
-    // t.push_params("Ultra Stats Level");
-    let name = &CAT_DATA.get_cat(cat.id).ultra.as_ref().unwrap();
-    let name = CatName::clean_cat_name(name);
-    t.push_params(P::new("Ultra Name", name));
-    let form = get_form(cat, stats, anims, 4);
-    write_stats(t, "Ultra", form.other);
+        if form_variant == F::Normal {
+            t.push_params(P::new("Normal Health", form.base_hp));
+            t.push_params(P::new("Normal Attack Power", form.base_atk));
+        }
+        write_stats(t, form_name, form.other);
+    }
 }
 
 /// Get manual cat stats template.
