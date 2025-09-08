@@ -6,7 +6,7 @@ use crate::interface::{
         cli_util::{CommandExec, ConfigMerge},
         version_opt::VersionOptions,
     },
-    config::Config,
+    config::{Config, cat_config::StatsTemplateVersion},
     scripts::cat_info::cat_info::get_info,
 };
 use clap::Args;
@@ -33,7 +33,9 @@ impl ConfigMerge for CatInfoOptions {
         self.base.merge(config);
         self.version.merge(config);
 
-        config.cat_info.use_old_template = self.old;
+        if self.old {
+            config.cat_info.stats_template_version = StatsTemplateVersion::Manual;
+        }
     }
 }
 impl CommandExec for CatInfoOptions {

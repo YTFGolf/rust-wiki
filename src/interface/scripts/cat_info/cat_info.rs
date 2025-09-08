@@ -3,7 +3,7 @@
 use crate::{
     game_data::cat::parsed::cat::{Cat, CatDataError},
     interface::{
-        config::Config,
+        config::{Config, cat_config::StatsTemplateVersion},
         scripts::cat_info::stats::template::{current::get_template, manual::get_old_template},
     },
 };
@@ -12,12 +12,10 @@ use crate::{
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<String, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
 
-    let template;
-    if config.cat_info.use_old_template {
-        template = get_old_template(&cat).to_string();
-    } else {
-        template = get_template(&cat).to_string();
-    }
+    let template = match config.cat_info.stats_template_version {
+        StatsTemplateVersion::Current => get_template(&cat).to_string(),
+        StatsTemplateVersion::Manual => get_old_template(&cat).to_string(),
+    };
 
     Ok(template)
 }

@@ -116,9 +116,11 @@ pub fn get_formatted_float(num: f64, max_precision: usize) -> String {
 
     if formatted_float == "1." {
         return (int_part + 1).to_formatted_string(&Locale::en);
+        // float part rounds to 1 = have to throw away `buf`
     }
     if formatted_float == "." {
         return buf;
+        // float part rounds to 0 = whole number therefore only `buf` is needed
     }
 
     write!(buf, "{formatted_float}").unwrap();
