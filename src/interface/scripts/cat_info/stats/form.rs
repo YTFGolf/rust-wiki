@@ -11,12 +11,13 @@ use crate::{
         error_handler::InfallibleWrite,
         scripts::cat_info::{
             form_util::CatForm,
-            stats::abilities::{misc_abilities::get_multihit_ability, util::get_ability_single},
+            stats::abilities::{
+                misc_abilities::get_multihit_ability,
+                util::{get_ability_single, get_duration_repr},
+            },
         },
     },
-    wikitext::number_utils::{
-        get_formatted_float, plural, plural_f, seconds_repr, time_repr, time_repr_i32,
-    },
+    wikitext::number_utils::{get_formatted_float, plural, seconds_repr, time_repr, time_repr_i32},
 };
 use num_format::{Locale, ToFormattedString};
 use std::{cmp::max, fmt::Write};
@@ -142,11 +143,7 @@ pub fn get_form(
 
     let range = stats.attack.standing_range.to_formatted_string(&Locale::en);
     let attack_cycle = if let Some(frequency) = frequency_opt {
-        let (freq_f, freq_s) = time_repr(u32::from(frequency));
-        format!(
-            "{freq_f}f <sub>{freq_s} {seconds}</sub>",
-            seconds = plural_f(frequency.into(), "second", "seconds")
-        )
+        get_duration_repr(u32::from(frequency))
     } else if can_attack {
         "-".to_string()
     } else {
