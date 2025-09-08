@@ -17,22 +17,28 @@ subheading.
 
 - Ability icons to cat stats.
 - `AttackHits::iter`, `UnitLevelRaw::iter`.
-- New format for cat info.
+- New format for cat stats + template version switcher.
+- Cat info config.
+- `CatForm` enum to `cat_info`.
 
 ### Fixed
 
 - Changed how omni and ld are displayed for cats (see issue #15).
 - Cats with max level 1+30 will have stats shown at that level.
 - Added gauntlet cooldown check to TreasureAdjustment condition.
+- Kamikaze units and units that can't attack now work properly with `cat_info`.
 
 ### Changed
 
 - Separated `get_ordinal` and `get_small_ordinal`.
 - Logger format.
+- Allow `EmptyAnimation` if unit has 1 form (Cheetah, Iron Wall).
+- Publicised all modules.
 
 ### Removed
 
 - Animations no longer attempt to use TW/KR data.
+- Removed Kamikaze ability and replaced with a boolean flag.
 
 ## [0.7.0] - 2025-08-24
 
