@@ -15,6 +15,16 @@ subheading.
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.7.1] - 2025-09-08
+
+### Added
+
 - Ability icons to cat stats.
 - `AttackHits::iter`, `UnitLevelRaw::iter`.
 - New format for cat stats + template version switcher.
@@ -347,7 +357,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.0...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.1...dev
+[0.7.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.0...v0.6.1
