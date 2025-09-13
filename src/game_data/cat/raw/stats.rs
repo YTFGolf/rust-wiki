@@ -35,19 +35,28 @@ pub struct CatCSV {
     pub range: Big,
     pub price: Big,
     pub respawn: Big,
+    /// "Collision start". Always 0. Probably works the same as width.
     _uk8: Small,
+    /// Unit width, always 320.
     _width: Big,
-    // should always be 320
 
     // 10
     pub targ_red: Bool,
-    _uk2: Small,
+    /// Completely unknown, always 0.
+    _uk11: Small,
     pub is_area: Bool,
     pub foreswing: Big,
+    /// "front". Likely similar to enemies' "layer", where having this be above
+    /// 0 means the cat will visually appear in front of other cats.
+    ///
+    /// Is 1 for Actress, Salon, Geisha (but not Maiko), other cats that are
+    /// meant to go in front. Zamboney, Iron Wall, Glass have 9.
     _uk14: Small,
-    // "front"
+    /// "back".
+    ///
+    /// Is 9 for almost all cats. Is 0 when cat is meant to be at the back, e.g.
+    /// Gross, Mighty Kristal Muu.
     _uk15: Small,
-    // "back"
     pub targ_float: Bool,
     pub targ_black: Bool,
     pub targ_metal: Bool,
@@ -85,7 +94,6 @@ pub struct CatCSV {
     pub has_metal: Bool,
     pub ld_base: i16,
     pub ld_range: i16,
-    // if ld_range is neg then is omnistrike, need to consult the hitbox page
     pub immune_wave: Bool,
     pub has_wave_blocker: Bool,
     pub immune_kb: Bool,
@@ -102,16 +110,22 @@ pub struct CatCSV {
 /// Data that may not exist. All fields default to `0` if not explicitly given.
 pub struct CatCSV2 {
     // index = 52
+    /// Can be blank (`""`) so needs to be an option. The only thing here with
+    /// that property.
     pub has_zombie_killer: Option<Bool>,
-    // can be blank for whatever reason so needs `Option`
     pub has_witch_killer: Bool,
+    /// "target witch". Always 0.
     _uk54: Small,
+    /// "attacks left" or "loop" according to BCU.
+    ///
+    /// All kamikaze units have this set at 1, others have it set at either 0 or
+    /// -1.
     _uk55: i8,
-    // "loop" according to BCU, what that means is unclear
     pub immune_boss_shockwave: Bool,
+    /// "time before death". All cats have this at 0 or -1.
     _uk57: i8,
+    /// For some reason is like a bool but 2 is the true value.
     pub kamikaze: Small,
-    // for some reason is like a bool but 2 is the true value
     pub mhit_atk2: Massive,
 
     // 60
@@ -268,13 +282,17 @@ mod tests {
             let forms = read_data_file(&file, version);
 
             #[allow(clippy::used_underscore_binding)]
-            for (fixed, var) in forms {
+            for (_i, (fixed, var)) in forms.enumerate() {
+                // if var._uk57 != -1{
+                //     println!("{_i}: {:?}", var._uk57);
+                // }
                 // if var.proc_on_hit1 == 0 && (var.proc_on_hit2 + var.proc_on_hit3 > 0) {
                 //     println!("{fixed:?}, {var:?}");
                 // }
                 // if var.mhit_atk2 > 0 || var.mhit_atk3_fswing > 0 {
                 //     println!("{}, {var:?}", var.proc_on_hit1 + var.proc_on_hit2 + var.proc_on_hit3);
                 // }
+                assert_eq!(fixed._uk8, 0);
                 assert_eq!(fixed._width, 320);
                 if var.kamikaze != 0 {
                     assert_eq!(var.kamikaze, 2);
