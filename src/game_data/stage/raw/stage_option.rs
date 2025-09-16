@@ -44,6 +44,8 @@ pub mod charagroups {
     #[derive(Debug, PartialEq, Clone)]
     /// Data about a CharaGroup.
     pub struct CharaGroup {
+        /// ID of charagroup.
+        pub group_id: u32,
         /// Type of charagroup.
         pub group_type: CharaGroupType,
         /// Units in charagroup (Cat = 0).
@@ -107,6 +109,7 @@ pub mod charagroups {
                 }
 
                 CharaGroup {
+                    group_id: fixed_data.group_id,
                     group_type: fixed_data.group_type.into(),
                     units,
                 }

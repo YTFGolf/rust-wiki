@@ -647,6 +647,7 @@ mod tests {
             min_cost: None,
             max_cost: None,
             charagroup: Some(CharaGroup {
+                group_id: 3,
                 group_type: CharaGroupType::CannotUse,
                 units: [440].into(),
             }),
