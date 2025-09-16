@@ -292,8 +292,6 @@ Alongside these specific updates, updated supported game version to 14.1.
 
 - Modified `StageMeta::from_selector_main` to take 2 args instead of 1.
 
-### Removed
-
 ## [0.4.0] - 2025-01-16
 
 This update overhauled the Config and CLI. This includes significant breaking
