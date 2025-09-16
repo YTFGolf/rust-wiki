@@ -78,7 +78,7 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
 
 /// Get the restriction defined by the charagroup (i.e. the can only use or
 /// cannot use certain units).
-fn get_charagroup_restriction(group: &CharaGroup) -> String {
+fn get_charagroup_restriction(group: &CharaGroup, simplify: bool) -> String {
     // Alternatively, hardcode some of these like heartbeat catcademy and JRA
     // since they'll always be changing but will always have the same concept.
     let mut buf = "Unit Restriction: ".to_string();
@@ -89,9 +89,11 @@ fn get_charagroup_restriction(group: &CharaGroup) -> String {
     buf.write_str(mode).infallible_write();
     buf.write_str(" ").infallible_write();
 
-    match group.group_id {
-        5 => return buf + "[[Heartbeat Catcademy (Event Gacha)|Heartbeat Catcademy]] Units",
-        _ => (),
+    if simplify {
+        match group.group_id {
+            5 => return buf + "[[Heartbeat Catcademy (Event Gacha)|Heartbeat Catcademy]] Units",
+            _ => (),
+        }
     }
     /*
     stage_restriction_charagroup_1 Castle and Dragon collaboration characters
@@ -135,7 +137,7 @@ fn get_charagroup_restriction(group: &CharaGroup) -> String {
 
 /// Get a list of restrictions that a single [Restriction] object corresponds
 /// to.
-fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
+fn get_single_restriction(restriction: &Restriction, simplify: bool) -> Vec<String> {
     let mut restrictions = vec![];
 
     if let Some(rarity) = restriction.rarity {
@@ -165,7 +167,7 @@ fn get_single_restriction(restriction: &Restriction) -> Vec<String> {
         restrictions.push(buf);
     }
     if let Some(group) = &restriction.charagroup {
-        let buf = get_charagroup_restriction(group);
+        let buf = get_charagroup_restriction(group, simplify);
         restrictions.push(buf);
     }
 
@@ -207,7 +209,11 @@ fn assert_all_restrictions_unique(restriction_crowns: &[(String, Vec<u8>)]) {
 }
 
 /// Get restrictions when `restrictions.len()` is greater than 1.
-fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) -> Vec<String> {
+fn get_multi_restriction(
+    restrictions: &Vec<Restriction>,
+    max_difficulty: u8,
+    simplify: bool,
+) -> Vec<String> {
     let mut restriction_crowns: Vec<(String, Vec<u8>)> = vec![];
     for restriction in restrictions {
         let crown: u8 = match restriction.crowns_applied {
@@ -218,7 +224,7 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
             // not sure this error message is the best but it's better to not
             // deal with this case if I don't have to
         };
-        for r in get_single_restriction(restriction) {
+        for r in get_single_restriction(restriction, simplify) {
             add_restriction_or_crown(&mut restriction_crowns, r, crown);
         }
     }
@@ -243,7 +249,9 @@ fn get_multi_restriction(restrictions: &Vec<Restriction>, max_difficulty: u8) ->
 }
 
 /// Get a list of stage restrictions if they exist.
-fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
+///
+/// `simplify` uses a compact format for the restrictions.
+fn get_restriction_list(stage: &Stage, simplify: bool) -> Option<Vec<String>> {
     let restrictions = stage.restrictions.as_ref()?;
     if restrictions.is_empty() || restrictions == &[FOUR_CROWN_DEFAULT_RESTRICTION] {
         return None;
@@ -268,18 +276,22 @@ fn get_restriction_list(stage: &Stage) -> Option<Vec<String>> {
             panic!("Unexpected crown error in stage: {stage:?}");
         }
 
-        return Some(get_single_restriction(restriction));
+        return Some(get_single_restriction(restriction, simplify));
     }
 
     let max_difficulty = u8::from(stage.crown_data.as_ref().unwrap().max_difficulty);
-    Some(get_multi_restriction(restrictions, max_difficulty))
+    Some(get_multi_restriction(
+        restrictions,
+        max_difficulty,
+        simplify,
+    ))
 }
 
 /// Get restrictions for Stage Info template (including no continues).
 pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
     const PARAM_NAME: &str = "restriction";
 
-    let restrictions = get_restriction_list(stage);
+    let restrictions = get_restriction_list(stage, true);
     let Some(r) = restrictions else {
         return stage
             .is_no_continues
@@ -297,7 +309,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 // TODO fixed_formation.csv
 /// Get content of restrictions section.
 pub fn restrictions_section(stage: &Stage) -> String {
-    let restrictions = match get_restriction_list(stage) {
+    let restrictions = match get_restriction_list(stage, false) {
         None => return String::new(),
         Some(r) => r,
     };
@@ -732,5 +744,12 @@ mod tests {
         let doge_disturbance_last =
             Stage::from_id_current(StageID::from_components(T::Extra, 71, 9)).unwrap();
         assert_eq!(rules(&doge_disturbance_last), "{{StageRule|12thAnni}}");
+    }
+
+    #[test]
+    fn simplify_restrictions() {
+        let _no_longer_single =
+            Stage::from_id_current(StageID::from_components(T::Event, 303, 7)).unwrap();
+        todo!()
     }
 }
