@@ -136,18 +136,27 @@ pub struct CatCSV2 {
     pub proc_on_hit2: Bool,
     pub proc_on_hit3: Bool,
     _uk66: i8,
+    // "spawn anim model id"
     pub death: i8,
+    // "soul model anim id"
     _uk68: Small,
+    // "has entry maanim"
     _uk69: Small,
+    // "has death maanim"
 
     // 70
     pub barrier_break_chance: Percent,
     _uk71: Small,
+    // "warp chance"
     _uk72: Small,
+    // "warp duration"
     _uk73: Small,
+    // "warp min range"
     _uk74: Small,
+    // "warp max range"
     pub immune_warp: Bool,
     _uk76: Small,
+    // "target eva angel"
     pub has_eva_angel_killer: Bool,
     pub targ_relic: Bool,
     pub immune_curse: Bool,
@@ -192,13 +201,15 @@ pub struct CatCSV2 {
 
     // 110
     pub conjure_unit_id: i16,
-    // for some godforsaken reason this can be -1 or 0 to represent doesn't summon
+    // for some godforsaken reason this can be -1 or 0 to represent doesn't
+    // summon
     pub has_sage_slayer: Bool,
     pub metal_killer_percent: Percent,
     pub explosion_chance: Percent,
     pub explosion_spawn_quad: Big,
     // for some reason is 4 * actual range
     _uk115: Small,
+    // "explosion range"
     pub immune_explosion: Bool,
 
     rest: Vec<i32>,
