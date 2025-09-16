@@ -88,6 +88,32 @@ fn get_charagroup_restriction(group: &CharaGroup) -> String {
     };
     buf.write_str(mode).infallible_write();
     buf.write_str(" ").infallible_write();
+
+    match group.group_id {
+        5 => return buf + "[[Heartbeat Catcademy (Event Gacha)|Heartbeat Catcademy]] Units",
+        _ => (),
+    }
+    /*
+    stage_restriction_charagroup_1 Castle and Dragon collaboration characters
+    stage_restriction_charagroup_2 Characters other than Chibi Homura and Akemi Homura
+    stage_restriction_charagroup_3 Characters other than Bebe (Nagisa & Cat)
+    stage_restriction_charagroup_4 JRA collaboration characters
+    stage_restriction_charagroup_5 Tokimeki Nyanko Academy characters
+    stage_restriction_charagroup_6 Cat Summer Vacation event insect characters
+    stage_restriction_charagroup_7 World Trigger collaboration characters
+    stage_restriction_charagroup_8 Shin Japan Heroes Universe collaboration characters
+    stage_restriction_charagroup_9 Cats
+
+    stage_restriction_charagroup_1
+    stage_restriction_charagroup_2	No Li'l Homura/Homura Akemi
+    stage_restriction_charagroup_3	No Bebe/Nagisa & Cat
+    stage_restriction_charagroup_5	Heartbeat Catcademy Units
+    stage_restriction_charagroup_6	"Summer Break Cats" Insect Units
+    stage_restriction_charagroup_7	World Trigger Collab Unit
+    stage_restriction_charagroup_8
+    stage_restriction_charagroup_9	Cat
+    */
+
     let groupunits: Vec<String> = group
         .units
         .iter()
