@@ -15,6 +15,8 @@ subheading.
 
 ### Added
 
+- Cat descriptions
+
 ### Fixed
 
 ### Changed
