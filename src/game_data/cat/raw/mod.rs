@@ -1,5 +1,6 @@
 //! Module for raw cat data.
 
+pub mod desc;
 pub mod stats;
 pub mod unitbuy;
 pub mod unitexp;

@@ -17,7 +17,7 @@ pub struct Version {
     /// contains the energy cost of each EoC stage).
     location: PathBuf,
 
-    _language: VersionLanguage,
+    language: VersionLanguage,
     /// E.g. `"14.0"`.
     _number: String,
 
@@ -32,7 +32,7 @@ impl Version {
     {
         Self {
             location: PathBuf::from(location),
-            _language: language,
+            language,
             _number: number.unwrap_or_default(),
 
             version_data: Mutex::from(Vec::new()),
@@ -43,10 +43,10 @@ impl Version {
 }
 
 impl Version {
-    // /// Get version's language.
-    // pub fn language(&self) -> &VersionLanguage {
-    //     &self.language
-    // }
+    /// Get version's language.
+    pub fn language(&self) -> &VersionLanguage {
+        &self.language
+    }
 
     /// Get version's number.
     pub fn number(&self) -> &str {

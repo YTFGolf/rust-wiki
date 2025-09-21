@@ -31,7 +31,7 @@ impl Display for VersionLanguage {
         let lang = match self {
             Self::EN => "en",
             Self::JP => "ja",
-            Self::KR => "kr",
+            Self::KR => "ko",
             Self::TW => "tw",
             Self::Fallback => "fallback",
         };

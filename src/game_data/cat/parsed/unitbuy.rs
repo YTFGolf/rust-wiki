@@ -182,6 +182,19 @@ pub enum Rarity {
     /// Legend Rare.
     LegendRare = 5,
 }
+impl Rarity {
+    /// Get string representation of rarity.
+    pub const fn as_str(&self) -> &str {
+        match self {
+            Self::Normal => "Normal",
+            Self::Special => "Special",
+            Self::Rare => "Rare",
+            Self::SuperRare => "Super Rare",
+            Self::UberRare => "Uber Rare",
+            Self::LegendRare => "Legend Rare",
+        }
+    }
+}
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Info about Ancient Eggs.
