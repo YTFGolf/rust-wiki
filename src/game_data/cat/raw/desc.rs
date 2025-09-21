@@ -1,14 +1,12 @@
 //! Cat descriptions.
 
+use crate::game_data::version::{Version, lang::VersionLanguage};
+use csv::ByteRecord;
+use serde::Deserialize;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
 };
-
-use csv::ByteRecord;
-use serde::Deserialize;
-
-use crate::game_data::version::{Version, lang::VersionLanguage};
 
 #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
 /// Description of the cat.
@@ -39,7 +37,10 @@ impl CatDescription {
 }
 
 /// Get descriptions for the unit.
-pub fn get_cat_descriptions(wiki_id: u32, version: &Version) -> impl Iterator<Item = CatDescription> {
+pub fn get_cat_descriptions(
+    wiki_id: u32,
+    version: &Version,
+) -> impl Iterator<Item = CatDescription> {
     let file_name = format!(
         "Unit_Explanation{inc}_{lang}.csv",
         inc = wiki_id + 1,

@@ -97,7 +97,10 @@ fn get_charagroup_restriction(group: &CharaGroup, simplify: bool) -> String {
                     + "\"[[Summer Break Cats (Event Gacha)|Summer Break Cats]]\" Insect Units";
             }
             7 => return buf + "[[World Trigger Collaboration Event|World Trigger]] Units",
-            8 => return buf + "[[Shin Japan Heroes Universe Collaboration Event|Shin Japan Heroes Universe]] Units",
+            8 => {
+                return buf
+                    + "[[Shin Japan Heroes Universe Collaboration Event|Shin Japan Heroes Universe]] Units";
+            }
             _ => (),
         }
     }
