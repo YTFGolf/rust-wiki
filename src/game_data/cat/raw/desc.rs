@@ -52,7 +52,6 @@ pub fn get_cat_descriptions(
 
     reader.lines().map(|line| {
         let line = line.unwrap();
-        println!("{line:?}");
 
         let delimiter = match version.language() {
             VersionLanguage::EN => '|',
