@@ -50,9 +50,10 @@ pub fn enemies_list(
         "Stage has multiple enemy bases!"
     );
     let mut enemy_list_seen = HashSet::new();
-    let mag_filter = match suppress_magnification {
-        true => |_| Left(0),
-        false => |mag| mag,
+    let mag_filter = if suppress_magnification {
+        |_| Left(0)
+    } else {
+        |mag| mag
     };
     let filtered_enemies = enemy_list
         .enemies
@@ -91,9 +92,10 @@ pub fn enemies_list(
         write!(buf, "|{}|0", ENEMY_DATA.get_common_name(enemy.id)).unwrap();
     }
 
-    let write_enemy_f = match suppress_magnification {
-        true => write_enemy_0,
-        false => write_enemy,
+    let write_enemy_f = if suppress_magnification {
+        write_enemy_0
+    } else {
+        write_enemy
     };
     let collect_all_enemies = |filtered_enemies_vec: &[&StageEnemy], multiplier: u32| {
         filtered_enemies_vec

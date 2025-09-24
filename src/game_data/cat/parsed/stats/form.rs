@@ -214,9 +214,10 @@ impl AttackHits {
         let active_ability = bool(variable.proc_on_hit2).unwrap();
         let damage = variable.mhit_atk2;
 
-        let range = match bool(variable.second_ld_is_different).unwrap() {
-            true => AttackRange::new(variable.second_ld_base, variable.second_ld_range),
-            false => AttackRange::Unchanged,
+        let range = if bool(variable.second_ld_is_different).unwrap() {
+            AttackRange::new(variable.second_ld_base, variable.second_ld_range)
+        } else {
+            AttackRange::Unchanged
         };
         let foreswing = variable.mhit_atk2_fswing;
 
@@ -233,9 +234,10 @@ impl AttackHits {
         let active_ability = bool(variable.proc_on_hit3).unwrap();
         let damage = variable.mhit_atk3;
 
-        let range = match bool(variable.third_ld_is_different).unwrap() {
-            true => AttackRange::new(variable.third_ld_base, variable.third_ld_range),
-            false => AttackRange::Unchanged,
+        let range = if bool(variable.third_ld_is_different).unwrap() {
+            AttackRange::new(variable.third_ld_base, variable.third_ld_range)
+        } else {
+            AttackRange::Unchanged
         };
         let foreswing = variable.mhit_atk3_fswing;
 

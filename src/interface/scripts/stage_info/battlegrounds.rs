@@ -66,12 +66,13 @@ fn get_single_enemy_line(
 
     if enemy.is_base {
         let name = &ENEMY_DATA.get_names(enemy.id).name;
-        let an = match Regex::new(AN_ENEMY_MATCHER)
+        let an = if Regex::new(AN_ENEMY_MATCHER)
             .unwrap()
             .is_match(extract_name(name))
         {
-            true => "an",
-            false => "a",
+            "an"
+        } else {
+            "a"
         };
 
         write!(buf, "The enemy base here is {an} {name}.").unwrap();
@@ -115,9 +116,10 @@ fn get_single_enemy_line(
     }
 
     if enemy.boss_type != BossType::None {
-        match is_single_enemy {
-            true => buf += " as the boss",
-            false => buf += " as bosses",
+        if is_single_enemy {
+            buf += " as the boss"
+        } else {
+            buf += " as bosses"
         }
     }
 
