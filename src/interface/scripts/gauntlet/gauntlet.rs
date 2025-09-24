@@ -8,7 +8,7 @@ use super::super::{
         enemies_list::enemies_list,
         information::{base_hp, energy, max_enemies, stage_location, stage_name, width, xp},
         misc_information::{chapter, max_clears, star},
-        restrictions::{restrictions_info, restrictions_section, rules},
+        restrictions::{restrictions_info, restrictions_section, rules_section},
         stage_info::get_stage_wiki_data,
         treasure::treasure,
     },
@@ -68,7 +68,7 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
         let container = TabInfo {
             enemies_appearing: enemies_appearing(stage),
             infobox: template_check(stage).to_string(),
-            rules: rules(stage),
+            rules: rules_section(stage),
             restrictions: restrictions_section(stage),
             battlegrounds: battlegrounds(stage),
         };

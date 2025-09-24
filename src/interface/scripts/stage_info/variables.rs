@@ -6,7 +6,7 @@ use super::{
     enemies_list::enemies_list,
     information::{base_hp, energy, max_enemies, stage_location, stage_name, width, xp},
     misc_information::{chapter, difficulty, max_clears, stage_nav, star},
-    restrictions::{restrictions_info, restrictions_section, rules},
+    restrictions::{restrictions_info, restrictions_section, rules_section},
     stage_info::StageWikiDataContainer,
     treasure::{score_rewards, treasure},
 };
@@ -74,7 +74,7 @@ pub fn get_stage_variable(
         "intro" => intro(stage, stage_wiki_data),
         "si_template" => si_template(stage, stage_wiki_data, config).to_string(),
         "restrictions_section" => restrictions_section(stage),
-        "rules" => rules(stage),
+        "rules" => rules_section(stage),
         "battlegrounds" => battlegrounds(stage),
         "reference" => reference(stage),
 

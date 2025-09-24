@@ -337,28 +337,33 @@ pub fn restrictions_section(stage: &Stage) -> String {
     buf
 }
 
-/// Get content of rules section.
-pub fn rules(stage: &Stage) -> String {
+/// Get stage rules.
+fn rules(stage: &Stage) -> Option<String> {
     let Some(rules) = &stage.rules else {
-        return String::new();
+        return None;
     };
     if let Some(name) = &rules.rule_name_label {
         let mut buf = "{{ColosseumRule|".to_string();
         buf += name.as_str();
         buf += "}}";
-        return buf;
+        return Some(buf);
     }
 
     match rules.contents_type {
         ContentsType::Anni12 => {
             assert_eq!(&rules.rule_type, &[RuleType::TrustFund([4500])]);
-            String::from("{{StageRule|12thAnni}}")
+            Some(String::from("{{StageRule|12thAnni}}"))
         }
         ContentsType::Colosseum => unreachable!(
             "Should have reached {:?} in earlier code.",
             rules.contents_type
         ),
     }
+}
+
+/// Get content of rules section.
+pub fn rules_section(stage: &Stage) -> String {
+    rules(stage).unwrap_or_default()
 }
 
 #[cfg(test)]
@@ -745,14 +750,17 @@ mod tests {
     fn rule_trust_fund() {
         let trust_fund_2 =
             Stage::from_id_current(StageID::from_components(T::Colosseum, 0, 1)).unwrap();
-        assert_eq!(rules(&trust_fund_2), "{{ColosseumRule|Trust Fund}}");
+        assert_eq!(rules_section(&trust_fund_2), "{{ColosseumRule|Trust Fund}}");
     }
 
     #[test]
     fn rule_12th_anniversary() {
         let doge_disturbance_last =
             Stage::from_id_current(StageID::from_components(T::Extra, 71, 9)).unwrap();
-        assert_eq!(rules(&doge_disturbance_last), "{{StageRule|12thAnni}}");
+        assert_eq!(
+            rules_section(&doge_disturbance_last),
+            "{{StageRule|12thAnni}}"
+        );
     }
 
     #[test]
