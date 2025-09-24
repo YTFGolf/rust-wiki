@@ -73,7 +73,7 @@ pub fn time_repr_i32(time_f: i32) -> (String, String) {
         time_repr(time_f as u32)
     } else {
         assert_ne!(time_f, -30, "Don't want '-1 second' so throwing error.");
-        let (f, s) = time_repr(time_f.abs() as u32);
+        let (f, s) = time_repr(time_f.unsigned_abs());
         ("-".to_string() + &f, "-".to_string() + &s)
     }
 }

@@ -158,7 +158,7 @@ pub fn get_form(
     );
     let animation = {
         let (fore_f, fore_s) = time_repr(u32::from(foreswing));
-        let backswing = anim_length as i32 - attack_length as i32;
+        let backswing = i32::from(anim_length) - i32::from(attack_length);
         let (back_f, back_s) = time_repr_i32(backswing);
         format!("{fore_f}f <sup>{fore_s}s</sup><br>({back_f}f <sup>{back_s}s</sup> backswing)")
     };
@@ -216,7 +216,7 @@ pub fn get_form(
             abilities.push(format!(
                 "{{{{AbilityIcon|Kamikaze}}}} {kamikaze} (Attacks once, then disappears from the battlefield)",
                 kamikaze = get_ability_single("Kamikaze")
-            ))
+            ));
         }
         abilities.extend(get_multihit_ability(
             &stats.attack.hits,
