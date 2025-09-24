@@ -15,11 +15,16 @@ subheading.
 
 ### Added
 
-- Cat descriptions
+- Cat descriptions.
+- Cat rarity string values.
+- Dojo score bonuses + DojoRule template.
+- Simplified charagroup restriction text for stage infobox.
 
 ### Fixed
 
 ### Changed
+
+- `VersionLanguage::language()` is now public.
 
 ### Removed
 
