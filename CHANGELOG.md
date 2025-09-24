@@ -15,18 +15,24 @@ subheading.
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.7.2] - 2025-09-24
+
+### Added
+
 - Cat descriptions.
 - Cat rarity string values.
 - Dojo score bonuses + DojoRule template.
 - Simplified charagroup restriction text for stage infobox.
 
-### Fixed
-
 ### Changed
 
 - `VersionLanguage::language()` is now public.
-
-### Removed
 
 ## [0.7.1] - 2025-09-08
 
@@ -362,7 +368,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.1...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.2...dev
+[0.7.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.1...v0.6.2
