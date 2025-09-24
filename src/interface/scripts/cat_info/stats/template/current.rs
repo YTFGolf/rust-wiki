@@ -127,41 +127,38 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 }
 
 fn get_scaling(cat: &Cat) -> String {
-    let scaling = {
-        let mut buf = String::new();
+    let mut buf = String::new();
 
-        let mut iter = cat.unitlevel.iter().peekable();
-        let mut last_count = 1;
-        let mut last_id = iter.next().expect("length is always 20");
-        while let Some(scale) = iter.next() {
-            if last_id == scale {
-                last_count += 1;
-                continue;
-            }
-
-            match last_count {
-                ..=0 => unreachable!(),
-                1 => write!(buf, "{last_id}").infallible_write(),
-                2.. => write!(buf, "{last_id}x{last_count}").infallible_write(),
-            }
-
-            if iter.peek().is_some() {
-                buf += ",";
-            }
-
-            last_count = 1;
-            last_id = scale;
+    let mut iter = cat.unitlevel.iter().peekable();
+    let mut last_count = 1;
+    let mut last_id = iter.next().expect("length is always 20");
+    while let Some(scale) = iter.next() {
+        if last_id == scale {
+            last_count += 1;
+            continue;
         }
 
         match last_count {
-            ..=0 => (),
+            ..=0 => unreachable!(),
             1 => write!(buf, "{last_id}").infallible_write(),
             2.. => write!(buf, "{last_id}x{last_count}").infallible_write(),
         }
 
-        buf
-    };
-    scaling
+        if iter.peek().is_some() {
+            buf += ",";
+        }
+
+        last_count = 1;
+        last_id = scale;
+    }
+
+    match last_count {
+        ..=0 => (),
+        1 => write!(buf, "{last_id}").infallible_write(),
+        2.. => write!(buf, "{last_id}x{last_count}").infallible_write(),
+    }
+
+    buf
 }
 
 /// Get full template.
