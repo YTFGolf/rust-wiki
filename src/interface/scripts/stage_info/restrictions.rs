@@ -787,13 +787,26 @@ mod tests {
 
     #[test]
     fn simplify_restrictions() {
-        let _no_longer_single =
+        let no_longer_single =
             Stage::from_id_current(StageID::from_components(T::Event, 303, 7)).unwrap();
-        todo!()
+
+        assert_eq!(
+            restrictions_info(&no_longer_single),
+            Some(TemplateParameter::new(
+                "restriction",
+                "Unit Restriction: Only [[Heartbeat Catcademy (Event Gacha)|Heartbeat Catcademy]] Units"
+            ))
+        );
+        assert_eq!(
+            &restrictions_section(&no_longer_single),
+            "Unit Restriction: Only [[Secret Crush Cat (Special Cat)|Secret Crush Cat]], [[Tomboy Lion Cat (Special Cat)|Tomboy Lion Cat]], [[Chalkboard Eraser Cat (Special Cat)|Chalkboard Eraser Cat]], [[Class Rep Cat (Special Cat)|Class Rep Cat]] and [[Principal Cat (Special Cat)|Principal Cat]]"
+        );
     }
 
     #[test]
     fn dojo_rule() {
-        todo!()
+        let weaken_dojo =
+            Stage::from_id_current(StageID::from_components(T::RankingDojo, 30, 0)).unwrap();
+        assert_eq!(rules_section(&weaken_dojo), "{{DojoRule|Weaken}}");
     }
 }
