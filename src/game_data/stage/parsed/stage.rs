@@ -241,6 +241,7 @@ impl From<StageData<'_>> for Stage {
         let rules = data.get_special_rules_data().cloned();
         let bonuses = data.get_score_bonus_data().cloned();
         log::debug!("Rules: {rules:?}");
+        log::debug!("Bonuses: {bonuses:?}");
         // debug to reveal how the stage's rule works, useful for updates which
         // add a new rule
 

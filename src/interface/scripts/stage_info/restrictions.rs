@@ -361,9 +361,31 @@ fn rules(stage: &Stage) -> Option<String> {
     }
 }
 
+/// Get dojo score bonuses.
+fn bonuses(stage: &Stage) -> Option<String> {
+    let Some(bonuses) = &stage.bonuses else {
+        return None;
+    };
+    if let Some(name) = &bonuses.bonus_name_label {
+        let mut buf = "{{DojoRule|".to_string();
+        buf += name.as_str();
+        buf += "}}";
+        return Some(buf);
+    }
+
+    unimplemented!("bonus score with no bonus name label")
+}
+
 /// Get content of rules section.
 pub fn rules_section(stage: &Stage) -> String {
-    rules(stage).unwrap_or_default()
+    let mut buf = String::new();
+    if let Some(r) = rules(stage) {
+        buf.write_str(&r).infallible_write();
+    }
+    if let Some(b) = bonuses(stage) {
+        buf.write_str(&b).infallible_write();
+    }
+    buf
 }
 
 #[cfg(test)]
@@ -767,6 +789,11 @@ mod tests {
     fn simplify_restrictions() {
         let _no_longer_single =
             Stage::from_id_current(StageID::from_components(T::Event, 303, 7)).unwrap();
+        todo!()
+    }
+
+    #[test]
+    fn dojo_rule() {
         todo!()
     }
 }

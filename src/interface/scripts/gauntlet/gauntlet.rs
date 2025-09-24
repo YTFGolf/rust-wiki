@@ -51,7 +51,7 @@ fn template_check(stage: &Stage) -> Template {
 struct TabInfo {
     enemies_appearing: String,
     infobox: String,
-    rules: String,
+    rules_section: String,
     restrictions: String,
     battlegrounds: String,
 }
@@ -68,7 +68,7 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
         let container = TabInfo {
             enemies_appearing: enemies_appearing(stage),
             infobox: template_check(stage).to_string(),
-            rules: rules_section(stage),
+            rules_section: rules_section(stage),
             restrictions: restrictions_section(stage),
             battlegrounds: battlegrounds(stage),
         };
@@ -356,7 +356,7 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
         let sections = [
             Section::blank(cont.enemies_appearing),
             Section::blank(template.to_string()),
-            Section::h2("Rules", cont.rules),
+            Section::h2("Rules", cont.rules_section),
             Section::h2("Restrictions", cont.restrictions),
             Section::h2("Battleground", cont.battlegrounds),
             Section::h2("Details", table),
