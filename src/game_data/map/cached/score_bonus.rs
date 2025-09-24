@@ -51,7 +51,7 @@ pub enum BonusType {
     /// Used so this program can still run when in the wrong update.
     Placeholder(u8),
 }
-/// Item in [RawBonusData::bonus_type].
+/// Item in [`RawBonusData::bonus_type`].
 type RawBonusItem = (BonusKeySize, RawBonusType);
 impl From<RawBonusItem> for BonusType {
     fn from(value: RawBonusItem) -> Self {

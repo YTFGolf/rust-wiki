@@ -111,7 +111,7 @@ pub enum XPCostScale {
     Superfeline,
 }
 impl XPCostScale {
-    /// Get XPCostScale from unit id.
+    /// Get [`XPCostScale`] from unit id.
     pub const fn from_id(id: u32) -> Self {
         match id {
             643 => Self::Superfeline,

@@ -179,7 +179,7 @@ pub struct Stage {
     pub id: StageID,
 
     // Data that always exists.
-    /// ID of enemy base (if [anim_base_id][Self::anim_base_id] exists then that
+    /// ID of enemy base (if [`anim_base_id`][Self::anim_base_id] exists then that
     /// overrides this flag).
     pub base_id: i32,
     /// Does the stage have no continues.
@@ -188,7 +188,7 @@ pub struct Stage {
     pub continue_data: Option<ContinueStages>,
     /// Stage width.
     pub width: u32,
-    /// Base's HP (if [anim_base_id][Self::anim_base_id] exists then base HP is
+    /// Base's HP (if [`anim_base_id`][Self::anim_base_id] exists then base HP is
     /// the HP of that enemy, not this field).
     pub base_hp: u32,
     /// Max enemies that can spawn.

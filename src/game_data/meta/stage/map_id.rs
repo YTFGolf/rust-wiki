@@ -54,17 +54,17 @@ impl MapID {
 
 // Initialisation.
 impl MapID {
-    /// Create new MapID from components.
+    /// Create new [`MapID`] from components.
     pub const fn from_components(variant: StageVariantID, num: MapSize) -> Self {
         Self { variant, num }
     }
 
-    /// Create new MapID from numbers.
+    /// Create new [`MapID`] from numbers.
     pub fn from_numbers(variant: VariantSize, num: MapSize) -> Self {
         Self::from_components(variant.into(), num)
     }
 
-    /// Create new MapID from mapid.
+    /// Create new [`MapID`] from mapid.
     pub fn from_mapid(mapid: u32) -> Self {
         let type_id = mapid / 1000;
         let map_id = mapid % 1000;

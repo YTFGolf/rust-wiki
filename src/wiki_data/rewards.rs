@@ -13,7 +13,7 @@ pub struct TreasureEntry {
 }
 
 type MapStructure = HashMap<u32, TreasureEntry>;
-/// Container for [TREASURE_DATA].
+/// Container for [`TREASURE_DATA`].
 pub struct TreasureMap {
     map: LazyLock<MapStructure>,
 }

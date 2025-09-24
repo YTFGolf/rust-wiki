@@ -39,10 +39,10 @@ mod order {
     };
     type T = StageVariantID;
 
-    /// Amount of individual [StageTypes][T] contained in [RAW_STAGE_TYPES].
+    /// Amount of individual [`StageTypes`][T] contained in [`RAW_STAGE_TYPES`].
     const STYPE_AMT: usize = RAW_STAGE_TYPES.len();
 
-    /// Order of the [StageTypes][T] in Encounters section.
+    /// Order of the [`StageTypes`][T] in Encounters section.
     const TYPE_ORDER: [T; STYPE_AMT] = [
         T::MainChapters,
         T::EocOutbreak,
@@ -92,9 +92,9 @@ mod order {
         order_indices
     }
 
-    /// Order indices using the [usize] value of [StageTypeEnum][T].
+    /// Order indices using the [usize] value of [`StageTypeEnum`][T].
     ///
-    /// For example, since [T::MainChapters] is first in [TYPE_ORDER], indexing
+    /// For example, since [`T::MainChapters`] is first in [`TYPE_ORDER`], indexing
     /// `TYPE_ORDER_INDICES[T::MainChapters as usize]` would yield `0`.
     const TYPE_ORDER_INDICES: [usize; MAX_VARIANT_INDEX] = get_type_order();
 
@@ -114,7 +114,7 @@ mod order {
         use super::*;
 
         #[test]
-        /// Ensure type order has all [STAGE_TYPES].
+        /// Ensure type order has all [`STAGE_TYPES`].
         fn test_type_order() {
             assert_eq!(RAW_STAGE_TYPES.len(), TYPE_ORDER.len());
             // technically don't need this because it's the literal definition
@@ -130,7 +130,7 @@ mod order {
     }
 }
 
-/// For use in [sort_encounters].
+/// For use in [`sort_encounters`].
 fn key(stage_id: &StageID) -> (usize, u32, u32) {
     let stage_id = match stage_id.variant() {
         T::Extra => match STAGE_WIKI_DATA.continue_id(stage_id.map().num()) {
@@ -327,7 +327,7 @@ fn get_encounter_groups<'a>(
     groups
 }
 
-/// Map [SectionRefs][SectionRef] to a list of [StageData].
+/// Map [`SectionRefs`][SectionRef] to a list of [`StageData`].
 fn get_section_map<'a>(
     encounters: &[&'a StageData<'a>],
 ) -> Vec<(SectionRef, Vec<&'a StageData<'a>>)> {

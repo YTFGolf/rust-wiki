@@ -139,7 +139,7 @@ pub enum FromSelectorError {
 }
 
 impl<'a> StageData<'_> {
-    /// Create new StageData object from file name.
+    /// Create new [`StageData`] object from file name.
     pub fn from_file_name(
         selector: &str,
         version: &'a Version,

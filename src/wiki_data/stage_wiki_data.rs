@@ -55,7 +55,7 @@ type StageNameMap = [Option<StageVariantWikiData>; MAX_VARIANT_INDEX];
 type ContinueStagesMap = Vec<Option<(u32, u32)>>;
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
-/// Container for [STAGE_WIKI_DATA] static.
+/// Container for [`STAGE_WIKI_DATA`] static.
 pub struct StageWikiDataContainer {
     stage_name_map: LazyLock<StageNameMap>,
     continue_stages: LazyLock<ContinueStagesMap>,

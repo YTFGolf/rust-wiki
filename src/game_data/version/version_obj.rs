@@ -8,7 +8,7 @@ use std::{
     sync::Mutex,
 };
 
-/// Holds any [CacheableVersionData] object.
+/// Holds any [`CacheableVersionData`] object.
 type VersionDataContents = Pin<Box<dyn Any + Send + Sync>>;
 #[derive(Debug)]
 /// Represents a version of the game.
@@ -74,7 +74,7 @@ impl Version {
     /// let map_option = version.get_cached_file::<MapOption>();
     /// let earthshaker_option = map_option.get_map(&MapID::from_numbers(0, 0));
     /// ```
-    /// This can be run with any type that implements [CacheableVersionData].
+    /// This can be run with any type that implements [`CacheableVersionData`].
     pub fn get_cached_file<T: CacheableVersionData + 'static>(&self) -> &T {
         let type_id = TypeId::of::<T>();
 

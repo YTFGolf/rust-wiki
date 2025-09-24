@@ -1,7 +1,7 @@
 //! Parses the page information format.
 
 #[derive(Debug, PartialEq)]
-/// Description of a [ParseNode].
+/// Description of a [`ParseNode`].
 pub enum ParseType {
     /// Variable (i.e. function call).
     Variable,
@@ -18,7 +18,7 @@ pub struct ParseNode<'a> {
     pub ptype: ParseType,
 }
 
-/// Parses the string format into a Vec of ParseNodes.
+/// Parses the string format into a Vec of [`ParseNode`]s.
 // #[deprecated]
 pub fn parse_info_format(format: &str) -> Vec<ParseNode<'_>> {
     let mut parsed = vec![];

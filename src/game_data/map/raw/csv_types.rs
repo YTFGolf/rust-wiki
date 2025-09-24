@@ -47,10 +47,10 @@ pub struct StageInfoCSVFixed {
     /// Music track played at beginning of stage.
     _init_track: u32,
     /// Base percentage where music changes to
-    /// [_second_track][StageInfoCSVFixed::_second_track].
+    /// [`_second_track`][StageInfoCSVFixed::_second_track].
     _base_drop: u32,
     /// Music track played when base hp goes below
-    /// [_base_drop][StageInfoCSVFixed::_base_drop].
+    /// [`_base_drop`][StageInfoCSVFixed::_base_drop].
     _second_track: u32,
 }
 

@@ -82,7 +82,7 @@ pub enum RuleType {
     /// Used in multiple different Colosseum rules. A rarity's value is its
     /// cost as a percentage of its usual.
     RestrictPrice(Rarity),
-    /// Same as [RestrictPrice][RuleType::RestrictPrice] but for cooldown.
+    /// Same as [`RestrictPrice`][RuleType::RestrictPrice] but for cooldown.
     RestrictCd(Rarity),
     /// Param is max units that can be spawned in battle.
     DeployLimit(Single),
@@ -100,7 +100,7 @@ pub enum RuleType {
     /// Used so this program can still run when in the wrong update.
     Placeholder(u8),
 }
-/// Item in [RawRuleData::rule_type].
+/// Item in [`RawRuleData::rule_type`].
 type RawRuleItem = (RuleKeySize, RawRuleType);
 impl From<RawRuleItem> for RuleType {
     fn from(value: RawRuleItem) -> Self {

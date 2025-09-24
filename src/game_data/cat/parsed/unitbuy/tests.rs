@@ -265,7 +265,7 @@ fn bahamut() {
 #[test]
 fn cancan() {
     const EVOL_ID: u32 = 15033;
-    const SELL_XP: u32 = 478000;
+    const SELL_XP: u32 = 478_000;
     const SELL_NP: u8 = 15;
 
     let version = TEST_CONFIG.version.current_version();
@@ -320,7 +320,7 @@ fn cancan() {
 fn dio() {
     const TRUE_ID: u32 = 15178;
     const ULTRA_ID: u32 = 25178;
-    const SELL_XP: u32 = 1000000;
+    const SELL_XP: u32 = 1_000_000;
     const SELL_NP: u8 = 50;
 
     let version = TEST_CONFIG.version.current_version();
@@ -387,7 +387,7 @@ fn dio() {
 
 #[test]
 fn metal() {
-    const SELL_XP: u32 = 777777;
+    const SELL_XP: u32 = 777_777;
     const SELL_NP: u8 = 15;
 
     let version = TEST_CONFIG.version.current_version();
@@ -428,7 +428,7 @@ fn metal() {
 
 #[test]
 fn dasli() {
-    const SELL_XP: u32 = 1000000;
+    const SELL_XP: u32 = 1_000_000;
     const SELL_NP: u8 = 50;
     const UPDATE: i64 = 90500;
 
@@ -511,7 +511,7 @@ fn modoki() {
 fn superfeline() {
     const SELL_XP: u32 = 30000;
     const SELL_NP: u8 = 1;
-    const UPDATE: i64 = 110100;
+    const UPDATE: i64 = 110_100;
 
     let version = TEST_CONFIG.version.current_version();
 
@@ -553,7 +553,7 @@ fn courier() {
     const EVOL_ID: u32 = 15659;
     const SELL_XP: u32 = 444;
     const SELL_NP: u8 = 5;
-    const UPDATE: i64 = 110500;
+    const UPDATE: i64 = 110_500;
 
     let version = TEST_CONFIG.version.current_version();
 

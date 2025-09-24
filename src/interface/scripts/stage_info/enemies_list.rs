@@ -1,4 +1,4 @@
-//! Module for the [enemies_list] function.
+//! Module for the [`enemies_list`] function.
 
 use crate::{
     game_data::{

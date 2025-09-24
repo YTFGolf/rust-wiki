@@ -130,7 +130,7 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
     buf
 }
 
-/// LegendDiff invocation for map.
+/// [`LegendDiff`] invocation for map.
 fn difficulty(map: &GameMap) -> String {
     let data = map.crown_data.as_ref().unwrap();
     if u8::from(data.max_difficulty) == 1 {
