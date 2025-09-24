@@ -240,7 +240,7 @@ impl<'a> StageData<'_> {
         GameMapData::get_special_rules_data(self.id.map(), self.version)
     }
 
-        /// Get ScoreBonusMap data if it exists.
+    /// Get ScoreBonusMap data if it exists.
     pub fn get_score_bonus_data(&self) -> Option<&ScoreBonus> {
         GameMapData::get_score_bonus_data(self.id.map(), self.version)
     }

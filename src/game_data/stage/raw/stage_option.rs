@@ -42,7 +42,7 @@ pub mod charagroups {
     }
 
     #[derive(Debug, PartialEq, Clone)]
-    /// Data about a CharaGroup.
+    /// Data about a [`CharaGroup`].
     pub struct CharaGroup {
         /// ID of charagroup.
         pub group_id: u32,
@@ -72,7 +72,7 @@ pub mod charagroups {
     }
 
     /// Reads the charagroup file and passes it into a vec of
-    /// [CharaGroups][CharaGroup].
+    /// [`CharaGroup`]s.
     fn read_charagroup_file(path: &Path) -> Vec<CharaGroup> {
         let path = path.join("DataLocal/Charagroup.csv");
         let mut rdr = csv::ReaderBuilder::new()
@@ -143,7 +143,7 @@ pub struct StageOptionCSV {
     pub min_cost: u32,
     /// Maximum unit cost.
     pub max_cost: u32,
-    /// [CharaGroup][charagroups::CharaGroup] id.
+    /// [`CharaGroup`][charagroups::CharaGroup] id.
     pub charagroup: u32,
 }
 

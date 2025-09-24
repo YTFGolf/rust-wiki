@@ -19,7 +19,7 @@ use std::{
     num::{NonZero, NonZeroU8},
 };
 
-/// Convert `value` to a NonZero [`u8`].
+/// Convert `value` to a [`NonZero`] [`u8`].
 const fn non_zero_u8(value: u8) -> NonZero<u8> {
     match NonZeroU8::new(value) {
         Some(v) => v,
@@ -183,7 +183,7 @@ fn get_single_restriction(restriction: &Restriction, simplify: bool) -> Vec<Stri
     restrictions
 }
 
-/// Helper function for [get_multi_restriction]. If `res_new` is already in
+/// Helper function for [`get_multi_restriction`]. If `res_new` is already in
 /// `restriction_crowns`, then add `crown` to that restriction crown's list.
 /// Otherwise, create a new `restriction_crowns` entry and place `crown` in that
 /// restriction crown's list.
