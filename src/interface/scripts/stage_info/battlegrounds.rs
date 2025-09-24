@@ -192,9 +192,16 @@ fn get_enemy_spawns(
             other_spawn.push((enemy.base_hp, vec![enemy]));
         }
     }
-    let order_function: fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering = match is_dojo {
-        false => |a, b| b.0.cmp(&a.0),
-        true => |a, b| a.0.cmp(&b.0),
+
+    type OrderFunction = fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering;
+
+    let order_function: OrderFunction = if is_dojo {
+        |(bh1, _), (bh2, _)| bh1.cmp(&bh2)
+        // higher hp = later in list
+        // if lhs <= rhs then is Ordering::Less
+    } else {
+        |(bh1, _), (bh2, _)| bh2.cmp(&bh1)
+        // higher hp = earlier in list
     };
     other_spawn.sort_by(order_function);
 
@@ -209,9 +216,10 @@ fn get_enemy_spawns(
 pub fn battlegrounds(stage: &Stage) -> String {
     let is_dojo = matches!(stage.id.variant(), T::Dojo | T::RankingDojo);
 
-    let is_default_spawn: fn(&StageEnemy) -> bool = match is_dojo {
-        false => |enemy: &StageEnemy| enemy.base_hp >= 100,
-        true => |enemy: &StageEnemy| enemy.base_hp == 0,
+    let is_default_spawn: fn(&StageEnemy) -> bool = if is_dojo {
+        |enemy: &StageEnemy| enemy.base_hp == 0
+    } else {
+        |enemy: &StageEnemy| enemy.base_hp >= 100
     };
 
     let (default_spawn, other_spawn, enemies_dupe) =
