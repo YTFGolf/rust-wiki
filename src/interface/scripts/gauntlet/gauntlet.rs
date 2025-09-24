@@ -303,9 +303,8 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
     let mut stages = vec![];
     for i in 0..100 {
         let id = StageID::from_map(map_id.clone(), i);
-        let stage = match Stage::from_id(id, config.version.current_version()) {
-            Ok(stage) => stage,
-            Err(_) => break,
+        let Ok(stage) = Stage::from_id(id, config.version.current_version()) else {
+            break;
         };
         stages.push(stage);
     }
@@ -316,7 +315,7 @@ fn get_stages(map_id: &MapID, config: &Config) -> Vec<Stage> {
 /// Get full tabber for gauntlet map.
 fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stages = get_stages(map_id, config);
-    let gauntlet_tabs = if let Some(tabs) = stages_tab_info(&stages) { tabs } else {
+    let Some(gauntlet_tabs) = stages_tab_info(&stages) else {
         log::warn!("Gauntlet: all stages are different");
         return Tabber::default();
     };

@@ -43,9 +43,8 @@ pub fn extract_name(name: &str) -> &str {
         return name;
     }
 
-    let end = match name.find("]]") {
-        Some(s) => s,
-        None => return name,
+    let Some(end) = name.find("]]") else {
+        return name;
     };
 
     match name.find('|') {
@@ -73,9 +72,8 @@ pub fn extract_link(link: &str) -> &str {
         return link;
     }
 
-    let end = match link.find("]]") {
-        Some(s) => s,
-        None => return link,
+    let Some(end) = link.find("]]") else {
+        return link;
     };
 
     match link.find('|') {
