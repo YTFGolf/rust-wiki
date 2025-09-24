@@ -54,10 +54,8 @@ pub fn get_cat_descriptions(
         let line = line.unwrap();
 
         let delimiter = match version.language() {
-            VersionLanguage::EN => '|',
+            VersionLanguage::EN | VersionLanguage::KR | VersionLanguage::TW => '|',
             VersionLanguage::JP => ',',
-            VersionLanguage::KR => '|',
-            VersionLanguage::TW => '|',
             VersionLanguage::Fallback => unreachable!(),
         };
 
