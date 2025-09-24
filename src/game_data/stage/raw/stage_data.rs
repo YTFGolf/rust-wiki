@@ -3,7 +3,7 @@ use super::stage_option::StageOptionCSV;
 use crate::game_data::{
     csv::{CSVParseError, CSVParseErrorKind, CSVParseErrorLine, FullCSVError},
     map::{
-        cached::{map_option::MapOptionCSV, special_rules::SpecialRule},
+        cached::{map_option::MapOptionCSV, score_bonus::ScoreBonus, special_rules::SpecialRule},
         raw::{csv_types::StageDataCSV, map_data::GameMapData},
     },
     meta::stage::{
@@ -238,6 +238,11 @@ impl<'a> StageData<'_> {
     /// Get SpecialRulesMap data if it exists.
     pub fn get_special_rules_data(&self) -> Option<&SpecialRule> {
         GameMapData::get_special_rules_data(self.id.map(), self.version)
+    }
+
+        /// Get ScoreBonusMap data if it exists.
+    pub fn get_score_bonus_data(&self) -> Option<&ScoreBonus> {
+        GameMapData::get_score_bonus_data(self.id.map(), self.version)
     }
 
     /// Get the data object's version.

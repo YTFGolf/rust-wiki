@@ -1,7 +1,7 @@
 //! Represents a map.
 
 use crate::game_data::{
-    map::{cached::special_rules::SpecialRule, raw::map_data::GameMapData},
+    map::{cached::{score_bonus::ScoreBonus, special_rules::SpecialRule}, raw::map_data::GameMapData},
     meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
     stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
     version::Version,
@@ -66,6 +66,8 @@ pub struct GameMap {
     pub ex_option_map: Option<u32>,
     /// Map rules.
     pub special_rule: Option<SpecialRule>,
+    /// Dojo rules.
+    pub score_bonus: Option<ScoreBonus>,
 }
 impl GameMap {
     /// Create a new [`GameMap`] object from `selector`.
@@ -125,6 +127,7 @@ impl GameMap {
 
         let ex_option_map = GameMapData::get_ex_option_data(&map_id, version);
         let special_rule = GameMapData::get_special_rules_data(&map_id, version).cloned();
+        let score_bonus = GameMapData::get_score_bonus_data(&map_id, version).cloned();
         Self {
             id: map_id,
             //
@@ -141,6 +144,7 @@ impl GameMap {
             restrictions,
             ex_option_map,
             special_rule,
+            score_bonus,
         }
     }
 }

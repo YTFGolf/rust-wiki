@@ -4,7 +4,7 @@ use super::stage_enemy::StageEnemy;
 use crate::game_data::{
     csv::FullCSVError,
     map::{
-        cached::{map_option::MapOptionCSV, special_rules::SpecialRule},
+        cached::{map_option::MapOptionCSV, score_bonus::ScoreBonus, special_rules::SpecialRule},
         parsed::map::ResetType,
         raw::csv_types::{ScoreRewardsCSV, TreasureCSV, TreasureType},
     },
@@ -230,6 +230,8 @@ pub struct Stage {
     pub restrictions: Option<Vec<Restriction>>,
     /// Stage's rules.
     pub rules: Option<SpecialRule>,
+    /// Stage's score bonuses.
+    pub bonuses: Option<ScoreBonus>,
 }
 impl From<StageData<'_>> for Stage {
     fn from(data: StageData) -> Self {
@@ -237,6 +239,7 @@ impl From<StageData<'_>> for Stage {
         let map_option_data = data.get_map_option_data();
         let ex_invasion = data.get_ex_option_data();
         let rules = data.get_special_rules_data().cloned();
+        let bonuses = data.get_score_bonus_data().cloned();
         log::debug!("Rules: {rules:?}");
         // debug to reveal how the stage's rule works, useful for updates which
         // add a new rule
@@ -347,6 +350,7 @@ impl From<StageData<'_>> for Stage {
             ex_invasion,
             restrictions,
             rules,
+            bonuses,
         }
     }
 }

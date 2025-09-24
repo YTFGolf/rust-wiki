@@ -10,6 +10,7 @@ use super::super::{
     raw::csv_types::{HeaderCSV, ScoreRewardsCSV, StageDataCSV, StageInfoCSVFixed, TreasureCSV},
 };
 use crate::game_data::{
+    map::cached::score_bonus::{ScoreBonus, ScoreBonuses},
     meta::stage::{
         map_id::MapID, stage_id::StageID, stage_types::transform::transform_map::map_data_file,
         variant::StageVariantID,
@@ -209,6 +210,12 @@ impl GameMapData {
     ) -> Option<&'a SpecialRule> {
         let special_rules = version.get_cached_file::<SpecialRules>();
         special_rules.get_map(map)
+    }
+
+    /// Get ScoreBonusMap data if it exists.
+    pub fn get_score_bonus_data<'a>(map: &MapID, version: &'a Version) -> Option<&'a ScoreBonus> {
+        let score_bonus = version.get_cached_file::<ScoreBonuses>();
+        score_bonus.get_map(map)
     }
 
     /// Get DropItem data if it exists.
