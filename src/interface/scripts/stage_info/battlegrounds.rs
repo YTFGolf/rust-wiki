@@ -863,6 +863,6 @@ mod tests {
             **1 [[Mr. Puffington]] (150%) spawns.\n\
             **3 [[Sir Rel]]s (150%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\
             **8 [[Kroxo]]s (2,600%) spawn, delay 6.67~10 seconds<sup>200f~300f</sup>."
-        )
+        );
     }
 }

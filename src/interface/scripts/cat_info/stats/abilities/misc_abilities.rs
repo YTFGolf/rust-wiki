@@ -29,7 +29,7 @@ fn range_ability_text(hits_buf: Vec<(usize, String)>, abil: &str) -> Option<Stri
     )
     .infallible_write();
 
-    while let Some(f) = iter.next() {
+    for f in iter {
         write!(
             buf,
             ", {range} on {nth} hit",
@@ -57,23 +57,23 @@ fn get_range_ability_different(hits: &AttackHits) -> Vec<String> {
         AttackRange::Normal => (),
         AttackRange::Unchanged => unreachable!(),
         AttackRange::LD { base, distance } => {
-            ld_buf.push((i + 1, get_range_repr(base, base + distance)))
+            ld_buf.push((i + 1, get_range_repr(base, base + distance)));
         }
         AttackRange::Omni { base, distance } => {
-            omni_buf.push((i + 1, get_range_repr(base + distance, base)))
+            omni_buf.push((i + 1, get_range_repr(base + distance, base)));
             // distance is negative if is omni
         }
     }
 
-    while let Some((i, hit)) = iter.next() {
+    for (i, hit) in iter {
         match hit.range {
             AttackRange::Normal => assert_eq!(hit.range, hit1.range),
             AttackRange::Unchanged => unreachable!(),
             AttackRange::LD { base, distance } => {
-                ld_buf.push((i + 1, get_range_repr(base, base + distance)))
+                ld_buf.push((i + 1, get_range_repr(base, base + distance)));
             }
             AttackRange::Omni { base, distance } => {
-                omni_buf.push((i + 1, get_range_repr(base + distance, base)))
+                omni_buf.push((i + 1, get_range_repr(base + distance, base)));
                 // distance is negative if is omni
             }
         }

@@ -29,9 +29,9 @@ impl CatForm {
     pub fn name(self, id: u32) -> &'static str {
         match self {
             Self::Normal => &CAT_DATA.get_cat(id).normal,
-            Self::Evolved => &CAT_DATA.get_cat(id).evolved.as_ref().unwrap(),
-            Self::True => &CAT_DATA.get_cat(id).true_form.as_ref().unwrap(),
-            Self::Ultra => &CAT_DATA.get_cat(id).ultra.as_ref().unwrap(),
+            Self::Evolved => CAT_DATA.get_cat(id).evolved.as_ref().unwrap(),
+            Self::True => CAT_DATA.get_cat(id).true_form.as_ref().unwrap(),
+            Self::Ultra => CAT_DATA.get_cat(id).ultra.as_ref().unwrap(),
         }
     }
 }

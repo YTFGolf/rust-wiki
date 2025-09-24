@@ -192,7 +192,7 @@ impl MultiLangVersionContainer for VersionConfig {
     }
 
     fn get_lang(&self, lang: lang::VersionLanguage) -> &Version {
-        self.version(lang.into())
+        self.version(lang)
     }
 }
 

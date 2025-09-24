@@ -55,7 +55,7 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
         }
     }
 
-    for (num, desc) in get_cat_descriptions(cat.id, &config.version.en())
+    for (num, desc) in get_cat_descriptions(cat.id, config.version.en())
         .take(cat.forms.amt_forms)
         .enumerate()
     {
@@ -65,7 +65,7 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
         ]);
     }
 
-    for (num, desc) in get_cat_descriptions(cat.id, &config.version.jp())
+    for (num, desc) in get_cat_descriptions(cat.id, config.version.jp())
         .take(cat.forms.amt_forms)
         .enumerate()
     {
@@ -75,7 +75,7 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
         ]);
     }
 
-    for (num, desc) in get_cat_descriptions(cat.id, &config.version.tw())
+    for (num, desc) in get_cat_descriptions(cat.id, config.version.tw())
         .take(cat.forms.amt_forms)
         .enumerate()
     {
@@ -85,7 +85,7 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
         ]);
     }
 
-    for (num, desc) in get_cat_descriptions(cat.id, &config.version.kr())
+    for (num, desc) in get_cat_descriptions(cat.id, config.version.kr())
         .take(cat.forms.amt_forms)
         .enumerate()
     {

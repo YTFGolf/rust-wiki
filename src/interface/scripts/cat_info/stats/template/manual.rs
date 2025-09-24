@@ -73,7 +73,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 pub fn get_old_template(cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats Manual");
 
-    add_all_forms(&mut t, &cat);
+    add_all_forms(&mut t, cat);
     let max_level = {
         let max = &cat.unitbuy.max_levels;
         let mut buf = String::from("Lv.");

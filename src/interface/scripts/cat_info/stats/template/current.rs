@@ -168,7 +168,7 @@ fn get_scaling(cat: &Cat) -> String {
 pub fn get_template(cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats 0.1");
 
-    add_all_forms(&mut t, &cat);
+    add_all_forms(&mut t, cat);
     let max_level = {
         let max = &cat.unitbuy.max_levels;
         let mut buf = String::from("Lv.");
