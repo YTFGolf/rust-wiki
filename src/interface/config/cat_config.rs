@@ -10,8 +10,8 @@ pub enum StatsTemplateVersion {
     Current,
     /// Manual template.
     Manual,
-    // /// Version 0.1.
-    // Ver0o1
+    /// Version 0.1.
+    Ver0o1,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
