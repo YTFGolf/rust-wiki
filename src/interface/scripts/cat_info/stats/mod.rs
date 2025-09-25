@@ -2,4 +2,4 @@
 
 pub mod abilities;
 pub mod form;
-pub mod template;
+pub mod stats_template;

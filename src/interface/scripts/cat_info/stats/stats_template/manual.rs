@@ -70,7 +70,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 }
 
 /// Get manual cat stats template.
-pub fn get_old_template(cat: &Cat) -> Template {
+pub fn stats_manual(cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats Manual");
 
     add_all_forms(&mut t, cat);
