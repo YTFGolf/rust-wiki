@@ -91,7 +91,7 @@ mod do_extra_stuff {
         }
 
         fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
-                    Some(clap::builder::PossibleValue::new(self.as_str()))
+            Some(clap::builder::PossibleValue::new(self.as_str()))
         }
     }
 }
@@ -110,7 +110,12 @@ mod tests {
 
     #[test]
     fn as_str_is_from_str() {
-        todo!()
+        for value in POSSIBLE_VALUES {
+            let as_str = value.as_str();
+            let parsed_value = as_str.parse().unwrap();
+            assert_eq!(value, parsed_value);
+            assert_eq!(as_str, parsed_value.as_str());
+        }
     }
 
     #[test]
