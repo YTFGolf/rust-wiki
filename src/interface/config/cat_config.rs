@@ -1,8 +1,10 @@
 //! Deals with the config for cat info.
 
 use serde::{Deserialize, Serialize};
+use std::{fmt::Display, str::FromStr};
+use strum::EnumIter;
 
-#[derive(Debug, Default, Serialize, Deserialize, Clone)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
 /// Which version of the stats template to use.
 pub enum StatsTemplateVersion {
     #[default]
@@ -13,10 +15,107 @@ pub enum StatsTemplateVersion {
     /// Version 0.1.
     Ver0o1,
 }
+const POSSIBLE_VALUES: [StatsTemplateVersion; 3] = [
+    StatsTemplateVersion::Current,
+    StatsTemplateVersion::Manual,
+    StatsTemplateVersion::Ver0o1,
+];
+impl StatsTemplateVersion {
+    /// Get string representation of template version.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Current => "current",
+            Self::Manual => "manual",
+            Self::Ver0o1 => "0.1",
+        }
+    }
+}
+impl Display for StatsTemplateVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl FromStr for StatsTemplateVersion {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "current" => Ok(Self::Current),
+            "manual" => Ok(Self::Manual),
+            "0.1" => Ok(Self::Ver0o1),
+            _ => Err(()),
+        }
+    }
+}
+
+mod do_extra_stuff {
+    use super::*;
+    impl Serialize for StatsTemplateVersion {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::Serializer,
+        {
+            serializer.serialize_str(self.as_str())
+        }
+    }
+    impl<'de> Deserialize<'de> for StatsTemplateVersion {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de>,
+        {
+            struct VisitorThingy;
+
+            impl<'de> serde::de::Visitor<'de> for VisitorThingy {
+                type Value = StatsTemplateVersion;
+
+                fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    f.write_str("a valid stats template version")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<StatsTemplateVersion, E>
+                where
+                    E: serde::de::Error,
+                {
+                    const FIELDS: &[&str] = &[];
+                    StatsTemplateVersion::from_str(v)
+                        .map_err(|_| serde::de::Error::unknown_field(v, FIELDS))
+                }
+            }
+
+            deserializer.deserialize_str(VisitorThingy)
+        }
+    }
+
+    impl clap::ValueEnum for StatsTemplateVersion {
+        fn value_variants<'a>() -> &'a [Self] {
+            &POSSIBLE_VALUES
+        }
+
+        fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
+                    Some(clap::builder::PossibleValue::new(self.as_str()))
+        }
+    }
+}
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
 /// Config for cat info.
 pub struct CatConfig {
     /// Which version of stats template to use.
     pub stats_template_version: StatsTemplateVersion,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn as_str_is_from_str() {
+        todo!()
+    }
+
+    #[test]
+    fn possible_values_is_correct() {
+        let collected = StatsTemplateVersion::iter().collect::<Vec<_>>();
+        assert_eq!(&collected, &POSSIBLE_VALUES);
+    }
 }

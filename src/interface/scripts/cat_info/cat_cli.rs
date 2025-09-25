@@ -18,8 +18,8 @@ pub struct CatInfoOptions {
     pub id: String,
 
     #[arg(long)]
-    /// Use old template format.
-    pub old: bool,
+    /// Stats template version to use.
+    pub stats_version: Option<StatsTemplateVersion>,
 
     #[command(flatten)]
     /// Global options.
@@ -33,8 +33,8 @@ impl ConfigMerge for CatInfoOptions {
         self.base.merge(config);
         self.version.merge(config);
 
-        if self.old {
-            config.cat_info.stats_template_version = StatsTemplateVersion::Manual;
+        if let Some(v) = self.stats_version {
+            config.cat_info.stats_template_version = v;
         }
     }
 }
