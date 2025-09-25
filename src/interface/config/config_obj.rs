@@ -52,8 +52,10 @@ pub struct Config {
     /// Game version config.
     pub version: VersionConfig,
     /// Config for `stage_info`.
+    #[serde(default)]
     pub stage_info: StageConfig,
     /// Config for `map_info`.
+    #[serde(default)]
     pub map_info: MapConfig,
     /// Config for `cat_info`.
     #[serde(default)]
