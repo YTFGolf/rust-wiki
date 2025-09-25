@@ -12,7 +12,11 @@ use crate::{
         config::{Config, cat_config::StatsTemplateVersion},
         scripts::cat_info::stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1},
     },
-    wikitext::template::{Template, TemplateParameter},
+    wikitext::{
+        page::Page,
+        section::Section,
+        template::{Template, TemplateParameter},
+    },
 };
 
 fn get_descs(cat: &Cat, config: &Config) -> Template {
@@ -99,20 +103,24 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
 }
 
 /// Get cat info.
-pub fn get_info(wiki_id: u32, config: &Config) -> Result<String, CatDataError> {
+pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
 
-    if false {
-        let descs = get_descs(&cat, config);
-        panic!("{descs}");
-    }
+    let mut page = Page::blank();
+
+    page.push(Section::h2(
+        "Description",
+        get_descs(&cat, config).to_string(),
+    ));
 
     let stats = match config.cat_info.stats_template_version {
-        StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o1 => stats_0o1(&cat).to_string(),
-        StatsTemplateVersion::Manual => stats_manual(&cat).to_string(),
+        StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o1 => stats_0o1(&cat),
+        StatsTemplateVersion::Manual => stats_manual(&cat),
     };
 
-    Ok(stats)
+    page.push(Section::h2("Stats", stats.to_string()));
+
+    Ok(page)
 }
 
 /*
