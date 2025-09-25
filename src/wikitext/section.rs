@@ -48,6 +48,6 @@ impl Display for Section {
             SectionTitle::Blank => (),
             SectionTitle::H2(title) => writeln!(f, "=={title}==")?,
         }
-        f.write_str(&self.content)
+        f.write_str(self.content.trim())
     }
 }
