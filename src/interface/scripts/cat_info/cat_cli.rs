@@ -20,6 +20,9 @@ pub struct CatInfoOptions {
     #[arg(long)]
     /// Stats template version to use.
     pub stats_version: Option<StatsTemplateVersion>,
+    #[arg(long)]
+    /// Use validation parameters on cat stats.
+    pub use_stats_validation: Option<bool>,
 
     #[command(flatten)]
     /// Global options.
@@ -35,6 +38,9 @@ impl ConfigMerge for CatInfoOptions {
 
         if let Some(v) = self.stats_version {
             config.cat_info.stats_template_version = v;
+        }
+        if let Some(v) = self.use_stats_validation {
+            config.cat_info.stats_hide_validation = !v;
         }
     }
 }

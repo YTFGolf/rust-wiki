@@ -2,13 +2,14 @@
 
 use super::super::form::Form;
 use crate::{
+    Config,
     game_data::cat::parsed::cat::Cat,
     interface::scripts::cat_info::{
         form_util::CatForm,
         stats::form::{get_form, write_level_and_plus},
     },
     wiki_data::cat_data::CatName,
-    wikitext::template::{Template, TemplateParameter}, Config,
+    wikitext::template::{Template, TemplateParameter},
 };
 use std::iter::zip;
 
