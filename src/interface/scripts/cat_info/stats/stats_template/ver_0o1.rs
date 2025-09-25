@@ -2,6 +2,7 @@
 
 use super::super::form::Form;
 use crate::{
+    Config,
     game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
     interface::{
         error_handler::InfallibleWrite,
@@ -162,7 +163,7 @@ fn get_scaling(cat: &Cat) -> String {
 }
 
 /// Get full template.
-pub fn stats_0o1(cat: &Cat) -> Template {
+pub fn stats_0o1(config: &Config, cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats 0.1");
 
     add_all_forms(&mut t, cat);
@@ -177,10 +178,16 @@ pub fn stats_0o1(cat: &Cat) -> Template {
 
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
     t.push_params(TemplateParameter::new("Scaling", scaling));
-    t.push_params(TemplateParameter::new("validation", "on"));
+    if !config.cat_info.stats_hide_validation {
+        t.push_params(TemplateParameter::new("validation", "on"));
+    }
 
     let (title, mut items) = t.deconstruct();
-    items.sort_by_key(|x| x.key.starts_with("val-"));
+    if config.cat_info.stats_hide_validation {
+        items.retain(|x| !x.key.starts_with("val-"));
+    } else {
+        items.sort_by_key(|x| x.key.starts_with("val-"));
+    }
 
     Template::new(title, items)
 }

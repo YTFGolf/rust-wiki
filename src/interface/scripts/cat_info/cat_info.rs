@@ -114,8 +114,8 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     ));
 
     let stats = match config.cat_info.stats_template_version {
-        StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o1 => stats_0o1(&cat),
-        StatsTemplateVersion::Manual => stats_manual(&cat),
+        StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o1 => stats_0o1(&config, &cat),
+        StatsTemplateVersion::Manual => stats_manual(&config, &cat),
     };
 
     page.push(Section::h2("Stats", stats.to_string()));

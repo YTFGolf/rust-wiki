@@ -8,7 +8,7 @@ use crate::{
         stats::form::{get_form, write_level_and_plus},
     },
     wiki_data::cat_data::CatName,
-    wikitext::template::{Template, TemplateParameter},
+    wikitext::template::{Template, TemplateParameter}, Config,
 };
 use std::iter::zip;
 
@@ -70,7 +70,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 }
 
 /// Get manual cat stats template.
-pub fn stats_manual(cat: &Cat) -> Template {
+pub fn stats_manual(_config: &Config, cat: &Cat) -> Template {
     let mut t = Template::named("Cat Stats Manual");
 
     add_all_forms(&mut t, cat);

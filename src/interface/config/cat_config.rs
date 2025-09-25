@@ -101,6 +101,9 @@ mod do_extra_stuff {
 pub struct CatConfig {
     /// Which version of stats template to use.
     pub stats_template_version: StatsTemplateVersion,
+
+    /// Do you hide stats validation.
+    pub stats_hide_validation: bool,
 }
 
 #[cfg(test)]
