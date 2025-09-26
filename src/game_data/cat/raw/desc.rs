@@ -15,6 +15,7 @@ pub struct CatDescription {
     line1: String,
     line2: String,
     line3: String,
+    #[serde(default)]
     jp_furigana: String,
 }
 impl CatDescription {
