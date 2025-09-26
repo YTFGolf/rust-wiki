@@ -1,12 +1,15 @@
 //! Represents a map.
 
 use crate::game_data::{
+    csv::FullCSVError,
     map::{
         cached::{score_bonus::ScoreBonus, special_rules::SpecialRule},
         raw::map_data::GameMapData,
     },
-    meta::stage::{map_id::MapID, stage_types::parse::parse_map::parse_general_map_id},
-    stage::parsed::stage::{CrownData, Restriction, RestrictionStages},
+    meta::stage::{
+        map_id::MapID, stage_id::StageID, stage_types::parse::parse_map::parse_general_map_id,
+    },
+    stage::parsed::stage::{CrownData, Restriction, RestrictionStages, Stage},
     version::Version,
 };
 use std::num::NonZeroU32;
@@ -151,6 +154,13 @@ impl GameMap {
         }
     }
 }
+impl GameMap {
+    /// Get data for stage in map.
+    pub fn get_stage(&self, num: u32, version: &Version) -> Result<Stage, FullCSVError> {
+        Stage::from_id(StageID::from_map(self.id.clone(), num), version)
+    }
+}
+
 const fn u8_to_bool(u: u8) -> bool {
     match u {
         0 => false,
