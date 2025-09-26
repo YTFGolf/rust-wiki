@@ -14,7 +14,29 @@ use crate::{
 };
 use std::fmt::Write;
 
-fn get_overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData) -> Section {
+fn intro(map_data: &MapWikiData, config: &Config) -> Section {
+    let mut buf = String::new();
+    write!(
+        buf,
+        "'''{name}''' (?, ''?'', '''?''') is an event",
+        name = extract_name(&map_data.name),
+    )
+    .infallible_write();
+
+    if true {
+        // if config.map_info.version() {
+        let mut ver = config.version.current_version().number();
+        if let Some(s) = ver.strip_suffix(".0") {
+            ver = s;
+        }
+
+        write!(buf, " added in [[Version {ver} Update|Version {ver}]]").infallible_write();
+    }
+
+    Section::blank(buf + ".")
+}
+
+fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData) -> Section {
     let amt_stages = {
         let mut stage_id = StageID::from_map(map.id.clone(), 0);
         let version = config.version.current_version();
@@ -57,7 +79,8 @@ pub fn get_gauntlet_map(map: &GameMap, config: &Config) -> String {
 
     let map_wiki_data = get_map_wiki_data(&map.id);
 
-    page.push(get_overview_section(map, config, map_wiki_data));
+    page.push(intro(map_wiki_data, config));
+    page.push(overview_section(map, config, map_wiki_data));
     page.push(Section::h2(
         "List of Stages",
         stage_table(map, map_wiki_data, config.version.current_version()),
