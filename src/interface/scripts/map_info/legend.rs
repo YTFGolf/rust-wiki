@@ -1,6 +1,6 @@
 //! Legend map info.
 
-use super::map_info::reference;
+use super::map_info::db_reference;
 use crate::{
     game_data::{
         map::{
@@ -90,7 +90,7 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
         num = get_small_ordinal(map.id.num() + 1),
         chap = STAGE_WIKI_DATA.stage_type(map.id.variant()).unwrap().name,
     )
-    .unwrap();
+    .infallible_write();
 
     let map_offset = match map.id.variant().into() {
         LegendSubset::SoL => 0,
@@ -104,7 +104,7 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
             ", and the {num} sub-chapter overall",
             num = get_small_ordinal(map.id.num() + 1 + map_offset)
         )
-        .unwrap();
+        .infallible_write();
     }
     buf += ". ";
 
@@ -119,14 +119,14 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
             buf,
             "was introduced in [[Version {ver} Update|Version {ver}]] and "
         )
-        .unwrap();
+        .infallible_write();
     }
     write!(
         buf,
         "is available up to {{{{{diff}c}}}} difficulty.",
         diff = map.crown_data.as_ref().unwrap().max_difficulty
     )
-    .unwrap();
+    .infallible_write();
     buf
 }
 
@@ -285,7 +285,7 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
         "difficulty" => difficulty(map),
         "stage_table" => stage_table(map, map_data, version),
         "materials" => materials(map, version),
-        "ref" => reference(&map.id),
+        "ref" => db_reference(&map.id),
         "nav" => nav(map),
         "footer" => footer(map).to_string(),
         // TODO replace with better template function
@@ -351,7 +351,7 @@ mod tests {
             "{{Materials|61|13|0|13|13|0|0|0|0}}"
         );
         assert_eq!(
-            reference(&leg_begins.id),
+            db_reference(&leg_begins.id),
             "https://battlecats-db.com/stage/s00000.html"
         );
         assert_eq!(

@@ -12,7 +12,7 @@ use crate::{
     interface::{
         config::Config,
         error_handler::InfallibleWrite,
-        scripts::map_info::{common::stage_table, map_info::reference},
+        scripts::map_info::{common::stage_table, map_info::db_reference},
     },
     wiki_data::stage_wiki_data::MapWikiData,
     wikitext::{page::Page, section::Section, text_utils::extract_name},
@@ -94,12 +94,12 @@ fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData)
     Section::h2("Overview", overview)
 }
 
-fn end(map_id: &MapID) -> String {
+fn page_end(map_id: &MapID) -> String {
     let base = String::from(
         "==First Appearance==\n===English Version===\n*September 15th, 2025 to September 29th, 2025\n===Japanese Version===\n*August 18th, 2025 to September 1st, 2025\n==Reference==\n",
     );
     base + "*"
-        + &reference(map_id)
+        + &db_reference(map_id)
         + "\n\n{{SpecialStages List}}\n[[Category:Event Stages]]\n[[Category:Gauntlets]]"
 }
 
@@ -116,7 +116,7 @@ pub fn get_gauntlet_map(map: &GameMap, config: &Config) -> String {
         "List of Stages",
         stage_table(map, map_wiki_data, config.version.current_version()),
     ));
-    page.push(Section::blank(end(&map.id)));
+    page.push(Section::blank(page_end(&map.id)));
 
     page.to_string()
 }

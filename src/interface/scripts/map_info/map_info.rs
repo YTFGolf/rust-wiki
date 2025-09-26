@@ -13,7 +13,7 @@ use crate::{
 };
 
 /// battlecats-db reference.
-pub fn reference(map: &MapID) -> String {
+pub fn db_reference(map: &MapID) -> String {
     let mapid = map.mapid();
     format!("https://battlecats-db.com/stage/s{mapid:05}.html")
 }

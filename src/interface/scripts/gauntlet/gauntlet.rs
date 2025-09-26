@@ -1,7 +1,7 @@
 //! Gauntlet script.
 
 use super::super::{
-    map_info::map_info::reference,
+    map_info::map_info::db_reference,
     stage_info::{
         battlegrounds::battlegrounds,
         beginning::enemies_appearing,
@@ -412,7 +412,7 @@ pub fn map_gauntlet(map_id: &MapID, config: &Config) -> String {
         _ => tabber.to_string(),
     };
 
-    let dbref = Section::h2("Reference", format!("*{}", reference(map_id)));
+    let dbref = Section::h2("Reference", format!("*{}", db_reference(map_id)));
     write!(buf, "\n\n{dbref}").unwrap();
 
     buf
