@@ -64,6 +64,10 @@ pub struct GameMap {
     /// Binary mask of star difficulty.
     pub star_mask: Option<u16>,
     /// Hide map upon clearing.
+    ///
+    /// I don't know what happens when the map has both max clears and hidden
+    /// upon clear. This flag is used e.g. on Journey to Talent, whereas max
+    /// clears is used on e.g. Facing Danger.
     pub hidden_upon_clear: bool,
     //
     /// Map restrictions.

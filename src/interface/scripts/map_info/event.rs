@@ -9,6 +9,7 @@ use crate::{
 /// Get event map info.
 pub fn get_event_map(map: &GameMap, config: &Config) -> String {
     log::warn!("Event map is incomplete.");
+    log::debug!("{map:?}");
     let map_wiki_data = get_map_wiki_data(&map.id);
     stage_table(map, map_wiki_data, config.version.current_version())
 }
