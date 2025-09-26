@@ -1,6 +1,7 @@
 //! Get info about a map.
 
 pub mod colosseum;
+pub mod common;
 pub mod event;
 pub mod gauntlet;
 pub mod legend;
