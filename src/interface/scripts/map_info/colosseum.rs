@@ -1,13 +1,17 @@
 //! Colosseum map info.
 
 use crate::{
-    Config, game_data::map::parsed::map::GameMap,
-    interface::scripts::map_info::event::get_event_map, regex_handler::static_regex,
+    Config,
+    game_data::map::parsed::map::GameMap,
+    interface::scripts::map_info::{common::stage_table, legend::get_map_wiki_data},
+    regex_handler::static_regex,
 };
 
 /// Get colosseum map info.
 pub fn get_colosseum_map(map: &GameMap, config: &Config) -> String {
-    let m = get_event_map(map, config);
+    let map_wiki_data = get_map_wiki_data(&map.id);
+
+    let m = stage_table(map, map_wiki_data, config.version.current_version());
 
     let maps = static_regex(r"(Mapname|Mapsn)\d{3}");
     let m = maps.replace_all(&m, "${1}000");
