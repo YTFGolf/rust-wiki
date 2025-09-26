@@ -3,23 +3,28 @@
 use super::legend::get_map_wiki_data;
 use crate::{
     game_data::{
-        map::{parsed::map::GameMap, raw::map_data::GameMapData},
-        meta::stage::stage_id::StageID,
+        map::{
+            parsed::map::{GameMap, ResetType},
+            raw::map_data::GameMapData,
+        },
+        meta::stage::{map_id::MapID, stage_id::StageID},
     },
     interface::{
-        config::Config, error_handler::InfallibleWrite, scripts::map_info::common::stage_table,
+        config::Config,
+        error_handler::InfallibleWrite,
+        scripts::map_info::{common::stage_table, map_info::reference},
     },
     wiki_data::stage_wiki_data::MapWikiData,
     wikitext::{page::Page, section::Section, text_utils::extract_name},
 };
 use std::fmt::Write;
 
-fn intro(map_data: &MapWikiData, config: &Config) -> Section {
+fn intro(_map: &GameMap, config: &Config, map_wiki_data: &MapWikiData) -> Section {
     let mut buf = String::new();
+    let map_name = extract_name(&map_wiki_data.name);
     write!(
         buf,
-        "'''{name}''' (?, ''?'', '''?''') is an event",
-        name = extract_name(&map_data.name),
+        "'''{map_name}''' (?, ''?'', '''?''') is a [[Gauntlet]]",
     )
     .infallible_write();
 
@@ -30,10 +35,27 @@ fn intro(map_data: &MapWikiData, config: &Config) -> Section {
             ver = s;
         }
 
-        write!(buf, " added in [[Version {ver} Update|Version {ver}]]").infallible_write();
+        write!(
+            buf,
+            " that was added in [[Version {ver} Update|Version {ver}]]"
+        )
+        .infallible_write();
     }
 
-    Section::blank(buf + ".")
+    buf += ".";
+
+    // match map.reset_type {
+    //     ResetType::None | ResetType::ResetRewards | ResetType::ResetMaxClears => {
+    //         unimplemented!("reset type is not resetting rewards and clear")
+    //     }
+    //     ResetType::ResetRewardsAndClear => write!(
+    //         buf,
+    //         " Progress made in {map_name} will reset when the event ends."
+    //     )
+    //     .infallible_write(),
+    // }
+
+    Section::blank(buf)
 }
 
 fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData) -> Section {
@@ -72,6 +94,15 @@ fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData)
     Section::h2("Overview", overview)
 }
 
+fn end(map_id: &MapID) -> String {
+    let base = String::from(
+        "==First Appearance==\n===English Version===\n*September 15th, 2025 to September 29th, 2025\n===Japanese Version===\n*August 18th, 2025 to September 1st, 2025\n==Reference==\n",
+    );
+    base + "*"
+        + &reference(map_id)
+        + "\n\n{{SpecialStages List}}\n[[Category:Event Stages]]\n[[Category:Gauntlets]]"
+}
+
 /// Get gauntlet map info.
 pub fn get_gauntlet_map(map: &GameMap, config: &Config) -> String {
     log::warn!("gauntlet map is incomplete.");
@@ -79,12 +110,13 @@ pub fn get_gauntlet_map(map: &GameMap, config: &Config) -> String {
 
     let map_wiki_data = get_map_wiki_data(&map.id);
 
-    page.push(intro(map_wiki_data, config));
+    page.push(intro(map, config, map_wiki_data));
     page.push(overview_section(map, config, map_wiki_data));
     page.push(Section::h2(
         "List of Stages",
         stage_table(map, map_wiki_data, config.version.current_version()),
     ));
+    page.push(Section::blank(end(&map.id)));
 
     page.to_string()
 }
