@@ -25,21 +25,19 @@ pub enum Command {
     /// Get data from the wiki.
     ReadWiki(ReadWikiOptions),
 
-    // hidden because it's in beta
-    #[command(visible_aliases(["map"]), hide=true)]
-    /// Get information about a map.
+    #[command(visible_aliases(["map"]))]
+    /// Get information about a map (some sub-commands may be incomplete).
     MapInfo(MapInfoOptions),
 
-    // hidden because it's in beta
-    #[command(visible_aliases(["cat"]), hide=true)]
-    /// Get information about a cat.
+    #[command(visible_aliases(["cat"]))]
+    /// Get information about a cat (not all sections are complete).
     CatInfo(CatInfoOptions),
 
     /// Get most boilerplate for a gauntlet map.
     ///
     /// See <https://battlecats.miraheze.org/wiki/?diff=207709> for a list of
     /// additional stuff you may need to do, although
-    /// (gauntlet.py)[<https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/scripts#tabber-tabpanel-gauntlet.py-1>]
+    /// (gauntlet.py)[<https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/scripts#gauntlet.py>]
     /// can fix most problems.
     Gauntlet(GauntletOptions),
 }
