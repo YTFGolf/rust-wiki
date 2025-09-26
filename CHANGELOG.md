@@ -15,9 +15,20 @@ subheading.
 
 ### Added
 
+- Full implementation of `StatsTemplateVersion` including support for `serde`
+  and `clap`.
+- `use_stats_validation` flag for `cat_info`.
+- Cat description template in `cat_info`.
+- Gauntlet support for `map_info`.
+- `Page` wikitext object.
+
 ### Fixed
 
 ### Changed
+
+- Stage and map configs now have `#[serde(default)]` on them
+- `stage_table` from `map_info` is now in its own module.
+- Unhid `cat_info` and `map_info` (warnings are still displayed).
 
 ### Removed
 
