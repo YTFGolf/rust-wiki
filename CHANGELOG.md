@@ -15,6 +15,16 @@ subheading.
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.7.3] - 2025-09-27
+
+### Added
+
 - Full implementation of `StatsTemplateVersion` including support for `serde`
   and `clap`.
 - `use_stats_validation` flag for `cat_info`.
@@ -22,15 +32,11 @@ subheading.
 - Gauntlet support for `map_info`.
 - `Page` wikitext object.
 
-### Fixed
-
 ### Changed
 
 - Stage and map configs now have `#[serde(default)]` on them
 - `stage_table` from `map_info` is now in its own module.
 - Unhid `cat_info` and `map_info` (warnings are still displayed).
-
-### Removed
 
 ## [0.7.2] - 2025-09-24
 
@@ -379,7 +385,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.2...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.3...dev
+[0.7.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.6.2...v0.7.0
