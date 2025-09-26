@@ -6,7 +6,10 @@ use crate::{
         map::parsed::map::GameMap,
         meta::stage::{map_id::MapID, variant::StageVariantID},
     },
-    interface::{config::Config, scripts::map_info::colosseum::get_colosseum_map},
+    interface::{
+        config::Config,
+        scripts::map_info::{colosseum::get_colosseum_map, gauntlet::get_gauntlet_map},
+    },
 };
 
 /// battlecats-db reference.
@@ -57,6 +60,6 @@ pub fn get_map_info(map: &GameMap, config: &Config) -> String {
         Preset::Legend => get_legend_map(map, config),
         Preset::Event => get_event_map(map, config),
         Preset::Colosseum => get_colosseum_map(map, config),
-        _ => todo!(),
+        Preset::Gauntlet => get_gauntlet_map(map, config),
     }
 }
