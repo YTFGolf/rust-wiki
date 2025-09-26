@@ -102,6 +102,7 @@ fn page_end(map_id: &MapID) -> String {
 
 /// Get gauntlet map info.
 pub fn get_gauntlet_map(map: &GameMap, config: &Config) -> String {
+    log::warn!("Compact gauntlet representation is not complete yet");
     let mut page = Page::blank();
 
     let map_wiki_data = get_map_wiki_data(&map.id);
