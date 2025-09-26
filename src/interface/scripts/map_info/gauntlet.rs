@@ -44,17 +44,6 @@ fn intro(_map: &GameMap, config: &Config, map_wiki_data: &MapWikiData) -> Sectio
 
     buf += ".";
 
-    // match map.reset_type {
-    //     ResetType::None | ResetType::ResetRewards | ResetType::ResetMaxClears => {
-    //         unimplemented!("reset type is not resetting rewards and clear")
-    //     }
-    //     ResetType::ResetRewardsAndClear => write!(
-    //         buf,
-    //         " Progress made in {map_name} will reset when the event ends."
-    //     )
-    //     .infallible_write(),
-    // }
-
     Section::blank(buf)
 }
 
@@ -87,16 +76,24 @@ fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData)
         }
         _ => unimplemented!("combination of hide upon clear, max clears and gauntlet cooldown"),
     }
-    // Summer Break Cats contains a total of 20 stages.
-    // After beating three stages, the player must wait for 90 minutes before they may proceed to the next one (30 minutes for one available).
-    // Rewards for each stage completion are Legend Nets.
+
+    match map.reset_type {
+        ResetType::None | ResetType::ResetRewards | ResetType::ResetMaxClears => {
+            unimplemented!("reset type is not resetting rewards and clear")
+        }
+        ResetType::ResetRewardsAndClear => write!(
+            overview,
+            " The rewards reset with every appearance of the event."
+        )
+        .infallible_write(),
+    }
 
     Section::h2("Overview", overview)
 }
 
 fn page_end(map_id: &MapID) -> String {
     let base = String::from(
-        "==First Appearance==\n===English Version===\n*September 15th, 2025 to September 29th, 2025\n===Japanese Version===\n*August 18th, 2025 to September 1st, 2025\n==Reference==\n",
+        "==First Appearance==\n===English Version===\n*?\n\n===Japanese Version===\n*?\n\n==Reference==\n",
     );
     base + "*"
         + &db_reference(map_id)
@@ -105,7 +102,6 @@ fn page_end(map_id: &MapID) -> String {
 
 /// Get gauntlet map info.
 pub fn get_gauntlet_map(map: &GameMap, config: &Config) -> String {
-    log::warn!("gauntlet map is incomplete.");
     let mut page = Page::blank();
 
     let map_wiki_data = get_map_wiki_data(&map.id);
