@@ -22,13 +22,13 @@ pub enum UnlockCurrency {
 pub struct CatUnlock {
     /// EoC stage the unit is available (cat is available before stage 0, tank
     /// before stage 1, bahamut 48).
-    stage_available: u8,
+    pub stage_available: u8,
     /// EoC chapter available (e.g. Bahamut = 2).
-    chap_available: u8,
+    pub chap_available: u8,
     /// Cost of unlocking the unit.
-    unlock_cost: u16,
+    pub unlock_cost: u16,
     /// Currency the unit is unlocked with.
-    unlock_currency: UnlockCurrency,
+    pub unlock_currency: UnlockCurrency,
 }
 impl CatUnlock {
     /// Create new [`CatUnlock`].
@@ -118,7 +118,8 @@ impl EvolutionInfo {
 /// This is not the full picture, this will also require usage of
 /// `unitexp.csv`'s data to know the cost for each level.
 pub struct UpgradeCost {
-    costs: [u32; 10],
+    /// Base costs from level 1 to level 10.
+    pub costs: [u32; 10],
 }
 
 impl UpgradeCost {

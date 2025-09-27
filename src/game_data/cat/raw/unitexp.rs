@@ -102,7 +102,7 @@ const SUPERFELINE: UnitExp = UnitExp {
     until_200: 10,
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 /// Enum to avoid using a big object.
 pub enum XPCostScale {
     /// Default level cost growth.
