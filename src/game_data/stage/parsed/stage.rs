@@ -244,6 +244,9 @@ impl From<StageData<'_>> for Stage {
         log::debug!("Bonuses: {bonuses:?}");
         // debug to reveal how the stage's rule works, useful for updates which
         // add a new rule
+        log::debug!("Map option: {map_option_data:?}");
+        log::debug!("Stage data header: {:?}", data.stage_csv_data.header);
+        log::debug!("Stage data line 2: {:?}", data.stage_csv_data.line2);
 
         let restrictions: Option<Vec<Restriction>>;
         if let Some(option_data) = data.get_stage_option_data() {
