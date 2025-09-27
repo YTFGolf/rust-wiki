@@ -10,7 +10,10 @@ use crate::{
     },
     interface::{
         config::{Config, cat_config::StatsTemplateVersion},
-        scripts::cat_info::stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1},
+        scripts::cat_info::{
+            form_util::CatForm,
+            stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1},
+        },
     },
     wikitext::{
         page::Page,
@@ -134,14 +137,30 @@ fn cost(cat: &Cat, _config: &Config) -> Section {
 
     assert!(!costs.is_empty());
 
-    let l = costs.len();
-    let mut iter = costs.iter();
-    let first = iter.next().expect("already asserted costs is not empty");
-    if l == 1 {
+    if costs.len() == 1 {
+        let first = costs
+            .iter()
+            .next()
+            .expect("already asserted costs is not empty");
         return Section::h2(TITLE, fmt_cost(first.0));
     }
 
-    todo!("{costs:?}")
+    let mut costs_str = Page::blank();
+    for (cost, forms) in costs {
+        let title = forms
+            .iter()
+            .map(|f| {
+                CatForm::from_repr(*f)
+                    .expect("cat form should not fail")
+                    .as_str()
+            })
+            .collect::<Vec<_>>()
+            .join("/")
+            + " Form";
+        costs_str.push(Section::h3(title, fmt_cost(cost)));
+    }
+
+    Section::h2(TITLE, costs_str.to_string())
 }
 
 /// Get cat info.
@@ -197,6 +216,24 @@ mod tests {
     fn cost_triple_unique() {
         // cosmo, 135
         todo!()
+        /*
+        ==Cost==
+        ===Normal Form===
+        *Chapter 1: 555¢
+        *Chapter 2: 832¢
+        *Chapter 3: 1,110¢
+
+        ===Evolved/True Form===
+        *Chapter 1: 3,900¢
+        *Chapter 2: 5,850¢
+        *Chapter 3: 7,800¢
+
+        ===Ultra Form===
+        *Chapter 1: 3,000¢
+        *Chapter 2: 4,500¢
+        *Chapter 3: 6,000¢
+        {{Upgrade Cost|UR}}
+         */
     }
 
     #[test]
