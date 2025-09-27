@@ -42,8 +42,8 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
         let (form1, form2) = match cat.unitbuy.misc.egg_info {
             AncientEggInfo::None => (format!("Uni{id:03} f00.png"), format!("Uni{id:03} c00.png")),
             AncientEggInfo::Egg { normal, evolved } => (
-                format!("Uni{id:03} m{normal:02}.png"),
-                format!("Uni{id:03} m{evolved:02}.png"),
+                format!("Uni{normal:03} m00.png"),
+                format!("Uni{evolved:03} m01.png"),
             ),
         };
 
