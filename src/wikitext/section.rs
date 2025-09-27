@@ -27,15 +27,17 @@ pub struct Section {
     pub content: StringValue,
 }
 impl Section {
+    /// Create section.
+    pub fn new(title: SectionTitle, content: StringValue) -> Self {
+        Self { title, content }
+    }
+
     /// Create section with no title.
     pub fn blank<T>(content: T) -> Self
     where
         T: Into<StringValue>,
     {
-        Self {
-            title: SectionTitle::Blank,
-            content: content.into(),
-        }
+        Self::new(SectionTitle::Blank, content.into())
     }
 
     /// Create section with h2 heading.
@@ -44,10 +46,7 @@ impl Section {
         T: Into<StringValue>,
         U: Into<StringValue>,
     {
-        Self {
-            title: SectionTitle::H2(title.into()),
-            content: content.into(),
-        }
+        Self::new(SectionTitle::H2(title.into()), content.into())
     }
 
     /// Create section with h3 heading.
@@ -56,10 +55,7 @@ impl Section {
         T: Into<StringValue>,
         U: Into<StringValue>,
     {
-        Self {
-            title: SectionTitle::H3(title.into()),
-            content: content.into(),
-        }
+        Self::new(SectionTitle::H3(title.into()), content.into())
     }
 
     /// Create section with h4 heading.
@@ -68,10 +64,7 @@ impl Section {
         T: Into<StringValue>,
         U: Into<StringValue>,
     {
-        Self {
-            title: SectionTitle::H4(title.into()),
-            content: content.into(),
-        }
+        Self::new(SectionTitle::H4(title.into()), content.into())
     }
 
     /// Create section with h5 heading.
@@ -80,10 +73,7 @@ impl Section {
         T: Into<StringValue>,
         U: Into<StringValue>,
     {
-        Self {
-            title: SectionTitle::H5(title.into()),
-            content: content.into(),
-        }
+        Self::new(SectionTitle::H5(title.into()), content.into())
     }
 
     /// Create section with h6 heading.
@@ -92,10 +82,7 @@ impl Section {
         T: Into<StringValue>,
         U: Into<StringValue>,
     {
-        Self {
-            title: SectionTitle::H6(title.into()),
-            content: content.into(),
-        }
+        Self::new(SectionTitle::H6(title.into()), content.into())
     }
 }
 impl Display for Section {
