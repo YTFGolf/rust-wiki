@@ -48,9 +48,8 @@ pub fn get_cat_descriptions(
         lang = version.language()
     );
 
-    let reader = BufReader::new(File::open(
-        version.get_file_path("resLocal").join(file_name),
-    ).ok()?);
+    let reader =
+        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).ok()?);
 
     Some(reader.lines().map(|line| {
         let line = line.unwrap();
