@@ -18,6 +18,7 @@ use crate::{
         template::{Template, TemplateParameter},
     },
 };
+use num_format::{Locale, ToFormattedString};
 
 fn get_descs(cat: &Cat, config: &Config) -> Template {
     type P = TemplateParameter;
@@ -110,6 +111,39 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
     descs
 }
 
+fn fmt_cost(chap_1: u16) -> String {
+    format!(
+        "*Chapter 1: {}¢\n\
+        *Chapter 2: {}¢\n\
+        *Chapter 3: {}¢",
+        chap_1.to_formatted_string(&Locale::en),
+        (chap_1 * 15 / 10).to_formatted_string(&Locale::en),
+        (chap_1 * 2).to_formatted_string(&Locale::en)
+    )
+}
+
+fn cost(cat: &Cat, _config: &Config) -> Section {
+    const TITLE: &str = "Cost";
+    let mut costs: Vec<(u16, Vec<usize>)> = vec![];
+    for (i, (stats, _)) in cat.forms.iter().enumerate() {
+        match costs.iter().position(|c| c.0 == stats.price) {
+            None => costs.push((stats.price, vec![i])),
+            Some(j) => costs[j].1.push(i),
+        }
+    }
+
+    assert!(!costs.is_empty());
+
+    let l = costs.len();
+    let mut iter = costs.iter();
+    let first = iter.next().expect("already asserted costs is not empty");
+    if l == 1 {
+        return Section::h2(TITLE, fmt_cost(first.0));
+    }
+
+    todo!("{costs:?}")
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -120,6 +154,8 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         "Description",
         get_descs(&cat, config).to_string(),
     ));
+
+    page.push(cost(&cat, config));
 
     let stats = match config.cat_info.stats_template_version {
         StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o1 => stats_0o1(&cat, config),
@@ -136,3 +172,36 @@ talents
 combos
 desc
 */
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn basic_cost() {
+        // id = 0
+        todo!()
+    }
+
+    #[test]
+    fn cost_not_even() {
+        // moneko
+        todo!()
+    }
+
+    #[test]
+    fn cost_varies_by_form() {
+        // aer, 361
+        todo!()
+    }
+
+    #[test]
+    fn cost_triple_unique() {
+        // cosmo, 135
+        todo!()
+    }
+
+    #[test]
+    fn cost_returns() {
+        // kaguya, 138
+        todo!()
+    }
+}
