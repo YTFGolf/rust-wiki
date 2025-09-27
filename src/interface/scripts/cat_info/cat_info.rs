@@ -60,6 +60,8 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
     }
 
     for (num, desc) in get_cat_descriptions(cat.id, config.version.en())
+        .into_iter()
+        .flatten()
         .take(cat.forms.amt_forms)
         .enumerate()
     {
@@ -70,6 +72,8 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
     }
 
     for (num, desc) in get_cat_descriptions(cat.id, config.version.jp())
+        .into_iter()
+        .flatten()
         .take(cat.forms.amt_forms)
         .enumerate()
     {
@@ -80,6 +84,8 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
     }
 
     for (num, desc) in get_cat_descriptions(cat.id, config.version.tw())
+        .into_iter()
+        .flatten()
         .take(cat.forms.amt_forms)
         .enumerate()
     {
@@ -90,6 +96,8 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
     }
 
     for (num, desc) in get_cat_descriptions(cat.id, config.version.kr())
+        .into_iter()
+        .flatten()
         .take(cat.forms.amt_forms)
         .enumerate()
     {

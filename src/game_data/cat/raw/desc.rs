@@ -41,17 +41,18 @@ impl CatDescription {
 pub fn get_cat_descriptions(
     wiki_id: u32,
     version: &Version,
-) -> impl Iterator<Item = CatDescription> {
+) -> Option<impl Iterator<Item = CatDescription>> {
     let file_name = format!(
         "Unit_Explanation{inc}_{lang}.csv",
         inc = wiki_id + 1,
         lang = version.language()
     );
 
-    let reader =
-        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).unwrap());
+    let reader = BufReader::new(File::open(
+        version.get_file_path("resLocal").join(file_name),
+    ).ok()?);
 
-    reader.lines().map(|line| {
+    Some(reader.lines().map(|line| {
         let line = line.unwrap();
 
         let delimiter = match version.language() {
@@ -64,5 +65,5 @@ pub fn get_cat_descriptions(
             .collect::<ByteRecord>()
             .deserialize(None)
             .unwrap()
-    })
+    }))
 }
