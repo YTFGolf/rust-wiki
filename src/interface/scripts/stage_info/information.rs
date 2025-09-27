@@ -171,17 +171,16 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
 
 /// Get stage's time limit.
 pub fn time_limit(stage: &Stage) -> Option<TemplateParameter> {
-    match stage.time_limit {
-        None => None,
-        Some(t) => Some(TemplateParameter::new(
+    stage.time_limit.map(|t| {
+        TemplateParameter::new(
             "time limit",
             format!(
                 "{limit} {minutes}",
                 limit = t.get(),
                 minutes = plural(t.get() as u16, "minute", "minutes")
             ),
-        )),
-    }
+        )
+    })
 }
 
 /// Get the xp drop of a stage.
