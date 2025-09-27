@@ -196,11 +196,11 @@ fn get_enemy_spawns(
     type OrderFunction = fn(&OtherSpawnItem, &OtherSpawnItem) -> std::cmp::Ordering;
 
     let order_function: OrderFunction = if is_dojo {
-        |(bh1, _), (bh2, _)| bh1.cmp(&bh2)
+        |(bh1, _), (bh2, _)| bh1.cmp(bh2)
         // higher hp = later in list
         // if lhs <= rhs then is Ordering::Less
     } else {
-        |(bh1, _), (bh2, _)| bh2.cmp(&bh1)
+        |(bh1, _), (bh2, _)| bh2.cmp(bh1)
         // higher hp = earlier in list
     };
     other_spawn.sort_by(order_function);
