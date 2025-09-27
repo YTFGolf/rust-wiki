@@ -1,18 +1,19 @@
 //! Utility functions for templates.
-
 use crate::wiki_data::cat_data::CAT_DATA;
+use strum::FromRepr;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[repr(usize)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, FromRepr)]
 /// Cat's form.
 pub enum CatForm {
     /// Normal form.
-    Normal,
+    Normal = 0,
     /// Evolved form.
-    Evolved,
+    Evolved = 1,
     /// True form.
-    True,
+    True = 2,
     /// Ultra form.
-    Ultra,
+    Ultra = 3,
 }
 impl CatForm {
     /// String representation of form name.
