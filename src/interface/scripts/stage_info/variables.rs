@@ -11,7 +11,9 @@ use super::{
     treasure::{score_rewards, treasure},
 };
 use crate::{
-    game_data::stage::parsed::stage::Stage, interface::config::Config, wikitext::template::Template,
+    game_data::stage::parsed::stage::Stage,
+    interface::{config::Config, scripts::stage_info::information::time_limit},
+    wikitext::template::Template,
 };
 
 /// Default format for stage info.
@@ -50,6 +52,7 @@ fn si_template(
         .add_params(enemies_list(stage, config.stage_info.suppress()))
         .add_params(treasure(stage))
         .add_params(restrictions_info(stage))
+        .add_params(time_limit(stage))
         .add_params(score_rewards(stage))
         .add_params(xp(stage))
         .add_params(width(stage))

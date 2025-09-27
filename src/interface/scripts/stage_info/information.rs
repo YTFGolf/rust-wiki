@@ -10,7 +10,7 @@ use crate::{
     },
     interface::error_handler::InfallibleWrite,
     wiki_data::{enemy_data::ENEMY_DATA, rewards::TREASURE_DATA},
-    wikitext::template::TemplateParameter,
+    wikitext::{number_utils::plural, template::TemplateParameter},
 };
 use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
@@ -167,6 +167,21 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     }
 
     params
+}
+
+/// Get stage's time limit.
+pub fn time_limit(stage: &Stage) -> Option<TemplateParameter> {
+    match stage.time_limit {
+        None => None,
+        Some(t) => Some(TemplateParameter::new(
+            "time limit",
+            format!(
+                "{limit} {minutes}",
+                limit = t.get(),
+                minutes = plural(t.get() as u16, "minute", "minutes")
+            ),
+        )),
+    }
 }
 
 /// Get the xp drop of a stage.
@@ -428,5 +443,10 @@ mod tests {
             max_enemies(&labyrinth_67),
             TemplateParameter::new("max enemies", "30")
         );
+    }
+
+    #[test]
+    fn time_limit() {
+        todo!()
     }
 }
