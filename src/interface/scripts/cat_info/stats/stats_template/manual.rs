@@ -71,7 +71,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 }
 
 /// Get manual cat stats template.
-pub fn stats_manual(_config: &Config, cat: &Cat) -> Template {
+pub fn stats_manual(cat: &Cat, _config: &Config) -> Template {
     let mut t = Template::named("Cat Stats Manual");
 
     add_all_forms(&mut t, cat);

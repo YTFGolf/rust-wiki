@@ -163,7 +163,7 @@ fn get_scaling(cat: &Cat) -> String {
 }
 
 /// Get full template.
-pub fn stats_0o1(config: &Config, cat: &Cat) -> Template {
+pub fn stats_0o1(cat: &Cat, config: &Config) -> Template {
     let mut t = Template::named("Cat Stats 0.1");
 
     add_all_forms(&mut t, cat);
