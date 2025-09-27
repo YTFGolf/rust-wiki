@@ -9,6 +9,14 @@ pub enum SectionTitle {
     Blank,
     /// H2 heading.
     H2(StringValue),
+    /// H3 heading.
+    H3(StringValue),
+    /// H4 heading.
+    H4(StringValue),
+    /// H5 heading.
+    H5(StringValue),
+    /// H6 heading.
+    H6(StringValue),
 }
 
 /// Page section.
@@ -41,12 +49,64 @@ impl Section {
             content: content.into(),
         }
     }
+
+    /// Create section with h3 heading.
+    pub fn h3<T, U>(title: T, content: U) -> Self
+    where
+        T: Into<StringValue>,
+        U: Into<StringValue>,
+    {
+        Self {
+            title: SectionTitle::H3(title.into()),
+            content: content.into(),
+        }
+    }
+
+    /// Create section with h4 heading.
+    pub fn h4<T, U>(title: T, content: U) -> Self
+    where
+        T: Into<StringValue>,
+        U: Into<StringValue>,
+    {
+        Self {
+            title: SectionTitle::H4(title.into()),
+            content: content.into(),
+        }
+    }
+
+    /// Create section with h5 heading.
+    pub fn h5<T, U>(title: T, content: U) -> Self
+    where
+        T: Into<StringValue>,
+        U: Into<StringValue>,
+    {
+        Self {
+            title: SectionTitle::H5(title.into()),
+            content: content.into(),
+        }
+    }
+
+    /// Create section with h6 heading.
+    pub fn h6<T, U>(title: T, content: U) -> Self
+    where
+        T: Into<StringValue>,
+        U: Into<StringValue>,
+    {
+        Self {
+            title: SectionTitle::H6(title.into()),
+            content: content.into(),
+        }
+    }
 }
 impl Display for Section {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.title {
             SectionTitle::Blank => (),
             SectionTitle::H2(title) => writeln!(f, "=={title}==")?,
+            SectionTitle::H3(title) => writeln!(f, "==={title}===")?,
+            SectionTitle::H4(title) => writeln!(f, "===={title}====")?,
+            SectionTitle::H5(title) => writeln!(f, "====={title}=====")?,
+            SectionTitle::H6(title) => writeln!(f, "======{title}======")?,
         }
         f.write_str(self.content.trim())
     }
