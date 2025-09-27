@@ -9,8 +9,11 @@ use crate::{
         },
         raw::unitexp::XPCostScale,
     },
+    interface::error_handler::InfallibleWrite,
     wikitext::section::{Section, SectionTitle},
 };
+use num_format::{Locale, ToFormattedString};
+use std::fmt::Write;
 
 const RR: [u32; 10] = [
     5_000, 8_000, 12_200, 17_800, 24_800, 33_200, 43_000, 54_200, 66_800, 80_800,
@@ -45,10 +48,28 @@ const EX5: [u32; 10] = [
 
 const SECTION_TITLE: SectionTitle = SectionTitle::Blank;
 
-fn upgrade_cost_mix(max: u8, initial: u16, costs: [u32; 10]) -> Section {
-    Section::new(SECTION_TITLE, todo!())
+fn upgrade_cost_mix_normal_unitexp(max: u8, initial: u16, costs: [u32; 10]) -> Section {
+    let mut t = String::from("{{Upgrade Cost|MIX\n");
+    writeln!(t, "|{}", initial.to_formatted_string(&Locale::en)).infallible_write();
+    for level in costs.iter().skip(1) {
+        writeln!(t, "|{}", level.to_formatted_string(&Locale::en)).infallible_write();
+    }
+    const NORMAL_UNITEXP_MULTIPLIER_10: u32 = 2;
+    writeln!(
+        t,
+        "|{}",
+        (costs[0] * NORMAL_UNITEXP_MULTIPLIER_10).to_formatted_string(&Locale::en)
+    )
+    .infallible_write();
+
+    if max != 50 {
+        writeln!(t, "|max = {}", max.to_formatted_string(&Locale::en)).infallible_write();
+    }
+
+    Section::new(SECTION_TITLE, (t + "}}").into())
 }
 
+/// Get upgrade costs section.
 pub fn upgrade_cost(cat: &Cat, _config: &Config) -> Section {
     if cat.unitexp != XPCostScale::Normal {
         assert_eq!(cat.id, 643);
@@ -79,7 +100,7 @@ pub fn upgrade_cost(cat: &Cat, _config: &Config) -> Section {
         (50, 0, c) if c == EX3 => "EX3",
         (50, 0, c) if c == EX4 => "EX4",
         (50, 0, c) if c == EX5 => "EX5",
-        (a, b, c) => return upgrade_cost_mix(a, b, c),
+        (a, b, c) => return upgrade_cost_mix_normal_unitexp(a, b, c),
     };
 
     Section::new(SECTION_TITLE, format!("{{{{Upgrade Cost|{code}}}}}").into())
@@ -102,4 +123,21 @@ pub fn upgrade_cost(cat: &Cat, _config: &Config) -> Section {
 |max = 20
 }}
 
+*/
+
+/*
+{{Upgrade Cost|MIX
+|0
+|400
+|700
+|1,100
+|1,600
+|2,200
+|2,900
+|3,700
+|4,600
+|5,600
+|400
+|max = 20
+}}
 */

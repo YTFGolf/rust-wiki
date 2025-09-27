@@ -9,10 +9,11 @@ use crate::{
         raw::desc::get_cat_descriptions,
     },
     interface::{
-        config::{cat_config::StatsTemplateVersion, Config},
+        config::{Config, cat_config::StatsTemplateVersion},
         scripts::cat_info::{
             form_util::CatForm,
-            stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1}, upgrade_cost::upgrade_cost,
+            stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1},
+            upgrade_cost::upgrade_cost,
         },
     },
     wikitext::{
