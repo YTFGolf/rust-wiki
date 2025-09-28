@@ -86,7 +86,6 @@ pub fn upgrade_cost(cat: &Cat, _config: &Config) -> Section {
         _ => 0,
     };
     let costs = cat.unitbuy.upgrade_costs.costs;
-    println!("{costs:?}");
 
     let code = match (max, initial, costs) {
         (50, 0, c) if c == RR => "RR",
