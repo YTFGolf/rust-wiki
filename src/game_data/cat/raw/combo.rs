@@ -1,5 +1,7 @@
 //! Module that deals with `unitbuy.csv` data.
 
+#![allow(missing_docs)]
+
 use crate::game_data::version::version_data::CacheableVersionData;
 use csv::ByteRecord;
 use std::{fmt::Debug, path::Path};
@@ -86,35 +88,22 @@ pub enum ComboUnlockType {
     Rank2700 = 10003,
 }
 
-/*
-    combo_filter_unlock_param_map = {
-        1: '0',
-        4: '1',
-        5: '2',
-        6: '3',
-        10001: 'A',
-        10002: 'B',
-        10003: 'C'
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+struct ComboUnit {
+    id: i16,
+    /// 0 = normal form.
+    form: i8,
+}
+impl ComboUnit {
+    const fn new(id: i16, form: i8) -> Self {
+        Self { id, form }
     }
-
-    <div class="combo-dropdown" style="max-height: 501.5px;">
-    <div class="combo-multi-all">Select All</div>
-    <div class="combo-dropdown-divide"></div>
-    <div class="combo-multi-item" data-value="0">Beginning</div>
-    <div class="combo-multi-item" data-value="1">Into the Future 1</div>
-    <div class="combo-multi-item" data-value="2">Into the Future 2</div>
-    <div class="combo-multi-item" data-value="3">Into the Future 3</div>
-    <div class="combo-multi-item" data-value="A">User Rank 1450</div>
-    <div class="combo-multi-item" data-value="B">User Rank 2150</div>
-    <div class="combo-multi-item" data-value="C">User Rank 2700</div>
-</div>
-
-     */
+}
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct ComboData {
     unlock_type: ComboUnlockType,
-    units: [Option<(i16, i8)>; 5],
+    units: Vec<ComboUnit>,
     /// Effect; effect is named in Nyancombo1_en.
     combo_effect_num: u8,
     /// Intensity; intensity is named in Nyancombo2_en.
@@ -126,7 +115,19 @@ impl From<ComboDataRaw> for ComboData {
         let combo_effect_num = value.combo_effect_num;
         let combo_intensity_num = value.combo_intensity_num;
 
-        let units = Default::default();
+        let mut units = Vec::new();
+
+        let mut add_unit = |id, form| {
+            if id >= 0 && form >= 0 {
+                units.push(ComboUnit::new(id, form))
+            }
+        };
+
+        add_unit(value.unit_id1, value.unit_form1);
+        add_unit(value.unit_id2, value.unit_form2);
+        add_unit(value.unit_id3, value.unit_form3);
+        add_unit(value.unit_id4, value.unit_form4);
+        add_unit(value.unit_id5, value.unit_form5);
 
         Self {
             unlock_type,
@@ -140,6 +141,7 @@ impl From<ComboDataRaw> for ComboData {
 #[derive(Debug)]
 /// Container for [`ComboDataRaw`] data.
 pub struct CombosDataContainer {
+    #[allow(dead_code)]
     combos: Vec<ComboData>,
 }
 impl CacheableVersionData for CombosDataContainer {
