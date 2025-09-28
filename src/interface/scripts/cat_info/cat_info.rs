@@ -4,7 +4,7 @@ use crate::{
     game_data::cat::{
         parsed::{
             cat::{Cat, CatDataError},
-            unitbuy::{AncientEggInfo, Rarity},
+            unitbuy::{AncientEggInfo, EvolutionType, Rarity},
         },
         raw::desc::get_cat_descriptions,
     },
@@ -208,6 +208,50 @@ fn intro(cat: &Cat) -> Section {
     Section::blank(buf)
 }
 
+fn write_evolution_type(buf: &mut String, et: &EvolutionType) {
+    match et {
+        EvolutionType::Levels { level } => write!(buf, " at level {level}.").infallible_write(),
+        EvolutionType::Other => *buf += " via ???.",
+        EvolutionType::Catfruit(evol) => {
+            // assume that catfruit applies
+            let fruit = "[[Catfruit]]";
+            let level = evol.level_required;
+            let xp = if evol.xp_cost > 0 { " and XP" } else { "" };
+            write!(buf, " at level {level} using {fruit}{xp}.").infallible_write()
+        }
+    }
+}
+
+fn evolution(cat: &Cat) -> String {
+    if cat.forms.amt_forms <= 1 {
+        return "-".to_string();
+    }
+
+    let mut buf = String::new();
+
+    let name = CatForm::Evolved.name(cat.id);
+    // let evol = cat.unitbuy._uk21
+    write!(buf, "Evolves into '''{name}''' at level 10.").infallible_write();
+
+    let t = match &cat.unitbuy.true_evol {
+        None => return buf,
+        Some(t) => t,
+    };
+    let name = CatForm::True.name(cat.id);
+    write!(buf, "\n\nEvolves into '''{name}'''").infallible_write();
+    write_evolution_type(&mut buf, &t.etype);
+
+    let u = match &cat.unitbuy.ultra_evol {
+        None => return buf,
+        Some(u) => u,
+    };
+    let name = CatForm::Ultra.name(cat.id);
+    write!(buf, "\n\nEvolves into '''{name}'''").infallible_write();
+    write_evolution_type(&mut buf, &u.etype);
+
+    buf
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -215,12 +259,14 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let mut page = Page::blank();
 
     page.push(intro(&cat));
-
+    // page.push(Section::blank("appearance", "-"));
+    page.push(Section::h2("Evolution", evolution(&cat)));
+    page.push(Section::h2("Strategy/Usage", "-"));
+    // page.push(Section::blank("Combos", "-"));
     page.push(Section::h2(
         "Description",
         get_descs(&cat, config).to_string(),
     ));
-
     page.push(cost(&cat, config));
     page.push(upgrade_cost(&cat, config));
 
@@ -228,7 +274,6 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o1 => stats_0o1(&cat, config),
         StatsTemplateVersion::Manual => stats_manual(&cat, config),
     };
-
     page.push(Section::h2("Stats", stats.to_string()));
 
     Ok(page)
