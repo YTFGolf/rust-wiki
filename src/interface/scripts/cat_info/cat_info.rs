@@ -6,7 +6,11 @@ use crate::{
             cat::{Cat, CatDataError},
             unitbuy::{AncientEggInfo, EvolutionType, Rarity},
         },
-        raw::desc::get_cat_descriptions,
+        raw::{
+            combo::{ComboData, CombosDataContainer},
+            combo_local::ComboNames,
+            desc::get_cat_descriptions,
+        },
     },
     interface::{
         config::{Config, cat_config::StatsTemplateVersion},
@@ -235,6 +239,45 @@ fn appearance(cat: &Cat) -> Template {
         .add_params((cat.forms.amt_forms >= 4).then(|| P::new("image4", format!("{id:03} 4.png"))))
 }
 
+fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
+    // let mut buf = String::from("{{CatCombo|");
+
+    // let combo_name = todo!();
+    // buf += combo_name;
+    // let combo_effect = todo!();
+    // buf += combo_effect;
+
+    // for cat in combo.cats {
+    //     buf += "|" + catname;
+    // }
+
+    // buf += "|jpname=";
+    // buf += jpname;
+    // buf += "}}";
+
+    // // format!("Playing Slayer|"Strong" Effect UP (Sm)|Brave Cat|Dioramos|jpname=龍退治ごっこ}}}}")
+    // buf
+    let en_names = config.version.en().get_cached_file::<ComboNames>();
+    log::warn!("this is just a demonstration");
+    en_names.combo_name(i).unwrap().to_string()
+}
+
+fn combos(cat: &Cat, config: &Config) -> Option<Section> {
+    let combo_container = config
+        .version
+        .current_version()
+        .get_cached_file::<CombosDataContainer>();
+
+    let mut has_cat = combo_container.by_cat_id(cat.id.try_into().unwrap());
+
+    let first = has_cat.next()?;
+    let mut buf = String::from("{{Combos\n");
+
+    writeln!(buf, "|{fmt}", fmt = fmt_combo(first.0, first.1, config)).infallible_write();
+
+    Some(Section::blank(buf + "}}"))
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -245,7 +288,10 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     page.push(Section::blank(appearance(&cat).to_string()));
     page.push(evolution(&cat));
     page.push(Section::h2("Strategy/Usage", "-"));
-    // page.push(Section::blank("Combos", "-"));
+    if let Some(combo_section) = combos(&cat, config) {
+        page.push(combo_section);
+    }
+
     page.push(Section::h2(
         "Description",
         get_descs(&cat, config).to_string(),

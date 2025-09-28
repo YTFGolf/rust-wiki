@@ -1,6 +1,7 @@
 //! Module for raw cat data.
 
 pub mod combo;
+pub mod combo_local;
 pub mod desc;
 pub mod stats;
 pub mod unitbuy;
