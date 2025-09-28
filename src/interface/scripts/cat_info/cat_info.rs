@@ -247,6 +247,35 @@ fn evolution(cat: &Cat) -> String {
     buf
 }
 
+fn appearance(cat: &Cat) -> Template {
+    type P = TemplateParameter;
+    let id = cat.id;
+
+    Template::named("Cat Appearance")
+        .add_params(P::new("Cat Unit Number", id.to_string()))
+        .add_params(P::new("cat category", cat.unitbuy.misc.rarity.category()))
+        .add_params(P::new("Normal Form name", CatForm::Normal.name(id)))
+        .add_params(
+            CatForm::Evolved
+                .name_option(id)
+                .map(|n| P::new("Evolved Form name", n)),
+        )
+        .add_params(
+            CatForm::True
+                .name_option(id)
+                .map(|n| P::new("True Form name", n)),
+        )
+        .add_params(
+            CatForm::Ultra
+                .name_option(id)
+                .map(|n| P::new("Ultra Form name", n)),
+        )
+        .add_params((cat.forms.amt_forms >= 1).then(|| P::new("image1", format!("{id:03} 1.png"))))
+        .add_params((cat.forms.amt_forms >= 2).then(|| P::new("image2", format!("{id:03} 2.png"))))
+        .add_params((cat.forms.amt_forms >= 3).then(|| P::new("image3", format!("{id:03} 3.png"))))
+        .add_params((cat.forms.amt_forms >= 4).then(|| P::new("image4", format!("{id:03} 4.png"))))
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -254,7 +283,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let mut page = Page::blank();
 
     page.push(intro(&cat));
-    // page.push(Section::blank("appearance", "-"));
+    page.push(Section::blank(appearance(&cat).to_string()));
     page.push(Section::h2("Evolution", evolution(&cat)));
     page.push(Section::h2("Strategy/Usage", "-"));
     // page.push(Section::blank("Combos", "-"));
