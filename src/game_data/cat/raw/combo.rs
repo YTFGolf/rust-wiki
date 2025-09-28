@@ -93,10 +93,11 @@ mod tests {
     #[test]
     fn test_file_reader() {
         let version = TEST_CONFIG.version.current_version();
-        let combos = version.get_cached_file::<CombosDataContainer>();
-        for combo in &combos.combos {
-            println!("{combo:?}");
+        let combos = get_combodata(version.location());
+        for combo in combos {
+            assert_eq!(combo.rest, Vec::<i32>::new());
+            assert_eq!(combo._uk14, -1);
+            // println!("{combo:?}");
         }
-        panic!()
     }
 }

@@ -43,8 +43,8 @@ impl Version {
 }
 
 impl Version {
-    /// Get version's location.
-    pub(super) fn location(&self) -> &Path {
+    /// Get version's directory location.
+    pub fn location(&self) -> &Path {
         &self.location
     }
 
