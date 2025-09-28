@@ -4,12 +4,13 @@ use crate::{
     game_data::cat::{
         parsed::{
             cat::{Cat, CatDataError},
-            unitbuy::AncientEggInfo,
+            unitbuy::{AncientEggInfo, Rarity},
         },
         raw::desc::get_cat_descriptions,
     },
     interface::{
         config::{Config, cat_config::StatsTemplateVersion},
+        error_handler::InfallibleWrite,
         scripts::cat_info::{
             form_util::CatForm,
             stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1},
@@ -23,6 +24,7 @@ use crate::{
     },
 };
 use num_format::{Locale, ToFormattedString};
+use std::fmt::Write;
 
 fn get_descs(cat: &Cat, config: &Config) -> Template {
     type P = TemplateParameter;
@@ -121,7 +123,7 @@ fn fmt_cost(chap_1: u16) -> String {
         *Chapter 2: {}¢\n\
         *Chapter 3: {}¢",
         chap_1.to_formatted_string(&Locale::en),
-        (chap_1 * 15 / 10).to_formatted_string(&Locale::en),
+        (chap_1 + chap_1 / 2).to_formatted_string(&Locale::en),
         (chap_1 * 2).to_formatted_string(&Locale::en)
     )
 }
@@ -164,11 +166,55 @@ fn cost(cat: &Cat, _config: &Config) -> Section {
     Section::h2(TITLE, costs_str.to_string())
 }
 
+fn intro(cat: &Cat) -> Section {
+    let first_name = CatForm::Normal.name(cat.id);
+    let rarity = cat.unitbuy.misc.rarity;
+
+    let an = if rarity == Rarity::UberRare {
+        "an"
+    } else {
+        "a"
+    };
+
+    let mut buf = format!("'''{first_name}''' is {an} [[:Category:{rarity} Cats|{rarity} Cat]].");
+
+    let update = cat.unitbuy.misc.update_released;
+    let u = {
+        if update <= 0 {
+            None
+        } else {
+            let mut buf = format!(
+                "{major}.{minor}",
+                major = update / 10000,
+                minor = update / 100 % 100
+            );
+            let patch = update % 100;
+            if patch != 0 {
+                write!(buf, ",{patch}").infallible_write();
+            }
+
+            Some(buf)
+        }
+    };
+
+    if let Some(ver) = u {
+        write!(
+            buf,
+            " It was added in [[Version {ver} Update|Version {ver}]]."
+        )
+        .infallible_write();
+    }
+
+    Section::blank(buf)
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
 
     let mut page = Page::blank();
+
+    page.push(intro(&cat));
 
     page.push(Section::h2(
         "Description",
