@@ -1,8 +1,9 @@
 //! Module that deals with `unitbuy.csv` data.
 
 use crate::game_data::version::version_data::CacheableVersionData;
-use csv::{ByteRecord, Error};
+use csv::ByteRecord;
 use std::{fmt::Debug, path::Path};
+use strum::FromRepr;
 
 #[derive(Debug, serde::Deserialize, Default)]
 /// Raw data for a combo.
@@ -43,7 +44,7 @@ pub struct ComboDataRaw {
     pub rest: Vec<i32>,
 }
 
-fn parse_nyancombodata_error(e: &Error, result: &ByteRecord) -> impl Debug {
+fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
     let index = match e.kind() {
         csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
         _ => unimplemented!(),
@@ -52,7 +53,7 @@ fn parse_nyancombodata_error(e: &Error, result: &ByteRecord) -> impl Debug {
     String::from_utf8(result[index as usize].into()).unwrap()
 }
 
-fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
+pub fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
@@ -72,15 +73,79 @@ fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
         .collect()
 }
 
+#[repr(i16)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, FromRepr)]
+pub enum ComboUnlockType {
+    Unavailable = -1,
+    Beginning = 1,
+    ItF1 = 4,
+    ItF2 = 5,
+    ItF3 = 6,
+    Rank1450 = 10001,
+    Rank2150 = 10002,
+    Rank2700 = 10003,
+}
+
+/*
+    combo_filter_unlock_param_map = {
+        1: '0',
+        4: '1',
+        5: '2',
+        6: '3',
+        10001: 'A',
+        10002: 'B',
+        10003: 'C'
+    }
+
+    <div class="combo-dropdown" style="max-height: 501.5px;">
+    <div class="combo-multi-all">Select All</div>
+    <div class="combo-dropdown-divide"></div>
+    <div class="combo-multi-item" data-value="0">Beginning</div>
+    <div class="combo-multi-item" data-value="1">Into the Future 1</div>
+    <div class="combo-multi-item" data-value="2">Into the Future 2</div>
+    <div class="combo-multi-item" data-value="3">Into the Future 3</div>
+    <div class="combo-multi-item" data-value="A">User Rank 1450</div>
+    <div class="combo-multi-item" data-value="B">User Rank 2150</div>
+    <div class="combo-multi-item" data-value="C">User Rank 2700</div>
+</div>
+
+     */
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct ComboData {
+    unlock_type: ComboUnlockType,
+    units: [Option<(i16, i8)>; 5],
+    /// Effect; effect is named in Nyancombo1_en.
+    combo_effect_num: u8,
+    /// Intensity; intensity is named in Nyancombo2_en.
+    combo_intensity_num: u8,
+}
+impl From<ComboDataRaw> for ComboData {
+    fn from(value: ComboDataRaw) -> Self {
+        let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap();
+        let combo_effect_num = value.combo_effect_num;
+        let combo_intensity_num = value.combo_intensity_num;
+
+        let units = Default::default();
+
+        Self {
+            unlock_type,
+            units,
+            combo_effect_num,
+            combo_intensity_num,
+        }
+    }
+}
+
 #[derive(Debug)]
 /// Container for [`ComboDataRaw`] data.
 pub struct CombosDataContainer {
-    combos: Vec<ComboDataRaw>,
+    combos: Vec<ComboData>,
 }
 impl CacheableVersionData for CombosDataContainer {
     fn init_data(path: &Path) -> Self {
         Self {
-            combos: get_combodata(path),
+            combos: get_combodata(path).into_iter().map(Into::into).collect(),
         }
     }
 }
