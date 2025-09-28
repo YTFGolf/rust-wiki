@@ -1,7 +1,7 @@
 //! Data from `unitbuy.csv`.
 
 use crate::game_data::cat::raw::unitbuy::UnitBuyRaw;
-use std::num::NonZero;
+use std::{fmt::Display, num::NonZero};
 use strum::FromRepr;
 mod tests;
 
@@ -167,7 +167,7 @@ impl MaxLevels {
 }
 
 #[repr(u8)]
-#[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 /// Rarity of unit.
 pub enum Rarity {
     /// Normal.
@@ -194,6 +194,11 @@ impl Rarity {
             Self::UberRare => "Uber Rare",
             Self::LegendRare => "Legend Rare",
         }
+    }
+}
+impl Display for Rarity {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 
