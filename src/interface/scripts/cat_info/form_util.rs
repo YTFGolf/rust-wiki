@@ -28,11 +28,16 @@ impl CatForm {
 
     /// Name of given unit in this form.
     pub fn name(self, id: u32) -> &'static str {
+        self.name_option(id).unwrap()
+    }
+
+    /// Name of unit in this form, `None` if form does not have a name.
+    pub fn name_option(self, id: u32) -> Option<&'static String> {
         match self {
-            Self::Normal => &CAT_DATA.get_cat(id).normal,
-            Self::Evolved => CAT_DATA.get_cat(id).evolved.as_ref().unwrap(),
-            Self::True => CAT_DATA.get_cat(id).true_form.as_ref().unwrap(),
-            Self::Ultra => CAT_DATA.get_cat(id).ultra.as_ref().unwrap(),
+            Self::Normal => Some(&CAT_DATA.get_cat(id).normal),
+            Self::Evolved => CAT_DATA.get_cat(id).evolved.as_ref(),
+            Self::True => CAT_DATA.get_cat(id).true_form.as_ref(),
+            Self::Ultra => CAT_DATA.get_cat(id).ultra.as_ref(),
         }
     }
 }
