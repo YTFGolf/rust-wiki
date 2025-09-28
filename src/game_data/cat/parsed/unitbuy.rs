@@ -60,20 +60,20 @@ impl CatUnlock {
 /// Item used in Catfruit evolutions.
 pub struct EvolutionItem {
     /// Item ID.
-    item_id: u8,
+    pub item_id: u8,
     /// Amount of item.
-    item_amt: u8,
+    pub item_amt: u8,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 /// Descriptor for a unit's Catfruit evolution.
 pub struct CatfruitEvolution {
     /// Catfruit/B.Stone cost.
-    item_cost: [EvolutionItem; 5],
+    pub item_cost: [EvolutionItem; 5],
     /// XP Cost.
-    xp_cost: u32,
+    pub xp_cost: u32,
     /// Level needed to evolve.
-    level_required: u8,
+    pub level_required: u8,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -98,9 +98,9 @@ pub struct EvolutionInfo {
     ///
     /// E.g. an awakening stage will give a reward drop that corresponds to this
     /// number.
-    evolution_id: NonZero<u32>,
+    pub evolution_id: NonZero<u32>,
     /// How the unit evolves into their new form.
-    etype: EvolutionType,
+    pub etype: EvolutionType,
 }
 impl EvolutionInfo {
     /// Get new [`EvolutionInfo`] without already needing a [`NonZero<u32>`].
