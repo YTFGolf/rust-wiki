@@ -1,7 +1,5 @@
 //! Module that deals with `unitbuy.csv` data.
 
-#![allow(missing_docs)]
-
 use crate::game_data::version::version_data::CacheableVersionData;
 use csv::ByteRecord;
 use std::{fmt::Debug, path::Path};
@@ -47,6 +45,8 @@ pub struct ComboDataRaw {
 }
 
 fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
+    // I think this was because the error doesn't actually say what field caused
+    // the error
     let index = match e.kind() {
         csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
         _ => unimplemented!(),
@@ -55,7 +55,8 @@ fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug 
     String::from_utf8(result[index as usize].into()).unwrap()
 }
 
-pub fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
+/// Get raw combo data.
+ fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
@@ -77,22 +78,33 @@ pub fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
 
 #[repr(i16)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy, FromRepr)]
+/// How the combo is unlocked.
 pub enum ComboUnlockType {
+    /// E.g. removed combos.
     Unavailable = -1,
+    /// From the start.
     Beginning = 1,
+    /// After ItF 1.
     ItF1 = 4,
+    /// After ItF 2.
     ItF2 = 5,
+    /// After ItF 3.
     ItF3 = 6,
+    /// At User Rank 1450.
     Rank1450 = 10001,
+    /// At User Rank 2150.
     Rank2150 = 10002,
+    /// At User Rank 2700.
     Rank2700 = 10003,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-struct ComboUnit {
-    id: i16,
+/// Unit in a combo.
+pub struct ComboUnit {
+    /// 0 = cat.
+    pub id: i16,
     /// 0 = normal form.
-    form: i8,
+    pub form: i8,
 }
 impl ComboUnit {
     const fn new(id: i16, form: i8) -> Self {
@@ -101,6 +113,7 @@ impl ComboUnit {
 }
 
 #[derive(Debug, PartialEq, Eq)]
+/// Data about an individual combo.
 pub struct ComboData {
     unlock_type: ComboUnlockType,
     units: Vec<ComboUnit>,
@@ -141,7 +154,6 @@ impl From<ComboDataRaw> for ComboData {
 #[derive(Debug)]
 /// Container for [`ComboDataRaw`] data.
 pub struct CombosDataContainer {
-    #[allow(dead_code)]
     combos: Vec<ComboData>,
 }
 impl CacheableVersionData for CombosDataContainer {
@@ -149,6 +161,20 @@ impl CacheableVersionData for CombosDataContainer {
         Self {
             combos: get_combodata(path).into_iter().map(Into::into).collect(),
         }
+    }
+}
+
+impl CombosDataContainer {
+    /// Get a list of all combos.
+    pub fn combos(&self) -> &[ComboData] {
+        &self.combos
+    }
+
+    /// Filter all combos by the cat id.
+    pub fn by_cat_id(&self, id: i16) -> impl Iterator<Item = &ComboData> {
+        self.combos
+            .iter()
+            .filter(move |com| com.units.iter().any(|cat| cat.id == id))
     }
 }
 
