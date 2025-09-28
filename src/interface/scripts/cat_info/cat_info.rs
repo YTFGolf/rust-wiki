@@ -274,6 +274,9 @@ fn combos(cat: &Cat, config: &Config) -> Option<Section> {
     let mut buf = String::from("{{Combos\n");
 
     writeln!(buf, "|{fmt}", fmt = fmt_combo(first.0, first.1, config)).infallible_write();
+    for rest in has_cat {
+        writeln!(buf, "|{fmt}", fmt = fmt_combo(rest.0, rest.1, config)).infallible_write();
+    }
 
     Some(Section::blank(buf + "}}"))
 }
