@@ -142,6 +142,7 @@ pub const DOJO: &str = "{{Stage Info
 |R.Ost|0
 |St. Pigge the 2nd|0
 |Le'boin|0}}
+|time limit = 5 minutes
 |XP = 0 XP
 |width = 4,200
 |max enemies = 12
