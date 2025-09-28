@@ -5,6 +5,7 @@ use crate::{
     TEST_CONFIG,
     game_data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
 };
+use strum::IntoEnumIterator;
 
 fn get_unitbuy(id: u32, version: &Version) -> UnitBuy {
     let unitbuy = version.get_cached_file::<UnitBuyContainer>();
@@ -604,4 +605,14 @@ fn courier() {
             misc
         }
     );
+}
+
+#[test]
+fn make_sure_category_works() {
+    for rarity in Rarity::iter() {
+        assert_eq!(
+            rarity.category(),
+            &format!("[[:Category:{r} Cats|{r} Cat]]", r = rarity.as_str())
+        )
+    }
 }

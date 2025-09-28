@@ -2,7 +2,7 @@
 
 use crate::game_data::cat::raw::unitbuy::UnitBuyRaw;
 use std::{fmt::Display, num::NonZero};
-use strum::FromRepr;
+use strum::{EnumIter, FromRepr};
 mod tests;
 
 #[repr(u8)]
@@ -167,7 +167,7 @@ impl MaxLevels {
 }
 
 #[repr(u8)]
-#[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, FromRepr, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, EnumIter)]
 /// Rarity of unit.
 pub enum Rarity {
     /// Normal.
