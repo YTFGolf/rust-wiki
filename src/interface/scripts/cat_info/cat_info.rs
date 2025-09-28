@@ -26,6 +26,7 @@ use crate::{
 };
 use std::fmt::Write;
 
+/// "Description" template.
 fn get_descs(cat: &Cat, config: &Config) -> Template {
     type P = TemplateParameter;
 
@@ -111,6 +112,7 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
     descs
 }
 
+/// Page introduction.
 fn intro(cat: &Cat) -> Section {
     let first_name = CatForm::Normal.name(cat.id);
     let rarity = cat.unitbuy.misc.rarity;
@@ -154,6 +156,7 @@ fn intro(cat: &Cat) -> Section {
     Section::blank(buf)
 }
 
+/// Write representation of evolution type to "Evolves into {name}" line.
 fn write_evolution_type(buf: &mut String, et: &EvolutionType) {
     match et {
         EvolutionType::Levels { level } => write!(buf, " at level {level}.").infallible_write(),
@@ -168,9 +171,12 @@ fn write_evolution_type(buf: &mut String, et: &EvolutionType) {
     }
 }
 
-fn evolution(cat: &Cat) -> String {
+/// "Evolution" section.
+fn evolution(cat: &Cat) -> Section {
+    const TITLE: &str = "Evolution";
+
     if cat.forms.amt_forms <= 1 {
-        return "-".to_string();
+        return Section::h2(TITLE, "-");
     }
 
     let mut buf = String::new();
@@ -180,7 +186,7 @@ fn evolution(cat: &Cat) -> String {
     write!(buf, "Evolves into '''{name}''' at level 10.").infallible_write();
 
     let t = match &cat.unitbuy.true_evol {
-        None => return buf,
+        None => return Section::h2(TITLE, buf),
         Some(t) => t,
     };
     let name = CatForm::True.name(cat.id);
@@ -188,20 +194,22 @@ fn evolution(cat: &Cat) -> String {
     write_evolution_type(&mut buf, &t.etype);
 
     let u = match &cat.unitbuy.ultra_evol {
-        None => return buf,
+        None => return Section::h2(TITLE, buf),
         Some(u) => u,
     };
     let name = CatForm::Ultra.name(cat.id);
     write!(buf, "\n\nEvolves into '''{name}'''").infallible_write();
     write_evolution_type(&mut buf, &u.etype);
 
-    buf
+    Section::h2(TITLE, buf)
 }
 
+/// "Cat Appearance" template.
 fn appearance(cat: &Cat) -> Template {
     type P = TemplateParameter;
     let id = cat.id;
 
+    // functional programming sure is beautiful
     Template::named("Cat Appearance")
         .add_params(P::new("Cat Unit Number", id.to_string()))
         .add_params(P::new("cat category", cat.unitbuy.misc.rarity.category()))
@@ -235,7 +243,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
 
     page.push(intro(&cat));
     page.push(Section::blank(appearance(&cat).to_string()));
-    page.push(Section::h2("Evolution", evolution(&cat)));
+    page.push(evolution(&cat));
     page.push(Section::h2("Strategy/Usage", "-"));
     // page.push(Section::blank("Combos", "-"));
     page.push(Section::h2(
@@ -257,5 +265,4 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
 /*
 talents
 combos
-desc
 */
