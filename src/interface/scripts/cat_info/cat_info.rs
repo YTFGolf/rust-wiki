@@ -34,13 +34,7 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
         vec![
             P::new("Mode", "Cat"),
             P::new("Number", cat.id.to_string()),
-            P::new(
-                "Type",
-                format!(
-                    "[[:Category:{t} Cats|{t} Cat]]",
-                    t = cat.unitbuy.misc.rarity.as_str()
-                ),
-            ),
+            P::new("Type", cat.unitbuy.misc.rarity.category()),
         ],
     );
 
@@ -169,6 +163,7 @@ fn cost(cat: &Cat, _config: &Config) -> Section {
 fn intro(cat: &Cat) -> Section {
     let first_name = CatForm::Normal.name(cat.id);
     let rarity = cat.unitbuy.misc.rarity;
+    let category = rarity.category();
 
     let an = if rarity == Rarity::UberRare {
         "an"
@@ -176,7 +171,7 @@ fn intro(cat: &Cat) -> Section {
         "a"
     };
 
-    let mut buf = format!("'''{first_name}''' is {an} [[:Category:{rarity} Cats|{rarity} Cat]].");
+    let mut buf = format!("'''{first_name}''' is {an} {category}.");
 
     let update = cat.unitbuy.misc.update_released;
     let u = {

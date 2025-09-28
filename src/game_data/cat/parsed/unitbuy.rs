@@ -185,7 +185,7 @@ pub enum Rarity {
 }
 impl Rarity {
     /// Get string representation of rarity.
-    pub const fn as_str(&self) -> &str {
+    pub const fn as_str(&self) -> &'static str {
         match self {
             Self::Normal => "Normal",
             Self::Special => "Special",
@@ -195,7 +195,20 @@ impl Rarity {
             Self::LegendRare => "Legend Rare",
         }
     }
+
+    /// Link to the cat rarity category.
+    pub const fn category(&self) -> &'static str {
+        match self {
+            Self::Normal => "[[:Category:Normal Cats|Normal Cat]]",
+            Self::Special => "[[:Category:Special Cats|Special Cat]]",
+            Self::Rare => "[[:Category:Rare Cats|Rare Cat]]",
+            Self::SuperRare => "[[:Category:Super Rare Cats|Super Rare Cat]]",
+            Self::UberRare => "[[:Category:Uber Rare Cats|Uber Rare Cat]]",
+            Self::LegendRare => "[[:Category:Legend Rare Cats|Legend Rare Cat]]",
+        }
+    }
 }
+
 impl Display for Rarity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
