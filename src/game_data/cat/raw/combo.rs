@@ -56,7 +56,7 @@ fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug 
 }
 
 /// Get raw combo data.
- fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
+fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
@@ -171,10 +171,13 @@ impl CombosDataContainer {
     }
 
     /// Filter all combos by the cat id.
-    pub fn by_cat_id(&self, id: i16) -> impl Iterator<Item = &ComboData> {
+    ///
+    /// Response is enumerated because otherwise the combo data is useless.
+    pub fn by_cat_id(&self, id: i16) -> impl Iterator<Item = (usize, &ComboData)> {
         self.combos
             .iter()
-            .filter(move |com| com.units.iter().any(|cat| cat.id == id))
+            .enumerate()
+            .filter(move |(_, com)| com.units.iter().any(|cat| cat.id == id))
     }
 }
 
