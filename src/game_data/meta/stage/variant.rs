@@ -56,6 +56,7 @@ pub enum StageVariantID {
     // LoginStamps2 = 35,
     Colosseum = 36,
     Championships = 37,
+    FilibusterOutbreak = 38,
 }
 
 impl From<VariantSize> for StageVariantID {
@@ -75,7 +76,7 @@ impl StageVariantID {
     pub const fn is_main(&self) -> bool {
         matches!(
             self,
-            Self::MainChapters | Self::Filibuster | Self::AkuRealms
+            Self::MainChapters | Self::Filibuster | Self::AkuRealms | Self::FilibusterOutbreak
         ) || self.is_outbreak()
     }
 
@@ -83,7 +84,7 @@ impl StageVariantID {
     pub const fn is_outbreak(&self) -> bool {
         matches!(
             self,
-            Self::EocOutbreak | Self::ItfOutbreak | Self::CotcOutbreak
+            Self::EocOutbreak | Self::ItfOutbreak | Self::CotcOutbreak | Self::FilibusterOutbreak
         )
     }
 
@@ -104,7 +105,10 @@ impl StageVariantID {
 
     /// Does variant only have a single stage?
     pub const fn has_single_stage(&self) -> bool {
-        matches!(self, Self::Challenge | Self::Filibuster)
+        matches!(
+            self,
+            Self::Challenge | Self::Filibuster | Self::FilibusterOutbreak
+        )
     }
 
     /// Does variant only have a single map but multiple stages?
