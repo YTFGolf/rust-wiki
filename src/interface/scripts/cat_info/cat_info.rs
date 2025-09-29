@@ -13,7 +13,7 @@ use crate::{
         },
     },
     interface::{
-        config::{cat_config::StatsTemplateVersion, Config},
+        config::{Config, cat_config::StatsTemplateVersion},
         error_handler::InfallibleWrite,
         scripts::cat_info::{
             costs::price_cost,
@@ -243,11 +243,9 @@ fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
     let mut buf = String::from("{{CatCombo|");
 
     let en_names = config.version.en().get_cached_file::<ComboNames>();
+    let jp_names = config.version.jp().get_cached_file::<ComboNames>();
     let combo_name = match en_names.combo_name(i) {
-        None | Some("") => {
-            let jp_names = config.version.jp().get_cached_file::<ComboNames>();
-            jp_names.combo_name(i).unwrap()
-        }
+        None | Some("") => jp_names.combo_name(i).unwrap(),
         Some(name) => name,
     };
     buf += combo_name;
@@ -275,17 +273,16 @@ fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
     };
     buf += combo_intensity;
 
-    // for cat in combo.cats {
-    //     buf += "|" + catname;
-    // }
+    for unit in combo.units.iter() {
+        let form = CatForm::from_repr(unit.form.try_into().unwrap()).unwrap();
+        buf += "|";
+        buf += form.name(unit.id.try_into().unwrap());
+    }
 
-    // buf += "|jpname=";
-    // buf += jpname;
-    // buf += "}}";
+    buf += "|jpname=";
+    buf += jp_names.combo_name(i).unwrap();
+    buf += "}}";
 
-    // // format!("Playing Slayer|"Strong" Effect UP (Sm)|Brave Cat|Dioramos|jpname=龍退治ごっこ}}}}")
-
-    log::warn!("this is just a demonstration");
     buf
 }
 
