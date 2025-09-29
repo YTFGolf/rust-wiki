@@ -84,7 +84,7 @@ pub struct StageTypeDataContainer {
 }
 
 /// Max numeric value of any variant.
-pub const MAX_VARIANT_NUMBER: VariantSize = 37;
+pub const MAX_VARIANT_NUMBER: VariantSize = 38;
 /// [`MAX_VARIANT_NUMBER`], usable as an array index.
 pub const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
 /// Type for the inner data of [`STAGE_TYPES`].
