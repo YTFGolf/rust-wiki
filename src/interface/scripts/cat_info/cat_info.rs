@@ -8,12 +8,12 @@ use crate::{
         },
         raw::{
             combo::{ComboData, CombosDataContainer},
-            combo_local::{ComboEffects, ComboNames},
+            combo_local::{ComboEffects, ComboIntensities, ComboNames},
             desc::get_cat_descriptions,
         },
     },
     interface::{
-        config::{Config, cat_config::StatsTemplateVersion},
+        config::{cat_config::StatsTemplateVersion, Config},
         error_handler::InfallibleWrite,
         scripts::cat_info::{
             costs::price_cost,
@@ -262,6 +262,18 @@ fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
     };
     buf += "|";
     buf += combo_effect;
+
+    let en_intensities = config.version.en().get_cached_file::<ComboIntensities>();
+    let combo_intensity = match en_intensities.intensity_name(combo.intensity_num.into()) {
+        None | Some("") => {
+            let jp_intensities = config.version.jp().get_cached_file::<ComboIntensities>();
+            jp_intensities
+                .intensity_name(combo.intensity_num.into())
+                .unwrap()
+        }
+        Some(intensity) => intensity,
+    };
+    buf += combo_intensity;
 
     // for cat in combo.cats {
     //     buf += "|" + catname;
