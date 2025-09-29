@@ -1,6 +1,8 @@
 //! Deals with the localisation of combo data (combo names, effects etc.)
 
-use crate::game_data::version::{Version, version_data::CacheableVersionData};
+use crate::game_data::version::{
+    Version, lang::VersionLanguage, version_data::CacheableVersionData,
+};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -33,44 +35,56 @@ impl ComboNames {
     }
 }
 
-/*
-    pub fn lines(&self) -> String {
-        [&self.line1, &self.line2, &self.line3]
-            .iter()
-            .filter_map(|line| {
-                let l = line.trim();
-                if l.is_empty() { None } else { Some(l) }
-            })
-            .collect::<Vec<_>>()
-            .join("<br>")
-    }
-}
-
-/// Get descriptions for the unit.
-pub fn get_cat_descriptions(
-    wiki_id: u32,
-    version: &Version,
-) -> Option<impl Iterator<Item = CatDescription>> {
-    let file_name = format!(
-        "Unit_Explanation{inc}_{lang}.csv",
-        inc = wiki_id + 1,
-        lang = version.language()
-    );
+/// Get the names of combo effects.
+pub fn get_effect_names(version: &Version) -> Vec<String> {
+    let file_name = format!("Nyancombo1_{lang}.csv", lang = version.language());
 
     let reader =
-        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).ok()?);
+        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).unwrap());
 
-    Some(reader.lines().map(|line| {
-        let line = line.unwrap();
+    reader
+        .lines()
+        .map(|line| {
+            let line = line.unwrap();
 
-        let delimiter = match version.language() {
-            VersionLanguage::EN | VersionLanguage::KR | VersionLanguage::TW => '|',
-            VersionLanguage::JP => ',',
-            VersionLanguage::Fallback => unreachable!(),
-        };
+            let delimiter = match version.language() {
+                VersionLanguage::EN | VersionLanguage::KR | VersionLanguage::TW => '|',
+                VersionLanguage::JP => ',',
+                VersionLanguage::Fallback => unreachable!(),
+            };
 
-        line.split(delimiter)
-            .collect::<ByteRecord>()
-            .deserialize(None)
-            .unwrap()
-    })) */
+            let mut iter = line.split(delimiter);
+            let effect = iter.next().expect("first item should always exist");
+
+            match iter.next() {
+                None | Some("") => (),
+                _ => panic!("found text after the delimiter"),
+            }
+
+            effect.to_string()
+        })
+        .collect()
+}
+
+#[derive(Debug)]
+/// Combo names for the version.
+pub struct ComboEffects {
+    effects: Vec<String>,
+}
+impl CacheableVersionData for ComboEffects {
+    fn init_data(_: &Path) -> Self {
+        unimplemented!();
+    }
+
+    fn init_data_with_version(version: &Version) -> Self {
+        Self {
+            effects: get_effect_names(version),
+        }
+    }
+}
+impl ComboEffects {
+    /// Get effect name from effect id.
+    pub fn effect_name(&self, ind: usize) -> Option<&str> {
+        self.effects.get(ind).map(String::as_str)
+    }
+}
