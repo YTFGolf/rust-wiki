@@ -159,10 +159,14 @@ pub enum RuleNameLabel {
     UniformMotion,
     /// Plus One: Special.
     PlusOneSpecial,
-    /// Uber Clearance
+    /// Uber Clearance.
     UberClearance,
-    /// Limited Stock
+    /// Limited Stock.
     LimitedStock,
+    /// 二束三文.
+    二束三文,
+    /// 給料日.
+    給料日,
     /// Placeholder.
     Placeholder(String),
 }
@@ -182,6 +186,8 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName010" => Self::PlusOneSpecial,
             "SpecialRuleName011" => Self::UberClearance,
             "SpecialRuleName012" => Self::LimitedStock,
+            "SpecialRuleName013" => Self::二束三文,
+            "SpecialRuleName014" => Self::給料日,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -203,6 +209,8 @@ impl RuleNameLabel {
             RuleNameLabel::PlusOneSpecial => "Plus One: Special",
             RuleNameLabel::UberClearance => "Uber Clearance",
             RuleNameLabel::LimitedStock => "Limited Stock",
+            RuleNameLabel::二束三文 => "二束三文",
+            RuleNameLabel::給料日 => "給料日",
             RuleNameLabel::Placeholder(label) => {
                 panic!("Error: unknown special rule label {label:?}")
             }
