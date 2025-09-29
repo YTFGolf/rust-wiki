@@ -305,7 +305,8 @@ pub fn get_map_wiki_data(map: &MapID) -> &'static MapWikiData {
 pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
     test_invariants(map);
 
-    log::debug!("{map:#?}");
+    // log::debug!("{map:#?}");
+    log::warn!("This is not updated to the latest format");
     let map_wiki_data = get_map_wiki_data(&map.id);
 
     let mut buf = String::new();
