@@ -115,18 +115,20 @@ impl ComboUnit {
 #[derive(Debug, PartialEq, Eq)]
 /// Data about an individual combo.
 pub struct ComboData {
-    unlock_type: ComboUnlockType,
-    units: Vec<ComboUnit>,
+    /// Visibility conditions of the combo.
+    pub unlock_type: ComboUnlockType,
+    /// Units in combo.
+    pub units: Vec<ComboUnit>,
     /// Effect; effect is named in Nyancombo1_en.
-    combo_effect_num: u8,
+    pub effect_num: u8,
     /// Intensity; intensity is named in Nyancombo2_en.
-    combo_intensity_num: u8,
+    pub intensity_num: u8,
 }
 impl From<ComboDataRaw> for ComboData {
     fn from(value: ComboDataRaw) -> Self {
         let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap();
-        let combo_effect_num = value.combo_effect_num;
-        let combo_intensity_num = value.combo_intensity_num;
+        let effect_num = value.combo_effect_num;
+        let intensity_num = value.combo_intensity_num;
 
         let mut units = Vec::new();
 
@@ -145,8 +147,8 @@ impl From<ComboDataRaw> for ComboData {
         Self {
             unlock_type,
             units,
-            combo_effect_num,
-            combo_intensity_num,
+            effect_num,
+            intensity_num,
         }
     }
 }

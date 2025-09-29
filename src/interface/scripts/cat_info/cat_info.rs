@@ -8,7 +8,7 @@ use crate::{
         },
         raw::{
             combo::{ComboData, CombosDataContainer},
-            combo_local::ComboNames,
+            combo_local::{ComboEffects, ComboNames},
             desc::get_cat_descriptions,
         },
     },
@@ -239,7 +239,7 @@ fn appearance(cat: &Cat) -> Template {
         .add_params((cat.forms.amt_forms >= 4).then(|| P::new("image4", format!("{id:03} 4.png"))))
 }
 
-fn fmt_combo(i: usize, _combo: &ComboData, config: &Config) -> String {
+fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
     let mut buf = String::from("{{CatCombo|");
 
     let en_names = config.version.en().get_cached_file::<ComboNames>();
@@ -252,16 +252,16 @@ fn fmt_combo(i: usize, _combo: &ComboData, config: &Config) -> String {
     };
     buf += combo_name;
 
-    // let combo_effect = todo!();
-    //     let en_names = config.version.en().get_cached_file::<ComboNames>();
-    // let combo_name = match en_names.combo_name(i) {
-    //     None | Some("") => {
-    //         let jp_names = config.version.jp().get_cached_file::<ComboNames>();
-    //         jp_names.combo_name(i).unwrap()
-    //     }
-    //     Some(name) => name,
-    // };
-    // buf += combo_effect;
+    let en_effects = config.version.en().get_cached_file::<ComboEffects>();
+    let combo_effect = match en_effects.effect_name(combo.effect_num.into()) {
+        None | Some("") => {
+            let jp_effects = config.version.jp().get_cached_file::<ComboEffects>();
+            jp_effects.effect_name(combo.effect_num.into()).unwrap()
+        }
+        Some(effect) => effect,
+    };
+    buf += "|";
+    buf += combo_effect;
 
     // for cat in combo.cats {
     //     buf += "|" + catname;
