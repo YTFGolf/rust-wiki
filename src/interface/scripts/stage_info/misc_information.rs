@@ -37,6 +37,7 @@ pub fn chapter(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePara
         | T::ItfOutbreak
         | T::CotcOutbreak
         | T::Filibuster
+        | T::FilibusterOutbreak
         | T::AkuRealms => vec![],
         T::SoL | T::UL | T::ZL => vec![TemplateParameter::new(
             "sub-chapter",

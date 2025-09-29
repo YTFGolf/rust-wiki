@@ -38,7 +38,7 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
         T::Colosseum => Some(Preset::Colosseum),
         T::Dojo | T::RankingDojo | T::Championships => None,
         //
-        T::MainChapters | T::Filibuster | T::AkuRealms => None,
+        T::MainChapters | T::Filibuster | T::AkuRealms | T::FilibusterOutbreak => None,
         //
         T::EocOutbreak | T::ItfOutbreak | T::CotcOutbreak => None,
         //
@@ -55,7 +55,9 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
 
 /// Get full map info.
 pub fn get_map_info(map: &GameMap, config: &Config) -> String {
-    let preset = get_preset(map.id.variant()).unwrap();
+    let Some(preset) = get_preset(map.id.variant()) else {
+        unimplemented!("variant {var:?} is not supported", var = map.id.variant());
+    };
     match preset {
         Preset::Legend => get_legend_map(map, config),
         Preset::Event => get_event_map(map, config),

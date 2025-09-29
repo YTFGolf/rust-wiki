@@ -49,6 +49,7 @@ mod order {
         T::ItfOutbreak,
         T::CotcOutbreak,
         T::Filibuster,
+        T::FilibusterOutbreak,
         T::AkuRealms,
         //
         T::SoL,
@@ -100,7 +101,7 @@ mod order {
 
     const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
     // doctest would cause visibility nightmares so just use const assert
-    const _: () = assert!(TYPE_ORDER_INDICES[T::Labyrinth as usize] == 15);
+    const _: () = assert!(TYPE_ORDER_INDICES[T::Labyrinth as usize] == 16);
     // just to make sure I can count
     const _: () = assert!(TYPE_ORDER_INDICES[T::Extra as usize] == STYPE_AMT - 1);
 
@@ -169,6 +170,7 @@ fn raw_section(stage: &StageID) -> SectionRef {
         T::ItfOutbreak => Ref::ItfOutbreak,
         T::CotcOutbreak => Ref::CotcOutbreak,
         T::Filibuster => Ref::CotC,
+        T::FilibusterOutbreak => Ref::CotcOutbreak,
         T::AkuRealms => Ref::AkuRealms,
         T::SoL => Ref::SoL,
         T::UL => Ref::UL,

@@ -10,6 +10,7 @@ pub enum CustomVariantID {
     ItfOutbreak,
     CotcOutbreak,
     Filibuster,
+    FilibusterOutbreak
 }
 impl CustomVariantID {
     fn new(variant: StageVariantID) -> Option<Self> {
@@ -20,6 +21,7 @@ impl CustomVariantID {
             T::ItfOutbreak => Self::ItfOutbreak,
             T::CotcOutbreak => Self::CotcOutbreak,
             T::Filibuster => Self::Filibuster,
+            T::FilibusterOutbreak => Self::FilibusterOutbreak,
             _ => return None,
         };
         Some(custom)
@@ -47,5 +49,6 @@ mod tests {
                 assert!(CustomVariantID::new(data.variant_id).is_none());
             }
         }
+        todo!("this didn't cause an error before filibuster was added")
     }
 }

@@ -56,6 +56,8 @@ pub fn parse_stage_file(file_name: &str) -> Result<StageID, StageTypeParseError>
         return Err(StageTypeParseError::InvalidFormat);
     } else if file_name == "stageSpace09_Invasion_00.csv" {
         return Ok(StageID::from_components(T::Filibuster, 0, 0));
+    } else if file_name == "stageSpace09_Invasion_Z_00.csv" {
+        return Ok(StageID::from_components(T::FilibusterOutbreak, 0, 0));
     }
     // Err if not a file.
     // Filibuster only has 1 file and doesn't follow the general pattern, so do

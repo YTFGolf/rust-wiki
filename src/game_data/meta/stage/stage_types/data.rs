@@ -31,36 +31,37 @@ const fn init(
 pub const SELECTOR_SEPARATOR: char = ' ';
 #[rustfmt::skip]
 /// Stage types container.
-pub const RAW_STAGE_TYPES: [StageType; 24] = [
+pub const RAW_STAGE_TYPES: [StageType; 25] = [
     // Matcher is possible common names for the stage type, separated by a pipe
     // character.
-    init("Stories of Legend",            Some("N"),  C::RPrefix,     T::SoL,            "SoL"),
-    init("Event Stages",                 Some("S"),  C::RPrefix,     T::Event,          "Event|Special"),
-    init("Collaboration Stages",         Some("C"),  C::RPrefix,     T::Collab,         "Collab"),
-    init("Main Chapters",                None,       C::Custom,      T::MainChapters,   "main|EoC|ItF|W|CotC|Space"),
-    init("Extra Stages",                 Some("RE"), C::Other("EX"), T::Extra,          "Extra"),
-    init("Catclaw Dojo",                 Some("T"),  C::RPrefix,     T::Dojo,           "Dojo"),
-    init("Towers",                       Some("V"),  C::RPrefix,     T::Tower,          "Tower"),
-    init("Ranking Dojo",                 Some("R"),  C::RPrefix,     T::RankingDojo,    "Rank"),
-    init("Challenge Battle",             Some("M"),  C::RPrefix,     T::Challenge,      "Challenge"),
+    init("Stories of Legend",            Some("N"),  C::RPrefix,     T::SoL,                "SoL"),
+    init("Event Stages",                 Some("S"),  C::RPrefix,     T::Event,              "Event|Special"),
+    init("Collaboration Stages",         Some("C"),  C::RPrefix,     T::Collab,             "Collab"),
+    init("Main Chapters",                None,       C::Custom,      T::MainChapters,       "main|EoC|ItF|W|CotC|Space"),
+    init("Extra Stages",                 Some("RE"), C::Other("EX"), T::Extra,              "Extra"),
+    init("Catclaw Dojo",                 Some("T"),  C::RPrefix,     T::Dojo,               "Dojo"),
+    init("Towers",                       Some("V"),  C::RPrefix,     T::Tower,              "Tower"),
+    init("Ranking Dojo",                 Some("R"),  C::RPrefix,     T::RankingDojo,        "Rank"),
+    init("Challenge Battle",             Some("M"),  C::RPrefix,     T::Challenge,          "Challenge"),
 
-    init("Uncanny Legends",              Some("NA"), C::RPrefix,     T::UL,             "UL"),
-    init("Catamin Stages",               Some("B"),  C::RPrefix,     T::Catamin,        "Catamin"),
-    // init("Legend Quest",                 Some("D"),  C::Map,         T::LegendQuest,    "Haha"),
-    init("Empire of Cats Outbreaks",     None,       C::Custom,      T::EocOutbreak,    "eocZ"),
-    init("Into the Future Outbreaks",    None,       C::Custom,      T::ItfOutbreak,    "itfZ"),
-    init("Cats of the Cosmos Outbreaks", None,       C::Custom,      T::CotcOutbreak,   "cotcZ"),
-    init("Filibuster Invasion",          None,       C::Custom,      T::Filibuster,     "Filibuster"),
-    init("Gauntlets",                    Some("A"),  C::RPrefix,     T::Gauntlet,       "Gauntlet|Baron"),
-    init("Enigma Stages",                Some("H"),  C::RPrefix,     T::Enigma,         "Enigma"),
-    init("Collab Gauntlets",             Some("CA"), C::RPrefix,     T::CollabGauntlet, ""),
+    init("Uncanny Legends",              Some("NA"), C::RPrefix,     T::UL,                 "UL"),
+    init("Catamin Stages",               Some("B"),  C::RPrefix,     T::Catamin,            "Catamin"),
+    // init("Legend Quest",                 Some("D"),  C::Map,         T::LegendQuest,        "Haha"),
+    init("Empire of Cats Outbreaks",     None,       C::Custom,      T::EocOutbreak,        "eocZ"),
+    init("Into the Future Outbreaks",    None,       C::Custom,      T::ItfOutbreak,        "itfZ"),
+    init("Cats of the Cosmos Outbreaks", None,       C::Custom,      T::CotcOutbreak,       "cotcZ"),
+    init("Filibuster Invasion",          None,       C::Custom,      T::Filibuster,         "Filibuster"),
+    init("Gauntlets",                    Some("A"),  C::RPrefix,     T::Gauntlet,           "Gauntlet|Baron"),
+    init("Enigma Stages",                Some("H"),  C::RPrefix,     T::Enigma,             "Enigma"),
+    init("Collab Gauntlets",             Some("CA"), C::RPrefix,     T::CollabGauntlet,     ""),
 
-    init("Aku Realms",                   Some("DM"), C::Map,         T::AkuRealms,      "Aku"),
-    init("Behemoth Culling",             Some("Q"),  C::RPrefix,     T::Behemoth,       "Behemoth"),
-    init("Labyrinth",                    Some("L"),  C::Map,         T::Labyrinth,      "Labyrinth"),
-    init("Zero Legends",                 Some("ND"), C::RPrefix,     T::ZL,             "ZL"),
-    init("Colosseum",                    Some("SR"), C::RPrefix,     T::Colosseum,      "Colosseum"),
-    init("Catclaw Championships",        Some("G"),  C::Map,         T::Championships,  "Championships"),
+    init("Aku Realms",                   Some("DM"), C::Map,         T::AkuRealms,          "Aku"),
+    init("Behemoth Culling",             Some("Q"),  C::RPrefix,     T::Behemoth,           "Behemoth"),
+    init("Labyrinth",                    Some("L"),  C::Map,         T::Labyrinth,          "Labyrinth"),
+    init("Zero Legends",                 Some("ND"), C::RPrefix,     T::ZL,                 "ZL"),
+    init("Colosseum",                    Some("SR"), C::RPrefix,     T::Colosseum,          "Colosseum"),
+    init("Catclaw Championships",        Some("G"),  C::Map,         T::Championships,      "Championships"),
+    init("Filibuster Invasion Outbreak", None,       C::Custom,      T::FilibusterOutbreak, "FilibusterZ"),
 ];
 
 // -----------------------------------------------------------------------------

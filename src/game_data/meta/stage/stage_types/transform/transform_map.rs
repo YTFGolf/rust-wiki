@@ -17,6 +17,7 @@ pub fn map_data_file(map_id: &MapID) -> String {
 
     match variant {
         T::Filibuster => "stageNormal2_2_Invasion.csv".into(),
+        T::FilibusterOutbreak => "stageNormal2_2_Invasion_Z.csv".into(),
         T::MainChapters => {
             let main = map_id
                 .main_type()

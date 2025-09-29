@@ -98,9 +98,18 @@ pub fn parse_map_file(file_name: &str) -> Result<MapID, StageTypeParseError> {
     // cursor is around 2_2_|I
 
     match remaining_chars.next().unwrap() {
-        'Z' => Ok(MapID::from_numbers(chap_num + 20, map_num)),
-        'I' => Ok(MapID::from_components(T::Filibuster, 0)),
+        'Z' => return Ok(MapID::from_numbers(chap_num + 20, map_num)),
+        'I' => (),
         // I for Invasion
+        _ => return Err(StageTypeParseError::InvalidFormat),
+    }
+
+    // - stageNormal2_2_Invasion.csv = filibuster
+    // - stageNormal2_2_Invasion_Z.csv = filibuster outbreak
+    let mut remaining_chars = remaining_chars.skip("nvasion".len());
+    match remaining_chars.next().unwrap() {
+        '.' => Ok(MapID::from_components(T::Filibuster, 0)),
+        '_' => Ok(MapID::from_components(T::FilibusterOutbreak, 0)),
         _ => Err(StageTypeParseError::InvalidFormat),
     }
 }

@@ -76,7 +76,7 @@ impl EncountersSection {
             return;
         }
 
-        if id.variant() == T::Filibuster {
+        if matches!(id.variant(), T::Filibuster | T::FilibusterOutbreak) {
             write!(buf, "Stage 3-IN: {name}",).unwrap();
             return;
         }
