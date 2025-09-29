@@ -10,7 +10,7 @@ pub enum CustomVariantID {
     ItfOutbreak,
     CotcOutbreak,
     Filibuster,
-    FilibusterOutbreak
+    FilibusterOutbreak,
 }
 impl CustomVariantID {
     fn new(variant: StageVariantID) -> Option<Self> {
