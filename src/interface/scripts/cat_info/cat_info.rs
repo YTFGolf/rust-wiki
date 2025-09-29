@@ -239,12 +239,28 @@ fn appearance(cat: &Cat) -> Template {
         .add_params((cat.forms.amt_forms >= 4).then(|| P::new("image4", format!("{id:03} 4.png"))))
 }
 
-fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
-    // let mut buf = String::from("{{CatCombo|");
+fn fmt_combo(i: usize, _combo: &ComboData, config: &Config) -> String {
+    let mut buf = String::from("{{CatCombo|");
 
-    // let combo_name = todo!();
-    // buf += combo_name;
+    let en_names = config.version.en().get_cached_file::<ComboNames>();
+    let combo_name = match en_names.combo_name(i) {
+        None | Some("") => {
+            let jp_names = config.version.jp().get_cached_file::<ComboNames>();
+            jp_names.combo_name(i).unwrap()
+        }
+        Some(name) => name,
+    };
+    buf += combo_name;
+
     // let combo_effect = todo!();
+    //     let en_names = config.version.en().get_cached_file::<ComboNames>();
+    // let combo_name = match en_names.combo_name(i) {
+    //     None | Some("") => {
+    //         let jp_names = config.version.jp().get_cached_file::<ComboNames>();
+    //         jp_names.combo_name(i).unwrap()
+    //     }
+    //     Some(name) => name,
+    // };
     // buf += combo_effect;
 
     // for cat in combo.cats {
@@ -256,10 +272,9 @@ fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
     // buf += "}}";
 
     // // format!("Playing Slayer|"Strong" Effect UP (Sm)|Brave Cat|Dioramos|jpname=龍退治ごっこ}}}}")
-    // buf
-    let en_names = config.version.en().get_cached_file::<ComboNames>();
+
     log::warn!("this is just a demonstration");
-    en_names.combo_name(i).unwrap().to_string()
+    buf
 }
 
 fn combos(cat: &Cat, config: &Config) -> Option<Section> {
@@ -315,3 +330,34 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
 talents
 combos
 */
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn no_combos() {
+        todo!()
+    }
+
+    #[test]
+    fn one_combo() {
+        todo!()
+    }
+
+    #[test]
+    fn in_removed_combos() {
+        // cat, 0
+        todo!()
+    }
+
+    #[test]
+    fn multiple_combos() {
+        // ururun, 130
+        todo!()
+    }
+
+    #[test]
+    fn jp_only_combos() {
+        // dn105, 542
+        todo!()
+    }
+}
