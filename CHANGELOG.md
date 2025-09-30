@@ -13,11 +13,31 @@ subheading.
 
 ## [Unreleased]
 
+### 14.7
+
+- Freeze Dojo rule.
+- New Colosseum rules.
+- Filibuster invasion outbreak stage type + a whole lot of custom logic to deal
+  with it (main chapters suck).
+
 ### Added
+
+- Cat info: intro, appearance, evolution, combos, cost, upgrade cost<!--, catfruit evolution-->.
+- Category and `Display` for cat rarity.
+- `CacheableVersionData::init_data_with_version`, which allows `init_data` to be
+  implemented with access to the version object.
+- `Version::location()` as a public method.
+- `CatForm::from_repr`
+- Let cat form names return an option.
+- Dojo time limit.
+- Other `SectionTitle` options.
 
 ### Fixed
 
 ### Changed
+
+- Moved evolution items out of private test file.
+- `get_cat_descriptions` returns an option.
 
 ### Removed
 
