@@ -3,6 +3,7 @@
 use crate::game_data::cat::raw::unitbuy::UnitBuyRaw;
 use std::{fmt::Display, num::NonZero};
 use strum::{EnumIter, FromRepr};
+pub mod evolution_items;
 mod tests;
 
 #[repr(u8)]

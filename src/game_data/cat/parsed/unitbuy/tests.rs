@@ -3,7 +3,12 @@
 use super::*;
 use crate::{
     TEST_CONFIG,
-    game_data::{cat::raw::unitbuy::UnitBuyContainer, version::Version},
+    game_data::{
+        cat::{
+            parsed::unitbuy::evolution_items::EvolutionItemVariant, raw::unitbuy::UnitBuyContainer,
+        },
+        version::Version,
+    },
 };
 use strum::IntoEnumIterator;
 
@@ -45,38 +50,6 @@ const UR_COSTS: [u32; 10] = [
     7_800, 9_800, 14_800, 21_800, 42_500, 64_300, 93_200, 118_000, 197_400, 513_500,
 ];
 
-#[allow(dead_code)]
-/// Shorthand to give names to item ids.
-// TODO this should be somewhere else and only imported from here.
-enum EvolutionItemVariant {
-    Nothing = 0,
-    PurpleSeed = 30,
-    RedSeed = 31,
-    BlueSeed = 32,
-    GreenSeed = 33,
-    YellowSeed = 34,
-    PurpleFruit = 35,
-    RedFruit = 36,
-    BlueFruit = 37,
-    GreenFruit = 38,
-    YellowFruit = 39,
-    EpicFruit = 40,
-    ElderSeed = 41,
-    ElderFruit = 42,
-    EpicSeed = 43,
-    GoldFruit = 44,
-    PurpleStone = 167,
-    RedStone = 168,
-    BlueStone = 169,
-    GreenStone = 170,
-    YellowStone = 171,
-    PurpleGem = 179,
-    RedGem = 180,
-    BlueGem = 181,
-    GreenGem = 182,
-    YellowGem = 183,
-    EpicStone = 184,
-}
 type I = EvolutionItemVariant;
 
 const fn evol_item(id: EvolutionItemVariant, amt: u8) -> EvolutionItem {
