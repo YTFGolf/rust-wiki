@@ -172,14 +172,14 @@ impl CombosDataContainer {
         &self.combos
     }
 
-    /// Filter all combos by the cat id.
+    /// Filter all non-removed combos by the cat id.
     ///
     /// Response is enumerated because otherwise the combo data is useless.
     pub fn by_cat_id(&self, id: i16) -> impl Iterator<Item = (usize, &ComboData)> {
-        self.combos
-            .iter()
-            .enumerate()
-            .filter(move |(_, com)| com.units.iter().any(|cat| cat.id == id))
+        self.combos.iter().enumerate().filter(move |(_, com)| {
+            com.unlock_type != ComboUnlockType::Unavailable
+                && com.units.iter().any(|cat| cat.id == id)
+        })
     }
 }
 
