@@ -49,6 +49,5 @@ mod tests {
                 assert!(CustomVariantID::new(data.variant_id).is_none());
             }
         }
-        todo!("this didn't cause an error before filibuster was added")
     }
 }
