@@ -1,12 +1,14 @@
 //! Script for cat info.
 
+use num_format::{Locale, ToFormattedString};
+
 use crate::{
     game_data::cat::{
         parsed::{
             cat::{Cat, CatDataError},
-            unitbuy::{EvolutionType, Rarity},
+            unitbuy::{EvolutionType, Rarity, evolution_items::EvolutionItemVariant},
         },
-        raw::desc::get_cat_descriptions,
+        raw::{desc::get_cat_descriptions, evolution_desc::EvolutionDescriptions},
     },
     interface::{
         config::{Config, cat_config::StatsTemplateVersion},
@@ -25,7 +27,7 @@ use crate::{
         template::{Template, TemplateParameter},
     },
 };
-use std::fmt::Write;
+use std::fmt::{Debug, Write};
 
 /// "Description" template.
 fn get_descs(cat: &Cat, config: &Config) -> Template {
@@ -230,6 +232,87 @@ fn appearance(cat: &Cat) -> Template {
         .add_params((cat.forms.amt_forms >= 4).then(|| P::new("image4", format!("{id:03} 4.png"))))
 }
 
+fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
+    const TITLE: &str = "Catfruit Evolution";
+    type P = TemplateParameter;
+    let Some(tf) = &cat.unitbuy.true_evol else {
+        return None;
+    };
+
+    let tf = match &tf.etype {
+        EvolutionType::Levels { .. } | EvolutionType::Other => return None,
+        EvolutionType::Catfruit(catfruit_evolution) => catfruit_evolution,
+    };
+
+    let egg = &cat.unitbuy.misc.egg_info;
+    let mut t = Template::named(TITLE)
+        .add_params(P::new("Evolved Name", CatForm::Evolved.name(cat.id)))
+        .add_params(P::new(
+            "Evolved Image",
+            CatForm::Evolved.deploy_icon(cat.id, egg),
+        ))
+        .add_params(P::new("True Name", CatForm::True.name(cat.id)))
+        .add_params(P::new("True Image", CatForm::True.deploy_icon(cat.id, egg)));
+
+    let en_descriptions = config
+        .version
+        .en()
+        .get_cached_file::<EvolutionDescriptions>();
+    let desc = match en_descriptions.evolution_desc(cat.id.try_into().unwrap()) {
+        None => {
+            let jp_descriptions = config
+                .version
+                .jp()
+                .get_cached_file::<EvolutionDescriptions>();
+            jp_descriptions
+                .evolution_desc(cat.id.try_into().unwrap())
+                .unwrap()
+                .tf()
+        }
+        Some(desc) => desc.tf(),
+    };
+    t.push_params(P::new("True Description", desc));
+
+    let mut to_extend = vec![];
+    for (i, item) in tf.item_cost.iter().enumerate() {
+        let value = match EvolutionItemVariant::from_repr(item.item_id.into()) {
+            None => format!("zukan_{id}", id = item.item_id),
+            Some(v) => match v {
+                EvolutionItemVariant::Nothing => continue,
+                v => format!("{v:?}"),
+            },
+        };
+
+        let key = format!("Catfruit{}", i + 1);
+        to_extend.push(P::new(
+            "Quantity ".to_string() + &key,
+            format!("x{}", item.item_amt),
+        ));
+        // need to do this first as using key to format
+        t.push_params(P::new(key, value));
+    }
+    t.push_params(to_extend.into_iter());
+
+    t.push_params(P::new(
+        "Quantity XP",
+        tf.xp_cost.to_formatted_string(&Locale::en),
+    ));
+
+    // |Ultra Name = Ascendant Dioramos
+    // |Ultra Image = Uni177 u00.png
+    // |Ultra Description = 体力と攻撃力が上昇し攻撃範囲が拡大！<br>さらにエイリアンを必ずふっとばして<br>動きを遅くする能力を取得！
+    // |Catfruit1 Ultra = YellowStone
+    // |Catfruit2 Ultra = BlueStone
+    // |Catfruit3 Ultra = YellowFruit
+    // |Catfruit4 Ultra = BlueFruit
+    // |Quantity Catfruit1 Ultra = x2
+    // |Quantity Catfruit2 Ultra = x5
+    // |Quantity Catfruit3 Ultra = x5
+    // |Quantity Catfruit4 Ultra = x5
+    // |Quantity XP Ultra = 2,000,000
+    Some(Section::h2(TITLE, t.to_string()))
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -257,6 +340,9 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         StatsTemplateVersion::Manual => stats_manual(&cat, config),
     };
     page.push(Section::h2("Stats", stats.to_string()));
+    if let Some(cf_evo) = catfruit_evolution(&cat, config) {
+        page.push(cf_evo);
+    }
 
     Ok(page)
 }
