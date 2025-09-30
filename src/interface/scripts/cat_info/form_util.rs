@@ -1,5 +1,5 @@
 //! Utility functions for templates.
-use crate::wiki_data::cat_data::CAT_DATA;
+use crate::{game_data::cat::parsed::unitbuy::AncientEggInfo, wiki_data::cat_data::CAT_DATA};
 use strum::FromRepr;
 
 #[repr(usize)]
@@ -38,6 +38,24 @@ impl CatForm {
             Self::Evolved => CAT_DATA.get_cat(id).evolved.as_ref(),
             Self::True => CAT_DATA.get_cat(id).true_form.as_ref(),
             Self::Ultra => CAT_DATA.get_cat(id).ultra.as_ref(),
+        }
+    }
+}
+
+impl CatForm {
+    /// Cat's in-battle deploy icon.
+    pub fn deploy_icon(self, id: u32, eggs: &AncientEggInfo) -> String {
+        match self {
+            CatForm::Normal => match eggs {
+                AncientEggInfo::None => format!("Uni{id:03} f00.png"),
+                AncientEggInfo::Egg { normal, .. } => format!("Uni{normal:03} m00.png"),
+            },
+            CatForm::Evolved => match eggs {
+                AncientEggInfo::None => format!("Uni{id:03} c00.png"),
+                AncientEggInfo::Egg { evolved, .. } => format!("Uni{evolved:03} m01.png"),
+            },
+            CatForm::True => format!("Uni{id:03} s00.png"),
+            CatForm::Ultra => format!("Uni{id:03} u00.png"),
         }
     }
 }

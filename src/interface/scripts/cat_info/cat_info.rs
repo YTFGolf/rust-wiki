@@ -4,7 +4,7 @@ use crate::{
     game_data::cat::{
         parsed::{
             cat::{Cat, CatDataError},
-            unitbuy::{AncientEggInfo, EvolutionType, Rarity},
+            unitbuy::{EvolutionType, Rarity},
         },
         raw::desc::get_cat_descriptions,
     },
@@ -42,23 +42,17 @@ fn get_descs(cat: &Cat, config: &Config) -> Template {
 
     {
         let id = cat.id;
-        let (form1, form2) = match cat.unitbuy.misc.egg_info {
-            AncientEggInfo::None => (format!("Uni{id:03} f00.png"), format!("Uni{id:03} c00.png")),
-            AncientEggInfo::Egg { normal, evolved } => (
-                format!("Uni{normal:03} m00.png"),
-                format!("Uni{evolved:03} m01.png"),
-            ),
-        };
+        let eggs = &cat.unitbuy.misc.egg_info;
 
-        descs.push_params(P::new("Image1", form1));
+        descs.push_params(P::new("Image1", CatForm::Normal.deploy_icon(id, eggs)));
         if cat.forms.amt_forms >= 2 {
-            descs.push_params(P::new("Image2", form2));
+            descs.push_params(P::new("Image2", CatForm::Evolved.deploy_icon(id, eggs)));
         }
         if cat.forms.amt_forms >= 3 {
-            descs.push_params(P::new("Image3", format!("Uni{id:03} s00.png")));
+            descs.push_params(P::new("Image3", CatForm::True.deploy_icon(id, eggs)));
         }
         if cat.forms.amt_forms >= 4 {
-            descs.push_params(P::new("Image4", format!("Uni{id:03} u00.png")));
+            descs.push_params(P::new("Image4", CatForm::Ultra.deploy_icon(id, eggs)));
         }
     }
 
