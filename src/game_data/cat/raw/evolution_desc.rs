@@ -105,6 +105,13 @@ impl CacheableVersionData for EvolutionDescriptions {
     }
 }
 
+impl EvolutionDescriptions {
+    /// Get the cat's evolution description.
+    pub fn get_cat_evolution_desc(&self, id: usize) -> Option<&EvolutionDescription> {
+        self.descs.get(id)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
