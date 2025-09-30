@@ -104,3 +104,35 @@ impl CacheableVersionData for EvolutionDescriptions {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::TEST_CONFIG;
+
+    #[test]
+    fn assert_blanks() {
+        fn do_version(version: &Version) {
+            for (i, desc) in get_evolution_descriptions(version).into_iter().enumerate() {
+                assert!(
+                    desc._maybe_blank == AT
+                        || desc._maybe_blank.is_empty()
+                        || desc.name_comment.is_empty(),
+                    // if name comment is empty then has been shifted
+                    // erroneously and name comment has been serde defaulted, in
+                    // which case it will be empty
+                    "Description with id {i} doesn't have {AT}. {desc:?}"
+                );
+                let comment = &desc.name_comment;
+                assert!(
+                    comment.trim().starts_with("//") || comment.is_empty() || comment == AT,
+                    "Description with id {i} has a weird order. {desc:?}"
+                );
+            }
+        }
+        do_version(TEST_CONFIG.version.en());
+        do_version(TEST_CONFIG.version.jp());
+        do_version(TEST_CONFIG.version.kr());
+        do_version(TEST_CONFIG.version.tw());
+    }
+}
