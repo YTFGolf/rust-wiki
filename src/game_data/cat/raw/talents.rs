@@ -2,8 +2,8 @@
 
 #![allow(non_snake_case, dead_code)]
 
-use csv::ByteRecord;
 use std::{
+    any::type_name,
     fmt::Debug,
     fs::File,
     io::{BufRead, BufReader},
@@ -14,8 +14,8 @@ use std::{
 /// Talents block.
 #[derive(Debug, Default)] // default is only for now
 pub struct TalentsFixed {
-    ID: u8,
-    typeID: u8,
+    ID: u16,
+    typeID: u16,
 }
 
 /// Repeated group of talents.
@@ -23,17 +23,17 @@ pub struct TalentsFixed {
 pub struct TalentGroup {
     abilityID_X: u8,
     MAXLv_X: u8,
-    min_X1: u8,
-    max_X1: u8,
-    min_X2: u8,
-    max_X2: u8,
-    min_X3: u8,
-    max_X3: u8,
-    min_X4: u8,
-    max_X4: u8,
+    min_X1: u16,
+    max_X1: u16,
+    min_X2: u16,
+    max_X2: u16,
+    min_X3: u16,
+    max_X3: u16,
+    min_X4: u16,
+    max_X4: u16,
     textID_X: u8,
-    LvID_X: i8,
-    nameID_X: u8,
+    LvID_X: u8,
+    nameID_X: i16,
     limit_X: u8,
 }
 const AMT_GROUPS: usize = 8;
@@ -67,7 +67,7 @@ fn get_talents_file(path: &Path) -> Vec<Talents> {
                 line[i].parse().unwrap_or_else(|_| {
                     if i < FIXED_LEN {
                         panic!(
-                            "error when attempting to parse index {i} into {tname}: {field:?}",
+                            "error when attempting to parse fixed index {i} into {tname}: {field:?}",
                             tname = type_name::<T>(),
                             field = line[i]
                         );
