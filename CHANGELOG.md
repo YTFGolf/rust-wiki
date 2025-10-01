@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.7.4] - 2025-10-01
+
 Due to the sheer amount of work required for talents I decided to call this one
 early.
 
@@ -39,14 +49,10 @@ early.
 - Stats template 0.2.
 - Talents parser (still incomplete).
 
-### Fixed
-
 ### Changed
 
 - Moved evolution items out of private test file.
 - `get_cat_descriptions` returns an option.
-
-### Removed
 
 ## [0.7.3] - 2025-09-27
 
@@ -412,7 +418,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.3...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.4...dev
+[0.7.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.0...v0.7.1
