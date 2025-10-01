@@ -1,7 +1,7 @@
 //! Module that deals with `unitbuy.csv` data.
 
 use crate::game_data::version::version_data::CacheableVersionData;
-use csv::{ByteRecord, Error};
+use csv::ByteRecord;
 use std::{fmt::Debug, path::Path};
 
 #[derive(Debug, serde::Deserialize, Default)]
@@ -121,7 +121,7 @@ pub struct UnitBuyRaw {
     pub rest: Vec<i32>,
 }
 
-fn parse_unitbuy_error(e: &Error, result: &ByteRecord) -> impl Debug {
+fn parse_unitbuy_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
     let index = match e.kind() {
         csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
         _ => unimplemented!(),
