@@ -1,5 +1,7 @@
 //! Parsed talents object.
 
+use std::num::NonZeroUsize;
+
 use strum::FromRepr;
 
 /// New targets that talents implicitly enable.
@@ -23,6 +25,51 @@ pub enum TalentTargets {
     Unknown1 = 9,
     Unknown2 = 10,
     MaybeAku = 11,
+
+    /// Only use this to avoid having to panic in this module.
+    AsYetUnknown = 99,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr)]
+#[repr(u8)]
+/// Talent
+pub enum TalentType {
+    /// Level 30.
+    Normal = 0,
+    /// Level 60.
+    Ultra = 1,
+}
+
+struct SingleTalent {
+    ability_id: NonZeroUsize,
+    max_level: usize,
+    params: Vec<(u16, u16)>,
+    skillDescriptionId: usize,
+    // skillCosts:todo!(),
+    nameIdOrSomething: i16,
+    ttype: TalentType,
+}
+
+struct Talents {
+    unit_id: usize,
+    implicit_targets: Vec<TalentTargets>,
+    normal: Vec<SingleTalent>,
+    ultra: Vec<SingleTalent>,
+}
+impl Talents {
+    fn get_targets(target_mask: u16) -> Vec<TalentTargets> {
+        (0..12)
+            .filter_map(|i| {
+                let target_bit = target_mask & (1 << i);
+                // will be 0 if bit i is 0, 2^i if bit i is 1
+                if target_bit == 0 {
+                    return None;
+                }
+
+                return Some(TalentTargets::from_repr(i).unwrap_or(TalentTargets::AsYetUnknown));
+            })
+            .collect()
+    }
 }
 
 #[cfg(test)]
@@ -43,17 +90,7 @@ mod tests {
                 continue;
             }
 
-            (0..12).for_each(|i| {
-                let target_bit = talents.fixed.type_id & (1 << i);
-                // will be 0 if bit i is 0, 2^i if bit i is 1
-                if target_bit == 0 {
-                    return;
-                }
-
-                let target = TalentTargets::from_repr(i);
-
-                println!("{target:?}");
-            });
+            println!("{:?}", Talents::get_targets(talents.fixed.type_id));
 
             // println!("{}", 0b100111111111);
             // println!("{:#b}", 2559);
