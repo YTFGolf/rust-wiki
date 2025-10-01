@@ -9,13 +9,14 @@ use std::{
 const WIKI_URL: &str = "https://battlecats.miraheze.org/wiki";
 
 /// (`file_name`, `page_name`)
-const FILES: [(&str, &str); 7] = [
+const FILES: [(&str, &str); 8] = [
     ("StageNames.csv", "User:TheWWRNerdGuy/data/StageNames.csv"),
     (
         "EnemyLinkData.csv",
         "User:TheWWRNerdGuy/data/EnemyLinkData.csv",
     ),
     ("Treasures.csv", "User:TheWWRNerdGuy/data/Treasures.csv"),
+    ("TalentNames.csv", "User:TheWWRNerdGuy/data/TalentNames.csv"),
     ("Difficulty.txt", "User:Novastrala/Difficulty.txt"),
     ("UnitNames.csv", "Module:Cats/names.csv"),
     ("EnemyNames.csv", "Module:Enemies.csv"),
