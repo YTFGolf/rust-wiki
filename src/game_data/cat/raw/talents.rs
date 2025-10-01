@@ -67,7 +67,8 @@ fn get_talents_file(path: &Path) -> Vec<Talents> {
                 line[i].parse().unwrap_or_else(|_| {
                     if i < FIXED_LEN {
                         panic!(
-                            "error when attempting to parse index {i}: {field}",
+                            "error when attempting to parse index {i} into {tname}: {field:?}",
+                            tname = type_name::<T>(),
                             field = line[i]
                         );
                     }
@@ -75,39 +76,37 @@ fn get_talents_file(path: &Path) -> Vec<Talents> {
                     let j = (i - FIXED_LEN) / GROUP_LEN;
                     let k = (i - FIXED_LEN) % GROUP_LEN;
                     panic!(
-                        "error when attempting to parse index {i}/{j}-{k}: {field}",
+                        "error when attempting to parse index {i}/{j}.{k} into {tname}: {field:?}",
+                        tname = type_name::<T>(),
                         field = line[i]
                     )
                 })
-            };
-
-            let parse_u8 = |i| parse_index::<u8>(&line, i);
-            let parse_i8 = |i| parse_index::<i8>(&line, i);
+            }
 
             let fixed = TalentsFixed {
-                ID: parse_u8(0),
-                typeID: parse_u8(1),
+                ID: parse_index(&line, 0),
+                typeID: parse_index(&line, 1),
             };
 
             let groups = (0..AMT_GROUPS)
                 .map(|i| {
-                    let first = i * AMT_GROUPS + FIXED_LEN;
+                    let first = i * GROUP_LEN + FIXED_LEN;
 
                     TalentGroup {
-                        abilityID_X: parse_u8(first + 0),
-                        MAXLv_X: parse_u8(first + 1),
-                        min_X1: parse_u8(first + 2),
-                        max_X1: parse_u8(first + 3),
-                        min_X2: parse_u8(first + 4),
-                        max_X2: parse_u8(first + 5),
-                        min_X3: parse_u8(first + 6),
-                        max_X3: parse_u8(first + 7),
-                        min_X4: parse_u8(first + 8),
-                        max_X4: parse_u8(first + 9),
-                        textID_X: parse_u8(first + 10),
-                        LvID_X: parse_i8(first + 11),
-                        nameID_X: parse_u8(first + 12),
-                        limit_X: parse_u8(first + 13),
+                        abilityID_X: parse_index(&line, first + 0),
+                        MAXLv_X: parse_index(&line, first + 1),
+                        min_X1: parse_index(&line, first + 2),
+                        max_X1: parse_index(&line, first + 3),
+                        min_X2: parse_index(&line, first + 4),
+                        max_X2: parse_index(&line, first + 5),
+                        min_X3: parse_index(&line, first + 6),
+                        max_X3: parse_index(&line, first + 7),
+                        min_X4: parse_index(&line, first + 8),
+                        max_X4: parse_index(&line, first + 9),
+                        textID_X: parse_index(&line, first + 10),
+                        LvID_X: parse_index(&line, first + 11),
+                        nameID_X: parse_index(&line, first + 12),
+                        limit_X: parse_index(&line, first + 13),
                     }
                 })
                 .collect::<Vec<_>>()
