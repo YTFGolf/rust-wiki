@@ -8,6 +8,7 @@ use std::{
     fs::File,
     io::{BufRead, BufReader},
     path::Path,
+    str::FromStr,
 };
 
 /// Talents block.
@@ -31,7 +32,7 @@ pub struct TalentGroup {
     min_X4: u8,
     max_X4: u8,
     textID_X: u8,
-    LvID_X: u8,
+    LvID_X: i8,
     nameID_X: u8,
     limit_X: u8,
 }
@@ -49,19 +50,43 @@ fn get_talents_file(path: &Path) -> Vec<Talents> {
 
     reader
         .lines()
+        .skip(1)
         .map(|line| {
             const FIXED_LEN: usize = 2;
             // fields in TalentsFixed
             const GROUP_LEN: usize = 14;
             // fields in TalentGroup
+            const TOTAL_AMT_FIELDS: usize = FIXED_LEN + AMT_GROUPS * GROUP_LEN;
 
             let line = line.unwrap();
             let line = line.split(',').collect::<Vec<_>>();
-            assert_eq!(line.len(), FIXED_LEN + AMT_GROUPS * GROUP_LEN);
+            assert_eq!(line.len(), TOTAL_AMT_FIELDS);
+            let line: [&str; TOTAL_AMT_FIELDS] = line.try_into().unwrap();
+
+            fn parse_index<T: FromStr>(line: &[&str; TOTAL_AMT_FIELDS], i: usize) -> T {
+                line[i].parse().unwrap_or_else(|_| {
+                    if i < FIXED_LEN {
+                        panic!(
+                            "error when attempting to parse index {i}: {field}",
+                            field = line[i]
+                        );
+                    }
+
+                    let j = (i - FIXED_LEN) / GROUP_LEN;
+                    let k = (i - FIXED_LEN) % GROUP_LEN;
+                    panic!(
+                        "error when attempting to parse index {i}/{j}-{k}: {field}",
+                        field = line[i]
+                    )
+                })
+            };
+
+            let parse_u8 = |i| parse_index::<u8>(&line, i);
+            let parse_i8 = |i| parse_index::<i8>(&line, i);
 
             let fixed = TalentsFixed {
-                ID: line[0].parse().unwrap(),
-                typeID: line[1].parse().unwrap(),
+                ID: parse_u8(0),
+                typeID: parse_u8(1),
             };
 
             let groups = (0..AMT_GROUPS)
@@ -69,20 +94,20 @@ fn get_talents_file(path: &Path) -> Vec<Talents> {
                     let first = i * AMT_GROUPS + FIXED_LEN;
 
                     TalentGroup {
-                        abilityID_X: line[first + 0].parse().unwrap(),
-                        MAXLv_X: line[first + 1].parse().unwrap(),
-                        min_X1: line[first + 2].parse().unwrap(),
-                        max_X1: line[first + 3].parse().unwrap(),
-                        min_X2: line[first + 4].parse().unwrap(),
-                        max_X2: line[first + 5].parse().unwrap(),
-                        min_X3: line[first + 6].parse().unwrap(),
-                        max_X3: line[first + 7].parse().unwrap(),
-                        min_X4: line[first + 8].parse().unwrap(),
-                        max_X4: line[first + 9].parse().unwrap(),
-                        textID_X: line[first + 10].parse().unwrap(),
-                        LvID_X: line[first + 11].parse().unwrap(),
-                        nameID_X: line[first + 12].parse().unwrap(),
-                        limit_X: line[first + 13].parse().unwrap(),
+                        abilityID_X: parse_u8(first + 0),
+                        MAXLv_X: parse_u8(first + 1),
+                        min_X1: parse_u8(first + 2),
+                        max_X1: parse_u8(first + 3),
+                        min_X2: parse_u8(first + 4),
+                        max_X2: parse_u8(first + 5),
+                        min_X3: parse_u8(first + 6),
+                        max_X3: parse_u8(first + 7),
+                        min_X4: parse_u8(first + 8),
+                        max_X4: parse_u8(first + 9),
+                        textID_X: parse_u8(first + 10),
+                        LvID_X: parse_i8(first + 11),
+                        nameID_X: parse_u8(first + 12),
+                        limit_X: parse_u8(first + 13),
                     }
                 })
                 .collect::<Vec<_>>()
