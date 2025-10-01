@@ -29,6 +29,8 @@ pub enum EnemyType {
     /// Aku.
     Aku,
     // make sure that MAX_VALUE is up-to-date if adding anything new in
+    // actually why not just use tests to enforce that
+    // TODO
 }
 /// Latest entry (therefore highest numerically).
 pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Aku;

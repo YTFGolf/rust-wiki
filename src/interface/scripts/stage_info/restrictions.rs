@@ -44,8 +44,10 @@ fn get_rarity_restriction(rarity: NonZero<u8>) -> String {
     let rarities: Vec<&str> = (0..6)
         .filter_map(|i| {
             let rarity_bit = u8::from(rarity) & (1 << i);
-            // e.g. for number 0b00_0001
+            // e.g. for number 0b00_1001
             // if i = 0 this gets the 1 at the end of the number
+            // if i = 3 this gets the 1 in the middle of the number
+            // will be 0 if bit i is 0, 2^i if bit i is 1
             if rarity_bit == 0 {
                 return None;
             }
