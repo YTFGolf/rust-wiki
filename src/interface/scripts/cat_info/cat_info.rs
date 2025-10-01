@@ -8,7 +8,10 @@ use crate::{
                 EvolutionInfo, EvolutionType, Rarity, evolution_items::EvolutionItemVariant,
             },
         },
-        raw::{desc::get_cat_descriptions, evolution_desc::EvolutionDescriptions},
+        raw::{
+            desc::get_cat_descriptions, evolution_desc::EvolutionDescriptions,
+            talents::TalentsContainer,
+        },
     },
     interface::{
         config::{Config, cat_config::StatsTemplateVersion},
@@ -353,6 +356,14 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
     Some(Section::h2(TITLE, t.to_string()))
 }
 
+fn talents(cat: &Cat, config: &Config) -> Option<Section> {
+    let tcontainer = config
+        .version
+        .current_version()
+        .get_cached_file::<TalentsContainer>();
+    todo!("{:#?}", tcontainer.from_id(cat.id.try_into().unwrap()))
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -382,6 +393,12 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     page.push(Section::h2("Stats", stats.to_string()));
     if let Some(cf_evo) = catfruit_evolution(&cat, config) {
         page.push(cf_evo);
+    }
+    if false {
+        // re-enable this when trying to do talents
+        if let Some(talents) = talents(&cat, config) {
+            page.push(talents);
+        }
     }
 
     Ok(page)
