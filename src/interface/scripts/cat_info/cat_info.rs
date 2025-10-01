@@ -255,12 +255,12 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
         .version
         .jp()
         .get_cached_file::<EvolutionDescriptions>();
-    let desc = match en_descriptions.evolution_desc(cat.id.try_into().unwrap()) {
-        None => jp_descriptions
-            .evolution_desc(cat.id.try_into().unwrap())
-            .unwrap(),
-        Some(desc) => desc,
-    };
+
+    let en_desc = en_descriptions.evolution_desc(cat.id.try_into().unwrap());
+    let jp_desc = jp_descriptions
+        .evolution_desc(cat.id.try_into().unwrap())
+        .unwrap();
+    let best_version = en_desc.unwrap_or(jp_desc);
 
     let mut t = Template::named(TITLE)
         .add_params(P::new("Evolved Name", CatForm::Evolved.name(cat.id)))
@@ -270,7 +270,7 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
         ))
         .add_params(P::new("True Name", CatForm::True.name(cat.id)))
         .add_params(P::new("True Image", CatForm::True.deploy_icon(cat.id, egg)))
-        .add_params(P::new("True Description", desc.tf()));
+        .add_params(P::new("True Description", best_version.tf()));
 
     let mut to_extend = vec![];
     for (i, item) in tf.item_cost.iter().enumerate() {
@@ -309,13 +309,21 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
         _ => return Some(Section::h2(TITLE, t.to_string())),
     };
 
-    t = t
-        .add_params(P::new("Ultra Name", CatForm::Ultra.name(cat.id)))
-        .add_params(P::new(
-            "Ultra Image",
-            CatForm::Ultra.deploy_icon(cat.id, egg),
-        ))
-        .add_params(P::new("Ultra Description", desc.uf()));
+    t.push_params(P::new("Ultra Name", CatForm::Ultra.name(cat.id)));
+    t.push_params(P::new(
+        "Ultra Image",
+        CatForm::Ultra.deploy_icon(cat.id, egg),
+    ));
+
+    let uf_desc = {
+        let uf = best_version.uf();
+        if uf == best_version.tf() {
+            jp_desc.uf()
+        } else {
+            uf
+        }
+    };
+    t.push_params(P::new("Ultra Description", uf_desc));
 
     let mut to_extend = vec![];
     for (i, item) in uf.item_cost.iter().enumerate() {
