@@ -13,15 +13,17 @@ use std::{
 };
 
 /// Talents block.
-#[derive(Debug, Default)] // default is only for now
+#[derive(Debug)]
 pub struct TalentsFixed {
-    ID: u16,
-    typeID: u16,
+    /// ID of cat unit.
+    id: u16,
+    _type_id: u16,
 }
 
 /// Repeated group of talents.
-#[derive(Debug, Default)] // default is only for now
+#[derive(Debug)]
 pub struct TalentGroup {
+    /// See SkillDescriptions.csv.
     abilityID_X: u8,
     MAXLv_X: u8,
     min_X1: u16,
@@ -78,8 +80,8 @@ fn parse_talents_line(line: &str) -> TalentLine {
     }
 
     let fixed = TalentsFixed {
-        ID: parse_index(&line, 0),
-        typeID: parse_index(&line, 1),
+        id: parse_index(&line, 0),
+        _type_id: parse_index(&line, 1),
     };
 
     let groups = (0..AMT_GROUPS)
@@ -126,8 +128,9 @@ pub struct TalentsContainer {
     talents: Vec<TalentLine>,
 }
 impl TalentsContainer {
-    fn from_id(&self, id: u16) -> Option<&TalentLine> {
-        self.talents.iter().find(|t| t.fixed.ID == id)
+    /// Get unit's talents from their id.
+    pub fn from_id(&self, id: u16) -> Option<&TalentLine> {
+        self.talents.iter().find(|t| t.fixed.id == id)
     }
 }
 impl CacheableVersionData for TalentsContainer {
