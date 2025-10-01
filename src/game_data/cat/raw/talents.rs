@@ -23,7 +23,7 @@ pub struct TalentsFixed {
 /// Repeated group of talents.
 #[derive(Debug)]
 pub struct TalentGroup {
-    /// localizable's "potential_skill_name"
+    /// ID of ability affected by talent.
     pub abilityID_X: u8,
     MAXLv_X: u8,
     min_X1: u16,
@@ -34,7 +34,7 @@ pub struct TalentGroup {
     max_X3: u16,
     min_X4: u16,
     max_X4: u16,
-    /// See SkillDescriptions.csv.
+    /// ID of talent description (SkillDescriptions.csv).
     pub textID_X: u8,
     LvID_X: u8,
     nameID_X: i16,
@@ -115,6 +115,7 @@ fn parse_talents_line(line: &str) -> TalentLine {
     TalentLine { fixed, groups }
 }
 
+/// Get all data from the talents file.
 fn get_talents_file(path: &Path) -> Vec<TalentLine> {
     let reader = BufReader::new(File::open(path.join("DataLocal/SkillAcquisition.csv")).unwrap());
 
@@ -134,6 +135,11 @@ impl TalentsContainer {
     /// Get unit's talents from their id.
     pub fn from_id(&self, id: u16) -> Option<&TalentLine> {
         self.talents.iter().find(|t| t.fixed.id == id)
+    }
+
+    /// Iterate through all talents.
+    pub fn iter(&self) -> impl Iterator<Item = &TalentLine> {
+        self.talents.iter()
     }
 }
 impl CacheableVersionData for TalentsContainer {
