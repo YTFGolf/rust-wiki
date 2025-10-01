@@ -45,76 +45,77 @@ pub struct Talents {
     groups: [TalentGroup; AMT_GROUPS],
 }
 
+fn parse_talents_line(line: &str) -> Talents {
+    const FIXED_LEN: usize = 2;
+    // fields in TalentsFixed
+    const GROUP_LEN: usize = 14;
+    // fields in TalentGroup
+    const TOTAL_AMT_FIELDS: usize = FIXED_LEN + AMT_GROUPS * GROUP_LEN;
+
+    let line = line.split(',').collect::<Vec<_>>();
+    assert_eq!(line.len(), TOTAL_AMT_FIELDS);
+    let line: [&str; TOTAL_AMT_FIELDS] = line.try_into().unwrap();
+
+    fn parse_index<T: FromStr>(line: &[&str; TOTAL_AMT_FIELDS], i: usize) -> T {
+        line[i].parse().unwrap_or_else(|_| {
+            if i < FIXED_LEN {
+                panic!(
+                    "error when attempting to parse fixed index {i} into {tname}: {field:?}",
+                    tname = type_name::<T>(),
+                    field = line[i]
+                );
+            }
+
+            let j = (i - FIXED_LEN) / GROUP_LEN;
+            let k = (i - FIXED_LEN) % GROUP_LEN;
+            panic!(
+                "error when attempting to parse index {i}/{j}.{k} into {tname}: {field:?}",
+                tname = type_name::<T>(),
+                field = line[i]
+            )
+        })
+    }
+
+    let fixed = TalentsFixed {
+        ID: parse_index(&line, 0),
+        typeID: parse_index(&line, 1),
+    };
+
+    let groups = (0..AMT_GROUPS)
+        .map(|i| {
+            let first = i * GROUP_LEN + FIXED_LEN;
+
+            TalentGroup {
+                abilityID_X: parse_index(&line, first + 0),
+                MAXLv_X: parse_index(&line, first + 1),
+                min_X1: parse_index(&line, first + 2),
+                max_X1: parse_index(&line, first + 3),
+                min_X2: parse_index(&line, first + 4),
+                max_X2: parse_index(&line, first + 5),
+                min_X3: parse_index(&line, first + 6),
+                max_X3: parse_index(&line, first + 7),
+                min_X4: parse_index(&line, first + 8),
+                max_X4: parse_index(&line, first + 9),
+                textID_X: parse_index(&line, first + 10),
+                LvID_X: parse_index(&line, first + 11),
+                nameID_X: parse_index(&line, first + 12),
+                limit_X: parse_index(&line, first + 13),
+            }
+        })
+        .collect::<Vec<_>>()
+        .try_into()
+        .unwrap();
+
+    Talents { fixed, groups }
+}
+
 fn get_talents_file(path: &Path) -> Vec<Talents> {
     let reader = BufReader::new(File::open(path.join("DataLocal/SkillAcquisition.csv")).unwrap());
 
     reader
         .lines()
         .skip(1)
-        .map(|line| {
-            const FIXED_LEN: usize = 2;
-            // fields in TalentsFixed
-            const GROUP_LEN: usize = 14;
-            // fields in TalentGroup
-            const TOTAL_AMT_FIELDS: usize = FIXED_LEN + AMT_GROUPS * GROUP_LEN;
-
-            let line = line.unwrap();
-            let line = line.split(',').collect::<Vec<_>>();
-            assert_eq!(line.len(), TOTAL_AMT_FIELDS);
-            let line: [&str; TOTAL_AMT_FIELDS] = line.try_into().unwrap();
-
-            fn parse_index<T: FromStr>(line: &[&str; TOTAL_AMT_FIELDS], i: usize) -> T {
-                line[i].parse().unwrap_or_else(|_| {
-                    if i < FIXED_LEN {
-                        panic!(
-                            "error when attempting to parse fixed index {i} into {tname}: {field:?}",
-                            tname = type_name::<T>(),
-                            field = line[i]
-                        );
-                    }
-
-                    let j = (i - FIXED_LEN) / GROUP_LEN;
-                    let k = (i - FIXED_LEN) % GROUP_LEN;
-                    panic!(
-                        "error when attempting to parse index {i}/{j}.{k} into {tname}: {field:?}",
-                        tname = type_name::<T>(),
-                        field = line[i]
-                    )
-                })
-            }
-
-            let fixed = TalentsFixed {
-                ID: parse_index(&line, 0),
-                typeID: parse_index(&line, 1),
-            };
-
-            let groups = (0..AMT_GROUPS)
-                .map(|i| {
-                    let first = i * GROUP_LEN + FIXED_LEN;
-
-                    TalentGroup {
-                        abilityID_X: parse_index(&line, first + 0),
-                        MAXLv_X: parse_index(&line, first + 1),
-                        min_X1: parse_index(&line, first + 2),
-                        max_X1: parse_index(&line, first + 3),
-                        min_X2: parse_index(&line, first + 4),
-                        max_X2: parse_index(&line, first + 5),
-                        min_X3: parse_index(&line, first + 6),
-                        max_X3: parse_index(&line, first + 7),
-                        min_X4: parse_index(&line, first + 8),
-                        max_X4: parse_index(&line, first + 9),
-                        textID_X: parse_index(&line, first + 10),
-                        LvID_X: parse_index(&line, first + 11),
-                        nameID_X: parse_index(&line, first + 12),
-                        limit_X: parse_index(&line, first + 13),
-                    }
-                })
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap();
-
-            Talents { fixed, groups }
-        })
+        .map(|line| parse_talents_line(&line.unwrap()))
         .collect()
 }
 
