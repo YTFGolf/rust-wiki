@@ -51,7 +51,7 @@ struct SingleTalent {
     max_level: u8,
     params: Vec<(u16, u16)>,
     skill_description_id: usize,
-    skill_costs: TalentAcquisitionCost,
+    skill_costs_id: usize,
     name_id_or_something: i16,
     ttype: TalentType,
 }
@@ -78,7 +78,7 @@ impl Talents {
             .collect()
     }
 
-    pub fn from_raw(raw: &TalentLine, talents_cost_cont: &TalentsCostContainer) -> Self {
+    pub fn from_raw(raw: &TalentLine) -> Self {
         let unit_id = raw.fixed.id.into();
         let implicit_targets = Self::get_targets(raw.fixed.type_id);
 
@@ -105,10 +105,7 @@ impl Talents {
             }
 
             let skill_description_id = group.textID_X.into();
-            let skill_costs = talents_cost_cont
-                .from_cost_id(group.LvID_X.into())
-                .unwrap()
-                .clone();
+            let skill_costs_id = group.LvID_X.into();
             let name_id_or_something = group.nameID_X;
             let ttype = TalentType::from_repr(group.limit_X).unwrap();
 
@@ -117,7 +114,7 @@ impl Talents {
                 max_level,
                 params,
                 skill_description_id,
-                skill_costs,
+                skill_costs_id,
                 name_id_or_something,
                 ttype,
             };
@@ -151,9 +148,9 @@ mod tests {
     fn check_all_talents() {
         let version = TEST_CONFIG.version.current_version();
         let talents_cont = version.get_cached_file::<TalentsContainer>();
-        let talents_cost_cont = version.get_cached_file::<TalentsCostContainer>();
+        // let talents_cost_cont = version.get_cached_file::<TalentsCostContainer>();
         for talents in talents_cont.iter() {
-            println!("{:?}", Talents::from_raw(talents, talents_cost_cont));
+            println!("{:?}", Talents::from_raw(talents));
             println!("");
         }
         todo!()
