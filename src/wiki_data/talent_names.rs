@@ -7,15 +7,14 @@ use std::sync::LazyLock;
 #[derive(Debug, Deserialize, Default)]
 /// Entry in the TalentNames.csv file.
 pub struct TalentEntry {
-    _id: u32,
+    _id: usize,
     /// Name of talent.
     pub name: String,
 }
 
-type MapStructure = Vec<TalentEntry>;
 /// Container for [`TALENT_DATA`].
 pub struct TalentMap {
-    map: LazyLock<MapStructure>,
+    map: LazyLock<Vec<TalentEntry>>,
 }
 impl TalentMap {
     fn get_talent(&self, id: usize) -> &TalentEntry {
@@ -34,7 +33,7 @@ pub static TALENT_DATA: TalentMap = TalentMap {
     map: LazyLock::new(get_talent_data),
 };
 
-fn get_talent_data() -> MapStructure {
+fn get_talent_data() -> Vec<TalentEntry> {
     let rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .delimiter(b'\t')
@@ -52,8 +51,13 @@ fn get_talent_data() -> MapStructure {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
+    #[allow(clippy::used_underscore_binding)]
     fn ids_are_same_as_index() {
-        todo!()
+        for (i, talent) in TALENT_DATA.map.iter().enumerate() {
+            assert_eq!(i, talent._id, "talent {talent:?} has incorrect id")
+        }
     }
 }
