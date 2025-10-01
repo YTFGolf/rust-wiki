@@ -8,7 +8,7 @@ use std::{
     path::Path,
 };
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 /// Cost of acquiring talent with this cost id.
 pub struct TalentAcquisitionCost {
     /// Cost id for internal use.

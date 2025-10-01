@@ -26,18 +26,18 @@ pub struct TalentsFixed {
 pub struct TalentGroup {
     /// ID of ability affected by talent.
     pub abilityID_X: u8,
-    MAXLv_X: u8,
-    min_X1: u16,
-    max_X1: u16,
-    min_X2: u16,
-    max_X2: u16,
-    min_X3: u16,
-    max_X3: u16,
-    min_X4: u16,
-    max_X4: u16,
+    pub MAXLv_X: u8,
+    pub min_X1: u16,
+    pub max_X1: u16,
+    pub min_X2: u16,
+    pub max_X2: u16,
+    pub min_X3: u16,
+    pub max_X3: u16,
+    pub min_X4: u16,
+    pub max_X4: u16,
     /// ID of talent description (SkillDescriptions.csv).
     pub textID_X: u8,
-    LvID_X: u8,
+    pub LvID_X: u8,
     /// Something to do with abilities that also add a target.
     pub nameID_X: i16,
     /// 0 for normal, 1 for ultra.

@@ -4,6 +4,11 @@ use std::num::NonZeroUsize;
 
 use strum::FromRepr;
 
+use crate::game_data::cat::raw::{
+    talents::TalentLine,
+    talents_cost::{TalentAcquisitionCost, TalentsCostContainer},
+};
+
 /// New targets that talents implicitly enable.
 ///
 /// Only targets that appear in isolation can be determined. "Maybe" targets are
@@ -40,16 +45,18 @@ pub enum TalentType {
     Ultra = 1,
 }
 
+#[derive(Debug)]
 struct SingleTalent {
     ability_id: NonZeroUsize,
-    max_level: usize,
+    max_level: u8,
     params: Vec<(u16, u16)>,
-    skillDescriptionId: usize,
-    // skillCosts:todo!(),
-    nameIdOrSomething: i16,
+    skill_description_id: usize,
+    skill_costs: TalentAcquisitionCost,
+    name_id_or_something: i16,
     ttype: TalentType,
 }
 
+#[derive(Debug)]
 struct Talents {
     unit_id: usize,
     implicit_targets: Vec<TalentTargets>,
@@ -70,6 +77,64 @@ impl Talents {
             })
             .collect()
     }
+
+    pub fn from_raw(raw: &TalentLine, talents_cost_cont: &TalentsCostContainer) -> Self {
+        let unit_id = raw.fixed.id.into();
+        let implicit_targets = Self::get_targets(raw.fixed.type_id);
+
+        let mut normal = vec![];
+        let mut ultra = vec![];
+
+        for group in raw.groups.iter() {
+            let Some(ability_id) = NonZeroUsize::new(group.abilityID_X.into()) else {
+                continue;
+            };
+
+            let max_level = group.MAXLv_X;
+            let mut params = vec![];
+            for (min, max) in [
+                (group.min_X1, group.max_X1),
+                (group.min_X2, group.max_X2),
+                (group.min_X3, group.max_X3),
+                (group.min_X4, group.max_X4),
+            ] {
+                if min == 0 && max == 0 {
+                    continue;
+                }
+                params.push((min, max));
+            }
+
+            let skill_description_id = group.textID_X.into();
+            let skill_costs = talents_cost_cont
+                .from_cost_id(group.LvID_X.into())
+                .unwrap()
+                .clone();
+            let name_id_or_something = group.nameID_X;
+            let ttype = TalentType::from_repr(group.limit_X).unwrap();
+
+            let t = SingleTalent {
+                ability_id,
+                max_level,
+                params,
+                skill_description_id,
+                skill_costs,
+                name_id_or_something,
+                ttype,
+            };
+
+            match t.ttype {
+                TalentType::Normal => normal.push(t),
+                TalentType::Ultra => ultra.push(t),
+            }
+        }
+
+        Self {
+            unit_id,
+            implicit_targets,
+            normal,
+            ultra,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -88,59 +153,7 @@ mod tests {
         let talents_cont = version.get_cached_file::<TalentsContainer>();
         let talents_cost_cont = version.get_cached_file::<TalentsCostContainer>();
         for talents in talents_cont.iter() {
-            if talents.fixed.type_id == 0 {
-                continue;
-            }
-
-            println!("{:?}", Talents::get_targets(talents.fixed.type_id));
-
-            // println!("{}", 0b100111111111);
-            // println!("{:#b}", 2559);
-            // println!("{:?}",2559.);
-            println!("{:?}", talents.fixed);
-            for talent in talents.groups.iter() {
-                if talent.abilityID_X == 0 {
-                    continue;
-                }
-
-                // if talent.nameID_X == -1 {
-                //     continue;
-                // }
-
-                println!("{talent:?}");
-                println!(
-                    "abilityID_X = {:?}",
-                    TALENT_DATA.get_talent_name(talent.abilityID_X.into())
-                );
-                println!("{:?}", talents_cost_cont.from_cost_id(talent.LvID_X.into()));
-                let t = match talent.limit_X {
-                    0 => "Normal",
-                    1 => "Ultra",
-                    _ => unreachable!(),
-                };
-                println!("{t} talent");
-
-                /*
-                                impl Display for EnemyType {
-                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        let t = match self {
-                            Self::Red => "Red",
-                            Self::Floating => "Floating",
-                            Self::Black => "Black",
-                            Self::Metal => "Metal",
-                            Self::Traitless => "Traitless",
-                            Self::Angel => "Angel",
-                            Self::Alien => "Alien",
-                            Self::Zombie => "Zombie",
-                            Self::Relic => "Relic",
-                            Self::Aku => "Aku",
-                        };
-                        write!(f, "{t}")
-                    }
-                } */
-            }
-
-            // println!("{talents:?}");
+            println!("{:?}", Talents::from_raw(talents, talents_cost_cont));
             println!("");
         }
         todo!()
