@@ -15,6 +15,8 @@ subheading.
 
 ### Added
 
+- TalentNames.csv
+
 ### Fixed
 
 ### Changed
