@@ -24,7 +24,7 @@ pub struct TalentsFixed {
 #[derive(Debug)]
 pub struct TalentGroup {
     /// localizable's "potential_skill_name"
-    abilityID_X: u8,
+    pub abilityID_X: u8,
     MAXLv_X: u8,
     min_X1: u16,
     max_X1: u16,
@@ -35,7 +35,7 @@ pub struct TalentGroup {
     min_X4: u16,
     max_X4: u16,
     /// See SkillDescriptions.csv.
-    textID_X: u8,
+    pub textID_X: u8,
     LvID_X: u8,
     nameID_X: i16,
     limit_X: u8,
@@ -45,8 +45,10 @@ const AMT_GROUPS: usize = 8;
 /// Container for a single line of talents.
 #[derive(Debug)]
 pub struct TalentLine {
-    fixed: TalentsFixed,
-    groups: [TalentGroup; AMT_GROUPS],
+    /// Fixed data for each line.
+    pub fixed: TalentsFixed,
+    /// Groups of talents.
+    pub groups: [TalentGroup; AMT_GROUPS],
 }
 
 fn parse_talents_line(line: &str) -> TalentLine {

@@ -10,6 +10,7 @@ use crate::game_data::{
         parsed::anim::Anim,
         raw::{
             stats::read_data_file,
+            talents::{TalentLine, TalentsContainer},
             unitbuy::UnitBuyContainer,
             unitexp::XPCostScale,
             unitlevel::{UnitLevelContainer, UnitLevelRaw},
@@ -56,10 +57,15 @@ pub struct Cat {
     pub unitexp: XPCostScale,
     /// Data from `unitlevel.csv`.
     pub unitlevel: UnitLevelRaw,
-    // growth curve
-    // talents
-    // evolutions
-    // combos
+}
+impl Cat {
+    /// Temporary before parsed talents.
+    #[deprecated]
+    pub fn get_talents<'a>(&self, version: &'a Version) -> Option<&'a TalentLine> {
+        let tcontainer = version.get_cached_file::<TalentsContainer>();
+        let talents = tcontainer.from_id(self.id.try_into().unwrap());
+        talents
+    }
 }
 
 #[derive(Debug)]

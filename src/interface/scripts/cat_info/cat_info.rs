@@ -8,10 +8,7 @@ use crate::{
                 EvolutionInfo, EvolutionType, Rarity, evolution_items::EvolutionItemVariant,
             },
         },
-        raw::{
-            desc::get_cat_descriptions, evolution_desc::EvolutionDescriptions,
-            talents::TalentsContainer,
-        },
+        raw::{desc::get_cat_descriptions, evolution_desc::EvolutionDescriptions},
     },
     interface::{
         config::{Config, cat_config::StatsTemplateVersion},
@@ -24,6 +21,7 @@ use crate::{
             upgrade_cost::upgrade_cost,
         },
     },
+    wiki_data::talent_names::TALENT_DATA,
     wikitext::{
         page::Page,
         section::Section,
@@ -357,11 +355,22 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
 }
 
 fn talents(cat: &Cat, config: &Config) -> Option<Section> {
-    let tcontainer = config
-        .version
-        .current_version()
-        .get_cached_file::<TalentsContainer>();
-    todo!("{:#?}", tcontainer.from_id(cat.id.try_into().unwrap()))
+    let talents = cat.get_talents(config.version.current_version())?;
+
+    println!("{:?}", talents.fixed);
+    for talent in talents.groups.iter() {
+        println!("{talent:?}");
+        println!(
+            "abilityID_X = {}",
+            TALENT_DATA.get_talent_name(talent.abilityID_X.into())
+        )
+    }
+
+    if true {
+        panic!();
+    }
+
+    None
 }
 
 /// Get cat info.
@@ -394,11 +403,8 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     if let Some(cf_evo) = catfruit_evolution(&cat, config) {
         page.push(cf_evo);
     }
-    if false {
-        // re-enable this when trying to do talents
-        if let Some(talents) = talents(&cat, config) {
-            page.push(talents);
-        }
+    if let Some(talents) = talents(&cat, config) {
+        page.push(talents);
     }
 
     Ok(page)
