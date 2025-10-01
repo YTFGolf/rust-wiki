@@ -1,5 +1,30 @@
 //! Parsed talents object.
 
+use strum::FromRepr;
+
+/// New targets that talents implicitly enable.
+///
+/// Only targets that appear in isolation can be determined. "Maybe" targets are
+/// only used for Mola King. Unknown targets are not used at all (they're
+/// probably witch and eva angel).
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr)]
+#[allow(missing_docs)]
+#[repr(usize)]
+pub enum TalentTargets {
+    MaybeRed = 0,
+    MaybeFloating = 1,
+    MaybeBlack = 2,
+    Metal = 3,
+    MaybeAngel = 4,
+    Alien = 5,
+    Zombie = 6,
+    Relic = 7,
+    MaybeTraitless = 8,
+    Unknown1 = 9,
+    Unknown2 = 10,
+    MaybeAku = 11,
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
@@ -14,34 +39,20 @@ mod tests {
         let version = TEST_CONFIG.version.current_version();
         let talents_cont = version.get_cached_file::<TalentsContainer>();
         for talents in talents_cont.iter() {
-            // if talents.fixed.type_id == 0 {
-            //     continue;
-            // }
+            if talents.fixed.type_id == 0 {
+                continue;
+            }
 
             (0..12).for_each(|i| {
                 let target_bit = talents.fixed.type_id & (1 << i);
                 // will be 0 if bit i is 0, 2^i if bit i is 1
                 if target_bit == 0 {
-                    return ;
+                    return;
                 }
 
-                let target = match i {
-                    0 => "red???",
-                    1 => "float???",
-                    2 => "black???",
-                    3 => "metal",
-                    4 => "angel???",
-                    5 => "alien",
-                    6 => "zombie",
-                    7 => "relic",
-                    8 => "traitless???",
-                    9 => "idk",
-                    10 => "idk",
-                    11 => "aku???",
-                    _ => unreachable!(),
-                };
+                let target = TalentTargets::from_repr(i);
 
-                println!("{i}, {target}");
+                println!("{target:?}");
             });
 
             // println!("{}", 0b100111111111);
@@ -62,8 +73,10 @@ mod tests {
                     "abilityID_X = {:?}",
                     TALENT_DATA.get_talent_name(talent.abilityID_X.into())
                 );
-                let t = match talent.limit_X{
-                    0=>"Normal",1=>"Ultra",_=>unreachable!()
+                let t = match talent.limit_X {
+                    0 => "Normal",
+                    1 => "Ultra",
+                    _ => unreachable!(),
                 };
                 println!("{t} talent");
 
