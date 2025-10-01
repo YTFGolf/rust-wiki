@@ -2,6 +2,7 @@
 
 #![allow(non_snake_case, dead_code)]
 
+use crate::game_data::version::version_data::CacheableVersionData;
 use std::{
     any::type_name,
     fmt::Debug,
@@ -40,12 +41,12 @@ const AMT_GROUPS: usize = 8;
 
 /// Container for a single line of talents.
 #[derive(Debug)]
-pub struct Talents {
+pub struct TalentLine {
     fixed: TalentsFixed,
     groups: [TalentGroup; AMT_GROUPS],
 }
 
-fn parse_talents_line(line: &str) -> Talents {
+fn parse_talents_line(line: &str) -> TalentLine {
     const FIXED_LEN: usize = 2;
     // fields in TalentsFixed
     const GROUP_LEN: usize = 14;
@@ -106,10 +107,10 @@ fn parse_talents_line(line: &str) -> Talents {
         .try_into()
         .unwrap();
 
-    Talents { fixed, groups }
+    TalentLine { fixed, groups }
 }
 
-fn get_talents_file(path: &Path) -> Vec<Talents> {
+fn get_talents_file(path: &Path) -> Vec<TalentLine> {
     let reader = BufReader::new(File::open(path.join("DataLocal/SkillAcquisition.csv")).unwrap());
 
     reader
@@ -117,6 +118,24 @@ fn get_talents_file(path: &Path) -> Vec<Talents> {
         .skip(1)
         .map(|line| parse_talents_line(&line.unwrap()))
         .collect()
+}
+
+#[derive(Debug)]
+/// Container for talents.
+pub struct TalentsContainer {
+    talents: Vec<TalentLine>,
+}
+impl TalentsContainer {
+    fn from_id(&self, id: u16) -> Option<&TalentLine> {
+        self.talents.iter().find(|t| t.fixed.ID == id)
+    }
+}
+impl CacheableVersionData for TalentsContainer {
+    fn init_data(path: &Path) -> Self {
+        Self {
+            talents: get_talents_file(path),
+        }
+    }
 }
 
 #[cfg(test)]
