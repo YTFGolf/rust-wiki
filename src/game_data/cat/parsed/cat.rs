@@ -7,10 +7,10 @@ use super::{
 };
 use crate::game_data::{
     cat::{
-        parsed::anim::Anim,
+        parsed::{anim::Anim, talents::Talents},
         raw::{
             stats::read_data_file,
-            talents::{TalentLine, TalentsContainer},
+            talents::TalentsContainer,
             unitbuy::UnitBuyContainer,
             unitexp::XPCostScale,
             unitlevel::{UnitLevelContainer, UnitLevelRaw},
@@ -59,12 +59,11 @@ pub struct Cat {
     pub unitlevel: UnitLevelRaw,
 }
 impl Cat {
-    /// Temporary before parsed talents.
-    #[deprecated]
-    pub fn get_talents<'a>(&self, version: &'a Version) -> Option<&'a TalentLine> {
+    /// Get the cat's talents.
+    pub fn get_talents(&self, version: &Version) -> Option<Talents> {
         let tcontainer = version.get_cached_file::<TalentsContainer>();
-        let talents = tcontainer.from_id(self.id.try_into().unwrap());
-        talents
+        let talents = tcontainer.from_id(self.id.try_into().unwrap())?;
+        Some(Talents::from_raw(talents))
     }
 }
 

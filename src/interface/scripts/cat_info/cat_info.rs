@@ -21,7 +21,6 @@ use crate::{
             upgrade_cost::upgrade_cost,
         },
     },
-    wiki_data::talent_names::TALENT_DATA,
     wikitext::{
         page::Page,
         section::Section,
@@ -357,14 +356,14 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
 fn talents(cat: &Cat, config: &Config) -> Option<Section> {
     let talents = cat.get_talents(config.version.current_version())?;
 
-    println!("{:?}", talents.fixed);
-    for talent in talents.groups.iter() {
-        println!("{talent:?}");
-        println!(
-            "abilityID_X = {}",
-            TALENT_DATA.get_talent_name(talent.abilityID_X.into())
-        )
-    }
+    println!("{talents:#?}");
+    // for talent in talents.groups.iter() {
+    //     println!("{talent:?}");
+    //     println!(
+    //         "abilityID_X = {}",
+    //         TALENT_DATA.get_talent_name(talent.abilityID_X.into())
+    //     )
+    // }
 
     if true {
         panic!();

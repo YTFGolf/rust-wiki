@@ -1,13 +1,8 @@
 //! Parsed talents object.
 
+use crate::game_data::cat::raw::talents::TalentLine;
 use std::num::NonZeroUsize;
-
 use strum::FromRepr;
-
-use crate::game_data::cat::raw::{
-    talents::TalentLine,
-    talents_cost::{TalentAcquisitionCost, TalentsCostContainer},
-};
 
 /// New targets that talents implicitly enable.
 ///
@@ -57,7 +52,7 @@ struct SingleTalent {
 }
 
 #[derive(Debug)]
-struct Talents {
+pub struct Talents {
     unit_id: usize,
     implicit_targets: Vec<TalentTargets>,
     normal: Vec<SingleTalent>,
@@ -136,13 +131,8 @@ impl Talents {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        TEST_CONFIG,
-        game_data::cat::raw::{talents::TalentsContainer, talents_cost::TalentsCostContainer},
-        wiki_data::talent_names::TALENT_DATA,
-    };
-
     use super::*;
+    use crate::{TEST_CONFIG, game_data::cat::raw::talents::TalentsContainer};
 
     #[test]
     fn check_all_talents() {
