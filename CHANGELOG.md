@@ -13,6 +13,9 @@ subheading.
 
 ## [Unreleased]
 
+Due to the sheer amount of work required for talents I decided to call this one
+early.
+
 ### 14.7
 
 - Freeze Dojo rule.
@@ -22,15 +25,19 @@ subheading.
 
 ### Added
 
-- Cat info: intro, appearance, evolution, combos, cost, upgrade cost<!--, catfruit evolution-->.
+- Cat info: intro, appearance, evolution, combos, cost, upgrade cost, catfruit
+  evolution.
 - Category and `Display` for cat rarity.
 - `CacheableVersionData::init_data_with_version`, which allows `init_data` to be
   implemented with access to the version object.
 - `Version::location()` as a public method.
 - `CatForm::from_repr`
 - Let cat form names return an option.
+- Function for cat deploy icons.
 - Dojo time limit.
 - Other `SectionTitle` options.
+- Stats template 0.2.
+- Talents parser (still incomplete).
 
 ### Fixed
 
