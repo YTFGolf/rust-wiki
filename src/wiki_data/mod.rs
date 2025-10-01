@@ -5,3 +5,4 @@ pub mod enemy_data;
 pub mod file_handler;
 pub mod rewards;
 pub mod stage_wiki_data;
+pub mod talent_names;
