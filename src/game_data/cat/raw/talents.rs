@@ -16,8 +16,9 @@ use std::{
 #[derive(Debug)]
 pub struct TalentsFixed {
     /// ID of cat unit.
-    id: u16,
-    _type_id: u16,
+    pub id: u16,
+    /// Enemies that are newly targeted by name_id talents.
+    pub type_id: u16,
 }
 
 /// Repeated group of talents.
@@ -37,8 +38,10 @@ pub struct TalentGroup {
     /// ID of talent description (SkillDescriptions.csv).
     pub textID_X: u8,
     LvID_X: u8,
-    nameID_X: i16,
-    limit_X: u8,
+    /// Something to do with abilities that also add a target.
+    pub nameID_X: i16,
+    /// 0 for normal, 1 for ultra.
+    pub limit_X: u8,
 }
 const AMT_GROUPS: usize = 8;
 
@@ -84,7 +87,7 @@ fn parse_talents_line(line: &str) -> TalentLine {
 
     let fixed = TalentsFixed {
         id: parse_index(&line, 0),
-        _type_id: parse_index(&line, 1),
+        type_id: parse_index(&line, 1),
     };
 
     let groups = (0..AMT_GROUPS)
