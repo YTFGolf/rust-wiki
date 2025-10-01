@@ -44,28 +44,52 @@ pub struct Talents {
     groups: [TalentGroup; AMT_GROUPS],
 }
 
-fn parse_talents_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
-    let index = match e.kind() {
-        csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
-        _ => unimplemented!(),
-    };
-
-    String::from_utf8(result[index as usize].into()).unwrap()
-}
-
 fn get_talents_file(path: &Path) -> Vec<Talents> {
-    let reader = BufReader::new(File::open(path.join("resLocal/SkillAcquisition.csv")).unwrap());
+    let reader = BufReader::new(File::open(path.join("DataLocal/SkillAcquisition.csv")).unwrap());
 
     reader
         .lines()
         .map(|line| {
-            let line = line.unwrap();
+            const FIXED_LEN: usize = 2;
+            // fields in TalentsFixed
+            const GROUP_LEN: usize = 14;
+            // fields in TalentGroup
 
-            println!("{line:?}");
-            Talents {
-                fixed: Default::default(),
-                groups: Default::default(),
-            }
+            let line = line.unwrap();
+            let line = line.split(',').collect::<Vec<_>>();
+            assert_eq!(line.len(), FIXED_LEN + AMT_GROUPS * GROUP_LEN);
+
+            let fixed = TalentsFixed {
+                ID: line[0].parse().unwrap(),
+                typeID: line[1].parse().unwrap(),
+            };
+
+            let groups = (0..AMT_GROUPS)
+                .map(|i| {
+                    let first = i * AMT_GROUPS + FIXED_LEN;
+
+                    TalentGroup {
+                        abilityID_X: line[first + 0].parse().unwrap(),
+                        MAXLv_X: line[first + 1].parse().unwrap(),
+                        min_X1: line[first + 2].parse().unwrap(),
+                        max_X1: line[first + 3].parse().unwrap(),
+                        min_X2: line[first + 4].parse().unwrap(),
+                        max_X2: line[first + 5].parse().unwrap(),
+                        min_X3: line[first + 6].parse().unwrap(),
+                        max_X3: line[first + 7].parse().unwrap(),
+                        min_X4: line[first + 8].parse().unwrap(),
+                        max_X4: line[first + 9].parse().unwrap(),
+                        textID_X: line[first + 10].parse().unwrap(),
+                        LvID_X: line[first + 11].parse().unwrap(),
+                        nameID_X: line[first + 12].parse().unwrap(),
+                        limit_X: line[first + 13].parse().unwrap(),
+                    }
+                })
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap();
+
+            Talents { fixed, groups }
         })
         .collect()
 }
