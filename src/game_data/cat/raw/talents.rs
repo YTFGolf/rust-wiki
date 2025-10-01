@@ -23,7 +23,7 @@ pub struct TalentsFixed {
 /// Repeated group of talents.
 #[derive(Debug)]
 pub struct TalentGroup {
-    /// See SkillDescriptions.csv.
+    /// localizable's "potential_skill_name"
     abilityID_X: u8,
     MAXLv_X: u8,
     min_X1: u16,
@@ -34,6 +34,7 @@ pub struct TalentGroup {
     max_X3: u16,
     min_X4: u16,
     max_X4: u16,
+    /// See SkillDescriptions.csv.
     textID_X: u8,
     LvID_X: u8,
     nameID_X: i16,
@@ -151,6 +152,6 @@ mod tests {
         for line in get_talents_file(TEST_CONFIG.version.current_version().location()) {
             println!("{line:?}")
         }
-        todo!()
+        // todo!("What did I even need to test here")
     }
 }
