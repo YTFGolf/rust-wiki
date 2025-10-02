@@ -18,6 +18,7 @@ use crate::{
             costs::price_cost,
             form_util::CatForm,
             stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1, ver_0o2::stats_0o2},
+            talents::talents_section,
             upgrade_cost::upgrade_cost,
         },
     },
@@ -353,25 +354,6 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
     Some(Section::h2(TITLE, t.to_string()))
 }
 
-fn talents(cat: &Cat, config: &Config) -> Option<Section> {
-    let talents = cat.get_talents(config.version.current_version())?;
-
-    println!("{talents:#?}");
-    // for talent in talents.groups.iter() {
-    //     println!("{talent:?}");
-    //     println!(
-    //         "abilityID_X = {}",
-    //         TALENT_DATA.get_talent_name(talent.abilityID_X.into())
-    //     )
-    // }
-
-    if true {
-        panic!();
-    }
-
-    None
-}
-
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -402,7 +384,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     if let Some(cf_evo) = catfruit_evolution(&cat, config) {
         page.push(cf_evo);
     }
-    if let Some(talents) = talents(&cat, config) {
+    if let Some(talents) = talents_section(&cat, config) {
         page.push(talents);
     }
 

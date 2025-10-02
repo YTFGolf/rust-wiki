@@ -6,4 +6,5 @@ pub mod combos;
 pub mod costs;
 pub mod form_util;
 pub mod stats;
+pub mod talents;
 pub mod upgrade_cost;
