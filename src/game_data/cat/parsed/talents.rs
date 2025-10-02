@@ -41,22 +41,35 @@ pub enum TalentType {
 }
 
 #[derive(Debug)]
-struct SingleTalent {
-    ability_id: NonZeroUsize,
-    max_level: u8,
-    params: Vec<(u16, u16)>,
-    skill_description_id: usize,
-    skill_costs_id: usize,
-    name_id_or_something: i16,
-    ttype: TalentType,
+/// A single talent.
+pub struct SingleTalent {
+    /// ID of the ability the talent corresponds to.
+    pub ability_id: NonZeroUsize,
+    /// Max level the talent can be upgraded to (0 = 1 for some reason).
+    pub max_level: u8,
+    /// Parameters of talent.
+    pub params: Vec<(u16, u16)>,
+    /// SkillDescriptions.csv id of talent.
+    pub skill_description_id: usize,
+    /// SkillAcquisition cost id.
+    pub skill_costs_id: usize,
+    /// Something to do with unlocking new targets.
+    pub name_id_or_something: i16,
+    /// Is it a normal or an ultra talent.
+    pub ttype: TalentType,
 }
 
 #[derive(Debug)]
+/// Talents that a unit has access to.
 pub struct Talents {
-    unit_id: usize,
-    implicit_targets: Vec<TalentTargets>,
-    normal: Vec<SingleTalent>,
-    ultra: Vec<SingleTalent>,
+    /// Unit that has these talents.
+    pub unit_id: usize,
+    /// Targets unlocked by unlocking certain talents.
+    pub implicit_targets: Vec<TalentTargets>,
+    /// Normal talents.
+    pub normal: Vec<SingleTalent>,
+    /// Ultra talents.
+    pub ultra: Vec<SingleTalent>,
 }
 impl Talents {
     fn get_targets(target_mask: u16) -> Vec<TalentTargets> {
@@ -73,6 +86,7 @@ impl Talents {
             .collect()
     }
 
+    /// Convert raw talent line to [`Talents`].
     pub fn from_raw(raw: &TalentLine) -> Self {
         let unit_id = raw.fixed.id.into();
         let implicit_targets = Self::get_targets(raw.fixed.type_id);
@@ -81,17 +95,17 @@ impl Talents {
         let mut ultra = vec![];
 
         for group in raw.groups.iter() {
-            let Some(ability_id) = NonZeroUsize::new(group.abilityID_X.into()) else {
+            let Some(ability_id) = NonZeroUsize::new(group.ability_id_x.into()) else {
                 continue;
             };
 
-            let max_level = group.MAXLv_X;
+            let max_level = group.maxlv_x;
             let mut params = vec![];
             for (min, max) in [
-                (group.min_X1, group.max_X1),
-                (group.min_X2, group.max_X2),
-                (group.min_X3, group.max_X3),
-                (group.min_X4, group.max_X4),
+                (group.min_x1, group.max_x1),
+                (group.min_x2, group.max_x2),
+                (group.min_x3, group.max_x3),
+                (group.min_x4, group.max_x4),
             ] {
                 if min == 0 && max == 0 {
                     continue;
@@ -99,10 +113,10 @@ impl Talents {
                 params.push((min, max));
             }
 
-            let skill_description_id = group.textID_X.into();
-            let skill_costs_id = group.LvID_X.into();
-            let name_id_or_something = group.nameID_X;
-            let ttype = TalentType::from_repr(group.limit_X).unwrap();
+            let skill_description_id = group.text_id_x.into();
+            let skill_costs_id = group.lv_id_x.into();
+            let name_id_or_something = group.name_id_x;
+            let ttype = TalentType::from_repr(group.limit_x).unwrap();
 
             let t = SingleTalent {
                 ability_id,

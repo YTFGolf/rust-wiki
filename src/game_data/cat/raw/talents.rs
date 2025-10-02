@@ -1,7 +1,5 @@
 //! Cat talents
 
-#![allow(non_snake_case, dead_code)]
-
 use crate::game_data::version::version_data::CacheableVersionData;
 use std::{
     any::type_name,
@@ -25,23 +23,33 @@ pub struct TalentsFixed {
 #[derive(Debug)]
 pub struct TalentGroup {
     /// ID of ability affected by talent.
-    pub abilityID_X: u8,
-    pub MAXLv_X: u8,
-    pub min_X1: u16,
-    pub max_X1: u16,
-    pub min_X2: u16,
-    pub max_X2: u16,
-    pub min_X3: u16,
-    pub max_X3: u16,
-    pub min_X4: u16,
-    pub max_X4: u16,
+    pub ability_id_x: u8,
+    /// Max level talent can be upgraded to.
+    pub maxlv_x: u8,
+    /// Min value of parameter 1.
+    pub min_x1: u16,
+    /// Max value of parameter 1.
+    pub max_x1: u16,
+    /// Min value of parameter 2.
+    pub min_x2: u16,
+    /// Max value of parameter 2.
+    pub max_x2: u16,
+    /// Min value of parameter 3.
+    pub min_x3: u16,
+    /// Max value of parameter 3.
+    pub max_x3: u16,
+    /// Min value of parameter 4.
+    pub min_x4: u16,
+    /// Max value of parameter 4.
+    pub max_x4: u16,
     /// ID of talent description (SkillDescriptions.csv).
-    pub textID_X: u8,
-    pub LvID_X: u8,
+    pub text_id_x: u8,
+    /// ID of costs (SkillLevel.csv).
+    pub lv_id_x: u8,
     /// Something to do with abilities that also add a target.
-    pub nameID_X: i16,
+    pub name_id_x: i16,
     /// 0 for normal, 1 for ultra.
-    pub limit_X: u8,
+    pub limit_x: u8,
 }
 const AMT_GROUPS: usize = 8;
 
@@ -95,20 +103,20 @@ fn parse_talents_line(line: &str) -> TalentLine {
             let first = i * GROUP_LEN + FIXED_LEN;
 
             TalentGroup {
-                abilityID_X: parse_index(&line, first + 0),
-                MAXLv_X: parse_index(&line, first + 1),
-                min_X1: parse_index(&line, first + 2),
-                max_X1: parse_index(&line, first + 3),
-                min_X2: parse_index(&line, first + 4),
-                max_X2: parse_index(&line, first + 5),
-                min_X3: parse_index(&line, first + 6),
-                max_X3: parse_index(&line, first + 7),
-                min_X4: parse_index(&line, first + 8),
-                max_X4: parse_index(&line, first + 9),
-                textID_X: parse_index(&line, first + 10),
-                LvID_X: parse_index(&line, first + 11),
-                nameID_X: parse_index(&line, first + 12),
-                limit_X: parse_index(&line, first + 13),
+                ability_id_x: parse_index(&line, first + 0),
+                maxlv_x: parse_index(&line, first + 1),
+                min_x1: parse_index(&line, first + 2),
+                max_x1: parse_index(&line, first + 3),
+                min_x2: parse_index(&line, first + 4),
+                max_x2: parse_index(&line, first + 5),
+                min_x3: parse_index(&line, first + 6),
+                max_x3: parse_index(&line, first + 7),
+                min_x4: parse_index(&line, first + 8),
+                max_x4: parse_index(&line, first + 9),
+                text_id_x: parse_index(&line, first + 10),
+                lv_id_x: parse_index(&line, first + 11),
+                name_id_x: parse_index(&line, first + 12),
+                limit_x: parse_index(&line, first + 13),
             }
         })
         .collect::<Vec<_>>()
