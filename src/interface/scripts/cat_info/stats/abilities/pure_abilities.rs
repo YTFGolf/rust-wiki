@@ -80,7 +80,8 @@ mod get_targets_tests {
     }
 }
 
-fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
+/// Get specifier for what abilities occur on what hits.
+pub fn get_multiple_hit_abilities(hits: &AttackHits) -> &'static str {
     match hits {
         AttackHits::Single([hit1]) => match hit1.active_ability {
             true => "",

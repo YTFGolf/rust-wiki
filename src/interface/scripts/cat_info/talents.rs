@@ -1,9 +1,5 @@
 //! Deals with talents section.
 
-use std::fmt::Write;
-
-use num_format::{Locale, ToFormattedString, WriteFormatted};
-
 use crate::{
     game_data::cat::{
         parsed::{
@@ -13,14 +9,23 @@ use crate::{
         },
         raw::talents_cost::TalentsCostContainer,
     },
-    interface::{config::Config, error_handler::InfallibleWrite},
+    interface::{
+        config::Config, error_handler::InfallibleWrite,
+        scripts::cat_info::stats::abilities::pure_abilities::get_multiple_hit_abilities,
+    },
     wiki_data::talent_names::TALENT_DATA,
     wikitext::{number_utils::time_repr, section::Section},
 };
+use num_format::{Locale, ToFormattedString, WriteFormatted};
+use std::fmt::Write;
 
 // Is it better to use the ability id and check cat talents, or is it better to
 // use the description number?
-fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> Option<String> {
+fn talent_from_text_id(
+    talent: &SingleTalent,
+    new_targets_with_space: &str,
+    multab: &str,
+) -> Option<String> {
     log::debug!("{talent:?}/{new_targets_with_space}");
 
     let c_abil = usize::from(talent.ability_id);
@@ -99,7 +104,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {chance}% chance to weaken{new_targets_with_space} enemies to {percent}% for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to weaken{new_targets_with_space} enemies to {percent}% for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
             );
             Some(msg)
         }
@@ -119,7 +124,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {chance}% chance to freeze{new_targets_with_space} enemies for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to freeze{new_targets_with_space} enemies for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
             );
             Some(msg)
         }
@@ -140,7 +145,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {chance}% chance to slow{new_targets_with_space} enemies for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to slow{new_targets_with_space} enemies for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
             );
             Some(msg)
         }
@@ -157,7 +162,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to knockback{new_targets_with_space} enemies, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to knockback{new_targets_with_space} enemies{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -203,7 +208,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to perform a critical hit, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to perform a critical hit{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -218,7 +223,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to break [[Barrier]]s, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to break [[Barrier]]s{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -234,7 +239,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to create a level {level} wave attack, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to create a level {level} wave attack{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -550,7 +555,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to land a savage blow for +{damage}%, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to land a savage blow for +{damage}%{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -643,7 +648,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to create a level {level} surge attack between {rng1}~{rng2} range, improves by {step}% per level up to {max}%",
+                "Adds a {min}% chance to create a level {level} surge attack between {rng1}~{rng2} range{multab}, improves by {step}% per level up to {max}%",
                 rng1 = rng_min.to_formatted_string(&Locale::en),
                 rng2 = rng_max.to_formatted_string(&Locale::en)
             );
@@ -675,7 +680,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to instantly pierce shields, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to instantly pierce shields{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -694,7 +699,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let (max_f, max_s) = time_repr(max.into());
 
             let msg = format!(
-                "Adds a {chance}% chance to curse enemies for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to curse enemies for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
             );
             Some(msg)
         }
@@ -741,7 +746,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to create a level {level} mini-wave, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to create a level {level} mini-wave{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -766,7 +771,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to create a level {level} mini-surge between {rng1}~{rng2} range, improves by {step}% per level up to {max}%",
+                "Adds a {min}% chance to create a level {level} mini-surge between {rng1}~{rng2} range{multab}, improves by {step}% per level up to {max}%",
                 rng1 = rng_min.to_formatted_string(&Locale::en),
                 rng2 = rng_max.to_formatted_string(&Locale::en)
             );
@@ -832,7 +837,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to create an explosion at {rng1} range, improves by {step}% per level up to {max}%",
+                "Adds a {min}% chance to create an explosion at {rng1} range{multab}, improves by {step}% per level up to {max}%",
                 rng1 = (spawn_quad / 4).to_formatted_string(&Locale::en),
             );
             Some(msg)
@@ -852,7 +857,12 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
     }
 }
 
-fn get_single_talent(talent: &SingleTalent, config: &Config, targs: &[TalentTargets]) -> String {
+fn get_single_talent(
+    talent: &SingleTalent,
+    config: &Config,
+    targs: &[TalentTargets],
+    multab: &str,
+) -> String {
     let mut buf = format!(
         "*'''{}'''",
         TALENT_DATA.get_talent_name(talent.ability_id.into())
@@ -877,7 +887,7 @@ fn get_single_talent(talent: &SingleTalent, config: &Config, targs: &[TalentTarg
         )
     };
 
-    if let Some(desc) = talent_from_text_id(talent, new_targets_with_space) {
+    if let Some(desc) = talent_from_text_id(talent, new_targets_with_space, multab) {
         write!(buf, ": {desc}").infallible_write();
     }
 
@@ -903,12 +913,25 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
     const TITLE: &str = "Talents";
     let talents = cat.get_talents(config.version.current_version())?;
 
+    let tf_multab = cat
+        .forms
+        .stats
+        .get(2)
+        .map(|stats| get_multiple_hit_abilities(&stats.attack.hits));
+
+    let uf_multab = cat
+        .forms
+        .stats
+        .get(3)
+        .map(|stats| get_multiple_hit_abilities(&stats.attack.hits));
+
     let mut normal = vec![];
     for talent in talents.normal {
         normal.push(get_single_talent(
             &talent,
             config,
             &talents.implicit_targets,
+            tf_multab.unwrap(),
         ));
     }
 
@@ -924,6 +947,7 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
             &talent,
             config,
             &talents.implicit_targets,
+            uf_multab.unwrap(),
         ));
     }
 
