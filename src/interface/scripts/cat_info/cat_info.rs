@@ -17,7 +17,9 @@ use crate::{
             combos::combos_section,
             costs::price_cost,
             form_util::CatForm,
-            stats::stats_template::{manual::stats_manual, ver_0o1::stats_0o1, ver_0o2::stats_0o2},
+            stats::stats_template::{
+                manual::stats_manual, ver_0o1::stats_0o1, ver_0o2::stats_0o2, ver_1o0::stats_1o0,
+            },
             talents::talents_section,
             upgrade_cost::upgrade_cost,
         },
@@ -376,7 +378,8 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     page.push(upgrade_cost(&cat, config));
 
     let stats = match config.cat_info.stats_template_version {
-        StatsTemplateVersion::Current | StatsTemplateVersion::Ver0o2 => stats_0o2(&cat, config),
+        StatsTemplateVersion::Current | StatsTemplateVersion::Ver1o0 => stats_1o0(&cat, config),
+        StatsTemplateVersion::Ver0o2 => stats_0o2(&cat, config),
         StatsTemplateVersion::Ver0o1 => stats_0o1(&cat, config),
         StatsTemplateVersion::Manual => stats_manual(&cat, config),
     };

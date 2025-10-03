@@ -3,7 +3,10 @@
 use super::super::form::Form;
 use crate::{
     Config,
-    game_data::cat::parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
+    game_data::cat::{
+        parsed::{anim::CatFormAnimData, cat::Cat, stats::form::CatFormStats},
+        raw::equipmentslot::EquipmentSlotContainer,
+    },
     interface::{
         error_handler::InfallibleWrite,
         scripts::cat_info::{
@@ -164,8 +167,8 @@ fn get_scaling(cat: &Cat) -> String {
 }
 
 /// Get full template.
-pub fn stats_0o2(cat: &Cat, config: &Config) -> Template {
-    let mut t = Template::named("Cat Stats 0.2");
+pub fn stats_1o0(cat: &Cat, config: &Config) -> Template {
+    let mut t = Template::named("Cat Stats 1.0");
 
     add_all_forms(&mut t, cat);
     let max_level = {
