@@ -554,8 +554,10 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             );
             Some(msg)
         }
-        60 => {
+        60 | 87 | 88 => {
             // dodge, increase duration
+            // 87 = traitless
+            // 88 = same as 60?
             assert_eq!(c_abil, 51);
             assert_eq!(p_len, 2);
 
@@ -569,7 +571,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let (max_f, max_s) = time_repr(max.into());
 
             let msg = format!(
-                "Adds a {chance}% chance to dodge enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to dodge{new_targets_with_space} enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
             );
             Some(msg)
         }
@@ -595,7 +597,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             assert_eq!(p_len, 2);
 
             // chance, duration
-            let chance = min_is_max!(0);
+            let _chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
             let step = calculate_step(talent, min, max);
@@ -743,6 +745,10 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             );
             Some(msg)
         }
+        84 => {
+            // "Immune to zombies"
+            unimplemented!()
+        }
         89 => {
             // Unlock mini-surge, level up for higher chance
             assert_eq!(c_abil, 65);
@@ -766,8 +772,10 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             );
             Some(msg)
         }
-        90 => {
+        90 | 95 => {
             // Unlock dodge, level up for higher chance
+            // 90 = all
+            // 95 = metal
             assert_eq!(c_abil, 51);
             assert_eq!(p_len, 2);
 
@@ -781,6 +789,52 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
                 "Adds a {min}% chance to dodge{new_targets_with_space} enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}% per level up to {max}%"
             );
 
+            Some(msg)
+        }
+        92 => {
+            // none_map but with a target
+            // 92 = strong against relics
+            assert_eq!(c_abil, 5);
+            assert_eq!(p_len, 0);
+            assert!(talent.max_level <= 1);
+
+            assert!(!new_targets_with_space.is_empty());
+            Some(new_targets_with_space.to_string())
+        }
+        93 => {
+            // upgrade curse, level up duration
+            assert_eq!(c_abil, 60);
+            assert_eq!(p_len, 2);
+
+            // chance,duration
+            let _chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let step = calculate_step(talent, min, max);
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let msg = format!(
+                "Upgrades chance to curse enemies by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        94 => {
+            // explosion, level up chance
+            assert_eq!(c_abil, 67);
+            assert_eq!(p_len, 2);
+
+            // chance,spawn_quad
+            let (min, max) = talent.params[0];
+            let spawn_quad = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to create an explosion at {rng1} range, improves by {step}% per level up to {max}%",
+                rng1 = (spawn_quad / 4).to_formatted_string(&Locale::en),
+            );
             Some(msg)
         }
         id => {
