@@ -15,13 +15,13 @@ use crate::{
     },
     interface::{config::Config, error_handler::InfallibleWrite},
     wiki_data::talent_names::TALENT_DATA,
-    wikitext::section::Section,
+    wikitext::{number_utils::time_repr, section::Section},
 };
 
 // Is it better to use the ability id and check cat talents, or is it better to
 // use the description number?
-fn talent_from_text_id(talent: &SingleTalent, new_targets: &str) -> Option<String> {
-    log::debug!("{talent:?}/{new_targets}");
+fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> Option<String> {
+    log::debug!("{talent:?}/{new_targets_with_space}");
 
     let c_abil = usize::from(talent.ability_id);
     // check ability id
@@ -36,6 +36,13 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets: &str) -> Option<Strin
         }};
     }
 
+    fn calculate_step(talent: &SingleTalent, min: u16, max: u16) -> u16 {
+        let s = max - min;
+        let t = u16::from(talent.max_level) - 1;
+        assert_eq!(s % t, 0);
+        s / t
+    }
+
     match talent.skill_description_id {
         1 => {
             // weaken, ???
@@ -45,7 +52,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets: &str) -> Option<Strin
             todo!()
         }
         89 => {
-            // Mini-surge, level up for higher chance
+            // Unlock mini-surge, level up for higher chance
             assert_eq!(c_abil, 65);
             assert_eq!(p_len, 4);
 
@@ -58,18 +65,30 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets: &str) -> Option<Strin
             let rng_min = spawn_quad / 4;
             let rng_max = rng_min + range_quad / 4;
 
-            let step = {
-                let s = max - min;
-                let t = u16::from(talent.max_level) - 1;
-                assert_eq!(s % t, 0);
-                s / t
-            };
+            let step = calculate_step(talent, min, max);
 
             let msg = format!(
                 "Adds a {min}% chance to create a level {level} mini-surge between {rng1}~{rng2} range, improves by {step}% per level up to {max}%",
                 rng1 = rng_min.to_formatted_string(&Locale::en),
                 rng2 = rng_max.to_formatted_string(&Locale::en)
             );
+            Some(msg)
+        }
+        90 => {
+            // Unlock dodge, level up for higher chance
+            assert_eq!(c_abil, 51);
+            assert_eq!(p_len, 2);
+
+            let (min, max) = talent.params[0];
+            let duration = min_is_max!(1);
+
+            let (min_dur, max_dur) = time_repr(duration.into());
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to dodge{new_targets_with_space} enemy attacks for {min_dur}f<sup>{max_dur}s</sup>, improves by {step}% per level up to {max}%"
+            );
+
             Some(msg)
         }
         id => {
@@ -93,18 +112,18 @@ fn get_single_talent(talent: &SingleTalent, config: &Config, targs: &[TalentTarg
         TALENT_DATA.get_talent_name(talent.ability_id.into())
     );
 
-    let new_targets = if targs.is_empty() {
+    let new_targets_with_space = if targs.is_empty() {
         ""
     } else if targs.len() == 1 {
         match &targs[0] {
-            TalentTargets::Metal => "[[:Category:Metal Enemies|Metal]]",
-            TalentTargets::Alien => "[[:Category:Alien Enemies|Alien]]",
-            TalentTargets::Zombie => "[[:Category:Zombie Enemies|Zombie]]",
-            TalentTargets::Relic => "[[:Category:Relic Enemies|Relic]]",
+            TalentTargets::Metal => " [[:Category:Metal Enemies|Metal]]",
+            TalentTargets::Alien => " [[:Category:Alien Enemies|Alien]]",
+            TalentTargets::Zombie => " [[:Category:Zombie Enemies|Zombie]]",
+            TalentTargets::Relic => " [[:Category:Relic Enemies|Relic]]",
             t => panic!("Found {t:?}, not sure what this type is"),
         }
     } else if targs.len() == LATEST_ENEMY_TYPE as usize + 1 {
-        "all"
+        " all"
     } else {
         unimplemented!(
             "Found nonstandard enemy list type: length = {}",
@@ -112,7 +131,7 @@ fn get_single_talent(talent: &SingleTalent, config: &Config, targs: &[TalentTarg
         )
     };
 
-    if let Some(desc) = talent_from_text_id(talent, new_targets) {
+    if let Some(desc) = talent_from_text_id(talent, new_targets_with_space) {
         write!(buf, ": {desc}").infallible_write();
     }
 
