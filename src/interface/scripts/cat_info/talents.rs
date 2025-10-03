@@ -181,7 +181,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 2);
 
             // hp,damage
-            let hp = min_is_max!(0);
+            let hp = 100 - min_is_max!(0);
             let (min, max) = talent.params[1];
 
             let step = calculate_step(talent, min, max);
