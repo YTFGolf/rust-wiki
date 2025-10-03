@@ -49,6 +49,12 @@ fn talent_from_text_id(
         s / t
     }
 
+    /// Get representation of time.
+    fn fmt_time(param: u16) -> String {
+        let (f, s) = time_repr(param.into());
+        format!("{f}f <sup>{s}s</sup>")
+    }
+
     // pair of (`skill_description_id`, `ability_id`)
     let none_map = [
         (4, 4),   // attacks only
@@ -98,13 +104,14 @@ fn talent_from_text_id(
             let (min, max) = talent.params[1];
             let percent = min_is_max!(2);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let step = calculate_step(talent, min, max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Adds a {chance}% chance to weaken{new_targets_with_space} enemies to {percent}% for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to weaken{new_targets_with_space} enemies to {percent}% for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -118,13 +125,14 @@ fn talent_from_text_id(
             let chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let step = calculate_step(talent, min, max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Adds a {chance}% chance to freeze{new_targets_with_space} enemies for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to freeze{new_targets_with_space} enemies for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -139,13 +147,14 @@ fn talent_from_text_id(
             let chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let step = calculate_step(talent, min, max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Adds a {chance}% chance to slow{new_targets_with_space} enemies for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to slow{new_targets_with_space} enemies for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -357,11 +366,12 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let step = calculate_step(talent, min, max);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
+            let step_time = fmt_time(step);
 
             Some(format!(
-                "Reduces recharge time by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Reduces recharge time by {min_time}, improves by {step_time} per level up to {max_time}"
             ))
         }
         42 => {
@@ -374,13 +384,14 @@ fn talent_from_text_id(
             let (min, max) = talent.params[1];
             let _percent = min_is_max!(2);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let step = calculate_step(talent, min, max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Increases weaken duration by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Increases weaken duration by {min_time}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -393,13 +404,14 @@ fn talent_from_text_id(
             let _chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let step = calculate_step(talent, min, max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Increases freeze duration by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Increases freeze duration by {min_time}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -412,13 +424,14 @@ fn talent_from_text_id(
             let _chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let step = calculate_step(talent, min, max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Increases slow duration by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Increases slow duration by {min_time}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -572,11 +585,12 @@ fn talent_from_text_id(
 
             let step = calculate_step(talent, min, max);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Adds a {chance}% chance to dodge{new_targets_with_space} enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to dodge{new_targets_with_space} enemy attacks for {min_time}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -608,11 +622,11 @@ fn talent_from_text_id(
             let step = calculate_step(talent, min, max);
             assert_eq!(step, min);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let step_time = fmt_time(min);
+            let max_time = fmt_time(max);
 
             let msg = format!(
-                "Upgrades chance to dodge attacks by {min_f}f<sup>{min_s}s</sup> per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Upgrades chance to dodge attacks by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -695,11 +709,12 @@ fn talent_from_text_id(
 
             let step = calculate_step(talent, min, max);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Adds a {chance}% chance to curse enemies for {min_f}f<sup>{min_s}s</sup>{multab}, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Adds a {chance}% chance to curse enemies for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
@@ -727,11 +742,12 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let step = calculate_step(talent, min, max);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
+            let step_time = fmt_time(step);
 
             Some(format!(
-                "Reduces attack cooldown by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Reduces attack cooldown by {min_time}, improves by {step_time} per level up to {max_time}"
             ))
         }
         83 => {
@@ -787,11 +803,11 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let duration = min_is_max!(1);
 
-            let (min_f, min_s) = time_repr(duration.into());
+            let duration = fmt_time(duration);
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to dodge{new_targets_with_space} enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to dodge{new_targets_with_space} enemy attacks for {duration}, improves by {step}% per level up to {max}%"
             );
 
             Some(msg)
@@ -817,11 +833,12 @@ fn talent_from_text_id(
 
             let step = calculate_step(talent, min, max);
 
-            let (min_f, min_s) = time_repr(min.into());
-            let (max_f, max_s) = time_repr(max.into());
+            let min_time = fmt_time(min);
+            let max_time = fmt_time(max);
+            let step_time = fmt_time(step);
 
             let msg = format!(
-                "Upgrades chance to curse enemies by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+                "Upgrades chance to curse enemies by {min_time}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
