@@ -319,7 +319,7 @@ fn talent_from_text_id(
             assert_eq!(step, min);
 
             Some(format!(
-                "Upgrades movement speed by {step}% per level up to {max}%"
+                "Upgrades movement speed by {step} per level up to {max}"
             ))
         }
         30 => {
@@ -332,7 +332,7 @@ fn talent_from_text_id(
             assert_eq!(step, min);
 
             Some(format!(
-                "Upgrades knockback push by {step}% per level up to {max}%"
+                "Upgrades knockback push by {step}(?) per level up to {max}(?)"
             ))
         }
         31 => {
