@@ -273,11 +273,16 @@ fn talent_from_text_id(
 
             let (min, max) = talent.params[0];
             let step = calculate_step(talent, min, max);
-            assert_eq!(step, min);
 
-            Some(format!(
-                "Reduces {effect} by {step}% per level up to {max}%"
-            ))
+            if step == min {
+                Some(format!(
+                    "Reduces {effect} by {step}% per level up to {max}%"
+                ))
+            } else {
+                Some(format!(
+                    "Reduces {effect} by {min}%, improves by {step}% per level up to {max}%"
+                ))
+            }
         }
         27 => {
             // defense buff
