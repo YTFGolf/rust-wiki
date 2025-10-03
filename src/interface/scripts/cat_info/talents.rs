@@ -44,13 +44,174 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
         s / t
     }
 
+    // pair of (`skill_description_id`, `ability_id`)
+    let none_map = [
+        (4, 4),   // attacks only
+        (5, 5),   // strong vs
+        (6, 6),   // tough vs
+        (7, 7),   // massive damage
+        (9, 9),   // warp
+        (12, 12), // base destroyer
+        (14, 14), // zombie killer
+        (16, 16), // money up
+        (23, 23), // wave immunity
+        (25, 29), // curse immunity
+        (33, 33), // target red
+        (34, 34), // target floating
+        (35, 35), // target black
+        (36, 36), // target metal
+        (37, 37), // target angel
+        (38, 38), // target alien
+        (39, 39), // target zombie
+        (40, 40), // target relic
+        (41, 41), // target traitless
+        (53, 44), // immune to weaken
+        (54, 45), // immune to freeze
+        (55, 46), // immune to slow
+        (56, 47), // immune to knockback
+        (57, 48), // immune to waves (again)
+        (58, 49), // warp blocker
+        (65, 53), // immune to toxic
+        (67, 55), // immune to surge
+        (77, 57), // target aku
+        (79, 59), // soulstrike
+        (85, 63), // colossus slayer
+        (86, 64), // behemoth slayer
+        (91, 66), // behemoth slayer
+        (92, 5),  // strong vs (relic)
+    ];
+
     match talent.skill_description_id {
         1 => {
-            // weaken, ???
+            // weaken, level up for higher duration
             assert_eq!(c_abil, 1);
             assert_eq!(p_len, 3);
 
-            todo!()
+            // chance,duration,percent
+            let chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+            let percent = min_is_max!(2);
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {chance}% chance to weaken enemies to {percent}% for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        2 => {
+            // freeze, level up for higher duration
+            assert_eq!(c_abil, 2);
+            assert_eq!(p_len, 2);
+
+            // chance,duration
+            let chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {chance}% chance to freeze enemies for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        3 => {
+            // slow, level up for higher duration
+            assert_eq!(c_abil, 8);
+            assert_eq!(p_len, 2);
+
+            // chance,duration
+            let chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {chance}% chance to slow enemies for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        8 => {
+            // knockback, level up for higher chance
+            assert_eq!(c_abil, 8);
+            assert_eq!(p_len, 1);
+
+            // chance,duration
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to knockback enemies, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        10 => {
+            // strengthen, level up for higher damage
+            assert_eq!(c_abil, 10);
+            assert_eq!(p_len, 2);
+
+            // hp,damage
+            let hp = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds {min}% attack power at {hp}% health, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        11 => {
+            // survives, level up for higher chance
+            assert_eq!(c_abil, 11);
+            assert_eq!(p_len, 1);
+
+            // chance
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to survive a lethal strike, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        13 => {
+            // critical, level up for higher chance
+            assert_eq!(c_abil, 13);
+            assert_eq!(p_len, 1);
+
+            // chance
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to perform a critical hit, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        27 => {
+            // defense buff
+            assert_eq!(c_abil, 32);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+            // might have to end up formatting this properly
+
+            Some(format!("Upgrades health by {step}% per level up to {max}%"))
         }
         28 => {
             // attack buff
@@ -60,11 +221,39 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let (min, max) = talent.params[0];
             let step = calculate_step(talent, min, max);
             assert_eq!(step, min);
-            // might have to end up formatting this properly
 
             Some(format!(
                 "Upgrades attack power by {step}% per level up to {max}%"
             ))
+        }
+        45 => {
+            // improved knockback
+            assert_eq!(c_abil, 8);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            Some(format!(
+                "Increases knockback chance by {step}% per level up to {max}%"
+            ))
+        }
+        83 => {
+            // Unlock mini-wave, level up for higher chance
+            assert_eq!(c_abil, 62);
+            assert_eq!(p_len, 2);
+
+            // chance,level
+            let (min, max) = talent.params[0];
+            let level = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to create a level {level} mini-wave, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
         }
         89 => {
             // Unlock mini-surge, level up for higher chance
@@ -107,8 +296,16 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             Some(msg)
         }
         id => {
-            log::warn!("Unknown skill description id: {id}");
-            Some(String::from("???"))
+            let Some(pair) = none_map.iter().find(|(desc_id, _)| *desc_id == id) else {
+                log::warn!("Unknown skill description id: {id}");
+                return Some(String::from("???"));
+            };
+
+            assert_eq!(c_abil, pair.1);
+            assert_eq!(p_len, 0);
+            assert!(talent.max_level <= 1);
+
+            None
         }
     }
 }
