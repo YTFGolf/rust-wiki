@@ -77,8 +77,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
         (79, 59), // soulstrike
         (85, 63), // colossus slayer
         (86, 64), // behemoth slayer
-        (91, 66), // behemoth slayer
-        (92, 5),  // strong vs (relic)
+        (91, 66), // sage slayer
     ];
 
     match talent.skill_description_id {
@@ -232,7 +231,8 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             );
             Some(msg)
         }
-        18 | 19 | 20 | 21 | 22 | 24 | 26 => {
+        18 | 19 | 20 | 21 | 22 | 24 | 26 | 64 | 66 => {
+            // resist {effect}
             let (abil_id, effect) = match talent.skill_description_id {
                 18 => (18, "weaken duration"),
                 19 => (19, "freeze duration"),
@@ -240,8 +240,10 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
                 21 => (21, "knockback push"),
                 22 => (22, "wave damage"),
                 // 24 => (24, ""),
-                24 => unreachable!(),
+                24 => unimplemented!(),
                 26 => (30, "curse duration"),
+                64 => (52, "toxic damage"),
+                66 => (54, "surge damage"),
                 _ => unreachable!(),
             };
 
@@ -350,7 +352,64 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
                 "Reduces recharge time by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
             ))
         }
-        42
+        42 => {
+            // upgrade weaken, level up for higher duration
+            assert_eq!(c_abil, 1);
+            assert_eq!(p_len, 3);
+
+            // chance,duration,percent
+            let _chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+            let _percent = min_is_max!(2);
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Increases weaken duration by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        43 => {
+            // upgrade freeze, level up for higher duration
+            assert_eq!(c_abil, 2);
+            assert_eq!(p_len, 2);
+
+            // chance,duration,percent
+            let _chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Increases freeze duration by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        44 => {
+            // upgrade slow, level up for higher duration
+            assert_eq!(c_abil, 3);
+            assert_eq!(p_len, 2);
+
+            // chance,duration
+            let _chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Increases slow duration by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
         45 => {
             // improved knockback
             assert_eq!(c_abil, 8);
@@ -363,6 +422,200 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             Some(format!(
                 "Increases knockback chance by {step}% per level up to {max}%"
             ))
+        }
+        46 => {
+            // upgrade strengthen
+            assert_eq!(c_abil, 10);
+            assert_eq!(p_len, 2);
+
+            // hp,damage
+            let _hp = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg = format!("Upgrades strengthen attack power by {step}% per level up to {max}%");
+            Some(msg)
+        }
+        47 => {
+            // upgrade survive
+            assert_eq!(c_abil, 11);
+            assert_eq!(p_len, 1);
+
+            // chance
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg = format!(
+                "Upgrades chance to survive lethal strikes by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        48 => {
+            // upgrade survive
+            assert_eq!(c_abil, 13);
+            assert_eq!(p_len, 1);
+
+            // chance
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg = format!(
+                "Upgrades chance to perform a critical hit by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        49 => {
+            // upgrade barrier breaker
+            assert_eq!(c_abil, 13);
+            assert_eq!(p_len, 1);
+
+            // chance
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg =
+                format!("Upgrades chance to break [[Barrier]]s by {step}% per level up to {max}%");
+            Some(msg)
+        }
+        50 => {
+            // upgrade wave, level up for higher chance
+            assert_eq!(c_abil, 17);
+            assert_eq!(p_len, 2);
+
+            // chance,level
+            let (min, max) = talent.params[0];
+            let _level = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg =
+                format!("Upgrade chance to create wave attacks by {step}% per level up to {max}%");
+            Some(msg)
+        }
+        51 => {
+            // upgrade warp
+            assert_eq!(c_abil, 9);
+            assert_eq!(p_len, 2);
+
+            unimplemented!()
+            // // chance,level
+            // let (min, max) = talent.params[0];
+            // let _level = min_is_max!(1);
+
+            // let step = calculate_step(talent, min, max);
+            // assert_eq!(step, min);
+
+            // let msg = format!(
+            //     "Upgrade warp distance"
+            // );
+            // Some(msg)
+        }
+        52 => {
+            // critical, no level-ups (e.g. Cameraman)
+            assert_eq!(c_abil, 13);
+            assert_eq!(p_len, 1);
+            assert!(talent.max_level <= 1);
+
+            // chance
+            let chance = min_is_max!(1);
+
+            let msg = format!("Adds a {chance}% chance to perform a critical hit");
+            Some(msg)
+        }
+        59 => {
+            // savage blow, increase chance
+            assert_eq!(c_abil, 50);
+            assert_eq!(p_len, 2);
+
+            // chance,damage
+            let (min, max) = talent.params[0];
+            let damage = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to land a savage blow for +{damage}%, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        60 => {
+            // dodge, increase duration
+            assert_eq!(c_abil, 51);
+            assert_eq!(p_len, 2);
+
+            // chance, duration
+            let chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let step = calculate_step(talent, min, max);
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let msg = format!(
+                "Adds a {chance}% chance to dodge enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        61 => {
+            // upgrade savage blow, increase chance
+            assert_eq!(c_abil, 50);
+            assert_eq!(p_len, 2);
+
+            // chance,damage
+            let (min, max) = talent.params[0];
+            let _damage = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg =
+                format!("Upgrades chance to land a savage blow by {step}% per level up to {max}%");
+            Some(msg)
+        }
+        62 => {
+            // upgrade dodge, increase duration
+            assert_eq!(c_abil, 51);
+            assert_eq!(p_len, 2);
+
+            // chance, duration
+            let chance = min_is_max!(0);
+            let (min, max) = talent.params[1];
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            let msg = format!(
+                "Upgrade chance to dodge enemy attacks by {min_f}f<sup>{min_s}s</sup> per level up to {max_f}f<sup>{max_s}s</sup>"
+            );
+            Some(msg)
+        }
+        63 => {
+            // upgrade slow, level up for higher chance
+            assert_eq!(c_abil, 3);
+            assert_eq!(p_len, 2);
+
+            // chance,duration
+            let (min, max) = talent.params[0];
+            let _duration = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            let msg = format!("Increases slow chance by {step}% per level up to {max}%");
+            Some(msg)
         }
         83 => {
             // Unlock mini-wave, level up for higher chance
@@ -411,11 +664,11 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             let (min, max) = talent.params[0];
             let duration = min_is_max!(1);
 
-            let (min_dur, max_dur) = time_repr(duration.into());
+            let (min_f, min_s) = time_repr(duration.into());
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to dodge{new_targets_with_space} enemy attacks for {min_dur}f<sup>{max_dur}s</sup>, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to dodge{new_targets_with_space} enemy attacks for {min_f}f<sup>{min_s}s</sup>, improves by {step}% per level up to {max}%"
             );
 
             Some(msg)
