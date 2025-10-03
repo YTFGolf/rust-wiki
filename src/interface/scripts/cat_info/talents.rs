@@ -947,6 +947,10 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
         .get(3)
         .map(|stats| get_multiple_hit_abilities(&stats.attack.hits));
 
+    if tf_multab != uf_multab && uf_multab.is_some() {
+        panic!("TF and UF have different `multab`s!")
+    }
+
     let mut normal = vec![];
     for talent in talents.normal {
         normal.push(get_single_talent(
@@ -969,7 +973,7 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
             &talent,
             config,
             &talents.implicit_targets,
-            uf_multab.unwrap(),
+            tf_multab.unwrap(),
         ));
     }
 
