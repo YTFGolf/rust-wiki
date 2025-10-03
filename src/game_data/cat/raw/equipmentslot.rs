@@ -8,7 +8,8 @@ use std::path::Path;
 /// Descriptor of equipment slots.
 pub struct EquipmentSlotItem {
     unit_id: usize,
-    amt_slots: u8,
+    /// Amount of talent orb slots.
+    pub amt_slots: u8,
     #[serde(default)]
     condition_1: u8,
     #[serde(default)]

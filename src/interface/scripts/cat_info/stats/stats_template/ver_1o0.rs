@@ -177,8 +177,18 @@ pub fn stats_0o2(cat: &Cat, config: &Config) -> Template {
 
     let scaling = get_scaling(cat);
 
+    let slots = config
+        .version
+        .current_version()
+        .get_cached_file::<EquipmentSlotContainer>();
+    let cat_has_slots = match slots.get_slot_item(cat.id.try_into().unwrap()) {
+        None => false,
+        Some(slot) => slot.amt_slots > 0,
+    };
+
     t.push_params(TemplateParameter::new("Lv.MAX", max_level));
     t.push_params(TemplateParameter::new("Scaling", scaling));
+    t.push_params(TemplateParameter::new("Orb", cat_has_slots.to_string()));
     if !config.cat_info.stats_hide_validation {
         t.push_params(TemplateParameter::new("validation", "on"));
     }
