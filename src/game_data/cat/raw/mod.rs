@@ -3,6 +3,7 @@
 pub mod combo;
 pub mod combo_local;
 pub mod desc;
+pub mod equipmentslot;
 pub mod evolution_desc;
 pub mod stats;
 pub mod talents;
