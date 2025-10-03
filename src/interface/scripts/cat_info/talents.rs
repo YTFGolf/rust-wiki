@@ -36,6 +36,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
         }};
     }
 
+    /// Calculate the step between each level of the talent.
     fn calculate_step(talent: &SingleTalent, min: u16, max: u16) -> u16 {
         let s = max - min;
         let t = u16::from(talent.max_level) - 1;
@@ -50,6 +51,20 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             assert_eq!(p_len, 3);
 
             todo!()
+        }
+        28 => {
+            // attack buff
+            assert_eq!(c_abil, 31);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+            // might have to end up formatting this properly
+
+            Some(format!(
+                "Upgrades attack power by {step}% per level up to {max}%"
+            ))
         }
         89 => {
             // Unlock mini-surge, level up for higher chance
@@ -99,14 +114,6 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
 }
 
 fn get_single_talent(talent: &SingleTalent, config: &Config, targs: &[TalentTargets]) -> String {
-    // for talent in talents.groups.iter() {
-    //     println!("{talent:?}");
-    //     println!(
-    //         "abilityID_X = {}",
-    //         TALENT_DATA.get_talent_name(talent.abilityID_X.into())
-    //     )
-    // }
-
     let mut buf = format!(
         "*'''{}'''",
         TALENT_DATA.get_talent_name(talent.ability_id.into())
@@ -154,6 +161,7 @@ fn get_single_talent(talent: &SingleTalent, config: &Config, targs: &[TalentTarg
 
 /// Get the talents section.
 pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
+    const TITLE: &str = "Talents";
     let talents = cat.get_talents(config.version.current_version())?;
 
     let mut normal = vec![];
@@ -165,9 +173,27 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
         ));
     }
 
-    if true {
-        panic!("{normal:?}");
+    if normal.is_empty() {
+        return None;
     }
 
-    None
+    let mut buf = normal.join("\n");
+
+    let mut ultra = vec![];
+    for talent in talents.ultra {
+        ultra.push(get_single_talent(
+            &talent,
+            config,
+            &talents.implicit_targets,
+        ));
+    }
+
+    if ultra.is_empty() {
+        return Some(Section::h2(TITLE, buf));
+    }
+
+    buf += "\n\n===Ultra Talents===\n";
+    buf += &ultra.join("\n");
+
+    Some(Section::h2(TITLE, buf))
 }
