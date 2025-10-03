@@ -2,7 +2,7 @@
 
 use std::fmt::Write;
 
-use num_format::{Locale, ToFormattedString};
+use num_format::{Locale, ToFormattedString, WriteFormatted};
 
 use crate::{
     game_data::cat::{
@@ -83,7 +83,7 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
 
     match talent.skill_description_id {
         1 => {
-            // weaken, level up for higher duration
+            // unlock weaken, level up for higher duration
             assert_eq!(c_abil, 1);
             assert_eq!(p_len, 3);
 
@@ -201,6 +201,61 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
             );
             Some(msg)
         }
+        15 => {
+            // barrier breaker, level up for higher chance
+            assert_eq!(c_abil, 15);
+            assert_eq!(p_len, 1);
+
+            // chance
+            let (min, max) = talent.params[0];
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to break [[Barrier]]s, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        17 => {
+            // Unlock wave, level up for higher chance
+            assert_eq!(c_abil, 17);
+            assert_eq!(p_len, 2);
+
+            // chance,level
+            let (min, max) = talent.params[0];
+            let level = min_is_max!(1);
+
+            let step = calculate_step(talent, min, max);
+
+            let msg = format!(
+                "Adds a {min}% chance to create a level {level} wave attack, improves by {step}% per level up to {max}%"
+            );
+            Some(msg)
+        }
+        18 | 19 | 20 | 21 | 22 | 24 | 26 => {
+            let (abil_id, effect) = match talent.skill_description_id {
+                18 => (18, "weaken duration"),
+                19 => (19, "freeze duration"),
+                20 => (20, "slow duration"),
+                21 => (21, "knockback push"),
+                22 => (22, "wave damage"),
+                // 24 => (24, ""),
+                24 => unreachable!(),
+                26 => (30, "curse duration"),
+                _ => unreachable!(),
+            };
+
+            assert_eq!(c_abil, abil_id);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            Some(format!(
+                "Reduces {effect} by {step}% per level up to {max}%"
+            ))
+        }
         27 => {
             // defense buff
             assert_eq!(c_abil, 32);
@@ -226,6 +281,76 @@ fn talent_from_text_id(talent: &SingleTalent, new_targets_with_space: &str) -> O
                 "Upgrades attack power by {step}% per level up to {max}%"
             ))
         }
+        29 => {
+            // speed buff
+            assert_eq!(c_abil, 27);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            Some(format!(
+                "Upgrades movement speed by {step}% per level up to {max}%"
+            ))
+        }
+        30 => {
+            // knockback buff
+            assert_eq!(c_abil, 28);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            Some(format!(
+                "Upgrades knockback push by {step}% per level up to {max}%"
+            ))
+        }
+        31 => {
+            // cost decrease
+            assert_eq!(c_abil, 25);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+            assert_eq!(step, min);
+
+            fn get_all_costs(eoc1: u16) -> String {
+                let mut buf = String::new();
+                buf.write_formatted(&eoc1, &Locale::en).infallible_write();
+                buf += "/";
+                buf.write_formatted(&(eoc1 * 3 / 2), &Locale::en)
+                    .infallible_write();
+                buf += "/";
+                buf.write_formatted(&(eoc1 * 2), &Locale::en)
+                    .infallible_write();
+
+                buf
+            }
+
+            Some(format!(
+                "Reduces deploy cost by {step_all}¢ per level up to {max_all}¢",
+                step_all = get_all_costs(step),
+                max_all = get_all_costs(max)
+            ))
+        }
+        32 => {
+            // recover speed down
+            assert_eq!(c_abil, 26);
+            assert_eq!(p_len, 1);
+
+            let (min, max) = talent.params[0];
+            let step = calculate_step(talent, min, max);
+
+            let (min_f, min_s) = time_repr(min.into());
+            let (max_f, max_s) = time_repr(max.into());
+
+            Some(format!(
+                "Reduces recharge time by {min_f}f<sup>{min_s}s</sup>, improves by {step}f per level up to {max_f}f<sup>{max_s}s</sup>"
+            ))
+        }
+        42
         45 => {
             // improved knockback
             assert_eq!(c_abil, 8);
