@@ -19,7 +19,7 @@ use crate::{
 };
 use std::{fmt::Write, iter::zip};
 
-fn write_val_stats(t: &mut Template, form_name: &str, form: Form) {
+fn write_val_stats(t: &mut Template, form_name: &str, form: Form, is_kamikaze: bool) {
     type P = TemplateParameter;
     let f = form_name;
     // this template is so inconsistent
@@ -50,6 +50,11 @@ fn write_val_stats(t: &mut Template, form_name: &str, form: Form) {
     }
 
     t.push_params(P::new(format!("{f} Attack Type"), form.attack_type));
+
+    if is_kamikaze {
+        t.push_params(P::new(format!("{f} Kamikaze"), "true"));
+    }
+
     t.push_params(P::new(format!("{f} Abilities"), form.abilities));
 }
 
@@ -127,7 +132,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
             t.push_params(P::new("val-Normal-Health", form.base_hp));
             t.push_params(P::new("val-Normal-Attack Power", form.base_atk));
         }
-        write_val_stats(t, form_name, form.other);
+        write_val_stats(t, form_name, form.other, stats.attack.kamikaze);
     }
 }
 
@@ -167,8 +172,8 @@ fn get_scaling(cat: &Cat) -> String {
 }
 
 /// Get full template.
-pub fn stats_1o0(cat: &Cat, config: &Config) -> Template {
-    let mut t = Template::named("Cat Stats 1.0");
+pub fn stats_1o1(cat: &Cat, config: &Config) -> Template {
+    let mut t = Template::named("Cat Stats 1.1");
 
     add_all_forms(&mut t, cat);
     let max_level = {
