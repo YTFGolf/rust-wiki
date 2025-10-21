@@ -163,10 +163,10 @@ pub enum RuleNameLabel {
     UberClearance,
     /// Limited Stock.
     LimitedStock,
-    /// 二束三文.
-    二束三文,
-    /// 給料日.
-    給料日,
+    /// Pay Day.
+    PayDay,
+    /// Dirt Cheap.
+    DirtCheap,
     /// Placeholder.
     Placeholder(String),
 }
@@ -186,8 +186,8 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName010" => Self::PlusOneSpecial,
             "SpecialRuleName011" => Self::UberClearance,
             "SpecialRuleName012" => Self::LimitedStock,
-            "SpecialRuleName013" => Self::二束三文,
-            "SpecialRuleName014" => Self::給料日,
+            "SpecialRuleName013" => Self::PayDay,
+            "SpecialRuleName014" => Self::DirtCheap,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -209,8 +209,8 @@ impl RuleNameLabel {
             RuleNameLabel::PlusOneSpecial => "Plus One: Special",
             RuleNameLabel::UberClearance => "Uber Clearance",
             RuleNameLabel::LimitedStock => "Limited Stock",
-            RuleNameLabel::二束三文 => "二束三文",
-            RuleNameLabel::給料日 => "給料日",
+            RuleNameLabel::PayDay => "Pay Day",
+            RuleNameLabel::DirtCheap => "Dirt Cheap",
             RuleNameLabel::Placeholder(label) => {
                 panic!("Error: unknown special rule label {label:?}")
             }
