@@ -69,11 +69,26 @@ fn upgrade_cost_mix_normal_unitexp(max: u8, initial: u16, costs: [u32; 10]) -> S
     Section::new(SECTION_TITLE, (t + "}}").into())
 }
 
+const SUPERFELINE_COST: &str = "{{Upgrade Cost|MIX
+|999999
+|999999
+|999999
+|999999
+|999999
+|999999
+|999999
+|999999
+|999999
+|999999
+|mult1 = 1
+|max = 20
+}}";
+
 /// Get upgrade costs section.
 pub fn upgrade_cost(cat: &Cat, _config: &Config) -> Section {
     if cat.unitexp != XPCostScale::Normal {
         assert_eq!(cat.id, 643);
-        todo!("superfeline");
+        return Section::new(SECTION_TITLE, SUPERFELINE_COST.into());
     }
 
     let max = cat.unitbuy.max_levels.max_nat;
