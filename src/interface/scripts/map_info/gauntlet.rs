@@ -74,7 +74,10 @@ fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData)
                 cm = c * m
             ).infallible_write();
         }
-        _ => unimplemented!("combination of hide upon clear, max clears and gauntlet cooldown"),
+        (false, None, None) => (),
+        combination => unimplemented!(
+            "combination of hide upon clear, max clears and gauntlet cooldown: {combination:?}"
+        ),
     }
 
     match map.reset_type {
@@ -83,7 +86,7 @@ fn overview_section(map: &GameMap, config: &Config, map_wiki_data: &MapWikiData)
         }
         ResetType::ResetRewardsAndClear => write!(
             overview,
-            " The rewards reset with every appearance of the event."
+            " Rewards and gauntlet progress reset with every appearance of the event."
         )
         .infallible_write(),
     }
