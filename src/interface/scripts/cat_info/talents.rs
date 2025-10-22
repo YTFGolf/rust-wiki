@@ -172,8 +172,12 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step_exact(talent, min, max);
-            let step_time = fmt_time(step);
+            let step = calculate_step_inner(talent, min, max);
+            let step_time = match step {
+                Ok(step) => fmt_time(step),
+                Err((s, t)) => fmt_inexact_step(s, t) + "f",
+                // I'm not writing code to call fmt_time on 2.22f
+            };
 
             let msg = format!(
                 "Adds a {chance}% chance to slow{new_targets_with_space} enemies for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
