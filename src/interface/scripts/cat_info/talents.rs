@@ -670,11 +670,10 @@ fn talent_from_text_id(
         61 => {
             // upgrade savage blow, increase chance
             assert_eq!(c_abil, 50);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance,damage
+            // chance
             let (min, max) = talent.params[0];
-            let _damage = min_is_max!(1);
 
             let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
@@ -792,11 +791,10 @@ fn talent_from_text_id(
         81 => {
             // upgrade dodge, increase chance
             assert_eq!(c_abil, 51);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance, duration
+            // chance
             let (min, max) = talent.params[0];
-            let _duration = min_is_max!(1);
 
             let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
@@ -908,11 +906,10 @@ fn talent_from_text_id(
         93 => {
             // upgrade curse, level up duration
             assert_eq!(c_abil, 60);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance,duration
-            let _chance = min_is_max!(0);
-            let (min, max) = talent.params[1];
+            // duration
+            let (min, max) = talent.params[0];
 
             let step = calculate_step_exact(talent, min, max);
 
