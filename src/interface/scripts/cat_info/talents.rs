@@ -612,10 +612,9 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        60 | 87 | 88 => {
+        60 | 87 => {
             // dodge, increase duration
             // 87 = traitless
-            // 88 = same as 60?
             assert_eq!(c_abil, 51);
             assert_eq!(p_len, 2);
 
@@ -833,8 +832,9 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        90 | 95 => {
+        88 | 90 | 95 => {
             // Unlock dodge, level up for higher chance
+            // 88 = Nekoluga
             // 90 = all
             // 95 = metal
             assert_eq!(c_abil, 51);
