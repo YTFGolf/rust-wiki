@@ -405,12 +405,10 @@ fn talent_from_text_id(
         42 => {
             // upgrade weaken, level up for higher duration
             assert_eq!(c_abil, 1);
-            assert_eq!(p_len, 3);
+            assert_eq!(p_len, 1);
 
-            // chance,duration,percent
-            let _chance = min_is_max!(0);
-            let (min, max) = talent.params[1];
-            let _percent = min_is_max!(2);
+            // duration
+            let (min, max) = talent.params[0];
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -426,11 +424,10 @@ fn talent_from_text_id(
         43 => {
             // upgrade freeze, level up for higher duration
             assert_eq!(c_abil, 2);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance,duration
-            let _chance = min_is_max!(0);
-            let (min, max) = talent.params[1];
+            // duration
+            let (min, max) = talent.params[0];
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -446,11 +443,10 @@ fn talent_from_text_id(
         44 => {
             // upgrade slow, level up for higher duration
             assert_eq!(c_abil, 3);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance,duration
-            let _chance = min_is_max!(0);
-            let (min, max) = talent.params[1];
+            // duration
+            let (min, max) = talent.params[0];
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -491,11 +487,10 @@ fn talent_from_text_id(
         46 => {
             // upgrade strengthen
             assert_eq!(c_abil, 10);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // hp,damage
-            let _hp = min_is_max!(0);
-            let (min, max) = talent.params[1];
+            // damage
+            let (min, max) = talent.params[0];
 
             let step = calculate_step_exact(talent, min, max);
 
@@ -715,9 +710,9 @@ fn talent_from_text_id(
         74 => {
             // upgrade freeze, level up for higher chance
             assert_eq!(c_abil, 2);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance,duration
+            // chance
             let (min, max) = talent.params[0];
             let _duration = min_is_max!(1);
 
