@@ -500,7 +500,9 @@ fn talent_from_text_id(
                 let step = calculate_step_inner(talent, min, max);
 
                 let msg = match step {
-                    Ok(_) => unimplemented!(),
+                    Ok(step) => format!(
+                        "Adds {min}% attack power at {hp}% health, improves by {step}% per level up to {max}%"
+                    ),
                     Err((s, t)) => {
                         if s == min {
                             todo!()
@@ -512,30 +514,6 @@ fn talent_from_text_id(
                         }
                     }
                 };
-
-                // let msg = match step {
-                //     Ok(step) => {
-                //         if step == min {
-                //             format!(
-                //                 "Upgrades strengthen attack power by {step}% per level up to {max}%"
-                //             )
-                //         } else {
-                //             format!(
-                //                 "Upgrades strengthen attack power by {min}%, improves by {step}% per level up to {max}%"
-                //             )
-                //         }
-                //     }
-                //     Err((s, t)) => {
-                //         if s == min {
-                //             todo!()
-                //         } else {
-                //             let step = fmt_inexact_step(s, t);
-                //             format!(
-                //                 "Upgrades strengthen attack power by {min}%, improves by {step}% per level up to {max}%"
-                //             )
-                //         }
-                //     }
-                // };
 
                 return Some(msg);
             }
@@ -1099,5 +1077,13 @@ mod tests {
     fn diff_step_and_approximate_scaling() {
         // boogie cat
         todo!()
+    }
+
+    #[test]
+    fn wrong_description() {
+        todo!()
+        // keiji, correct
+        // furiluga, same id, incorrect
+        // cyclops, same id, incorrect
     }
 }
