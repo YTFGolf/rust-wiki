@@ -537,7 +537,7 @@ fn talent_from_text_id(
         }
         49 => {
             // upgrade barrier breaker
-            assert_eq!(c_abil, 13);
+            assert_eq!(c_abil, 15);
             assert_eq!(p_len, 1);
 
             // chance
@@ -714,7 +714,6 @@ fn talent_from_text_id(
 
             // chance
             let (min, max) = talent.params[0];
-            let _duration = min_is_max!(1);
 
             let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
