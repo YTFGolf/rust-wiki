@@ -45,8 +45,9 @@ fn talent_from_text_id(
     }
 
     /// Returns `Err` if step cannot evenly be split up.
-    fn step_calculate_inner(min: u16, max: u16, t: u16) -> Result<u16, (u16, u16)> {
+    fn calculate_step_inner(talent: &SingleTalent, min: u16, max: u16) -> Result<u16, (u16, u16)> {
         let s = max - min;
+        let t = u16::from(talent.max_level) - 1;
         if s % t != 0 {
             return Err((s, t));
         }
@@ -56,15 +57,18 @@ fn talent_from_text_id(
     /// Calculate the step between each level of the talent. Must give out
     /// integers.
     fn calculate_step_exact(talent: &SingleTalent, min: u16, max: u16) -> u16 {
-        step_calculate_inner(min, max, u16::from(talent.max_level) - 1)
-            .expect("step is not evenly divisible")
+        calculate_step_inner(talent, min, max).expect("step is not evenly divisible")
+    }
+
+    fn fmt_inexact_step(s: u16, t: u16) -> String {
+        "~".to_string() + &get_formatted_float(f64::from(s) / f64::from(t), 2)
     }
 
     /// Calculate the step between each level of the talent.
     fn calculate_step(talent: &SingleTalent, min: u16, max: u16) -> String {
-        match step_calculate_inner(min, max, u16::from(talent.max_level) - 1) {
+        match calculate_step_inner(talent, min, max) {
             Ok(step) => step.to_string(),
-            Err((s, t)) => "~".to_string() + &get_formatted_float(f64::from(s) / f64::from(t), 2),
+            Err((s, t)) => fmt_inexact_step(s, t),
         }
     }
 
@@ -465,12 +469,24 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step_exact(talent, min, max);
-            assert_eq!(step, min);
-
-            Some(format!(
-                "Increases knockback chance by {step}% per level up to {max}%"
-            ))
+            match calculate_step_inner(talent, min, max) {
+                Ok(step) => {
+                    assert_eq!(step, min);
+                    Some(format!(
+                        "Increases knockback chance by {step}% per level up to {max}%"
+                    ))
+                }
+                Err((s, t)) => {
+                    if s == min {
+                        todo!()
+                    } else {
+                        let step = fmt_inexact_step(s, t);
+                        Some(format!(
+                            "Increases knockback chance by {min}%, improves by {step}% per level up to {max}%"
+                        ))
+                    }
+                }
+            }
         }
         46 => {
             // upgrade strengthen
