@@ -256,8 +256,8 @@ pub fn get_pure_abilities(
             )),
             Ability::EvaAngelKiller => abilities.push(format!(
                 "{icon} {killer} (Deals 5x damage to {angels}, only takes 1/5 damage)",
-                killer = abil2("Eva Angel Killer"),
-                angels = enemy("Eva Angel", "Eva Angels")
+                killer = abil2("EVA Angel Killer"),
+                angels = enemy("EVA Angel", "EVA Angels")
             )),
             Ability::InsaneResist => abilities.push(format!(
                 "{icon} {tough} against {targets} enemies",

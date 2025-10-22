@@ -174,7 +174,7 @@ pub enum Ability {
     },
     /// Immune to warp.
     ImmuneToWarp,
-    /// Eva Angel killer.
+    /// EVA Angel killer.
     EvaAngelKiller,
     /// Immune to curse.
     ImmuneToCurse,
@@ -452,7 +452,7 @@ impl Ability {
             Self::ImmuneToBossShockwave => "Immune to Boss Shockwave",
             Self::BarrierBreaker { .. } => "Barrier Breaker",
             Self::ImmuneToWarp => "Immune to Warp",
-            Self::EvaAngelKiller => "Eva Angel Killer",
+            Self::EvaAngelKiller => "EVA Angel Killer",
             Self::ImmuneToCurse => "Immune to Curse",
             Self::InsaneResist => "Insanely Tough",
             Self::InsaneDamage => "Insane Damage",
