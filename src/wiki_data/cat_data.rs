@@ -9,7 +9,7 @@ use std::sync::LazyLock;
 /// Name and data for each cat.
 pub struct CatName {
     #[serde(rename = "Number")]
-    _id: u32,
+    id: u32,
     #[serde(rename = "First")]
     /// Normal form name.
     pub normal: String,
@@ -58,6 +58,28 @@ impl CatDataContainer {
             name = CatName::clean_cat_name(&cat.normal),
         )
     }
+
+    /// Get unit's name from id. Case-insensitive. Works for all 4 forms.
+    pub fn get_id_from_name(&self, name: &str) -> Option<u32> {
+        let name = name.to_lowercase();
+        for cat in self.names.iter() {
+            for form in [
+                Some(&cat.normal),
+                cat.evolved.as_ref(),
+                cat.true_form.as_ref(),
+                cat.ultra.as_ref(),
+            ]
+            .iter()
+            .flatten()
+            {
+                if form.to_lowercase() == name {
+                    return Some(cat.id);
+                }
+            }
+        }
+        // self.reverse_id_map.get(&name.to_lowercase())
+        None
+    }
 }
 
 /// Contains data about cats.
@@ -84,7 +106,7 @@ mod tests {
     #[allow(clippy::used_underscore_binding)]
     fn test_id_equals_index() {
         for (i, cat) in CAT_DATA.names.iter().enumerate() {
-            assert_eq!(cat._id as usize, i);
+            assert_eq!(cat.id as usize, i);
         }
     }
 }
