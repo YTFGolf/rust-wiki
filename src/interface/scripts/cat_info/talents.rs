@@ -14,7 +14,10 @@ use crate::{
         scripts::cat_info::stats::abilities::pure_abilities::get_multiple_hit_abilities,
     },
     wiki_data::talent_names::TALENT_DATA,
-    wikitext::{number_utils::time_repr, section::Section},
+    wikitext::{
+        number_utils::{get_formatted_float, time_repr},
+        section::Section,
+    },
 };
 use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::fmt::Write;
@@ -41,12 +44,28 @@ fn talent_from_text_id(
         }};
     }
 
-    /// Calculate the step between each level of the talent.
-    fn calculate_step(talent: &SingleTalent, min: u16, max: u16) -> u16 {
+    /// Returns `Err` if step cannot evenly be split up.
+    fn step_calculate_inner(min: u16, max: u16, t: u16) -> Result<u16, (u16, u16)> {
         let s = max - min;
-        let t = u16::from(talent.max_level) - 1;
-        assert_eq!(s % t, 0);
-        s / t
+        if s % t != 0 {
+            return Err((s, t));
+        }
+        Ok(s / t)
+    }
+
+    /// Calculate the step between each level of the talent. Must give out
+    /// integers.
+    fn calculate_step_exact(talent: &SingleTalent, min: u16, max: u16) -> u16 {
+        step_calculate_inner(min, max, u16::from(talent.max_level) - 1)
+            .expect("step is not evenly divisible")
+    }
+
+    /// Calculate the step between each level of the talent.
+    fn calculate_step(talent: &SingleTalent, min: u16, max: u16) -> String {
+        match step_calculate_inner(min, max, u16::from(talent.max_level) - 1) {
+            Ok(step) => step.to_string(),
+            Err((s, t)) => "~".to_string() + &get_formatted_float(f64::from(s) / f64::from(t), 2),
+        }
     }
 
     /// Get representation of time.
@@ -107,7 +126,7 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             let step_time = fmt_time(step);
 
             let msg = format!(
@@ -128,7 +147,7 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             let step_time = fmt_time(step);
 
             let msg = format!(
@@ -140,7 +159,7 @@ fn talent_from_text_id(
             // slow, level up for higher duration
             // 69 = relic
             // 72 = metal
-            assert_eq!(c_abil, 8);
+            assert_eq!(c_abil, 3);
             assert_eq!(p_len, 2);
 
             // chance,duration
@@ -150,7 +169,7 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             let step_time = fmt_time(step);
 
             let msg = format!(
@@ -272,7 +291,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
 
             if step == min {
                 Some(format!(
@@ -290,7 +309,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
             // might have to end up formatting this properly
 
@@ -302,7 +321,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             Some(format!(
@@ -315,7 +334,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             Some(format!(
@@ -328,7 +347,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             Some(format!(
@@ -341,7 +360,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             fn get_all_costs(eoc1: u16) -> String {
@@ -369,7 +388,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -392,7 +411,7 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             let step_time = fmt_time(step);
 
             let msg = format!(
@@ -412,7 +431,7 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             let step_time = fmt_time(step);
 
             let msg = format!(
@@ -432,7 +451,7 @@ fn talent_from_text_id(
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             let step_time = fmt_time(step);
 
             let msg = format!(
@@ -446,7 +465,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             Some(format!(
@@ -462,7 +481,7 @@ fn talent_from_text_id(
             let _hp = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg = format!("Upgrades strengthen attack power by {step}% per level up to {max}%");
@@ -476,7 +495,7 @@ fn talent_from_text_id(
             // chance
             let (min, max) = talent.params[0];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg = format!(
@@ -492,7 +511,7 @@ fn talent_from_text_id(
             // chance
             let (min, max) = talent.params[0];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg = format!(
@@ -508,7 +527,7 @@ fn talent_from_text_id(
             // chance
             let (min, max) = talent.params[0];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg =
@@ -524,7 +543,7 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let _level = min_is_max!(1);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg =
@@ -588,7 +607,7 @@ fn talent_from_text_id(
             let chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -608,7 +627,7 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let _damage = min_is_max!(1);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg =
@@ -624,7 +643,7 @@ fn talent_from_text_id(
             let _chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let step_time = fmt_time(min);
@@ -644,7 +663,7 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let _duration = min_is_max!(1);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg = format!("Increases slow chance by {step}% per level up to {max}%");
@@ -682,7 +701,7 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let _duration = min_is_max!(1);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg = format!("Increases freeze chance by {step}% per level up to {max}%");
@@ -712,7 +731,7 @@ fn talent_from_text_id(
             let chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -732,7 +751,7 @@ fn talent_from_text_id(
             let (min, max) = talent.params[0];
             let _duration = min_is_max!(1);
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
 
             let msg =
@@ -745,7 +764,7 @@ fn talent_from_text_id(
             assert_eq!(p_len, 1);
 
             let (min, max) = talent.params[0];
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -836,7 +855,7 @@ fn talent_from_text_id(
             let _chance = min_is_max!(0);
             let (min, max) = talent.params[1];
 
-            let step = calculate_step(talent, min, max);
+            let step = calculate_step_exact(talent, min, max);
 
             let min_time = fmt_time(min);
             let max_time = fmt_time(max);
@@ -985,4 +1004,13 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
     buf += &ultra.join("\n");
 
     Some(Section::h2(TITLE, buf))
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn approximate_scaling() {
+        // dark lazer
+        todo!()
+    }
 }
