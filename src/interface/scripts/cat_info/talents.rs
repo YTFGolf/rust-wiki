@@ -614,8 +614,9 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        60 | 87 => {
+        60 | 84 | 87 => {
             // dodge, increase duration
+            // 84 = zombies aka "immune to zombies"
             // 87 = traitless
             assert_eq!(c_abil, 51);
             assert_eq!(p_len, 2);
