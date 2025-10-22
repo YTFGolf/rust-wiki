@@ -490,6 +490,58 @@ fn talent_from_text_id(
         46 => {
             // upgrade strengthen
             assert_eq!(c_abil, 10);
+
+            if p_len == 2 {
+                // furiluga
+
+                // hp,damage
+                let hp = 100 - min_is_max!(0);
+                let (min, max) = talent.params[1];
+                let step = calculate_step_inner(talent, min, max);
+
+                let msg = match step {
+                    Ok(_) => unimplemented!(),
+                    Err((s, t)) => {
+                        if s == min {
+                            todo!()
+                        } else {
+                            let step = fmt_inexact_step(s, t);
+                            format!(
+                                "Adds {min}% attack power at {hp}% health, improves by {step}% per level up to {max}%"
+                            )
+                        }
+                    }
+                };
+
+                // let msg = match step {
+                //     Ok(step) => {
+                //         if step == min {
+                //             format!(
+                //                 "Upgrades strengthen attack power by {step}% per level up to {max}%"
+                //             )
+                //         } else {
+                //             format!(
+                //                 "Upgrades strengthen attack power by {min}%, improves by {step}% per level up to {max}%"
+                //             )
+                //         }
+                //     }
+                //     Err((s, t)) => {
+                //         if s == min {
+                //             todo!()
+                //         } else {
+                //             let step = fmt_inexact_step(s, t);
+                //             format!(
+                //                 "Upgrades strengthen attack power by {min}%, improves by {step}% per level up to {max}%"
+                //             )
+                //         }
+                //     }
+                // };
+
+                return Some(msg);
+            }
+            // for some reason this can both exist where p_len is 1 or p_len is
+            // 2
+
             assert_eq!(p_len, 1);
 
             // damage
