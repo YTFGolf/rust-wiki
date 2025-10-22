@@ -590,10 +590,7 @@ fn talent_from_text_id(
             assert!(talent.max_level <= 1);
 
             // chance
-            let chance = min_is_max!(1);
-            if true {
-                unreachable!("I'm sure the above line is wrong");
-            }
+            let chance = min_is_max!(0);
 
             let msg = format!("Adds a {chance}% chance to perform a critical hit");
             Some(msg)
@@ -806,10 +803,6 @@ fn talent_from_text_id(
                 "Adds a {min}% chance to create a level {level} mini-wave{multab}, improves by {step}% per level up to {max}%"
             );
             Some(msg)
-        }
-        84 => {
-            // "Immune to zombies"
-            unimplemented!()
         }
         86 => {
             // behemoth slayer, no level-ups
