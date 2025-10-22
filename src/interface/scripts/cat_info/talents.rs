@@ -498,9 +498,14 @@ fn talent_from_text_id(
             let (min, max) = talent.params[1];
 
             let step = calculate_step_exact(talent, min, max);
-            assert_eq!(step, min);
 
-            let msg = format!("Upgrades strengthen attack power by {step}% per level up to {max}%");
+            let msg = if step == min {
+                format!("Upgrades strengthen attack power by {step}% per level up to {max}%")
+            } else {
+                format!(
+                    "Upgrades strengthen attack power by {min}%, improves by {step}% per level up to {max}%"
+                )
+            };
             Some(msg)
         }
         47 => {
