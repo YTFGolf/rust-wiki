@@ -1028,4 +1028,10 @@ mod tests {
         // dark lazer
         todo!()
     }
+
+    #[test]
+    fn diff_step_and_approximate_scaling() {
+        // boogie cat
+        todo!()
+    }
 }
