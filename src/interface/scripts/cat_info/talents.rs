@@ -110,7 +110,6 @@ fn talent_from_text_id(
         (77, 57), // target aku
         (79, 59), // soulstrike
         (85, 63), // colossus slayer
-        (86, 64), // behemoth slayer
         (91, 66), // sage slayer
     ];
 
@@ -592,6 +591,9 @@ fn talent_from_text_id(
 
             // chance
             let chance = min_is_max!(1);
+            if true {
+                unreachable!("I'm sure the above line is wrong");
+            }
 
             let msg = format!("Adds a {chance}% chance to perform a critical hit");
             Some(msg)
@@ -807,6 +809,21 @@ fn talent_from_text_id(
         84 => {
             // "Immune to zombies"
             unimplemented!()
+        }
+        86 => {
+            // behemoth slayer, no level-ups
+            assert_eq!(c_abil, 64);
+            assert_eq!(p_len, 2);
+            assert!(talent.max_level <= 1);
+
+            // chance, duration
+            let chance = min_is_max!(0);
+            let duration = min_is_max!(1);
+
+            let duration = fmt_time(duration);
+
+            let msg = format!("{chance}% chance to dodge behemoth enemies' attacks for {duration}");
+            Some(msg)
         }
         89 => {
             // Unlock mini-surge, level up for higher chance
