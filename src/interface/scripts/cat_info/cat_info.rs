@@ -2,6 +2,7 @@
 
 use crate::{
     game_data::cat::{
+        ability::Ability,
         parsed::{
             cat::{Cat, CatDataError},
             unitbuy::{
@@ -18,8 +19,8 @@ use crate::{
             costs::price_cost,
             form_util::CatForm,
             stats::stats_template::{
-                manual::stats_manual, ver_0o1::stats_0o1, ver_0o2::stats_0o2, ver_1o0::stats_1o0,
-                ver_1o1::stats_1o1,
+                manual::stats_manual, spirit::stats_spirit, ver_0o1::stats_0o1, ver_0o2::stats_0o2,
+                ver_1o0::stats_1o0, ver_1o1::stats_1o1,
             },
             talents::talents_section,
             upgrade_cost::upgrade_cost,
@@ -357,6 +358,36 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
     Some(Section::h2(TITLE, t.to_string()))
 }
 
+fn spirit_section(cat: &Cat, config: &Config) -> Option<Section> {
+    let mut spirits = vec![];
+    for (stats, _) in cat.forms.iter() {
+        for ability in stats.abilities.iter() {
+            match ability {
+                Ability::ConjureUnit { id } => match spirits.last() {
+                    Some(&id2) => {
+                        if id != id2 {
+                            spirits.push(id)
+                        }
+                    }
+                    None => spirits.push(id),
+                },
+                _ => continue,
+            }
+        }
+    }
+
+    if spirits.is_empty() {
+        return None;
+    }
+
+    assert_eq!(spirits.len(), 1);
+    let id = spirits[0];
+
+    let spirit = Cat::from_wiki_id((*id).into(), &config.version).unwrap();
+
+    Some(Section::h2("Spirit", stats_spirit(&spirit).to_string()))
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -391,6 +422,12 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     }
     if let Some(talents) = talents_section(&cat, config) {
         page.push(talents);
+    }
+    if let Some(spirit) = spirit_section(&cat, config) {
+        page.push(spirit);
+        page.push(Section::blank("{{UnitViewer|conjurer}}"))
+    } else {
+        page.push(Section::blank("{{UnitViewer|cat}}"))
     }
 
     Ok(page)
