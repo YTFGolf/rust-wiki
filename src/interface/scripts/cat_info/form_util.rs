@@ -43,19 +43,23 @@ impl CatForm {
 }
 
 impl CatForm {
-    /// Cat's in-battle deploy icon.
-    pub fn deploy_icon(self, id: u32, eggs: &AncientEggInfo) -> String {
+    /// [`Self::deploy_icon`] with no `.png` extension.
+    pub fn deploy_icon_no_ext(self, id: u32, eggs: &AncientEggInfo) -> String {
         match self {
             CatForm::Normal => match eggs {
-                AncientEggInfo::None => format!("Uni{id:03} f00.png"),
-                AncientEggInfo::Egg { normal, .. } => format!("Uni{normal:03} m00.png"),
+                AncientEggInfo::None => format!("Uni{id:03} f00"),
+                AncientEggInfo::Egg { normal, .. } => format!("Uni{normal:03} m00"),
             },
             CatForm::Evolved => match eggs {
-                AncientEggInfo::None => format!("Uni{id:03} c00.png"),
-                AncientEggInfo::Egg { evolved, .. } => format!("Uni{evolved:03} m01.png"),
+                AncientEggInfo::None => format!("Uni{id:03} c00"),
+                AncientEggInfo::Egg { evolved, .. } => format!("Uni{evolved:03} m01"),
             },
-            CatForm::True => format!("Uni{id:03} s00.png"),
-            CatForm::Ultra => format!("Uni{id:03} u00.png"),
+            CatForm::True => format!("Uni{id:03} s00"),
+            CatForm::Ultra => format!("Uni{id:03} u00"),
         }
+    }
+    /// Cat's in-battle deploy icon.
+    pub fn deploy_icon(self, id: u32, eggs: &AncientEggInfo) -> String {
+        self.deploy_icon_no_ext(id, eggs) + ".png"
     }
 }

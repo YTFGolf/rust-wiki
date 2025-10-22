@@ -430,6 +430,11 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         page.push(Section::blank("{{UnitViewer|cat}}"))
     }
 
+    page.push(Section::blank(format!(
+        "{{{{Gallery|{file}}}}}",
+        file = CatForm::Normal.deploy_icon_no_ext(cat.id, &cat.unitbuy.misc.egg_info)
+    )));
+
     Ok(page)
 }
 
