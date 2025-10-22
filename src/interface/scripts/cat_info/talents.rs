@@ -672,11 +672,10 @@ fn talent_from_text_id(
         63 => {
             // upgrade slow, level up for higher chance
             assert_eq!(c_abil, 3);
-            assert_eq!(p_len, 2);
+            assert_eq!(p_len, 1);
 
-            // chance,duration
+            // chance
             let (min, max) = talent.params[0];
-            let _duration = min_is_max!(1);
 
             let step = calculate_step_exact(talent, min, max);
             assert_eq!(step, min);
