@@ -388,6 +388,12 @@ fn spirit_section(cat: &Cat, config: &Config) -> Option<Section> {
     Some(Section::h2("Spirit", stats_spirit(&spirit).to_string()))
 }
 
+fn reference(id: u32) -> Section {
+    let id = id + 1;
+    let reference = format!("*https://battlecats-db.com/unit/{id:03}.html");
+    Section::h2("Reference", reference)
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -434,6 +440,8 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         "{{{{Gallery|{file}}}}}",
         file = CatForm::Normal.deploy_icon_no_ext(cat.id, &cat.unitbuy.misc.egg_info)
     )));
+
+    page.push(reference(cat.id));
 
     Ok(page)
 }
