@@ -163,10 +163,10 @@ pub enum RuleNameLabel {
     UberClearance,
     /// Limited Stock.
     LimitedStock,
-    /// Pay Day.
-    PayDay,
     /// Dirt Cheap.
     DirtCheap,
+    /// Pay Day.
+    PayDay,
     /// Placeholder.
     Placeholder(String),
 }
@@ -186,8 +186,8 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName010" => Self::PlusOneSpecial,
             "SpecialRuleName011" => Self::UberClearance,
             "SpecialRuleName012" => Self::LimitedStock,
-            "SpecialRuleName013" => Self::PayDay,
-            "SpecialRuleName014" => Self::DirtCheap,
+            "SpecialRuleName013" => Self::DirtCheap,
+            "SpecialRuleName014" => Self::PayDay,
             label => Self::Placeholder(label.to_string()),
         }
     }
