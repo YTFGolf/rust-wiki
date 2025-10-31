@@ -23,10 +23,7 @@ pub fn stats_spirit(cat: &Cat) -> Template {
     t.push_params(P::new("Spirit Atk", form.other.atk_max));
     t.push_params(P::new("Spirit Range", form.other.range));
     t.push_params(P::new("Spirit Animation", form.other.animation));
-    t.push_params(P::new(
-        "Spirit Target",
-        form.other.attack_type.to_owned() + " Attack",
-    ));
+    t.push_params(P::new("Spirit Target", form.other.attack_type));
 
     let abilities = form.other.abilities;
     assert!(abilities.starts_with(KAMIKAZE));
