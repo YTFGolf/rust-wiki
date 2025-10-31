@@ -44,6 +44,11 @@ pub struct CatDataContainer {
     names: LazyLock<Vec<CatName>>,
 }
 impl CatDataContainer {
+    /// Try to get cat data from wiki ID.
+    pub fn try_get_cat(&self, id: usize) -> Option<&CatName> {
+        self.names.get(id)
+    }
+
     /// Get cat data from wiki ID.
     pub fn get_cat(&self, id: u32) -> &CatName {
         &self.names[id as usize]

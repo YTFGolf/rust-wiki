@@ -26,6 +26,7 @@ use crate::{
             upgrade_cost::upgrade_cost,
         },
     },
+    wiki_data::cat_data::CAT_DATA,
     wikitext::{
         page::Page,
         section::Section,
@@ -394,6 +395,49 @@ fn reference(id: u32) -> Section {
     Section::h2("Reference", reference)
 }
 
+fn cat_nav(id: u32) -> Section {
+    let mut nav = String::from("----\n{{CatNav|");
+
+    let mut prev_id = id;
+    while prev_id > 0 {
+        prev_id -= 1;
+        let cat = CAT_DATA.get_cat(prev_id);
+
+        if ["Iron Wall Cat"].contains(&cat.normal.as_str())
+            || ["Special Abilities#Conjure"].contains(&cat.page.as_str())
+        {
+            continue;
+        }
+
+        nav += &cat.normal;
+        break;
+    }
+
+    nav += "|";
+
+    let mut next_id = id as usize;
+    loop {
+        next_id += 1;
+        let cat = match CAT_DATA.try_get_cat(next_id) {
+            Some(c) => c,
+            None => break,
+        };
+
+        if ["Iron Wall Cat"].contains(&cat.normal.as_str())
+            || ["Special Abilities#Conjure"].contains(&cat.page.as_str())
+        {
+            continue;
+        }
+
+        nav += &cat.normal;
+        break;
+    }
+
+    nav += "}}\n----";
+
+    Section::blank(nav)
+}
+
 /// Get cat info.
 pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     let cat = Cat::from_wiki_id(wiki_id, &config.version)?;
@@ -442,6 +486,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     )));
 
     page.push(reference(cat.id));
+    page.push(cat_nav(cat.id));
 
     Ok(page)
 }
