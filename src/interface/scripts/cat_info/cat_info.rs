@@ -491,6 +491,29 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     Ok(page)
 }
 
-/*
-talents
-*/
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn cat_nav_first() {
+        // test cat
+        todo!()
+    }
+
+    #[test]
+    fn cat_nav_spirit_front() {
+        // izanagi
+        todo!()
+    }
+
+    #[test]
+    fn cat_nav_spirit_back() {
+        // in front of izanagi
+        todo!()
+    }
+
+    #[test]
+    fn cat_nav_spirit_both() {
+        // newton
+        todo!()
+    }
+}
