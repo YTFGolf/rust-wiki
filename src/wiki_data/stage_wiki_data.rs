@@ -53,6 +53,7 @@ pub struct StageWikiData {
 
 type StageNameMap = [Option<StageVariantWikiData>; MAX_VARIANT_INDEX];
 type ContinueStagesMap = Vec<Option<(u32, u32)>>;
+// TODO use fallback instead of difficulty map
 type StageDifficultyMap = HashMap<String, u8>;
 #[derive(Debug)]
 /// Container for [`STAGE_WIKI_DATA`] static.
