@@ -918,7 +918,7 @@ fn talent_from_text_id(
             let step_time = fmt_time(step);
 
             let msg = format!(
-                "Upgrades chance to curse enemies by {min_time}, improves by {step_time} per level up to {max_time}"
+                "Increases curse duration by {min_time}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
