@@ -62,18 +62,32 @@ fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
         .from_path(path.join("DataLocal/NyancomboData.csv"))
         .unwrap();
 
-    rdr.byte_records()
+    let result = rdr
+        .byte_records()
         .map(|record| {
             let result = record.unwrap();
-            let unit: ComboDataRaw = result.deserialize(None).unwrap_or_else(|e| {
-                panic!(
-                    "Error when parsing record {result:?}: {e}. Item was {item:?}.",
-                    item = parse_nyancombodata_error(&e, &result)
-                )
-            });
-            unit
+            let unit: ComboDataRaw = match result.deserialize(None) {
+                Ok(u) => u,
+                Err(e) => {
+                    let msg = format!(
+                        "Error when parsing record {result:?}: {e}. Item was {item:?}.",
+                        item = parse_nyancombodata_error(&e, &result)
+                    );
+                    return Err(msg);
+                }
+            };
+
+            Ok(unit)
         })
-        .collect()
+        .collect();
+
+    match result {
+        Ok(r) => r,
+        Err(e) => {
+            log::error!("Error occurred when parsing cat combo data. Error message was: {e}");
+            return Default::default();
+        }
+    }
 }
 
 #[repr(i16)]
