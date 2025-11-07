@@ -6,8 +6,8 @@ use std::{fmt::Debug, path::Path};
 use strum::FromRepr;
 
 #[derive(Debug, serde::Deserialize, Default)]
-/// Raw data for a combo.
-pub struct ComboDataRaw {
+/// Raw data for a combo up to 14.7.
+pub struct ComboDataTo14_7 {
     _id_or_something_or_maybe_order: u16,
     /// -1 = unavailable, see cat combo filter for other things.
     pub unlock_type: i16,
@@ -56,7 +56,7 @@ fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug 
 }
 
 /// Get raw combo data.
-fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
+fn get_combodata(path: &Path) -> Vec<ComboDataTo14_7> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
@@ -66,7 +66,7 @@ fn get_combodata(path: &Path) -> Vec<ComboDataRaw> {
         .byte_records()
         .map(|record| {
             let result = record.unwrap();
-            let unit: ComboDataRaw = match result.deserialize(None) {
+            let unit: ComboDataTo14_7 = match result.deserialize(None) {
                 Ok(u) => u,
                 Err(e) => {
                     let msg = format!(
@@ -138,8 +138,8 @@ pub struct ComboData {
     /// Intensity; intensity is named in Nyancombo2_en.
     pub intensity_num: u8,
 }
-impl From<ComboDataRaw> for ComboData {
-    fn from(value: ComboDataRaw) -> Self {
+impl From<ComboDataTo14_7> for ComboData {
+    fn from(value: ComboDataTo14_7) -> Self {
         let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap();
         let effect_num = value.combo_effect_num;
         let intensity_num = value.combo_intensity_num;
