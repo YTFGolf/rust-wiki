@@ -84,8 +84,8 @@ fn get_combodata(path: &Path) -> Vec<ComboDataTo14_7> {
     match result {
         Ok(r) => r,
         Err(e) => {
-            log::error!("Error occurred when parsing cat combo data. Error message was: {e}");
-            return Default::default();
+            panic!("Error occurred when parsing cat combo data. Error message was: {e}");
+            // return Default::default();
         }
     }
 }
