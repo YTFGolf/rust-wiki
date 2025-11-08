@@ -8,7 +8,9 @@ use crate::{
     },
     interface::{
         config::Config,
-        scripts::map_info::{colosseum::get_colosseum_map, gauntlet::get_gauntlet_map},
+        scripts::map_info::{
+            colosseum::get_colosseum_map, event::only_table, gauntlet::get_gauntlet_map,
+        },
     },
 };
 
@@ -25,6 +27,8 @@ enum Preset {
     Event,
     Gauntlet,
     Colosseum,
+    /// Just the table.
+    Table,
 }
 
 #[allow(clippy::match_same_arms)]
@@ -36,7 +40,7 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
         T::Event | T::Collab | T::Enigma => Some(Preset::Event),
         T::Gauntlet | T::CollabGauntlet => Some(Preset::Gauntlet),
         T::Colosseum => Some(Preset::Colosseum),
-        T::Dojo | T::RankingDojo | T::Championships => None,
+        T::Dojo | T::RankingDojo | T::Championships => Some(Preset::Table),
         //
         T::MainChapters | T::Filibuster | T::AkuRealms | T::FilibusterOutbreak => None,
         //
@@ -63,5 +67,6 @@ pub fn get_map_info(map: &GameMap, config: &Config) -> String {
         Preset::Event => get_event_map(map, config),
         Preset::Colosseum => get_colosseum_map(map, config),
         Preset::Gauntlet => get_gauntlet_map(map, config),
+        Preset::Table => only_table(map, config),
     }
 }

@@ -13,3 +13,9 @@ pub fn get_event_map(map: &GameMap, config: &Config) -> String {
     let map_wiki_data = get_map_wiki_data(&map.id);
     stage_table(map, map_wiki_data, config.version.current_version())
 }
+
+/// Only get the table.
+pub fn only_table(map: &GameMap, config: &Config) -> String {
+    let map_wiki_data = get_map_wiki_data(&map.id);
+    stage_table(map, map_wiki_data, config.version.current_version())
+}
