@@ -41,7 +41,7 @@ pub const RAW_STAGE_TYPES: [StageType; 25] = [
     init("Extra Stages",                 Some("RE"), C::Other("EX"), T::Extra,              "Extra"),
     init("Catclaw Dojo",                 Some("T"),  C::RPrefix,     T::Dojo,               "Dojo"),
     init("Towers",                       Some("V"),  C::RPrefix,     T::Tower,              "Tower"),
-    init("Ranking Dojo",                 Some("R"),  C::RPrefix,     T::RankingDojo,        "Rank"),
+    init("Ranking Dojo",                 Some("R"),  C::RPrefix,     T::RankingDojo,        "Rank|Ranking|RDojo"),
     init("Challenge Battle",             Some("M"),  C::RPrefix,     T::Challenge,          "Challenge"),
 
     init("Uncanny Legends",              Some("NA"), C::RPrefix,     T::UL,                 "UL"),
