@@ -32,6 +32,8 @@ pub mod charagroups {
         OnlyUse = 0,
         /// Cannot use select cats.
         CannotUse = 2,
+        /// Unknown.
+        UnknownCharagroup3 = 3,
     }
 
     impl From<u32> for CharaGroupType {

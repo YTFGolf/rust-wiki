@@ -87,6 +87,7 @@ fn get_charagroup_restriction(group: &CharaGroup, simplify: bool) -> String {
     let mode = match group.group_type {
         CharaGroupType::OnlyUse => "Only",
         CharaGroupType::CannotUse => "Cannot use",
+        _ => todo!(),
     };
     buf.write_str(mode).infallible_write();
     buf.write_str(" ").infallible_write();
