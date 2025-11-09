@@ -39,6 +39,44 @@ pub struct ComboDataTo14_7 {
     combo_intensity_num: u8,
     /// Always -1.
     _uk14: i8,
+}
+
+#[derive(Debug, serde::Deserialize, Default)]
+/// Raw data for a combo from 15.0 onwards.
+pub struct ComboDataFrom15_0 {
+    _id_or_something_or_maybe_order: u16,
+    /// -1 = unavailable, see cat combo filter for other things.
+    pub unlock_type: i16,
+    /// Related to Ranger cats.
+    _other_thing: i16,
+    /// ID of unit #1, -1 if not there.
+    unit_id1: i16,
+    /// Form of unit #1, -1 if not there.
+    unit_form1: i8,
+    /// ID of unit #2, -1 if not there.
+    unit_id2: i16,
+    /// Form of unit #2, -1 if not there.
+    unit_form2: i8,
+    /// ID of unit #3, -1 if not there.
+    unit_id3: i16,
+    /// Form of unit #3, -1 if not there.
+    unit_form3: i8,
+    /// ID of unit #4, -1 if not there.
+    unit_id4: i16,
+
+    // 10
+    /// Form of unit #4, -1 if not there.
+    unit_form4: i8,
+    /// ID of unit #5, -1 if not there.
+    unit_id5: i16,
+    /// Form of unit #5, -1 if not there.
+    unit_form5: i8,
+    /// Effect; effect is named in Nyancombo1_en.
+    combo_effect_num: u8,
+    /// Intensity; intensity is named in Nyancombo2_en.
+    combo_intensity_num: u8,
+    /// Always -1.
+    _uk15: i8,
     #[serde(default)]
     /// Placeholder to avoid errors when new updates come around.
     pub rest: Vec<i32>,
@@ -140,6 +178,34 @@ pub struct ComboData {
 }
 impl From<ComboDataTo14_7> for ComboData {
     fn from(value: ComboDataTo14_7) -> Self {
+        let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap();
+        let effect_num = value.combo_effect_num;
+        let intensity_num = value.combo_intensity_num;
+
+        let mut units = Vec::new();
+
+        let mut add_unit = |id, form| {
+            if id >= 0 && form >= 0 {
+                units.push(ComboUnit::new(id, form))
+            }
+        };
+
+        add_unit(value.unit_id1, value.unit_form1);
+        add_unit(value.unit_id2, value.unit_form2);
+        add_unit(value.unit_id3, value.unit_form3);
+        add_unit(value.unit_id4, value.unit_form4);
+        add_unit(value.unit_id5, value.unit_form5);
+
+        Self {
+            unlock_type,
+            units,
+            effect_num,
+            intensity_num,
+        }
+    }
+}
+impl From<ComboDataFrom15_0> for ComboData {
+    fn from(value: ComboDataFrom15_0) -> Self {
         let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap();
         let effect_num = value.combo_effect_num;
         let intensity_num = value.combo_intensity_num;
