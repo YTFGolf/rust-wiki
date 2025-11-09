@@ -15,7 +15,7 @@ use crate::{
 use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
-/// Stage info options.
+/// Cat info options.
 pub struct CatInfoOptions {
     /// Cat name or id.
     pub name_or_id: String,
