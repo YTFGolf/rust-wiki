@@ -13,13 +13,40 @@ subheading.
 
 ## [Unreleased]
 
+### 15.0
+
+- Establish new combos struct and make existing combo code generic&mdash;15.0
+  adds in data at the start of the row which makes this
+  non-backwards-compatible.
+- Special Rules once again.
+- New unknown charagroup.
+
+### 14.7 EN
+
+- Eva -> EVA
+
 ### Added
 
-- TalentNames.csv
+- Fully implemented Cat Talents.
+- TalentNames.csv.
+- New aliases for ranking dojo.
+- Version number as u32 like in unitbuy.
+- Stats template versions 1.0 and 1.1.
+- Cat script can now use common name as well as ID.
+- Cat spirit section.
+- Cat AnimationViewer, gallery, reference, CatNav and footer (minus categories).
+- Dojo to map script.
 
 ### Fixed
 
+- Superfeline upgrade cost.
+
 ### Changed
+
+- Moved scripts directory to this repo instead of storing on wiki.
+- Combos now panic less annoying-ly, in a way that allows you to edit the code
+  to prevent the panic.
+- Tweaks to Gauntlets in map script.
 
 ### Removed
 
