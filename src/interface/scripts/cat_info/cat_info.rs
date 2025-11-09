@@ -17,6 +17,7 @@ use crate::{
         scripts::cat_info::{
             combos::combos_section,
             costs::price_cost,
+            footer::footer,
             form_util::CatForm,
             stats::stats_template::{
                 manual::stats_manual, spirit::stats_spirit, ver_0o1::stats_0o1, ver_0o2::stats_0o2,
@@ -487,6 +488,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
 
     page.push(reference(cat.id));
     page.push(cat_nav(cat.id));
+    page.push(footer(&cat, config));
 
     Ok(page)
 }
