@@ -30,7 +30,7 @@ pub enum Command {
     MapInfo(MapInfoOptions),
 
     #[command(visible_aliases(["cat"]))]
-    /// Get information about a cat (not all sections are complete).
+    /// Get information about a cat.
     CatInfo(CatInfoOptions),
 
     /// Get most boilerplate for a gauntlet map.
