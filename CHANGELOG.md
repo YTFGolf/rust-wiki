@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.8.0] - 2025-11-09
+
 ### 15.0
 
 - Establish new combos struct and make existing combo code generic&mdash;15.0
@@ -47,8 +57,6 @@ subheading.
 - Combos now panic less annoying-ly, in a way that allows you to edit the code
   to prevent the panic.
 - Tweaks to Gauntlets in map script.
-
-### Removed
 
 ## [0.7.4] - 2025-10-01
 
@@ -447,7 +455,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.4...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.0...dev
+[0.8.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.4...v0.8.0
 [0.7.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.1...v0.7.2
