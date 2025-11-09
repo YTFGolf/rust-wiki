@@ -61,6 +61,29 @@ impl Version {
             .unwrap()
     }
 
+    /// Get version's number, in the same format as unitbuy.
+    /// ```
+    /// # use rust_wiki::game_data::version::Version;
+    /// # use rust_wiki::game_data::version::lang::VersionLanguage;
+    /// let version = Version::new("~/Version 12.3.4", VersionLanguage::EN, None);
+    /// assert_eq!(version.number_u32(), Some(120304));
+    /// let version = Version::new("~/Version 15.0.0", VersionLanguage::EN, None);
+    /// assert_eq!(version.number_u32(), Some(150000));
+    /// let version = Version::new("~/Version 15.0", VersionLanguage::EN, None);
+    /// assert_eq!(version.number_u32(), Some(150000));
+    /// let version = Version::new("~/Version 15", VersionLanguage::EN, None);
+    /// assert_eq!(version.number_u32(), Some(150000));
+    /// ```
+    pub fn number_u32(&self) -> Option<u32> {
+        const REASON: &str = "`Self::number` assures this is only ASCII digits";
+        let mut num = self.number().split('.');
+        let major: u32 = num.next()?.parse().expect(REASON);
+        let minor: u32 = num.next().unwrap_or("0").parse().expect(REASON);
+        let patch: u32 = num.next().unwrap_or("0").parse().expect(REASON);
+
+        Some(major * 10_000 + minor * 100 + patch)
+    }
+
     /// Get full absolute file path of the version's game directory.
     pub fn get_file_path<P: AsRef<Path>>(&self, path: P) -> PathBuf {
         self.location.join(path)
