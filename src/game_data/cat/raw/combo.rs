@@ -1,7 +1,8 @@
 //! Module that deals with `unitbuy.csv` data.
 
-use crate::game_data::version::version_data::CacheableVersionData;
+use crate::game_data::version::{Version, version_data::CacheableVersionData};
 use csv::ByteRecord;
+use serde::Deserialize;
 use std::{fmt::Debug, path::Path};
 use strum::FromRepr;
 
@@ -94,7 +95,7 @@ fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug 
 }
 
 /// Get raw combo data.
-fn get_combodata(path: &Path) -> Vec<ComboDataTo14_7> {
+fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(path: &Path) -> Vec<T> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
@@ -104,7 +105,7 @@ fn get_combodata(path: &Path) -> Vec<ComboDataTo14_7> {
         .byte_records()
         .map(|record| {
             let result = record.unwrap();
-            let unit: ComboDataTo14_7 = match result.deserialize(None) {
+            let unit: T = match result.deserialize(None) {
                 Ok(u) => u,
                 Err(e) => {
                     let msg = format!(
@@ -239,10 +240,28 @@ pub struct CombosDataContainer {
     combos: Vec<ComboData>,
 }
 impl CacheableVersionData for CombosDataContainer {
-    fn init_data(path: &Path) -> Self {
-        Self {
-            combos: get_combodata(path).into_iter().map(Into::into).collect(),
-        }
+    fn init_data_with_version(version: &Version) -> Self {
+        let combos = match version.number_u32() {
+            Some(150000..) => {
+                type T = ComboDataFrom15_0;
+                get_combodata::<T>(version.location())
+                    .into_iter()
+                    .map(ComboData::from)
+                    .collect()
+            }
+            _ => {
+                type T = ComboDataTo14_7;
+                get_combodata::<T>(version.location())
+                    .into_iter()
+                    .map(ComboData::from)
+                    .collect()
+            }
+        };
+        Self { combos }
+    }
+
+    fn init_data(_: &Path) -> Self {
+        unimplemented!();
     }
 }
 
@@ -271,10 +290,10 @@ mod tests {
     #[test]
     fn test_file_reader() {
         let version = TEST_CONFIG.version.current_version();
-        let combos = get_combodata(version.location());
+        let combos = get_combodata::<ComboDataFrom15_0>(version.location());
         for combo in combos {
             assert_eq!(combo.rest, Vec::<i32>::new());
-            assert_eq!(combo._uk14, -1);
+            assert_eq!(combo._uk15, -1);
             // println!("{combo:?}");
         }
     }
