@@ -32,10 +32,7 @@ pub fn deploy_cost(cat: &Cat, _config: &Config) -> Section {
     assert!(!costs.is_empty());
 
     if costs.len() == 1 {
-        let first = costs
-            .iter()
-            .next()
-            .expect("already asserted costs is not empty");
+        let first = costs.first().expect("already asserted costs is not empty");
         return Section::h2(TITLE, fmt_cost(first.0));
     }
 
