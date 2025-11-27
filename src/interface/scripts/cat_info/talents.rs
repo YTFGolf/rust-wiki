@@ -996,10 +996,15 @@ fn get_single_talent(
         .from_cost_id(talent.skill_costs_id)
         .unwrap()
         .costs;
-    if costs.len() == 1 {
+    if talent.max_level <= 1 {
         write!(buf, " (Cost: {} NP)", costs[0]).infallible_write();
     } else {
-        write!(buf, " (Total Cost: {} NP)", costs.iter().sum::<u16>()).infallible_write();
+        write!(
+            buf,
+            " (Total Cost: {} NP)",
+            costs.iter().take(talent.max_level.into()).sum::<u16>()
+        )
+        .infallible_write();
     }
 
     buf
