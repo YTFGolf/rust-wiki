@@ -41,10 +41,11 @@ fn get_talent_data() -> Vec<TalentEntry> {
 
     let mut data = vec![TalentEntry::default()];
     // first entry has id 1 so this is necessary to ensure indices line up.
-    data.extend(rdr.unwrap().byte_records().map(|result| {
-        let talent = result.unwrap().deserialize::<TalentEntry>(None).unwrap();
-        talent
-    }));
+    data.extend(
+        rdr.unwrap()
+            .byte_records()
+            .map(|result| result.unwrap().deserialize::<TalentEntry>(None).unwrap()),
+    );
 
     data
 }
