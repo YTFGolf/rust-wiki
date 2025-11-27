@@ -59,51 +59,99 @@ pub fn deploy_cost(cat: &Cat, _config: &Config) -> Section {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::TEST_CONFIG;
+
     #[test]
     fn basic_cost() {
-        // id = 0
-        todo!()
+        let cat = Cat::from_wiki_id(0, &TEST_CONFIG.version).unwrap();
+        let sect = deploy_cost(&cat, &TEST_CONFIG).to_string();
+
+        assert_eq!(
+            sect,
+            "==Cost==\n\
+            *Chapter 1: 50¢\n\
+            *Chapter 2: 75¢\n\
+            *Chapter 3: 100¢"
+        );
     }
 
     #[test]
     fn cost_not_even() {
-        // moneko
-        todo!()
+        let moneko = Cat::from_wiki_id(16, &TEST_CONFIG.version).unwrap();
+        let sect = deploy_cost(&moneko, &TEST_CONFIG).to_string();
+
+        assert_eq!(
+            sect,
+            "==Cost==\n\
+            *Chapter 1: 99¢\n\
+            *Chapter 2: 148¢\n\
+            *Chapter 3: 198¢"
+        );
     }
 
     #[test]
     fn cost_varies_by_form() {
-        // aer, 361
-        todo!()
+        let aer = Cat::from_wiki_id(361, &TEST_CONFIG.version).unwrap();
+        let sect = deploy_cost(&aer, &TEST_CONFIG).to_string();
+
+        assert_eq!(
+            sect,
+            "==Cost==\n\
+            ===Normal Form===\n\
+            *Chapter 1: 720¢\n\
+            *Chapter 2: 1,080¢\n\
+            *Chapter 3: 1,440¢\n\
+            \n\
+            ===Evolved/True/Ultra Form===\n\
+            *Chapter 1: 2,620¢\n\
+            *Chapter 2: 3,930¢\n\
+            *Chapter 3: 5,240¢"
+        );
     }
 
     #[test]
     fn cost_triple_unique() {
-        // cosmo, 135
-        todo!()
-        /*
-        ==Cost==
-        ===Normal Form===
-        *Chapter 1: 555¢
-        *Chapter 2: 832¢
-        *Chapter 3: 1,110¢
+        let cosmo = Cat::from_wiki_id(135, &TEST_CONFIG.version).unwrap();
+        let sect = deploy_cost(&cosmo, &TEST_CONFIG).to_string();
 
-        ===Evolved/True Form===
-        *Chapter 1: 3,900¢
-        *Chapter 2: 5,850¢
-        *Chapter 3: 7,800¢
-
-        ===Ultra Form===
-        *Chapter 1: 3,000¢
-        *Chapter 2: 4,500¢
-        *Chapter 3: 6,000¢
-        {{Upgrade Cost|UR}}
-         */
+        assert_eq!(
+            sect,
+            "==Cost==\n\
+            ===Normal Form===\n\
+            *Chapter 1: 555¢\n\
+            *Chapter 2: 832¢\n\
+            *Chapter 3: 1,110¢\n\
+            \n\
+            ===Evolved/True Form===\n\
+            *Chapter 1: 3,900¢\n\
+            *Chapter 2: 5,850¢\n\
+            *Chapter 3: 7,800¢\n\
+            \n\
+            ===Ultra Form===\n\
+            *Chapter 1: 3,000¢\n\
+            *Chapter 2: 4,500¢\n\
+            *Chapter 3: 6,000¢"
+        )
     }
 
     #[test]
     fn cost_returns() {
-        // kaguya, 138
-        todo!()
+        let kaguya = Cat::from_wiki_id(138, &TEST_CONFIG.version).unwrap();
+        let sect = deploy_cost(&kaguya, &TEST_CONFIG).to_string();
+
+        assert_eq!(
+            sect,
+            "==Cost==\n\
+            ===Normal/Ultra Form===\n\
+            *Chapter 1: 400¢\n\
+            *Chapter 2: 600¢\n\
+            *Chapter 3: 800¢\n\
+            \n\
+            ===Evolved/True Form===\n\
+            *Chapter 1: 3,200¢\n\
+            *Chapter 2: 4,800¢\n\
+            *Chapter 3: 6,400¢"
+        )
     }
 }
