@@ -183,6 +183,12 @@ mod tests {
                 // make sure that unit actually has a defined cost for every
                 // level
 
+                if talent.name_id_or_something != -1 {
+                    assert_ne!(talents.fixed.type_id, 0)
+                }
+                // if name_id is not -1 then this adds a new target; make sure
+                // that type_id is filled in if that is the case
+
                 // println!("{:?}", talent);
             }
         }
@@ -217,12 +223,3 @@ mod tests {
         );
     }
 }
-
-/*
-tests:
-Mr. - 11: upgrades type id to zombie
-Mola King - 174: upgrades type id to all enemies
-
-if type_id is not 0 then name_id must not be -1
-if name_id is not -1 then type_id must not be 0
- */
