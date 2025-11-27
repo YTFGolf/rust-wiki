@@ -189,7 +189,31 @@ mod tests {
 
     #[test]
     fn type_ids() {
-        todo!()
+        let version = TEST_CONFIG.version.current_version();
+        let talents_cont = version.get_cached_file::<TalentsContainer>();
+
+        let mr = talents_cont.from_id(11).unwrap();
+        assert_eq!(
+            TalentTargets::get_targets(mr.fixed.type_id),
+            vec![TalentTargets::Zombie]
+        );
+
+        let mola_king = talents_cont.from_id(174).unwrap();
+        assert_eq!(
+            TalentTargets::get_targets(mola_king.fixed.type_id),
+            vec![
+                TalentTargets::MaybeRed,
+                TalentTargets::MaybeFloating,
+                TalentTargets::MaybeBlack,
+                TalentTargets::Metal,
+                TalentTargets::MaybeAngel,
+                TalentTargets::Alien,
+                TalentTargets::Zombie,
+                TalentTargets::Relic,
+                TalentTargets::MaybeTraitless,
+                TalentTargets::MaybeAku
+            ]
+        );
     }
 }
 
