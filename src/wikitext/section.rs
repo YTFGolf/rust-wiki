@@ -4,6 +4,7 @@ use std::{borrow::Cow, fmt::Display};
 type StringValue = Cow<'static, str>;
 
 /// Title to use for the section.
+#[derive(Debug, PartialEq, Eq)]
 pub enum SectionTitle {
     /// No title (useful for top of page for example).
     Blank,
@@ -20,6 +21,7 @@ pub enum SectionTitle {
 }
 
 /// Page section.
+#[derive(Debug, PartialEq, Eq)]
 pub struct Section {
     /// Section's title.
     pub title: SectionTitle,

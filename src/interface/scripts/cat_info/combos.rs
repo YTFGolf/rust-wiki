@@ -84,9 +84,14 @@ pub fn combos_section(cat: &Cat, config: &Config) -> Option<Section> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::TEST_CONFIG;
+
     #[test]
     fn no_combos() {
-        todo!()
+        let kerihime = Cat::from_wiki_id(26, &TEST_CONFIG.version).unwrap();
+        let sect = combos_section(&kerihime, &TEST_CONFIG);
+        assert_eq!(sect, None);
     }
 
     #[test]
