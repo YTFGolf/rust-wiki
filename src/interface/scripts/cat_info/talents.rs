@@ -1155,6 +1155,23 @@ mod tests {
     }
 
     #[test]
+    fn single_cost() {
+        let cyclops = Cat::from_wiki_id(634, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&cyclops, &TEST_CONFIG).unwrap().to_string();
+
+        let talents = cyclops
+            .get_talents(TEST_CONFIG.version.current_version())
+            .unwrap();
+        assert_eq!(talents.normal[1].max_level, 0);
+        // wave immune is second talent
+
+        const C_TARGET: &str =
+            "*'''[[Special Abilities#Immune to Waves|Immune to Waves]]''' (Cost: 100 NP)";
+        let line = sect.lines().nth(2).unwrap();
+        assert_eq!(line, C_TARGET);
+    }
+
+    #[test]
     fn nonstandard_costs() {
         let jurassic = Cat::from_wiki_id(46, &TEST_CONFIG.version).unwrap();
         let sect = talents_section(&jurassic, &TEST_CONFIG)
