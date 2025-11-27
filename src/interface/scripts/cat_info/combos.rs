@@ -96,24 +96,45 @@ mod tests {
 
     #[test]
     fn one_combo() {
-        todo!()
+        let zeus = Cat::from_wiki_id(257, &TEST_CONFIG.version).unwrap();
+        let sect = combos_section(&zeus, &TEST_CONFIG).unwrap().to_string();
+
+        assert_eq!(
+            sect,
+            "{{Combos\n\
+            |{{CatCombo|Punish the Lewd|\"Resistant\" Effect UP (Sm)|Gentleman Cat|Thunder God Zeus|jpname=変態紳士に天罰を}}\n\
+            }}"
+        );
     }
 
     #[test]
     fn in_removed_combos() {
-        // cat, 0
-        todo!()
-    }
+        let cat = Cat::from_wiki_id(0, &TEST_CONFIG.version).unwrap();
+        let sect = combos_section(&cat, &TEST_CONFIG).unwrap().to_string();
 
-    #[test]
-    fn multiple_combos() {
-        // ururun, 130
-        todo!()
+        assert_eq!(
+            sect,
+            "{{Combos\n\
+            |{{CatCombo|Cat Army|Worker Cat Start Level UP (Sm)|Cat|Tank Cat|Axe Cat|Gross Cat|Cow Cat|jpname=にゃんこ軍団}}\n\
+            |{{CatCombo|Mo' Hawks|\"Knockback\" Effect UP (Sm)|Mohawk Cat|Crazed Dragon Cat|jpname=モヒカン愛好家}}\n\
+            |{{CatCombo|Smiles at Cats|\"Freeze\" Effect UP (Sm)|Cat|Coppermine, type κ|jpname=ネコの前で見せる笑顔}}\n\
+            |{{CatCombo|Rich and Poor|Starting Money UP (Sm)|Cat|Gold Cat|jpname=庶民と金持ち}}\n\
+            |{{CatCombo|Black & White|Worker Cat Max UP (Sm)|Killer Cat|Cat|jpname=ブラック＆ホワイト}}\n\
+            }}"
+        );
     }
 
     #[test]
     fn jp_only_combos() {
-        // dn105, 542
-        todo!()
+        let dn105 = Cat::from_wiki_id(542, &TEST_CONFIG.version).unwrap();
+        // combo doesn't have EN name so needs to fall back to JP name
+        let sect = combos_section(&dn105, &TEST_CONFIG).unwrap().to_string();
+
+        assert_eq!(
+            sect,
+            "{{Combos\n\
+            |{{CatCombo|先生になりたいでにゃ～る|Cat Cannon Recharge UP (Sm)|Cat Boy|jpname=先生になりたいでにゃ～る}}\n\
+            }}"
+        );
     }
 }
