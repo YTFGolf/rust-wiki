@@ -13,9 +13,13 @@ subheading.
 
 ## [Unreleased]
 
+Mainly filling in tests, also making various copyedits.
+
 ### Added
 
 ### Fixed
+
+- Jurassic Cat crit talent total cost is now 25 instead of 75. (0b076c1)
 
 ### Changed
 
