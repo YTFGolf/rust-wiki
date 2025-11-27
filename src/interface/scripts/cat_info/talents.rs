@@ -1064,10 +1064,21 @@ pub fn talents_section(cat: &Cat, config: &Config) -> Option<Section> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::TEST_CONFIG;
+
     #[test]
     fn approximate_scaling() {
-        // dark lazer
-        todo!()
+        let dark_lazer = Cat::from_wiki_id(13, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&dark_lazer, &TEST_CONFIG)
+            .unwrap()
+            .to_string();
+
+        const TARGET: &str = "*'''[[Wave Attack]]''': Adds a 5% chance to create a level 6 wave attack, improves by ~1.11% per level up to 15% (Total Cost: 165 NP)";
+        let line = sect.lines().nth(1).unwrap();
+        // is first line of talents; nth(0) is "==Talents=="
+
+        assert_eq!(line, TARGET);
     }
 
     #[test]
@@ -1082,5 +1093,10 @@ mod tests {
         // keiji, correct
         // furiluga, same id, incorrect
         // cyclops, same id, incorrect
+    }
+
+    #[test]
+    fn nonstandard_costs() {
+        // jurassic cat, 46, only uses half the costs
     }
 }
