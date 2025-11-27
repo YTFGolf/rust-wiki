@@ -1178,6 +1178,12 @@ mod tests {
             .unwrap()
             .to_string();
 
+        let talents = jurassic
+            .get_talents(TEST_CONFIG.version.current_version())
+            .unwrap();
+        assert_eq!(talents.normal[0].max_level, 5);
+
+        // wave immune is second talent
         const TARGET: &str = "*'''[[Critical Hit|Critical]]''': Upgrades chance to perform a critical hit by 1% per level up to 5% (Total Cost: 25 NP)";
         // only uses half the costs (max level is 5 but uses cost with length 10)
         let line = sect.lines().nth(1).unwrap();
