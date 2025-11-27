@@ -2,6 +2,7 @@
 
 pub mod cat_cli;
 pub mod cat_info;
+pub mod catnav;
 pub mod combos;
 pub mod costs;
 pub mod footer;
