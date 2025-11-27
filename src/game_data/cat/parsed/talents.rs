@@ -29,6 +29,21 @@ pub enum TalentTargets {
     /// Only use this to avoid having to panic in this module.
     AsYetUnknown = 99,
 }
+impl TalentTargets {
+    fn get_targets(target_mask: u16) -> Vec<TalentTargets> {
+        (0..12)
+            .filter_map(|i| {
+                let target_bit = target_mask & (1 << i);
+                // will be 0 if bit i is 0, 2^i if bit i is 1
+                if target_bit == 0 {
+                    return None;
+                }
+
+                return Some(TalentTargets::from_repr(i).unwrap_or(TalentTargets::AsYetUnknown));
+            })
+            .collect()
+    }
+}
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr)]
 #[repr(u8)]
@@ -110,24 +125,10 @@ pub struct Talents {
     pub ultra: Vec<SingleTalent>,
 }
 impl Talents {
-    fn get_targets(target_mask: u16) -> Vec<TalentTargets> {
-        (0..12)
-            .filter_map(|i| {
-                let target_bit = target_mask & (1 << i);
-                // will be 0 if bit i is 0, 2^i if bit i is 1
-                if target_bit == 0 {
-                    return None;
-                }
-
-                return Some(TalentTargets::from_repr(i).unwrap_or(TalentTargets::AsYetUnknown));
-            })
-            .collect()
-    }
-
     /// Convert raw talent line to [`Talents`].
     pub fn from_raw(raw: &TalentLine) -> Self {
         let unit_id = raw.fixed.id.into();
-        let implicit_targets = Self::get_targets(raw.fixed.type_id);
+        let implicit_targets = TalentTargets::get_targets(raw.fixed.type_id);
 
         let mut normal = vec![];
         let mut ultra = vec![];
