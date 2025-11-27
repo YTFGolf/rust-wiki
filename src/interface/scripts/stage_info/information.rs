@@ -445,7 +445,19 @@ mod tests {
     }
 
     #[test]
-    fn time_limit() {
-        todo!()
+    fn test_time_limit() {
+        let wanderer_trial =
+            Stage::from_id_current(StageID::from_components(T::Dojo, 0, 0)).unwrap();
+        assert_eq!(
+            time_limit(&wanderer_trial),
+            Some(TemplateParameter::new("time limit", "5 minutes"))
+        );
+
+        let crimson_trial_2 =
+            Stage::from_id_current(StageID::from_components(T::RankingDojo, 20, 0)).unwrap();
+        assert_eq!(
+            time_limit(&crimson_trial_2),
+            Some(TemplateParameter::new("time limit", "3 minutes"))
+        );
     }
 }
