@@ -34,7 +34,7 @@ fn get_talent_costs_file(path: &Path) -> Vec<TalentAcquisitionCost> {
             if rest.is_empty() {
                 break;
             }
-            costs.push(rest.parse().unwrap())
+            costs.push(rest.parse().unwrap());
         }
 
         TalentAcquisitionCost { id, costs }

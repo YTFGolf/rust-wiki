@@ -132,7 +132,7 @@ mod tests {
             *Chapter 1: 3,000¢\n\
             *Chapter 2: 4,500¢\n\
             *Chapter 3: 6,000¢"
-        )
+        );
     }
 
     #[test]
@@ -152,6 +152,6 @@ mod tests {
             *Chapter 1: 3,200¢\n\
             *Chapter 2: 4,800¢\n\
             *Chapter 3: 6,400¢"
-        )
+        );
     }
 }

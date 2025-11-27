@@ -184,7 +184,7 @@ mod tests {
                 // level
 
                 if talent.name_id_or_something != -1 {
-                    assert_ne!(talents.fixed.type_id, 0)
+                    assert_ne!(talents.fixed.type_id, 0);
                 }
                 // if name_id is not -1 then this adds a new target; make sure
                 // that type_id is filled in if that is the case

@@ -117,9 +117,9 @@ fn get_single_enemy_line(
 
     if enemy.boss_type != BossType::None {
         if is_single_enemy {
-            buf += " as the boss"
+            buf += " as the boss";
         } else {
-            buf += " as bosses"
+            buf += " as bosses";
         }
     }
 

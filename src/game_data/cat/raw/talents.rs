@@ -169,7 +169,7 @@ mod tests {
     #[test]
     fn check_talents() {
         for line in get_talents_file(TEST_CONFIG.version.current_version().location()) {
-            println!("{line:?}")
+            println!("{line:?}");
         }
         // todo!("What did I even need to test here")
     }

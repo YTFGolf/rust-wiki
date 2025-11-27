@@ -57,7 +57,7 @@ mod tests {
     #[allow(clippy::used_underscore_binding)]
     fn ids_are_same_as_index() {
         for (i, talent) in TALENT_DATA.map.iter().enumerate() {
-            assert_eq!(i, talent._id, "talent {talent:?} has incorrect id")
+            assert_eq!(i, talent._id, "talent {talent:?} has incorrect id");
         }
     }
 }

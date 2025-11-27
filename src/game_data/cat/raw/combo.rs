@@ -187,7 +187,7 @@ impl From<ComboDataTo14_7> for ComboData {
 
         let mut add_unit = |id, form| {
             if id >= 0 && form >= 0 {
-                units.push(ComboUnit::new(id, form))
+                units.push(ComboUnit::new(id, form));
             }
         };
 
@@ -215,7 +215,7 @@ impl From<ComboDataFrom15_0> for ComboData {
 
         let mut add_unit = |id, form| {
             if id >= 0 && form >= 0 {
-                units.push(ComboUnit::new(id, form))
+                units.push(ComboUnit::new(id, form));
             }
         };
 

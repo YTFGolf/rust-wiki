@@ -171,7 +171,7 @@ fn write_evolution_type(buf: &mut String, et: &EvolutionType) {
             let fruit = "[[Catfruit]]";
             let level = evol.level_required;
             let xp = if evol.xp_cost > 0 { " and XP" } else { "" };
-            write!(buf, " at level {level} using {fruit}{xp}.").infallible_write()
+            write!(buf, " at level {level} using {fruit}{xp}.").infallible_write();
         }
     }
 }
@@ -368,7 +368,7 @@ fn spirit_section(cat: &Cat, config: &Config) -> Option<Section> {
                 Ability::ConjureUnit { id } => match spirits.last() {
                     Some(&id2) => {
                         if id != id2 {
-                            spirits.push(id)
+                            spirits.push(id);
                         }
                     }
                     None => spirits.push(id),
@@ -433,9 +433,9 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
     }
     if let Some(spirit) = spirit_section(&cat, config) {
         page.push(spirit);
-        page.push(Section::blank("{{UnitViewer|conjurer}}"))
+        page.push(Section::blank("{{UnitViewer|conjurer}}"));
     } else {
-        page.push(Section::blank("{{UnitViewer|cat}}"))
+        page.push(Section::blank("{{UnitViewer|cat}}"));
     }
 
     page.push(Section::blank(format!(

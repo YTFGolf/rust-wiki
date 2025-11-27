@@ -586,6 +586,6 @@ fn make_sure_category_works() {
         assert_eq!(
             rarity.category(),
             &format!("[[:Category:{r} Cats|{r} Cat]]", r = rarity.as_str())
-        )
+        );
     }
 }
