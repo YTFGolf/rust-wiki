@@ -1096,10 +1096,57 @@ mod tests {
 
     #[test]
     fn wrong_description() {
-        todo!()
-        // keiji, correct
-        // furiluga, same id, incorrect
-        // cyclops, same id, incorrect
+        const DESC_ID: usize = 46;
+        // description meaning improves strengthen
+
+        // Keiji
+        // ------------------------------
+
+        let keiji = Cat::from_wiki_id(72, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&keiji, &TEST_CONFIG).unwrap().to_string();
+
+        let talents = keiji
+            .get_talents(TEST_CONFIG.version.current_version())
+            .unwrap();
+        assert_eq!(talents.normal[0].skill_description_id, DESC_ID);
+        // strengthen is first talent
+
+        const K_TARGET: &str = "*'''[[Special Abilities#Strengthen|Strengthen]]''': Upgrades strengthen attack power by 23%, improves by 3% per level up to 50% (Total Cost: 175 NP)";
+        let line = sect.lines().nth(1).unwrap();
+        assert_eq!(line, K_TARGET);
+
+        // Furiluga
+        // ------------------------------
+
+        let furiluga = Cat::from_wiki_id(625, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&furiluga, &TEST_CONFIG)
+            .unwrap()
+            .to_string();
+
+        let talents = furiluga
+            .get_talents(TEST_CONFIG.version.current_version())
+            .unwrap();
+        assert_eq!(talents.normal[0].skill_description_id, DESC_ID);
+        // strengthen is first talent
+
+        const F_TARGET: &str = "*'''[[Special Abilities#Strengthen|Strengthen]]''': Adds 100% attack power at 1% health, improves by ~44.44% per level up to 500% (Total Cost: 235 NP)";
+        let line = sect.lines().nth(1).unwrap();
+        assert_eq!(line, F_TARGET);
+
+        // Cyclops
+        // ------------------------------
+        let cyclops = Cat::from_wiki_id(634, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&cyclops, &TEST_CONFIG).unwrap().to_string();
+
+        let talents = cyclops
+            .get_talents(TEST_CONFIG.version.current_version())
+            .unwrap();
+        assert_eq!(talents.normal[0].skill_description_id, DESC_ID);
+        // strengthen is first talent
+
+        const C_TARGET: &str = "*'''[[Special Abilities#Strengthen|Strengthen]]''': Adds 10% attack power at 66% health, improves by 10% per level up to 100% (Total Cost: 235 NP)";
+        let line = sect.lines().nth(1).unwrap();
+        assert_eq!(line, C_TARGET);
     }
 
     #[test]
