@@ -17,7 +17,7 @@ use crate::{
         scripts::cat_info::{
             catnav::cat_nav,
             combos::combos_section,
-            costs::price_cost,
+            costs::deploy_cost,
             footer::footer,
             form_util::CatForm,
             stats::stats_template::{
@@ -414,7 +414,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         "Description",
         get_descs(&cat, config).to_string(),
     ));
-    page.push(price_cost(&cat, config));
+    page.push(deploy_cost(&cat, config));
     page.push(upgrade_cost(&cat, config));
 
     let stats = match config.cat_info.stats_template_version {

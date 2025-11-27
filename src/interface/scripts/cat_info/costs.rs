@@ -19,7 +19,7 @@ fn fmt_cost(chap_1: u16) -> String {
 }
 
 /// In-battle "Cost" section.
-pub fn price_cost(cat: &Cat, _config: &Config) -> Section {
+pub fn deploy_cost(cat: &Cat, _config: &Config) -> Section {
     const TITLE: &str = "Cost";
     let mut costs: Vec<(u16, Vec<usize>)> = vec![];
     for (i, (stats, _)) in cat.forms.iter().enumerate() {
