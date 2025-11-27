@@ -19,7 +19,9 @@ Mainly filling in tests, also making various copyedits.
 
 ### Fixed
 
-- Jurassic Cat crit talent total cost is now 25 instead of 75. (0b076c1)
+- Jurassic Cat crit talent total cost is now 25 instead of 75.
+  ([0b076c1](https://github.com/YTFGolf/rust-wiki/commit/0b076c1))
+
 
 ### Changed
 
@@ -455,7 +457,7 @@ update since there's just too much to actually make sense of.
 - Stage info
 - Wiki reader
 
-## [0.1.0] - (2024-09-11)[11db433]
+## [0.1.0] - 2024-09-11
 
 Project started.
 
