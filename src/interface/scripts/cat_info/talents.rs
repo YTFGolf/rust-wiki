@@ -1075,6 +1075,7 @@ mod tests {
             .to_string();
 
         const TARGET: &str = "*'''[[Wave Attack]]''': Adds a 5% chance to create a level 6 wave attack, improves by ~1.11% per level up to 15% (Total Cost: 165 NP)";
+        // level 1 = 5%, level 10 = 15%, cannot be evenly divided
         let line = sect.lines().nth(1).unwrap();
         // is first line of talents; nth(0) is "==Talents=="
 
@@ -1083,8 +1084,14 @@ mod tests {
 
     #[test]
     fn diff_step_and_approximate_scaling() {
-        // boogie cat
-        todo!()
+        let boogie = Cat::from_wiki_id(22, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&boogie, &TEST_CONFIG).unwrap().to_string();
+
+        const TARGET: &str = "*'''[[Special Abilities#Knockback|Knockback]]''': Increases knockback chance by 5%, improves by ~1.11% per level up to 15% (Total Cost: 125 NP)";
+        // cannot be evenly divided, plus 0 -> 1 is 5% while rest are all 1%/2%
+        let line = sect.lines().nth(1).unwrap();
+
+        assert_eq!(line, TARGET);
     }
 
     #[test]
@@ -1097,6 +1104,15 @@ mod tests {
 
     #[test]
     fn nonstandard_costs() {
-        // jurassic cat, 46, only uses half the costs
+        let jurassic = Cat::from_wiki_id(46, &TEST_CONFIG.version).unwrap();
+        let sect = talents_section(&jurassic, &TEST_CONFIG)
+            .unwrap()
+            .to_string();
+
+        const TARGET: &str = "*'''[[Critical Hit|Critical]]''': Upgrades chance to perform a critical hit by 1% per level up to 5% (Total Cost: 25 NP)";
+        // only uses half the costs (max level is 5 but uses cost with length 10)
+        let line = sect.lines().nth(1).unwrap();
+
+        assert_eq!(line, TARGET);
     }
 }
