@@ -23,7 +23,7 @@ pub trait CacheableVersionData: Debug + Send + Sync {
     where
         Self: Sized,
     {
-        Self::init_data(&version.location())
+        Self::init_data(version.location())
     }
 }
 

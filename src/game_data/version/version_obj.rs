@@ -123,7 +123,7 @@ impl Version {
                 .expect("Error when casting in `Version::get_cached_file`.");
         }
 
-        let new_value: VersionDataContents = Box::pin(T::init_data_with_version(&self));
+        let new_value: VersionDataContents = Box::pin(T::init_data_with_version(self));
         version_data_lock.push((type_id, new_value));
 
         if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {

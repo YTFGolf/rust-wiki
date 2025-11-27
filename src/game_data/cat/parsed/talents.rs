@@ -39,7 +39,7 @@ impl TalentTargets {
                     return None;
                 }
 
-                return Some(TalentTargets::from_repr(i).unwrap_or(TalentTargets::AsYetUnknown));
+                Some(TalentTargets::from_repr(i).unwrap_or(TalentTargets::AsYetUnknown))
             })
             .collect()
     }
@@ -133,7 +133,7 @@ impl Talents {
         let mut normal = vec![];
         let mut ultra = vec![];
 
-        for group in raw.groups.iter() {
+        for group in &raw.groups {
             let Some(t) = SingleTalent::from_raw(group) else {
                 continue;
             };

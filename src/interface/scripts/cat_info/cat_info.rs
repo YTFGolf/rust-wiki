@@ -363,7 +363,7 @@ fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
 fn spirit_section(cat: &Cat, config: &Config) -> Option<Section> {
     let mut spirits = vec![];
     for (stats, _) in cat.forms.iter() {
-        for ability in stats.abilities.iter() {
+        for ability in &stats.abilities {
             match ability {
                 Ability::ConjureUnit { id } => match spirits.last() {
                     Some(&id2) => {
