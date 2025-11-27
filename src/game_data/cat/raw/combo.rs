@@ -241,21 +241,18 @@ pub struct CombosDataContainer {
 }
 impl CacheableVersionData for CombosDataContainer {
     fn init_data_with_version(version: &Version) -> Self {
-        let combos = match version.number_u32() {
-            Some(150000..) => {
-                type T = ComboDataFrom15_0;
-                get_combodata::<T>(version.location())
-                    .into_iter()
-                    .map(ComboData::from)
-                    .collect()
-            }
-            _ => {
-                type T = ComboDataTo14_7;
-                get_combodata::<T>(version.location())
-                    .into_iter()
-                    .map(ComboData::from)
-                    .collect()
-            }
+        let combos = if let Some(150000..) = version.number_u32() {
+            type T = ComboDataFrom15_0;
+            get_combodata::<T>(version.location())
+                .into_iter()
+                .map(ComboData::from)
+                .collect()
+        } else {
+            type T = ComboDataTo14_7;
+            get_combodata::<T>(version.location())
+                .into_iter()
+                .map(ComboData::from)
+                .collect()
         };
         Self { combos }
     }
