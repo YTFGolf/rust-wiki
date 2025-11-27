@@ -1,6 +1,6 @@
 //! Parsed talents object.
 
-use crate::game_data::cat::raw::talents::TalentLine;
+use crate::game_data::cat::raw::talents::{TalentGroup, TalentLine};
 use std::num::NonZeroUsize;
 use strum::FromRepr;
 
@@ -58,6 +58,43 @@ pub struct SingleTalent {
     /// Is it a normal or an ultra talent.
     pub ttype: TalentType,
 }
+impl SingleTalent {
+    /// Get single talent from raw talent group.
+    pub fn from_raw(group: &TalentGroup) -> Option<Self> {
+        let ability_id = NonZeroUsize::new(group.ability_id_x.into())?;
+
+        let max_level = group.maxlv_x;
+        let mut params = vec![];
+        for (min, max) in [
+            (group.min_x1, group.max_x1),
+            (group.min_x2, group.max_x2),
+            (group.min_x3, group.max_x3),
+            (group.min_x4, group.max_x4),
+        ] {
+            if min == 0 && max == 0 {
+                continue;
+            }
+            params.push((min, max));
+        }
+
+        let skill_description_id = group.text_id_x.into();
+        let skill_costs_id = group.lv_id_x.into();
+        let name_id_or_something = group.name_id_x;
+        let ttype = TalentType::from_repr(group.limit_x).unwrap();
+
+        let t = SingleTalent {
+            ability_id,
+            max_level,
+            params,
+            skill_description_id,
+            skill_costs_id,
+            name_id_or_something,
+            ttype,
+        };
+
+        Some(t)
+    }
+}
 
 #[derive(Debug)]
 /// Talents that a unit has access to.
@@ -95,37 +132,8 @@ impl Talents {
         let mut ultra = vec![];
 
         for group in raw.groups.iter() {
-            let Some(ability_id) = NonZeroUsize::new(group.ability_id_x.into()) else {
+            let Some(t) = SingleTalent::from_raw(group) else {
                 continue;
-            };
-
-            let max_level = group.maxlv_x;
-            let mut params = vec![];
-            for (min, max) in [
-                (group.min_x1, group.max_x1),
-                (group.min_x2, group.max_x2),
-                (group.min_x3, group.max_x3),
-                (group.min_x4, group.max_x4),
-            ] {
-                if min == 0 && max == 0 {
-                    continue;
-                }
-                params.push((min, max));
-            }
-
-            let skill_description_id = group.text_id_x.into();
-            let skill_costs_id = group.lv_id_x.into();
-            let name_id_or_something = group.name_id_x;
-            let ttype = TalentType::from_repr(group.limit_x).unwrap();
-
-            let t = SingleTalent {
-                ability_id,
-                max_level,
-                params,
-                skill_description_id,
-                skill_costs_id,
-                name_id_or_something,
-                ttype,
             };
 
             match t.ttype {
