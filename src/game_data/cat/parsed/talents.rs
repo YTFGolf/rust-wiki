@@ -59,7 +59,8 @@ pub struct SingleTalent {
     pub ttype: TalentType,
 }
 impl SingleTalent {
-    /// Get single talent from raw talent group.
+    /// Get single talent from raw talent group. Returns `None` if the talent's
+    /// ID is 0.
     pub fn from_raw(group: &TalentGroup) -> Option<Self> {
         let ability_id = NonZeroUsize::new(group.ability_id_x.into())?;
 
@@ -154,17 +155,40 @@ impl Talents {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{TEST_CONFIG, game_data::cat::raw::talents::TalentsContainer};
+    use crate::{
+        TEST_CONFIG,
+        game_data::cat::raw::{talents::TalentsContainer, talents_cost::TalentsCostContainer},
+    };
 
     #[test]
     fn check_all_talents() {
         let version = TEST_CONFIG.version.current_version();
         let talents_cont = version.get_cached_file::<TalentsContainer>();
-        // let talents_cost_cont = version.get_cached_file::<TalentsCostContainer>();
+        let talents_cost_cont = version.get_cached_file::<TalentsCostContainer>();
         for talents in talents_cont.iter() {
-            println!("{:?}", Talents::from_raw(talents));
-            println!("");
+            for group in &talents.groups {
+                let Some(talent) = SingleTalent::from_raw(group) else {
+                    continue;
+                };
+
+                let costs = talents_cost_cont
+                    .from_cost_id(talent.skill_costs_id)
+                    .unwrap();
+                assert!(
+                    talent.max_level as usize <= costs.costs.len(),
+                    "Mismatch for costs on unit {}",
+                    talents.fixed.id
+                );
+                // make sure that unit actually has a defined cost for every
+                // level
+
+                // println!("{:?}", talent);
+            }
         }
+    }
+
+    #[test]
+    fn type_ids() {
         todo!()
     }
 }
