@@ -13,19 +13,22 @@ subheading.
 
 ## [Unreleased]
 
-Mainly filling in tests, also making various copyedits.
-
 ### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.8.1] - 2025-11-27
+
+Mainly filling in tests, also making various copyedits.
 
 ### Fixed
 
 - Jurassic Cat crit talent total cost is now 25 instead of 75.
   ([0b076c1](https://github.com/YTFGolf/rust-wiki/commit/0b076c1))
-
-
-### Changed
-
-### Removed
 
 ## [0.8.0] - 2025-11-09
 
@@ -461,7 +464,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.0...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.1...dev
+[0.8.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.4...v0.8.0
 [0.7.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.2...v0.7.3
