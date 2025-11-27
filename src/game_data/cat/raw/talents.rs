@@ -75,13 +75,12 @@ fn parse_talents_line(line: &str) -> TalentLine {
 
     fn parse_index<T: FromStr>(line: &[&str; TOTAL_AMT_FIELDS], i: usize) -> T {
         line[i].parse().unwrap_or_else(|_| {
-            if i < FIXED_LEN {
-                panic!(
-                    "error when attempting to parse fixed index {i} into {tname}: {field:?}",
-                    tname = type_name::<T>(),
-                    field = line[i]
-                );
-            }
+            assert!(
+                i >= FIXED_LEN,
+                "error when attempting to parse fixed index {i} into {tname}: {field:?}",
+                tname = type_name::<T>(),
+                field = line[i]
+            );
 
             let j = (i - FIXED_LEN) / GROUP_LEN;
             let k = (i - FIXED_LEN) % GROUP_LEN;
