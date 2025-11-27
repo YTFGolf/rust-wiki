@@ -495,27 +495,63 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::TEST_CONFIG;
+
     #[test]
     fn cat_nav_first() {
-        // test cat
-        todo!()
+        let cat = Cat::from_wiki_id(0, &TEST_CONFIG.version).unwrap();
+        let sect = cat_nav(cat.id).to_string();
+
+        const TARGET: &str = concat!(
+            "----\n",
+            "{{CatNav||Tank Cat}}",
+            // comment to avoid rustfmt
+            "\n----"
+        );
+        assert_eq!(sect, TARGET);
     }
 
     #[test]
     fn cat_nav_spirit_front() {
-        // izanagi
-        todo!()
+        let izanagi = Cat::from_wiki_id(731, &TEST_CONFIG.version).unwrap();
+        // has spirit
+        let sect = cat_nav(izanagi.id).to_string();
+
+        const TARGET: &str = concat!(
+            "----\n",
+            "{{CatNav|Ancient Egg: N204|Pegasa}}",
+            // comment to avoid rustfmt
+            "\n----"
+        );
+        assert_eq!(sect, TARGET);
     }
 
     #[test]
     fn cat_nav_spirit_back() {
-        // in front of izanagi
-        todo!()
+        let pegasa = Cat::from_wiki_id(733, &TEST_CONFIG.version).unwrap();
+        let sect = cat_nav(pegasa.id).to_string();
+
+        const TARGET: &str = concat!(
+            "----\n",
+            "{{CatNav|Daybreaker Izanagi|Principal Cat}}",
+            // comment to avoid rustfmt
+            "\n----"
+        );
+        assert_eq!(sect, TARGET);
     }
 
     #[test]
     fn cat_nav_spirit_both() {
-        // newton
-        todo!()
+        let newton = Cat::from_wiki_id(801, &TEST_CONFIG.version).unwrap();
+        let sect = cat_nav(newton.id).to_string();
+
+        const TARGET: &str = concat!(
+            "----\n",
+            "{{CatNav|Mighty Morta-Loncha|Sonic}}",
+            // comment to avoid rustfmt
+            "\n----"
+        );
+        assert_eq!(sect, TARGET);
     }
 }
