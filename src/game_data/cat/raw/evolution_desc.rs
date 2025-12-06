@@ -1,14 +1,16 @@
 //! Evolution evolution descriptions.
 
 use crate::game_data::version::{
-    Version, lang::VersionLanguage, version_data::CacheableVersionData,
+    Version,
+    lang::VersionLanguage,
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
 };
 use csv::ByteRecord;
 use serde::Deserialize;
 use std::{
+    error::Error,
     fs::File,
     io::{BufRead, BufReader},
-    path::Path,
 };
 
 const AT: &str = "＠";
@@ -62,16 +64,19 @@ impl EvolutionDescription {
 }
 
 /// Get descriptions for the unit.
-pub fn get_evolution_descriptions(version: &Version) -> Vec<EvolutionDescription> {
+pub fn get_evolution_descriptions(
+    version: &Version,
+) -> Result<Vec<EvolutionDescription>, Box<dyn Error>> {
     let file_name = format!("unitevolve_{lang}.csv", lang = version.language());
 
-    let reader =
-        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).unwrap());
+    let reader = BufReader::new(
+        File::open(version.get_file_path("resLocal").join(file_name)).map_err(Box::new)?,
+    );
 
-    reader
+    let records: Result<Vec<_>, Box<dyn Error>> = reader
         .lines()
         .map(|line| {
-            let line = line.unwrap();
+            let line = line.map_err(Box::new)?;
 
             let delimiter = match version.language() {
                 VersionLanguage::EN | VersionLanguage::KR | VersionLanguage::TW => '|',
@@ -79,29 +84,28 @@ pub fn get_evolution_descriptions(version: &Version) -> Vec<EvolutionDescription
                 VersionLanguage::Fallback => unreachable!(),
             };
 
-            line.split(delimiter)
+            Ok(line
+                .split(delimiter)
                 .collect::<ByteRecord>()
-                .deserialize(None)
-                .unwrap()
+                .deserialize::<EvolutionDescription>(None)
+                .map_err(Box::new)?)
         })
-        .collect()
+        .collect();
+
+    records
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Combo names for the version.
 pub struct EvolutionDescriptions {
     descs: Vec<EvolutionDescription>,
 }
 
 impl CacheableVersionData for EvolutionDescriptions {
-    fn init_data(_: &Path) -> Self {
-        unimplemented!();
-    }
-
-    fn init_data_with_version(version: &Version) -> Self {
-        Self {
-            descs: get_evolution_descriptions(version),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            descs: get_evolution_descriptions(version).map_err(CvdCreateError::as_default)?,
+        })
     }
 }
 
@@ -120,7 +124,11 @@ mod tests {
     #[test]
     fn assert_blanks() {
         fn do_version(version: &Version) {
-            for (i, desc) in get_evolution_descriptions(version).into_iter().enumerate() {
+            for (i, desc) in get_evolution_descriptions(version)
+                .unwrap()
+                .into_iter()
+                .enumerate()
+            {
                 assert!(
                     desc._maybe_blank == AT
                         || desc._maybe_blank.is_empty()

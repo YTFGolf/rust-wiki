@@ -9,7 +9,6 @@ use std::{
     error::Error,
     fs::File,
     io::{self, BufRead, BufReader},
-    path::Path,
 };
 
 #[derive(Debug, Default)]
