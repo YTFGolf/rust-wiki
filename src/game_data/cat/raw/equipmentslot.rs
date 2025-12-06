@@ -1,6 +1,9 @@
 //! Talent orb slots used by cats.
 
-use crate::game_data::version::version_data::CacheableVersionData;
+use crate::game_data::version::{
+    Version,
+    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler},
+};
 use serde::Deserialize;
 use std::path::Path;
 
@@ -16,38 +19,36 @@ pub struct EquipmentSlotItem {
     condition_2: u8,
 }
 
-fn get_equipmentslot(path: &Path) -> Vec<EquipmentSlotItem> {
+fn get_equipmentslot(path: &Path) -> Result<Vec<EquipmentSlotItem>, csv::Error> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .flexible(true)
-        .from_path(path.join("DataLocal/equipmentslot.csv"))
-        .unwrap();
+        .from_path(path.join("DataLocal/equipmentslot.csv"))?;
 
     let mut records = rdr.byte_records();
     records.next();
 
     let records_iter = records.map(|record| {
-        let result = record.unwrap();
-        result.deserialize(None).unwrap()
+        let result = record?;
+        result.deserialize::<EquipmentSlotItem>(None)
     });
 
     records_iter.collect()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Container for equipment slots.
 pub struct EquipmentSlotContainer {
     slots: Vec<EquipmentSlotItem>,
 }
 
 impl CacheableVersionData for EquipmentSlotContainer {
-    fn init_data(path: &Path) -> Self
-    where
-        Self: Sized,
-    {
-        Self {
-            slots: get_equipmentslot(path),
-        }
+    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>> {
+        let slots = get_equipmentslot(version.location()).map_err(|e| CvdCreateError {
+            handler: CvdCreateHandler::Default(Default::default()),
+            err: Box::new(e),
+        })?;
+        Ok(Self { slots })
     }
 }
 
