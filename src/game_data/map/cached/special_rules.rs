@@ -1,6 +1,12 @@
 //! Deals with `SpecialRulesMap.json`.
 
-use crate::game_data::{meta::stage::map_id::MapID, version::version_data::CacheableVersionData};
+use crate::game_data::{
+    meta::stage::map_id::MapID,
+    version::{
+        Version,
+        version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    },
+};
 use raw::{RawRuleData, RawRuleType, RulesMap};
 use std::{collections::HashMap, fs::File};
 use strum::FromRepr;
@@ -274,12 +280,12 @@ impl From<RulesMap> for SpecialRules {
     }
 }
 impl CacheableVersionData for SpecialRules {
-    fn init_data(path: &std::path::Path) -> Self {
-        let Ok(file) = File::open(path.join("DataLocal/SpecialRulesMap.json")) else {
-            return Self::default();
-        };
-        let data: RulesMap = serde_json::from_reader(file).unwrap();
-        data.into()
+    fn create(version: &Version) -> CvdResult<Self> {
+        let file = File::open(version.location().join("DataLocal/SpecialRulesMap.json"))
+            .map_err(CvdCreateError::default_from_err)?;
+        let data: RulesMap =
+            serde_json::from_reader(file).map_err(CvdCreateError::throw_from_err)?;
+        Ok(data.into())
     }
 }
 
