@@ -5,7 +5,7 @@
 //! doesn't use [`CacheableVersionData`][CacheableVersionData] but instead uses
 //! constants. Unit tests check these constants for correctness.
 //!
-//! [CacheableVersionData]: crate::data::version::version_data
+//! [CacheableVersionData]: crate::game_data::version::version_data::CacheableVersionData
 
 #[derive(Debug, serde::Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 /// Level-up cost multiplier per 10 levels.

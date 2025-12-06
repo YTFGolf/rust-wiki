@@ -30,7 +30,7 @@ pub struct MapOptionCSV {
     _ゲリラset: u32,
     /// Reset type. See [`ResetType`][ResetType].
     ///
-    /// [ResetType]: crate::data::map::parsed::map::ResetType
+    /// [ResetType]: crate::game_data::map::parsed::map::ResetType
     pub reset_type: u8,
     /// Amount of stages that can be cleared before the map disappears. If
     /// `cooldown` is set, the event goes into cooldown rather than

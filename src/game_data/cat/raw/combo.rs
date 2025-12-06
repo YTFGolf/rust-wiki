@@ -227,7 +227,7 @@ impl From<ComboDataFrom15_0> for ComboData {
 }
 
 #[derive(Debug, Default)]
-/// Container for [`ComboDataRaw`] data.
+/// Container for [`ComboData`].
 pub struct CombosDataContainer {
     combos: Vec<ComboData>,
 }
