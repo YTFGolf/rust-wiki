@@ -7,10 +7,9 @@ use crate::game_data::{
         version_data::{CacheableVersionData, CvdCreateError, CvdResult},
     },
 };
-use csv::ByteRecord;
 use std::{collections::HashMap, error::Error, num::NonZero, path::Path};
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, Clone)]
 /// Data stored in the map option CSV.
 pub struct MapOptionCSV {
     /// Map's mapid.
@@ -54,7 +53,7 @@ pub struct MapOptionCSV {
     _jpname: &'static str,
 }
 
-fn get_map_option(path: &Path) -> Result<HashMap<u32, ByteRecord>, Box<dyn Error>> {
+fn get_map_option(path: &Path) -> Result<HashMap<u32, MapOptionCSV>, Box<dyn Error>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         // technically does have headers but that's an issue for another day
@@ -65,14 +64,11 @@ fn get_map_option(path: &Path) -> Result<HashMap<u32, ByteRecord>, Box<dyn Error
     rdr.byte_records()
         .skip(1)
         .map(|record| {
-            let result = record.map_err(Box::new)?;
-            Ok((
-                std::str::from_utf8(&result[0])
-                    .map_err(Box::new)?
-                    .parse::<u32>()
-                    .map_err(Box::new)?,
-                result,
-            ))
+            let result: MapOptionCSV = record
+                .map_err(Box::new)?
+                .deserialize(None)
+                .map_err(Box::new)?;
+            Ok((result.mapid, result))
         })
         .collect()
 }
@@ -80,7 +76,7 @@ fn get_map_option(path: &Path) -> Result<HashMap<u32, ByteRecord>, Box<dyn Error
 #[derive(Debug)]
 /// Container for map option data.
 pub struct MapOption {
-    map: HashMap<u32, ByteRecord>,
+    map: HashMap<u32, MapOptionCSV>,
 }
 impl CacheableVersionData for MapOption {
     fn create(version: &Version) -> CvdResult<Self> {
@@ -91,14 +87,8 @@ impl CacheableVersionData for MapOption {
 }
 impl MapOption {
     /// Get the map option data for map if exists.
-    pub fn get_map(&self, map_id: &MapID) -> Option<MapOptionCSV> {
-        Some(
-            self.map
-                .get_key_value(&map_id.mapid())?
-                .1
-                .deserialize(None)
-                .unwrap(),
-        )
+    pub fn get_map(&self, map_id: &MapID) -> Option<&MapOptionCSV> {
+        Some(self.map.get_key_value(&map_id.mapid())?.1)
     }
 }
 
