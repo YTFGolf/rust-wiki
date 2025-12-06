@@ -1,7 +1,11 @@
 //! Cat talent costs.
 
-use crate::game_data::version::version_data::CacheableVersionData;
+use crate::game_data::version::{
+    Version,
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+};
 use std::{
+    error::Error,
     fmt::Debug,
     fs::File,
     io::{BufRead, BufReader},
@@ -18,29 +22,37 @@ pub struct TalentAcquisitionCost {
 }
 
 /// Get all data from the talents file.
-fn get_talent_costs_file(path: &Path) -> Vec<TalentAcquisitionCost> {
-    let reader = BufReader::new(File::open(path.join("DataLocal/SkillLevel.csv")).unwrap());
+fn get_talent_costs_file(path: &Path) -> Result<Vec<TalentAcquisitionCost>, Box<dyn Error>> {
+    let reader =
+        BufReader::new(File::open(path.join("DataLocal/SkillLevel.csv")).map_err(Box::new)?);
 
     let mut costs_cont = vec![Default::default()];
-    costs_cont.extend(reader.lines().skip(1).map(|line| {
-        let line: &str = &line.unwrap();
-        let mut iter = line.split(',');
+    // dummy container so that `.from_cost_id(1)` is just `.get(1)`
 
-        let first = iter.next().expect("first shouldn't fail");
-        let id = first.parse().unwrap();
-        let mut costs = vec![];
+    let parsed: Result<Vec<_>, Box<dyn Error>> = reader
+        .lines()
+        .skip(1)
+        .map(|line| {
+            let line: &str = &line.map_err(Box::new)?;
+            let mut iter = line.split(',');
 
-        for rest in iter {
-            if rest.is_empty() {
-                break;
+            let first = iter.next().expect("first shouldn't fail");
+            let id = first.parse().map_err(Box::new)?;
+            let mut costs = vec![];
+
+            for rest in iter {
+                if rest.is_empty() {
+                    break;
+                }
+                costs.push(rest.parse().map_err(Box::new)?);
             }
-            costs.push(rest.parse().unwrap());
-        }
 
-        TalentAcquisitionCost { id, costs }
-    }));
+            Ok(TalentAcquisitionCost { id, costs })
+        })
+        .collect();
+    costs_cont.extend(parsed?);
 
-    costs_cont
+    Ok(costs_cont)
 }
 
 #[derive(Debug)]
@@ -55,10 +67,10 @@ impl TalentsCostContainer {
     }
 }
 impl CacheableVersionData for TalentsCostContainer {
-    fn init_data(path: &Path) -> Self {
-        Self {
-            costs_cont: get_talent_costs_file(path),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            costs_cont: get_talent_costs_file(version.location()).map_err(CvdCreateError::throw)?,
+        })
     }
 }
 
@@ -70,6 +82,7 @@ mod tests {
     #[test]
     fn check_talents() {
         for (i, line) in get_talent_costs_file(TEST_CONFIG.version.current_version().location())
+            .unwrap()
             .iter()
             .enumerate()
         {
