@@ -6,6 +6,7 @@ use crate::game_data::version::{
     version_data::{CacheableVersionData, CvdCreateError, CvdResult},
 };
 use std::{
+    error::Error,
     fs::File,
     io::{self, BufRead, BufReader},
     path::Path,
@@ -37,16 +38,17 @@ impl ComboNames {
 }
 
 /// Get the names of combo effects.
-pub fn get_effect_names(version: &Version) -> Vec<String> {
+pub fn get_effect_names(version: &Version) -> Result<Vec<String>, Box<dyn Error>> {
     let file_name = format!("Nyancombo1_{lang}.csv", lang = version.language());
 
-    let reader =
-        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).unwrap());
+    let reader = BufReader::new(
+        File::open(version.get_file_path("resLocal").join(file_name)).map_err(Box::new)?,
+    );
 
     reader
         .lines()
         .map(|line| {
-            let line = line.unwrap();
+            let line = line.map_err(Box::new)?;
 
             let delimiter = match version.language() {
                 VersionLanguage::EN | VersionLanguage::KR | VersionLanguage::TW => '|',
@@ -62,25 +64,21 @@ pub fn get_effect_names(version: &Version) -> Vec<String> {
                 _ => panic!("found text after the delimiter"),
             }
 
-            effect.to_string()
+            Ok(effect.to_string())
         })
         .collect()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Combo names for the version.
 pub struct ComboEffects {
     effects: Vec<String>,
 }
 impl CacheableVersionData for ComboEffects {
-    fn init_data(_: &Path) -> Self {
-        unimplemented!();
-    }
-
-    fn init_data_with_version(version: &Version) -> Self {
-        Self {
-            effects: get_effect_names(version),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            effects: get_effect_names(version).map_err(CvdCreateError::as_default)?,
+        })
     }
 }
 impl ComboEffects {
@@ -91,16 +89,17 @@ impl ComboEffects {
 }
 
 /// Get the names of combo intensities.
-pub fn get_intensity_names(version: &Version) -> Vec<String> {
+pub fn get_intensity_names(version: &Version) -> Result<Vec<String>, Box<dyn Error>> {
     let file_name = format!("Nyancombo2_{lang}.csv", lang = version.language());
 
-    let reader =
-        BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).unwrap());
+    let reader = BufReader::new(
+        File::open(version.get_file_path("resLocal").join(file_name)).map_err(Box::new)?,
+    );
 
     reader
         .lines()
         .map(|line| {
-            let line = line.unwrap();
+            let line = line.map_err(Box::new)?;
 
             let delimiter = match version.language() {
                 VersionLanguage::EN | VersionLanguage::KR | VersionLanguage::TW => '|',
@@ -116,25 +115,21 @@ pub fn get_intensity_names(version: &Version) -> Vec<String> {
                 _ => panic!("found text after the delimiter"),
             }
 
-            intensity.to_string()
+            Ok(intensity.to_string())
         })
         .collect()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Combo names for the version.
 pub struct ComboIntensities {
     intensities: Vec<String>,
 }
 impl CacheableVersionData for ComboIntensities {
-    fn init_data(_: &Path) -> Self {
-        unimplemented!();
-    }
-
-    fn init_data_with_version(version: &Version) -> Self {
-        Self {
-            intensities: get_intensity_names(version),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            intensities: get_intensity_names(version).map_err(CvdCreateError::as_default)?,
+        })
     }
 }
 impl ComboIntensities {
