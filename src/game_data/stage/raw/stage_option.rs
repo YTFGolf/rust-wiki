@@ -2,9 +2,12 @@
 
 use crate::game_data::{
     meta::stage::{map_id::MapID, stage_id::StageID},
-    version::version_data::CacheableVersionData,
+    version::{
+        Version,
+        version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    },
 };
-use std::{collections::HashMap, path::Path};
+use std::{collections::HashMap, error::Error, path::Path};
 
 /// Module that contains charagroup information.
 pub mod charagroups {
@@ -153,6 +156,36 @@ pub struct StageOptionCSV {
     pub charagroup: u32,
 }
 
+fn get_stage_option(path: &Path) -> Result<HashMap<u32, Vec<StageOptionCSV>>, Box<dyn Error>> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        // technically does have headers but that's an issue for another day
+        .flexible(true)
+        .from_path(path.join("DataLocal/Stage_option.csv"))
+        .map_err(Box::new)?;
+
+    let records = rdr.byte_records().skip(1);
+
+    let mut map: HashMap<u32, Vec<StageOptionCSV>> = HashMap::new();
+    for record in records {
+        // cannot use .map since we're modifying the map in this loop
+        let result: StageOptionCSV = record
+            .map_err(Box::new)?
+            .deserialize(None)
+            .map_err(Box::new)?;
+
+        let entry = map.get_mut(&result.mapid);
+        match entry {
+            Some(map_option) => map_option.push(result),
+            None => {
+                map.insert(result.mapid, vec![result]);
+            }
+        }
+    }
+
+    Ok(map)
+}
+
 #[derive(Debug)]
 /// Container for stage option data.
 pub struct StageOption {
@@ -176,37 +209,9 @@ impl StageOption {
     }
 }
 impl CacheableVersionData for StageOption {
-    fn init_data(path: &Path) -> Self {
-        Self {
-            map: get_stage_option(path),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            map: get_stage_option(version.location()).map_err(CvdCreateError::throw)?,
+        })
     }
-}
-
-fn get_stage_option(path: &Path) -> HashMap<u32, Vec<StageOptionCSV>> {
-    let mut rdr = csv::ReaderBuilder::new()
-        .has_headers(false)
-        // technically does have headers but that's an issue for another day
-        .flexible(true)
-        .from_path(path.join("DataLocal/Stage_option.csv"))
-        .unwrap();
-
-    let mut records = rdr.byte_records();
-    records.next();
-
-    let mut map: HashMap<u32, Vec<StageOptionCSV>> = HashMap::new();
-    // Since sorting by stage id will require looking at another field might as
-    // well just convert everything to a [StageOptionCSV] anyway.
-    for record in records {
-        let result: StageOptionCSV = record.unwrap().deserialize(None).unwrap();
-        let entry = map.get_mut(&result.mapid);
-        match entry {
-            Some(map_option) => map_option.push(result),
-            None => {
-                map.insert(result.mapid, vec![result]);
-            }
-        }
-    }
-
-    map
 }
