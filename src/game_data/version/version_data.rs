@@ -5,18 +5,18 @@ use std::{error::Error, fmt::Debug, path::Path};
 
 #[derive(Debug)]
 /// How a CVD error should be handled.
-pub enum CvdCreateHandler {
+pub enum CvdCreateHandler<T: CacheableVersionData> {
     /// Log an error and return `Self::Default()`.
-    Default,
+    Default(T),
     /// Throw the error and panic.
     Throw,
 }
 
 #[derive(Debug)]
 /// Error that occurred when creating CVD object.
-pub struct CvdCreateError {
+pub struct CvdCreateError<T: CacheableVersionData> {
     /// How this error should be handled.
-    pub handler: CvdCreateHandler,
+    pub handler: CvdCreateHandler<T>,
     /// What the error is.
     pub err: Box<dyn Error>,
 }
@@ -27,7 +27,7 @@ pub struct CvdCreateError {
 /// `Map_option.csv`.
 pub trait CacheableVersionData: Debug + Send + Sync {
     /// Create the cacheable version data object.
-    fn create(version: &Version) -> Result<Self, CvdCreateError>
+    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>>
     where
         Self: Sized,
     {
