@@ -1,7 +1,13 @@
 //! Module that deals with the `EX_option` file.
 
-use crate::game_data::{meta::stage::map_id::MapID, version::version_data::CacheableVersionData};
-use std::path::Path;
+use crate::game_data::{
+    meta::stage::map_id::MapID,
+    version::{
+        Version,
+        version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    },
+};
+use std::{error::Error, path::Path};
 
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the EX option CSV.
@@ -12,16 +18,32 @@ pub struct ExOptionCSV {
     ex_map_id: u32,
 }
 
-#[derive(Debug)]
+fn get_ex_option(path: &Path) -> Result<Vec<ExOptionCSV>, Box<dyn Error>> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        .comment(Some(b'/'))
+        .from_path(path.join("DataLocal/EX_option.csv"))
+        .map_err(Box::new)?;
+
+    rdr.byte_records()
+        .map(|record| {
+            let result = record.map_err(Box::new)?;
+            let opt = result.deserialize(None).map_err(Box::new)?;
+            Ok(opt)
+        })
+        .collect()
+}
+
+#[derive(Debug, Default)]
 /// Container for EX option data.
 pub struct ExOption {
     map: Vec<ExOptionCSV>,
 }
 impl CacheableVersionData for ExOption {
-    fn init_data(path: &std::path::Path) -> Self {
-        Self {
-            map: get_ex_option(path).unwrap_or_default(),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            map: get_ex_option(version.location()).map_err(CvdCreateError::as_default)?,
+        })
     }
 }
 impl ExOption {
@@ -34,24 +56,6 @@ impl ExOption {
                 .ex_map_id,
         )
     }
-}
-
-fn get_ex_option(path: &Path) -> Option<Vec<ExOptionCSV>> {
-    let mut rdr = csv::ReaderBuilder::new()
-        .has_headers(false)
-        .comment(Some(b'/'))
-        .from_path(path.join("DataLocal/EX_option.csv"))
-        .ok()?;
-
-    let mut options = vec![];
-    for record in rdr.byte_records() {
-        let Ok(result) = record else { break };
-
-        let opt = result.deserialize(None).unwrap();
-        options.push(opt);
-    }
-
-    Some(options)
 }
 
 #[cfg(test)]

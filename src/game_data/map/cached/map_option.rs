@@ -1,8 +1,14 @@
 //! Module that deals with the `Map_option` file.
 
-use crate::game_data::{meta::stage::map_id::MapID, version::version_data::CacheableVersionData};
+use crate::game_data::{
+    meta::stage::map_id::MapID,
+    version::{
+        Version,
+        version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    },
+};
 use csv::ByteRecord;
-use std::{collections::HashMap, num::NonZero, path::Path};
+use std::{collections::HashMap, error::Error, num::NonZero, path::Path};
 
 #[derive(Debug, serde::Deserialize)]
 /// Data stored in the map option CSV.
@@ -48,16 +54,39 @@ pub struct MapOptionCSV {
     _jpname: &'static str,
 }
 
+fn get_map_option(path: &Path) -> Result<HashMap<u32, ByteRecord>, Box<dyn Error>> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        // technically does have headers but that's an issue for another day
+        .flexible(true)
+        .from_path(path.join("DataLocal/Map_option.csv"))
+        .map_err(Box::new)?;
+
+    rdr.byte_records()
+        .skip(1)
+        .map(|record| {
+            let result = record.map_err(Box::new)?;
+            Ok((
+                std::str::from_utf8(&result[0])
+                    .map_err(Box::new)?
+                    .parse::<u32>()
+                    .map_err(Box::new)?,
+                result,
+            ))
+        })
+        .collect()
+}
+
 #[derive(Debug)]
 /// Container for map option data.
 pub struct MapOption {
     map: HashMap<u32, ByteRecord>,
 }
 impl CacheableVersionData for MapOption {
-    fn init_data(path: &std::path::Path) -> Self {
-        Self {
-            map: get_map_option(path),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        Ok(Self {
+            map: get_map_option(version.location()).map_err(CvdCreateError::throw)?,
+        })
     }
 }
 impl MapOption {
@@ -71,31 +100,6 @@ impl MapOption {
                 .unwrap(),
         )
     }
-}
-
-fn get_map_option(path: &Path) -> HashMap<u32, ByteRecord> {
-    let mut rdr = csv::ReaderBuilder::new()
-        .has_headers(false)
-        // technically does have headers but that's an issue for another day
-        .flexible(true)
-        .from_path(path.join("DataLocal/Map_option.csv"))
-        .unwrap();
-
-    let mut records = rdr.byte_records();
-    records.next();
-
-    let records_iter = records.map(|record| {
-        let result = record.unwrap();
-        (
-            std::str::from_utf8(&result[0])
-                .unwrap()
-                .parse::<u32>()
-                .unwrap(),
-            result,
-        )
-    });
-
-    records_iter.collect()
 }
 
 #[cfg(test)]
