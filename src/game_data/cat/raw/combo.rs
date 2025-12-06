@@ -2,7 +2,7 @@
 
 use crate::game_data::version::{
     Version,
-    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler, CvdResult},
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
 };
 use csv::ByteRecord;
 use serde::Deserialize;
@@ -254,10 +254,7 @@ impl CacheableVersionData for CombosDataContainer {
         } else {
             Self::get_combodata::<ComboDataTo14_7>(version.location())
         }
-        .map_err(|e| CvdCreateError {
-            handler: CvdCreateHandler::Default(Self::default()),
-            err: e,
-        })?;
+        .map_err(CvdCreateError::as_default)?;
 
         Ok(Self { combos })
     }

@@ -6,6 +6,7 @@ use crate::game_data::version::{
 };
 use csv::ByteRecord;
 use std::fmt::Debug;
+use string_error::into_err;
 
 #[derive(Debug, serde::Deserialize, Default)]
 #[allow(missing_docs)]
@@ -163,7 +164,7 @@ impl CacheableVersionData for UnitBuyContainer {
                             item = parse_unitbuy_error(&e, &result)
                         );
 
-                        return Err(CvdCreateError::throw_from_err(e2));
+                        return Err(CvdCreateError::throw(into_err(e2)));
                     }
                 };
 

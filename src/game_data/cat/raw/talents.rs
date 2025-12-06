@@ -2,7 +2,7 @@
 
 use crate::game_data::version::{
     Version,
-    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler, CvdResult},
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
 };
 use std::{
     any::type_name,
@@ -12,6 +12,7 @@ use std::{
     path::Path,
     str::FromStr,
 };
+use string_error::into_err;
 
 /// Talents block.
 #[derive(Debug)]
@@ -160,10 +161,8 @@ impl TalentsContainer {
 }
 impl CacheableVersionData for TalentsContainer {
     fn create(version: &Version) -> CvdResult<Self> {
-        let talents = get_talents_file(version.location()).map_err(|e| CvdCreateError {
-            handler: CvdCreateHandler::Default(Self::default()),
-            err: Box::new(e),
-        })?;
+        let talents = get_talents_file(version.location())
+            .map_err(|e| CvdCreateError::as_default(into_err(e)))?;
         Ok(Self { talents })
     }
 }
