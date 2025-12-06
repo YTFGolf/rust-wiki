@@ -239,21 +239,27 @@ impl From<ComboDataFrom15_0> for ComboData {
 pub struct CombosDataContainer {
     combos: Vec<ComboData>,
 }
+impl CombosDataContainer {
+    fn get_combodata<T>(location: &Path) -> Vec<ComboData>
+    where
+        ComboData: From<T>,
+        T: for<'a> Deserialize<'a>,
+    {
+        get_combodata::<T>(location)
+            .into_iter()
+            .map(ComboData::from)
+            .collect()
+    }
+}
+
 impl CacheableVersionData for CombosDataContainer {
     fn init_data_with_version(version: &Version) -> Self {
         let combos = if let Some(150000..) = version.number_u32() {
-            type T = ComboDataFrom15_0;
-            get_combodata::<T>(version.location())
-                .into_iter()
-                .map(ComboData::from)
-                .collect()
+            Self::get_combodata::<ComboDataFrom15_0>(version.location())
         } else {
-            type T = ComboDataTo14_7;
-            get_combodata::<T>(version.location())
-                .into_iter()
-                .map(ComboData::from)
-                .collect()
+            Self::get_combodata::<ComboDataTo14_7>(version.location())
         };
+
         Self { combos }
     }
 
