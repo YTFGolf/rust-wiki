@@ -1,8 +1,11 @@
 //! Module that deals with `unitbuy.csv` data.
 
-use crate::game_data::version::version_data::CacheableVersionData;
+use crate::game_data::version::{
+    Version,
+    version_data::{CacheableVersionData, CvdCreateError},
+};
 use csv::ByteRecord;
-use std::{fmt::Debug, path::Path};
+use std::fmt::Debug;
 
 #[derive(Debug, serde::Deserialize, Default)]
 #[allow(missing_docs)]
@@ -130,26 +133,6 @@ fn parse_unitbuy_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
     String::from_utf8(result[index as usize].into()).unwrap()
 }
 
-fn get_unitbuy(path: &Path) -> Vec<UnitBuyRaw> {
-    let mut rdr = csv::ReaderBuilder::new()
-        .has_headers(false)
-        .from_path(path.join("DataLocal/unitbuy.csv"))
-        .unwrap();
-
-    rdr.byte_records()
-        .map(|record| {
-            let result = record.unwrap();
-            let unit: UnitBuyRaw = result.deserialize(None).unwrap_or_else(|e| {
-                panic!(
-                    "Error when parsing record {result:?}: {e}. Item was {item:?}.",
-                    item = parse_unitbuy_error(&e, &result)
-                )
-            });
-            unit
-        })
-        .collect()
-}
-
 #[derive(Debug)]
 /// Container for [`UnitBuyRaw`] data.
 pub struct UnitBuyContainer {
@@ -162,10 +145,33 @@ impl UnitBuyContainer {
     }
 }
 impl CacheableVersionData for UnitBuyContainer {
-    fn init_data(path: &Path) -> Self {
-        Self {
-            units: get_unitbuy(path),
-        }
+    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>> {
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .from_path(version.location().join("DataLocal/unitbuy.csv"))
+            .unwrap();
+
+        let records: Result<Vec<UnitBuyRaw>, CvdCreateError<Self>> = rdr
+            .byte_records()
+            .map(|record| {
+                let result = record.map_err(CvdCreateError::<Self>::throw_from_err)?;
+                let unit: UnitBuyRaw = match result.deserialize(None) {
+                    Ok(u) => u,
+                    Err(e) => {
+                        let e2 = format!(
+                            "Error when parsing record {result:?}: {e}. Item was {item:?}.",
+                            item = parse_unitbuy_error(&e, &result)
+                        );
+
+                        return Err(CvdCreateError::<Self>::throw_from_err(e2));
+                    }
+                };
+
+                Ok(unit)
+            })
+            .collect();
+
+        Ok(Self { units: records? })
     }
 }
 
