@@ -31,7 +31,10 @@ pub trait CacheableVersionData: Debug + Send + Sync {
     where
         Self: Sized,
     {
-        log::warn!("using deprecated default `CacheableVersionData::create` impl");
+        log::warn!(
+            "using deprecated default `CacheableVersionData::create` impl for {s}",
+            s = std::any::type_name::<Self>()
+        );
         Ok(Self::init_data_with_version(version))
     }
 
