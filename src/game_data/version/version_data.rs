@@ -62,25 +62,5 @@ pub trait CacheableVersionData: Debug + Send + Sync {
     /// Create the cacheable version data object.
     fn create(version: &Version) -> CvdResult<Self>
     where
-        Self: Sized,
-    {
-        log::warn!(
-            "using deprecated default `CacheableVersionData::create` impl for {s}",
-            s = std::any::type_name::<Self>()
-        );
-        Ok(Self::init_data(version.location()))
-    }
-
-    /// Initialises the version data.
-    #[deprecated]
-    fn init_data(_path: &Path) -> Self
-    where
-        Self: Sized,
-    {
-        unimplemented!()
-    }
+        Self: Sized;
 }
-
-// possible alternative is to make all things have to return a result, which at
-// least gives version a chance to drop the mutex before panicking, or
-// realistically would be `unwrap_or_default`ing
