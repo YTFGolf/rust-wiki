@@ -15,9 +15,15 @@ subheading.
 
 ### Added
 
+- `string_error` dependency.
+
 ### Fixed
 
 ### Changed
+
+- Consolidated all methods of `CacheableVersionData` to use a single `create`
+  method that returns a `Result`. Comes with `Default` and `Throw` variants that
+  respectively use a specified default and panic.
 
 ### Removed
 
