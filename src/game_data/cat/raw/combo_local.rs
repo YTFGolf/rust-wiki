@@ -1,31 +1,32 @@
 //! Deals with the localisation of combo data (combo names, effects etc.)
 
 use crate::game_data::version::{
-    Version, lang::VersionLanguage, version_data::CacheableVersionData,
+    Version,
+    lang::VersionLanguage,
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
 };
 use std::{
     fs::File,
-    io::{BufRead, BufReader},
+    io::{self, BufRead, BufReader},
     path::Path,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Combo names for the version.
 pub struct ComboNames {
     combos: Vec<String>,
 }
 impl CacheableVersionData for ComboNames {
-    fn init_data(_: &Path) -> Self {
-        unimplemented!();
-    }
-
-    fn init_data_with_version(version: &Version) -> Self {
+    fn create(version: &Version) -> CvdResult<Self> {
         let file_name = format!("Nyancombo_{lang}.csv", lang = version.language());
-        let reader =
-            BufReader::new(File::open(version.get_file_path("resLocal").join(file_name)).unwrap());
+        let reader = BufReader::new(
+            File::open(version.get_file_path("resLocal").join(file_name))
+                .map_err(CvdCreateError::default_from_err)?,
+        );
 
-        let combos = reader.lines().map(Result::unwrap).collect();
-        Self { combos }
+        let records: Result<Vec<_>, io::Error> = reader.lines().collect();
+        let combos = records.map_err(CvdCreateError::default_from_err)?;
+        Ok(Self { combos })
     }
 }
 impl ComboNames {
