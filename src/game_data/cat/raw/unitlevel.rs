@@ -1,6 +1,9 @@
 //! Deals with unit level-up scaling.
 
-use crate::game_data::version::version_data::CacheableVersionData;
+use crate::game_data::version::{
+    Version,
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+};
 use std::path::Path;
 
 #[derive(Debug, serde::Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Default)]
@@ -143,19 +146,18 @@ impl UnitLevelRaw {
     }
 }
 
-fn get_unitlevel(path: &Path) -> Vec<UnitLevelRaw> {
+fn get_unitlevel(path: &Path) -> Result<Vec<UnitLevelRaw>, csv::Error> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
-        .from_path(path.join("DataLocal/unitlevel.csv"))
-        .unwrap();
+        .from_path(path.join("DataLocal/unitlevel.csv"))?;
 
     rdr.byte_records()
         .map(|record| {
-            let result = record.unwrap();
+            let result = record?;
             assert_eq!(result.len(), std::mem::size_of::<UnitLevelRaw>());
             // make sure that the struct definition is up-to-date
-            let unit: UnitLevelRaw = result.deserialize(None).unwrap();
-            unit
+            let unit: UnitLevelRaw = result.deserialize(None)?;
+            Ok(unit)
         })
         .collect()
 }
@@ -172,10 +174,9 @@ impl UnitLevelContainer {
     }
 }
 impl CacheableVersionData for UnitLevelContainer {
-    fn init_data(path: &Path) -> Self {
-        Self {
-            units: get_unitlevel(path),
-        }
+    fn create(version: &Version) -> CvdResult<Self> {
+        let units = get_unitlevel(version.location()).map_err(CvdCreateError::throw_from_err)?;
+        Ok(Self { units })
     }
 }
 
