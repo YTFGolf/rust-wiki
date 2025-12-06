@@ -1,6 +1,9 @@
 //! Module that deals with `unitbuy.csv` data.
 
-use crate::game_data::version::{Version, version_data::CacheableVersionData};
+use crate::game_data::version::{
+    Version,
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+};
 use csv::ByteRecord;
 use serde::Deserialize;
 use std::{fmt::Debug, path::Path};
@@ -95,38 +98,27 @@ fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug 
 }
 
 /// Get raw combo data.
-fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(path: &Path) -> Vec<T> {
+fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(path: &Path) -> CvdResult<Vec<T>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
-        .unwrap();
+        .map_err(CvdCreateError::default_from_err)?;
 
-    let result = rdr
+    let result: CvdResult<Vec<T>> = rdr
         .byte_records()
         .map(|record| {
-            let result = record.unwrap();
-            let unit: T = match result.deserialize(None) {
-                Ok(u) => u,
-                Err(e) => {
-                    let msg = format!(
-                        "Error when parsing record {result:?}: {e}. Item was {item:?}.",
-                        item = parse_nyancombodata_error(&e, &result)
-                    );
-                    return Err(msg);
-                }
-            };
-
-            Ok(unit)
+            let result = record.map_err(CvdCreateError::default_from_err)?;
+            result.deserialize(None).map_err(|e| {
+                let msg = format!(
+                    "Error when parsing record {result:?}: {e}. Item was {item:?}.",
+                    item = parse_nyancombodata_error(&e, &result)
+                );
+                CvdCreateError::default_from_err(msg)
+            })
         })
         .collect();
 
-    match result {
-        Ok(r) => r,
-        Err(e) => {
-            panic!("Error occurred when parsing cat combo data. Error message was: {e}");
-            // return Default::default();
-        }
-    }
+    result
 }
 
 #[repr(i16)]
@@ -243,9 +235,10 @@ impl CombosDataContainer {
     fn get_combodata<T>(location: &Path) -> Vec<ComboData>
     where
         ComboData: From<T>,
-        T: for<'a> Deserialize<'a>,
+        T: Debug + for<'a> Deserialize<'a>,
     {
         get_combodata::<T>(location)
+            .unwrap()
             .into_iter()
             .map(ComboData::from)
             .collect()
@@ -261,10 +254,6 @@ impl CacheableVersionData for CombosDataContainer {
         };
 
         Self { combos }
-    }
-
-    fn init_data(_: &Path) -> Self {
-        unimplemented!();
     }
 }
 
@@ -293,7 +282,7 @@ mod tests {
     #[test]
     fn test_file_reader() {
         let version = TEST_CONFIG.version.current_version();
-        let combos = get_combodata::<ComboDataFrom15_0>(version.location());
+        let combos = get_combodata::<ComboDataFrom15_0>(version.location()).unwrap();
         for combo in combos {
             assert_eq!(combo.rest, Vec::<i32>::new());
             assert_eq!(combo._uk15, -1);
