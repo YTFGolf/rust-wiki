@@ -150,7 +150,7 @@ impl CacheableVersionData for UnitBuyContainer {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .from_path(version.location().join("DataLocal/unitbuy.csv"))
-            .unwrap();
+            .map_err(CvdCreateError::throw_from_err)?;
 
         let records: Result<Vec<UnitBuyRaw>, CvdCreateError<Self>> = rdr
             .byte_records()
