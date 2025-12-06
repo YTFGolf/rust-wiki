@@ -107,8 +107,7 @@ fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(
         .from_path(path.join("DataLocal/NyancomboData.csv"))
         .map_err(Box::new)?;
 
-    let result = rdr
-        .byte_records()
+    rdr.byte_records()
         .map(|record| {
             let result = record.map_err(Box::new)?;
             result.deserialize(None).map_err(|e| {
@@ -119,9 +118,7 @@ fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(
                 into_err(msg)
             })
         })
-        .collect();
-
-    result
+        .collect()
 }
 
 #[repr(i16)]

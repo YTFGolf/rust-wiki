@@ -25,7 +25,7 @@ impl<T: CacheableVersionData> CvdCreateError<T> {
     pub fn throw(err: Box<dyn Error>) -> Self {
         Self {
             handler: CvdCreateHandler::Throw,
-            err: err,
+            err,
         }
     }
 
@@ -41,7 +41,7 @@ impl<T: CacheableVersionData + Default> CvdCreateError<T> {
     pub fn as_default(err: Box<dyn Error>) -> Self {
         Self {
             handler: CvdCreateHandler::Default(T::default()),
-            err: err,
+            err,
         }
     }
 
