@@ -68,7 +68,7 @@ pub trait CacheableVersionData: Debug + Send + Sync {
             "using deprecated default `CacheableVersionData::create` impl for {s}",
             s = std::any::type_name::<Self>()
         );
-        Ok(Self::init_data_with_version(version))
+        Ok(Self::init_data(version.location()))
     }
 
     /// Initialises the version data.
@@ -78,19 +78,6 @@ pub trait CacheableVersionData: Debug + Send + Sync {
         Self: Sized,
     {
         unimplemented!()
-    }
-
-    /// Initialise the version data, using the version object itself.
-    ///
-    /// ___Only___ implement this if `init_data` is impossible to use, for
-    /// example if you are using a file from `resLocal` which has the language
-    /// at the end of the file name. Default implementation just calls
-    /// `init_data` with the version's directory location.
-    fn init_data_with_version(version: &Version) -> Self
-    where
-        Self: Sized,
-    {
-        Self::init_data(version.location())
     }
 }
 
