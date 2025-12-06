@@ -15,17 +15,23 @@ subheading.
 
 ### Added
 
-- `string_error` dependency.
-
 ### Fixed
+
+### Changed
+
+### Removed
+
+## [0.8.2] - 2025-12-06
+
+### Added
+
+- `string_error` dependency.
 
 ### Changed
 
 - Consolidated all methods of `CacheableVersionData` to use a single `create`
   method that returns a `Result`. Comes with `Default` and `Throw` variants that
   respectively use a specified default and panic.
-
-### Removed
 
 ## [0.8.1] - 2025-11-27
 
@@ -470,7 +476,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.1...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.2...dev
+[0.8.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.4...v0.8.0
 [0.7.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.3...v0.7.4
