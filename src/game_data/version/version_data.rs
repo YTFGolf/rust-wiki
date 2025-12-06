@@ -1,7 +1,7 @@
 //! Defines a trait to allow version data to be cached.
 
 use crate::game_data::version::Version;
-use std::{error::Error, fmt::Debug, path::Path};
+use std::{error::Error, fmt::Debug};
 
 #[derive(Debug)]
 /// How a CVD error should be handled.
