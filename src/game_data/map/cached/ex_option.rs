@@ -25,13 +25,18 @@ fn get_ex_option(path: &Path) -> Result<Vec<ExOptionCSV>, Box<dyn Error>> {
         .from_path(path.join("DataLocal/EX_option.csv"))
         .map_err(Box::new)?;
 
-    rdr.byte_records()
-        .map(|record| {
-            let result = record.map_err(Box::new)?;
-            let opt = result.deserialize(None).map_err(Box::new)?;
-            Ok(opt)
-        })
-        .collect()
+    let mut options = vec![];
+    for record in rdr.byte_records() {
+        let Ok(result) = record else { break };
+        // to deal with... the commented lines?
+        // ???
+        // anyway for some reason need to do it like this so can't do .map
+
+        let opt = result.deserialize(None).map_err(Box::new)?;
+        options.push(opt);
+    }
+
+    Ok(options)
 }
 
 #[derive(Debug, Default)]
