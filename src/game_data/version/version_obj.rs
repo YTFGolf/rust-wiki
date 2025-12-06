@@ -1,6 +1,9 @@
 //! Deals with getting information about a certain version of the game.
 
-use super::{lang::VersionLanguage, version_data::CacheableVersionData};
+use super::{
+    lang::VersionLanguage,
+    version_data::{CacheableVersionData, CvdCreateHandler},
+};
 use std::{
     any::{Any, TypeId},
     path::{Path, PathBuf},
@@ -123,7 +126,33 @@ impl Version {
                 .expect("Error when casting in `Version::get_cached_file`.");
         }
 
-        let new_value: VersionDataContents = Box::pin(T::init_data_with_version(self));
+        let data = match T::create(self) {
+            Ok(d) => d,
+            Err(e) => match e.handler {
+                CvdCreateHandler::Default(default) => {
+                    let tname = std::any::type_name::<T>();
+                    log::warn!(
+                        "Error when trying to create cacheable `{tname}`: {:?}",
+                        e.err
+                    );
+
+                    default
+                }
+                CvdCreateHandler::Throw => {
+                    let tname = std::any::type_name::<T>();
+                    drop(version_data_lock);
+                    // all tests using CVD will fail if a single one fails due
+                    // to the lock getting poisoned when the panic is thrown;
+                    // however if the lock is dropped then it won't become
+                    // poisoned
+                    panic!(
+                        "Error when trying to create cacheable `{tname}`: {:?}",
+                        e.err
+                    );
+                }
+            },
+        };
+        let new_value: VersionDataContents = Box::pin(data);
         version_data_lock.push((type_id, new_value));
 
         if let Some(position) = version_data_lock.iter().position(|(id, _)| *id == type_id) {
