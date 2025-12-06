@@ -57,25 +57,6 @@ pub mod charagroups {
         pub units: Vec<u32>,
     }
 
-    #[derive(Debug)]
-    /// Container for charagroups data.
-    pub struct CharaGroups {
-        parsed_file: Vec<CharaGroup>,
-    }
-    impl CharaGroups {
-        /// Get charagroup with id `id`.
-        pub fn get_charagroup(&self, id: u32) -> Option<&CharaGroup> {
-            self.parsed_file.get(usize::try_from(id - 1).unwrap())
-        }
-    }
-    impl CacheableVersionData for CharaGroups {
-        fn create(version: &Version) -> CvdResult<Self> {
-            Ok(Self {
-                parsed_file: read_charagroup_file(version.location()).map_err(CvdCreateError::throw)?,
-            })
-        }
-    }
-
     /// Reads the charagroup file and passes it into a vec of
     /// [`CharaGroup`]s.
     fn read_charagroup_file(path: &Path) -> Result<Vec<CharaGroup>, Box<dyn Error>> {
@@ -120,6 +101,26 @@ pub mod charagroups {
                 })
             })
             .collect()
+    }
+
+    #[derive(Debug)]
+    /// Container for charagroups data.
+    pub struct CharaGroups {
+        parsed_file: Vec<CharaGroup>,
+    }
+    impl CharaGroups {
+        /// Get charagroup with id `id`.
+        pub fn get_charagroup(&self, id: u32) -> Option<&CharaGroup> {
+            self.parsed_file.get(usize::try_from(id - 1).unwrap())
+        }
+    }
+    impl CacheableVersionData for CharaGroups {
+        fn create(version: &Version) -> CvdResult<Self> {
+            Ok(Self {
+                parsed_file: read_charagroup_file(version.location())
+                    .map_err(CvdCreateError::throw)?,
+            })
+        }
     }
 }
 
