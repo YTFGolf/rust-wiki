@@ -5,7 +5,7 @@ use std::{fmt::Debug, path::Path};
 
 #[derive(Debug)]
 /// How a CVD error should be handled.
-pub enum CvdCreateHandler<T: CacheableVersionData> {
+pub enum CvdCreateHandler<T> {
     /// Log an error and return contained data as default.
     Default(T),
     /// Throw the error and panic.
@@ -14,18 +14,28 @@ pub enum CvdCreateHandler<T: CacheableVersionData> {
 
 #[derive(Debug)]
 /// Error that occurred when creating CVD object.
-pub struct CvdCreateError<T: CacheableVersionData> {
+pub struct CvdCreateError<T> {
     /// How this error should be handled.
     pub handler: CvdCreateHandler<T>,
     /// What the error is.
     pub err: Box<dyn Debug>,
 }
-impl<T: CacheableVersionData> CvdCreateError<T> {
+impl<T> CvdCreateError<T> {
     /// Create throw handler from given error.
     pub fn throw_from_err<E: Debug + 'static>(e: E) -> Self {
-        // idk why this needs a 'static but ok
+        // needs static because dyn types need the vtables in memory throughout
+        // the program
         Self {
             handler: CvdCreateHandler::Throw,
+            err: Box::new(e),
+        }
+    }
+}
+impl<T: Default> CvdCreateError<T> {
+    /// Create default handler from given error.
+    pub fn default_from_err<E: Debug + 'static>(e: E) -> Self {
+        Self {
+            handler: CvdCreateHandler::Default(T::default()),
             err: Box::new(e),
         }
     }
