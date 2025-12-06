@@ -154,7 +154,7 @@ impl CacheableVersionData for UnitBuyContainer {
         let records: Result<Vec<UnitBuyRaw>, CvdCreateError<Self>> = rdr
             .byte_records()
             .map(|record| {
-                let result = record.map_err(CvdCreateError::<Self>::throw_from_err)?;
+                let result = record.map_err(CvdCreateError::throw_from_err)?;
                 let unit: UnitBuyRaw = match result.deserialize(None) {
                     Ok(u) => u,
                     Err(e) => {
@@ -163,7 +163,7 @@ impl CacheableVersionData for UnitBuyContainer {
                             item = parse_unitbuy_error(&e, &result)
                         );
 
-                        return Err(CvdCreateError::<Self>::throw_from_err(e2));
+                        return Err(CvdCreateError::throw_from_err(e2));
                     }
                 };
 
