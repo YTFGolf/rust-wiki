@@ -2,11 +2,12 @@
 
 use crate::game_data::version::{
     Version,
-    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler, CvdResult},
 };
 use csv::ByteRecord;
 use serde::Deserialize;
-use std::{fmt::Debug, path::Path};
+use std::{error::Error, fmt::Debug, path::Path};
+use string_error::into_err;
 use strum::FromRepr;
 
 #[derive(Debug, serde::Deserialize, Default)]
@@ -98,22 +99,24 @@ fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug 
 }
 
 /// Get raw combo data.
-fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(path: &Path) -> CvdResult<Vec<T>> {
+fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(
+    path: &Path,
+) -> Result<Vec<T>, Box<dyn Error>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
         .from_path(path.join("DataLocal/NyancomboData.csv"))
-        .map_err(CvdCreateError::default_from_err)?;
+        .map_err(Box::new)?;
 
-    let result: CvdResult<Vec<T>> = rdr
+    let result = rdr
         .byte_records()
         .map(|record| {
-            let result = record.map_err(CvdCreateError::default_from_err)?;
+            let result = record.map_err(Box::new)?;
             result.deserialize(None).map_err(|e| {
                 let msg = format!(
                     "Error when parsing record {result:?}: {e}. Item was {item:?}.",
                     item = parse_nyancombodata_error(&e, &result)
                 );
-                CvdCreateError::default_from_err(msg)
+                into_err(msg)
             })
         })
         .collect();
@@ -226,34 +229,37 @@ impl From<ComboDataFrom15_0> for ComboData {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Container for [`ComboDataRaw`] data.
 pub struct CombosDataContainer {
     combos: Vec<ComboData>,
 }
 impl CombosDataContainer {
-    fn get_combodata<T>(location: &Path) -> Vec<ComboData>
+    fn get_combodata<T>(location: &Path) -> Result<Vec<ComboData>, Box<dyn Error>>
     where
         ComboData: From<T>,
         T: Debug + for<'a> Deserialize<'a>,
     {
-        get_combodata::<T>(location)
-            .unwrap()
+        Ok(get_combodata::<T>(location)?
             .into_iter()
             .map(ComboData::from)
-            .collect()
+            .collect())
     }
 }
 
 impl CacheableVersionData for CombosDataContainer {
-    fn init_data_with_version(version: &Version) -> Self {
+    fn create(version: &Version) -> CvdResult<Self> {
         let combos = if let Some(150000..) = version.number_u32() {
             Self::get_combodata::<ComboDataFrom15_0>(version.location())
         } else {
             Self::get_combodata::<ComboDataTo14_7>(version.location())
-        };
+        }
+        .map_err(|e| CvdCreateError {
+            handler: CvdCreateHandler::Default(Self::default()),
+            err: e,
+        })?;
 
-        Self { combos }
+        Ok(Self { combos })
     }
 }
 

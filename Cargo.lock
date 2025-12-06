@@ -461,6 +461,7 @@ dependencies = [
  "serde",
  "serde_json",
  "similar",
+ "string-error",
  "strum",
  "thiserror",
  "toml",
@@ -575,6 +576,12 @@ name = "similar"
 version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbbb5d9659141646ae647b42fe094daf6c6192d1620870b449d9557f748b2daa"
+
+[[package]]
+name = "string-error"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "439558b73299d7afdf52c36399c3c812cca10fe5ca08429f38815df5bacf3ef7"
 
 [[package]]
 name = "strsim"
