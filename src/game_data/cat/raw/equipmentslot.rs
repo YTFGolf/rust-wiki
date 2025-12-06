@@ -2,7 +2,7 @@
 
 use crate::game_data::version::{
     Version,
-    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler},
+    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler, CvdResult},
 };
 use serde::Deserialize;
 use std::path::Path;
@@ -43,7 +43,7 @@ pub struct EquipmentSlotContainer {
 }
 
 impl CacheableVersionData for EquipmentSlotContainer {
-    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>> {
+    fn create(version: &Version) -> CvdResult<Self> {
         let slots = get_equipmentslot(version.location()).map_err(|e| CvdCreateError {
             handler: CvdCreateHandler::Default(Default::default()),
             err: Box::new(e),

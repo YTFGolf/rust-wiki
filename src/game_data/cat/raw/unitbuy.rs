@@ -2,7 +2,7 @@
 
 use crate::game_data::version::{
     Version,
-    version_data::{CacheableVersionData, CvdCreateError},
+    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
 };
 use csv::ByteRecord;
 use std::fmt::Debug;
@@ -145,7 +145,7 @@ impl UnitBuyContainer {
     }
 }
 impl CacheableVersionData for UnitBuyContainer {
-    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>> {
+    fn create(version: &Version) -> CvdResult<Self> {
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .from_path(version.location().join("DataLocal/unitbuy.csv"))

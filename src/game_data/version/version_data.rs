@@ -31,13 +31,16 @@ impl<T: CacheableVersionData> CvdCreateError<T> {
     }
 }
 
+/// Shorthand for CVD result with duplicate types
+pub type CvdResult<T> = Result<T, CvdCreateError<T>>;
+
 /// Represents a cacheable version data object.
 ///
 /// Use this trait for large files that get repeatedly used, such as
 /// `Map_option.csv`.
 pub trait CacheableVersionData: Debug + Send + Sync {
     /// Create the cacheable version data object.
-    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>>
+    fn create(version: &Version) -> CvdResult<Self>
     where
         Self: Sized,
     {
