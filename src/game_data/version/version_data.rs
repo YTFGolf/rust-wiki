@@ -6,7 +6,7 @@ use std::{error::Error, fmt::Debug, path::Path};
 #[derive(Debug)]
 /// How a CVD error should be handled.
 pub enum CvdCreateHandler<T: CacheableVersionData> {
-    /// Log an error and return `Self::Default()`.
+    /// Log an error and return contained data as default.
     Default(T),
     /// Throw the error and panic.
     Throw,
@@ -18,7 +18,16 @@ pub struct CvdCreateError<T: CacheableVersionData> {
     /// How this error should be handled.
     pub handler: CvdCreateHandler<T>,
     /// What the error is.
-    pub err: Box<dyn Error>,
+    pub err: Box<dyn Debug>,
+}
+impl<T: CacheableVersionData> CvdCreateError<T> {
+    pub fn throw_from_err<E: Debug + 'static>(e: E) -> Self {
+        // idk why this needs a 'static but ok
+        Self {
+            handler: CvdCreateHandler::Throw,
+            err: Box::new(e),
+        }
+    }
 }
 
 /// Represents a cacheable version data object.
