@@ -236,7 +236,7 @@ pub struct Stage {
 impl From<StageData<'_>> for Stage {
     fn from(data: StageData) -> Self {
         let map_stage_data = data.get_map_stage_data();
-        let map_option_data = data.get_map_option_data();
+        let map_option_data = data.get_map_option_data().cloned();
         let ex_invasion = data.get_ex_option_data();
         let rules = data.get_special_rules_data().cloned();
         let bonuses = data.get_score_bonus_data().cloned();

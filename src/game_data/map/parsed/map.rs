@@ -100,7 +100,7 @@ impl GameMap {
         let hidden_upon_clear: bool;
 
         if let Some(data) = map_option_data {
-            crown_data = Some(CrownData::from(&data));
+            crown_data = Some(CrownData::from(data));
             reset_type = ResetType::from(data.reset_type);
             max_clears = NonZeroU32::new(data.max_clears);
             display_order = Some(data.display_order);

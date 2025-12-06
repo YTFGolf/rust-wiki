@@ -174,7 +174,7 @@ impl GameMapData {
     }
 
     /// Get Map_option data if it exists.
-    pub fn get_map_option_data(map: &MapID, version: &Version) -> Option<MapOptionCSV> {
+    pub fn get_map_option_data<'a>(map: &MapID, version: &'a Version) -> Option<&'a MapOptionCSV> {
         let map_option = version.get_cached_file::<MapOption>();
         map_option.get_map(map)
     }
