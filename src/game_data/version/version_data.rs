@@ -1,7 +1,7 @@
 //! Defines a trait to allow version data to be cached.
 
 use crate::game_data::version::Version;
-use std::{error::Error, fmt::Debug, path::Path};
+use std::{fmt::Debug, path::Path};
 
 #[derive(Debug)]
 /// How a CVD error should be handled.
@@ -21,6 +21,7 @@ pub struct CvdCreateError<T: CacheableVersionData> {
     pub err: Box<dyn Debug>,
 }
 impl<T: CacheableVersionData> CvdCreateError<T> {
+    /// Create throw handler from given error.
     pub fn throw_from_err<E: Debug + 'static>(e: E) -> Self {
         // idk why this needs a 'static but ok
         Self {
