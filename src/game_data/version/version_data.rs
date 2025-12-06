@@ -1,17 +1,48 @@
 //! Defines a trait to allow version data to be cached.
 
 use crate::game_data::version::Version;
-use std::{fmt::Debug, path::Path};
+use std::{error::Error, fmt::Debug, path::Path};
+
+#[derive(Debug)]
+/// How a CVD error should be handled.
+pub enum CvdCreateHandler {
+    /// Log an error and return `Self::Default()`.
+    Default,
+    /// Throw the error and panic.
+    Throw,
+}
+
+#[derive(Debug)]
+/// Error that occurred when creating CVD object.
+pub struct CvdCreateError {
+    /// How this error should be handled.
+    pub handler: CvdCreateHandler,
+    /// What the error is.
+    pub err: Box<dyn Error>,
+}
 
 /// Represents a cacheable version data object.
 ///
 /// Use this trait for large files that get repeatedly used, such as
 /// `Map_option.csv`.
 pub trait CacheableVersionData: Debug + Send + Sync {
-    /// Initialises the version data.
-    fn init_data(path: &Path) -> Self
+    /// Create the cacheable version data object.
+    fn create(version: &Version) -> Result<Self, CvdCreateError>
     where
-        Self: Sized;
+        Self: Sized,
+    {
+        log::warn!("using deprecated default `CacheableVersionData::create` impl");
+        Ok(Self::init_data_with_version(version))
+    }
+
+    /// Initialises the version data.
+    #[deprecated]
+    fn init_data(_path: &Path) -> Self
+    where
+        Self: Sized,
+    {
+        unimplemented!()
+    }
 
     /// Initialise the version data, using the version object itself.
     ///
