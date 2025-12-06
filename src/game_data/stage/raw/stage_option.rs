@@ -9,8 +9,11 @@ use std::{collections::HashMap, path::Path};
 /// Module that contains charagroup information.
 pub mod charagroups {
     // TODO split this up
-    use crate::game_data::version::version_data::CacheableVersionData;
-    use std::path::Path;
+    use crate::game_data::version::{
+        Version,
+        version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    };
+    use std::{error::Error, path::Path};
     use strum::FromRepr;
 
     #[derive(Debug, serde::Deserialize)]
@@ -66,22 +69,22 @@ pub mod charagroups {
         }
     }
     impl CacheableVersionData for CharaGroups {
-        fn init_data(path: &Path) -> Self {
-            Self {
-                parsed_file: read_charagroup_file(path),
-            }
+        fn create(version: &Version) -> CvdResult<Self> {
+            Ok(Self {
+                parsed_file: read_charagroup_file(version.location()).map_err(CvdCreateError::throw)?,
+            })
         }
     }
 
     /// Reads the charagroup file and passes it into a vec of
     /// [`CharaGroup`]s.
-    fn read_charagroup_file(path: &Path) -> Vec<CharaGroup> {
+    fn read_charagroup_file(path: &Path) -> Result<Vec<CharaGroup>, Box<dyn Error>> {
         let path = path.join("DataLocal/Charagroup.csv");
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)
             .from_path(path)
-            .unwrap();
+            .map_err(Box::new)?;
 
         let mut records = rdr.byte_records();
         records.next();
@@ -89,8 +92,8 @@ pub mod charagroups {
         let mut count = 0;
         records
             .map(|record| {
-                let result = record.unwrap();
-                let fixed_data: CharaGroupFixedCSV = result.deserialize(None).unwrap();
+                let result = record.map_err(Box::new)?;
+                let fixed_data: CharaGroupFixedCSV = result.deserialize(None).map_err(Box::new)?;
 
                 count += 1;
                 debug_assert_eq!(count, fixed_data.group_id);
@@ -104,17 +107,17 @@ pub mod charagroups {
                 let mut units: Vec<u32> = vec![];
                 for i in 3..max_ind {
                     let n = std::str::from_utf8(&result[i])
-                        .unwrap()
+                        .map_err(Box::new)?
                         .parse::<u32>()
-                        .unwrap();
+                        .map_err(Box::new)?;
                     units.push(n);
                 }
 
-                CharaGroup {
+                Ok(CharaGroup {
                     group_id: fixed_data.group_id,
                     group_type: fixed_data.group_type.into(),
                     units,
-                }
+                })
             })
             .collect()
     }
