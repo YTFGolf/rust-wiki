@@ -9,6 +9,11 @@ pub enum CvdCreateHandler<T: CacheableVersionData> {
     /// Log an error and return contained data as default.
     Default(T),
     /// Throw the error and panic.
+    ///
+    /// Use this when either:
+    /// - Calling code is essential for something to work, e.g. unitbuy
+    /// - Calling code shouldn't be able to get to this spot without having
+    ///   already thrown an error
     Throw,
 }
 
