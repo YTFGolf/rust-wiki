@@ -1,6 +1,9 @@
 //! Cat talents
 
-use crate::game_data::version::version_data::CacheableVersionData;
+use crate::game_data::version::{
+    Version,
+    version_data::{CacheableVersionData, CvdCreateError, CvdCreateHandler},
+};
 use std::{
     any::type_name,
     fmt::Debug,
@@ -62,7 +65,8 @@ pub struct TalentLine {
     pub groups: [TalentGroup; AMT_GROUPS],
 }
 
-fn parse_talents_line(line: &str) -> TalentLine {
+type E = String;
+fn parse_talents_line(line: &str) -> Result<TalentLine, E> {
     const FIXED_LEN: usize = 2;
     // fields in TalentsFixed
     const GROUP_LEN: usize = 14;
@@ -71,10 +75,12 @@ fn parse_talents_line(line: &str) -> TalentLine {
 
     let line = line.split(',').collect::<Vec<_>>();
     assert_eq!(line.len(), TOTAL_AMT_FIELDS);
-    let line: [&str; TOTAL_AMT_FIELDS] = line.try_into().unwrap();
+    let line: [&str; TOTAL_AMT_FIELDS] = line
+        .try_into()
+        .expect("is a `Vec<&str>` of length `TOTAL_AMT_FIELDS`");
 
-    fn parse_index<T: FromStr>(line: &[&str; TOTAL_AMT_FIELDS], i: usize) -> T {
-        line[i].parse().unwrap_or_else(|_| {
+    fn parse_index<T: FromStr>(line: &[&str; TOTAL_AMT_FIELDS], i: usize) -> Result<T, E> {
+        line[i].parse().map_err(|_| {
             assert!(
                 i >= FIXED_LEN,
                 "error when attempting to parse fixed index {i} into {tname}: {field:?}",
@@ -84,7 +90,7 @@ fn parse_talents_line(line: &str) -> TalentLine {
 
             let j = (i - FIXED_LEN) / GROUP_LEN;
             let k = (i - FIXED_LEN) % GROUP_LEN;
-            panic!(
+            format!(
                 "error when attempting to parse index {i}/{j}.{k} into {tname}: {field:?}",
                 tname = type_name::<T>(),
                 field = line[i]
@@ -93,40 +99,40 @@ fn parse_talents_line(line: &str) -> TalentLine {
     }
 
     let fixed = TalentsFixed {
-        id: parse_index(&line, 0),
-        type_id: parse_index(&line, 1),
+        id: parse_index(&line, 0)?,
+        type_id: parse_index(&line, 1)?,
     };
 
     let groups = (0..AMT_GROUPS)
         .map(|i| {
             let first = i * GROUP_LEN + FIXED_LEN;
 
-            TalentGroup {
-                ability_id_x: parse_index(&line, first + 0),
-                maxlv_x: parse_index(&line, first + 1),
-                min_x1: parse_index(&line, first + 2),
-                max_x1: parse_index(&line, first + 3),
-                min_x2: parse_index(&line, first + 4),
-                max_x2: parse_index(&line, first + 5),
-                min_x3: parse_index(&line, first + 6),
-                max_x3: parse_index(&line, first + 7),
-                min_x4: parse_index(&line, first + 8),
-                max_x4: parse_index(&line, first + 9),
-                text_id_x: parse_index(&line, first + 10),
-                lv_id_x: parse_index(&line, first + 11),
-                name_id_x: parse_index(&line, first + 12),
-                limit_x: parse_index(&line, first + 13),
-            }
+            Ok(TalentGroup {
+                ability_id_x: parse_index(&line, first + 0)?,
+                maxlv_x: parse_index(&line, first + 1)?,
+                min_x1: parse_index(&line, first + 2)?,
+                max_x1: parse_index(&line, first + 3)?,
+                min_x2: parse_index(&line, first + 4)?,
+                max_x2: parse_index(&line, first + 5)?,
+                min_x3: parse_index(&line, first + 6)?,
+                max_x3: parse_index(&line, first + 7)?,
+                min_x4: parse_index(&line, first + 8)?,
+                max_x4: parse_index(&line, first + 9)?,
+                text_id_x: parse_index(&line, first + 10)?,
+                lv_id_x: parse_index(&line, first + 11)?,
+                name_id_x: parse_index(&line, first + 12)?,
+                limit_x: parse_index(&line, first + 13)?,
+            })
         })
-        .collect::<Vec<_>>()
+        .collect::<Result<Vec<_>, E>>()?
         .try_into()
-        .unwrap();
+        .expect("both this function and the return type use the `AMT_GROUPS` constant");
 
-    TalentLine { fixed, groups }
+    Ok(TalentLine { fixed, groups })
 }
 
 /// Get all data from the talents file.
-fn get_talents_file(path: &Path) -> Vec<TalentLine> {
+fn get_talents_file(path: &Path) -> Result<Vec<TalentLine>, E> {
     let reader = BufReader::new(File::open(path.join("DataLocal/SkillAcquisition.csv")).unwrap());
 
     reader
@@ -136,7 +142,7 @@ fn get_talents_file(path: &Path) -> Vec<TalentLine> {
         .collect()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 /// Container for talents.
 pub struct TalentsContainer {
     talents: Vec<TalentLine>,
@@ -153,10 +159,12 @@ impl TalentsContainer {
     }
 }
 impl CacheableVersionData for TalentsContainer {
-    fn init_data(path: &Path) -> Self {
-        Self {
-            talents: get_talents_file(path),
-        }
+    fn create(version: &Version) -> Result<Self, CvdCreateError<Self>> {
+        let talents = get_talents_file(version.location()).map_err(|e| CvdCreateError {
+            handler: CvdCreateHandler::Default(Self::default()),
+            err: Box::new(e),
+        })?;
+        Ok(Self { talents })
     }
 }
 
@@ -167,9 +175,10 @@ mod tests {
 
     #[test]
     fn check_talents() {
-        for line in get_talents_file(TEST_CONFIG.version.current_version().location()) {
+        for line in get_talents_file(TEST_CONFIG.version.current_version().location()).unwrap() {
             println!("{line:?}");
         }
         // todo!("What did I even need to test here")
+        // was probably nothing, just that it parses correctly
     }
 }
