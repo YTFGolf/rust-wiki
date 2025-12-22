@@ -102,7 +102,7 @@ mod tests {
         assert_eq!(
             sect,
             "{{Combos\n\
-            |{{CatCombo|Punish the Lewd|\"Resistant\" Effect UP (Sm)|Gentleman Cat|Thunder God Zeus|jpname=変態紳士に天罰を}}\n\
+            |{{CatCombo|Punish the Lewd|\"Resistant\" Effects Up (Sm)|Gentleman Cat|Thunder God Zeus|jpname=変態紳士に天罰を}}\n\
             }}"
         );
     }
@@ -115,11 +115,11 @@ mod tests {
         assert_eq!(
             sect,
             "{{Combos\n\
-            |{{CatCombo|Cat Army|Worker Cat Start Level UP (Sm)|Cat|Tank Cat|Axe Cat|Gross Cat|Cow Cat|jpname=にゃんこ軍団}}\n\
-            |{{CatCombo|Mo' Hawks|\"Knockback\" Effect UP (Sm)|Mohawk Cat|Crazed Dragon Cat|jpname=モヒカン愛好家}}\n\
-            |{{CatCombo|Smiles at Cats|\"Freeze\" Effect UP (Sm)|Cat|Coppermine, type κ|jpname=ネコの前で見せる笑顔}}\n\
-            |{{CatCombo|Rich and Poor|Starting Money UP (Sm)|Cat|Gold Cat|jpname=庶民と金持ち}}\n\
-            |{{CatCombo|Black & White|Worker Cat Max UP (Sm)|Killer Cat|Cat|jpname=ブラック＆ホワイト}}\n\
+            |{{CatCombo|Cat Army|Worker Start Level Up (Sm)|Cat|Tank Cat|Axe Cat|Gross Cat|Cow Cat|jpname=にゃんこ軍団}}\n\
+            |{{CatCombo|Mo' Hawks|\"Knockback\" Effects Up (Sm)|Mohawk Cat|Crazed Dragon Cat|jpname=モヒカン愛好家}}\n\
+            |{{CatCombo|Smiles at Cats|\"Freeze\" Effects Up (Sm)|Cat|Coppermine, type κ|jpname=ネコの前で見せる笑顔}}\n\
+            |{{CatCombo|Rich and Poor|Starting Money Up (Sm)|Cat|Gold Cat|jpname=庶民と金持ち}}\n\
+            |{{CatCombo|Black & White|Worker Max Up (Sm)|Killer Cat|Cat|jpname=ブラック＆ホワイト}}\n\
             }}"
         );
     }
@@ -133,7 +133,7 @@ mod tests {
         assert_eq!(
             sect,
             "{{Combos\n\
-            |{{CatCombo|先生になりたいでにゃ～る|Cat Cannon Recharge UP (Sm)|Cat Boy|jpname=先生になりたいでにゃ～る}}\n\
+            |{{CatCombo|先生になりたいでにゃ～る|Cannon Recharge Up (Sm)|Cat Boy|jpname=先生になりたいでにゃ～る}}\n\
             }}"
         );
     }
