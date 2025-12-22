@@ -31,6 +31,7 @@ use crate::{
     wikitext::{
         page::Page,
         section::Section,
+        tabber::{Tabber, TabberTab, TabberType},
         template::{Template, TemplateParameter},
     },
 };
@@ -382,12 +383,14 @@ fn spirit_section(cat: &Cat, config: &Config) -> Option<Section> {
         return None;
     }
 
-    assert_eq!(spirits.len(), 1);
-    let id = spirits[0];
+    let stats = spirits.into_iter().map(|id| {
+        let spirit = Cat::from_wiki_id((*id).into(), &config.version).unwrap();
+        TabberTab::new(id.to_string(), stats_spirit(&spirit).to_string())
+    });
 
-    let spirit = Cat::from_wiki_id((*id).into(), &config.version).unwrap();
+    let tabber = Tabber::new(TabberType::Tabber, stats.collect());
 
-    Some(Section::h2("Spirit", stats_spirit(&spirit).to_string()))
+    Some(Section::h2("Spirit", tabber.to_string()))
 }
 
 fn reference(id: u32) -> Section {
