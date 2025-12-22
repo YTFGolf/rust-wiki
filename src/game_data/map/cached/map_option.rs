@@ -58,7 +58,7 @@ pub struct MapOptionCSV {
 fn parse_mo_line(record: Result<ByteRecord, csv::Error>) -> Result<MapOptionCSV, Box<dyn Error>> {
     let mut record = record.map_err(Box::new)?;
 
-    if record.len() == 17 {
+    if record.len() <= 17 {
         // pre-15.1: `row[2]` was _crown_1, so we add in a blank column
         // to get it to default to `None`
         let mut new = ByteRecord::new();
@@ -208,12 +208,12 @@ mod tests {
     }
 
     #[test]
-    #[should_panic = "err: DeserializeError { field: Some(2), kind: ParseInt(ParseIntError { kind: InvalidDigit }) }"]
+    #[should_panic = "err: DeserializeError { field: Some(3), kind: ParseInt(ParseIntError { kind: InvalidDigit }) }"]
     // -100 is not a valid u32
     fn assert_parse_checker_works() {
-        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        // line is "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,4,-100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり",
+            "0,4,0,-100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり",
         );
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
