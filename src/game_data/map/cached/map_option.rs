@@ -55,7 +55,7 @@ pub struct MapOptionCSV {
     _jpname: &'static str,
 }
 
-fn parse_mo_line(record: Result<ByteRecord, csv::Error>) -> Result<(u32, MapOptionCSV), Box<dyn Error>> {
+fn parse_mo_line(record: Result<ByteRecord, csv::Error>) -> Result<MapOptionCSV, Box<dyn Error>> {
     let mut record = record.map_err(Box::new)?;
 
     if record.len() == 17 {
@@ -72,7 +72,7 @@ fn parse_mo_line(record: Result<ByteRecord, csv::Error>) -> Result<(u32, MapOpti
     }
 
     let result: MapOptionCSV = record.deserialize(None).map_err(Box::new)?;
-    Ok((result.mapid, result))
+    Ok(result)
 }
 
 fn get_map_option(path: &Path) -> Result<HashMap<u32, MapOptionCSV>, Box<dyn Error>> {
@@ -83,7 +83,13 @@ fn get_map_option(path: &Path) -> Result<HashMap<u32, MapOptionCSV>, Box<dyn Err
         .from_path(path.join("DataLocal/Map_option.csv"))
         .map_err(Box::new)?;
 
-    rdr.byte_records().skip(1).map(parse_mo_line).collect()
+    rdr.byte_records()
+        .skip(1)
+        .map(|r| {
+            let result = parse_mo_line(r)?;
+            Ok((result.mapid, result))
+        })
+        .collect()
 }
 
 #[derive(Debug)]
