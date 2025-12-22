@@ -779,6 +779,23 @@ mod tests {
     }
 
     #[test]
+    fn rule_params() {
+        let uniform_motion =
+            Stage::from_id_current(StageID::from_components(T::Colosseum, 11, 0)).unwrap();
+        assert_eq!(
+            rules_section(&uniform_motion),
+            "{{ColosseumRule|Uniform Motion|12}}"
+        );
+
+        let uniform_motion_2 =
+            Stage::from_id_current(StageID::from_components(T::Colosseum, 18, 0)).unwrap();
+        assert_eq!(
+            rules_section(&uniform_motion_2),
+            "{{ColosseumRule|Uniform Motion|25}}"
+        );
+    }
+
+    #[test]
     fn rule_12th_anniversary() {
         let doge_disturbance_last =
             Stage::from_id_current(StageID::from_components(T::Extra, 71, 9)).unwrap();
