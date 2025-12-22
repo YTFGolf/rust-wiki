@@ -7,6 +7,7 @@ use crate::game_data::{
         version_data::{CacheableVersionData, CvdCreateError, CvdResult},
     },
 };
+use csv::ByteRecord;
 use std::{collections::HashMap, error::Error, num::NonZero, path::Path};
 
 #[derive(Debug, serde::Deserialize, Clone)]
@@ -16,6 +17,7 @@ pub struct MapOptionCSV {
     pub mapid: u32,
     /// Highest crown difficulty the stage goes up to.
     pub max_difficulty: NonZero<u8>,
+    _uk2: Option<u8>,
     /// Magnification on 1-crown difficulty (will always be 100).
     _crown_1: u32,
     /// Magnification on 2-crown difficulty.
@@ -64,10 +66,22 @@ fn get_map_option(path: &Path) -> Result<HashMap<u32, MapOptionCSV>, Box<dyn Err
     rdr.byte_records()
         .skip(1)
         .map(|record| {
-            let result: MapOptionCSV = record
-                .map_err(Box::new)?
-                .deserialize(None)
-                .map_err(Box::new)?;
+            let mut record = record.map_err(Box::new)?;
+
+            if record.len() == 17 {
+                // pre-15.1: `row[2]` was _crown_1, so we add in a blank column
+                // to get it to default to `None`
+                let mut new = ByteRecord::new();
+                new.push_field(record.get(0).expect("Already checked length"));
+                new.push_field(record.get(1).expect("Already checked length"));
+                new.push_field(b"");
+                for i in 2..record.len() {
+                    new.push_field(record.get(i).expect("Already checked length"));
+                }
+                record = new;
+            }
+
+            let result: MapOptionCSV = record.deserialize(None).map_err(Box::new)?;
             Ok((result.mapid, result))
         })
         .collect()
