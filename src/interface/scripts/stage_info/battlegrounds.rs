@@ -385,7 +385,7 @@ mod tests {
             *5 [[Pigeon de Sable]]s spawn after 10 seconds<sup>300f</sup>, delay 0.53~1.13 seconds<sup>16f~34f</sup>.\n\
             *When the base reaches 95% HP:\n\
             **1 [[Snowball]] spawns as the boss.\n\
-            **7 [[Wafer Cat XL (Enemy)|Wafer Cat XL]]s spawn, delay 1 second<sup>30f</sup>.\n\
+            **7 [[Wafer Cat XL (Enemy)|Wafer Cat XLs]] spawn, delay 1 second<sup>30f</sup>.\n\
             *When the base reaches 90% HP:\n\
             **1 [[Snowball]] spawns as the boss.\n\
             **3 [[Ice Doge]]s spawn, delay 3.33 seconds<sup>100f</sup>.\n\
