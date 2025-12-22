@@ -158,10 +158,51 @@ mod tests {
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
-            let record = result.unwrap();
-            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
+            seen.insert(map_id);
+        }
+    }
 
-            let map_id = assert_conditions(&record_parsed, &seen);
+    #[test]
+    fn test_proper_parse() {
+        let reader = Cursor::new(
+            "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり",
+        );
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
+            seen.insert(map_id);
+        }
+    }
+
+    #[test]
+    fn test_proper_parse_pre_15_1() {
+        let reader =
+            Cursor::new("0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり");
+        let rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            // technically does have headers but that's an issue for another day
+            .flexible(true)
+            .from_reader(reader);
+
+        let mut rdr = rdr;
+        let records = rdr.byte_records();
+
+        let mut seen = HashSet::<u32>::new();
+        for result in records {
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
             seen.insert(map_id);
         }
     }
