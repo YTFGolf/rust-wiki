@@ -58,6 +58,8 @@ pub enum BonusType {
     Freeze(Single),
     /// Parameter is base points for one target.
     MassiveDamage(Single),
+    /// Parameter is base points for one target.
+    Slow(Single),
     /// Used so this program can still run when in the wrong update.
     Placeholder(u8),
 }
@@ -69,6 +71,7 @@ impl From<RawBonusItem> for BonusType {
         match value.0 {
             0 => Self::Weaken(Self::to_arr(params)),
             1 => Self::Freeze(Self::to_arr(params)),
+            2 => Self::Slow(Self::to_arr(params)),
             3 => Self::Knockback(Self::to_arr(params)),
             13 => Self::Strong(Self::to_arr(params)),
             14 => Self::MassiveDamage(Self::to_arr(params)),
@@ -101,6 +104,8 @@ pub enum BonusNameLabel {
     Freeze,
     /// Massive Damage.
     MassiveDamage,
+    /// Slow.
+    Slow,
     /// Placeholder.
     Placeholder(String),
 }
@@ -112,6 +117,7 @@ impl<T: AsRef<str>> From<T> for BonusNameLabel {
             "BonusNameLabel002" => Self::Strong,
             "BonusNameLabel003" => Self::Freeze,
             "BonusNameLabel004" => Self::MassiveDamage,
+            "BonusNameLabel005" => Self::Slow,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -125,6 +131,7 @@ impl BonusNameLabel {
             Self::Strong => "Strong",
             Self::Freeze => "Freeze",
             Self::MassiveDamage => "Massive Damage",
+            Self::Slow => "Slow",
             BonusNameLabel::Placeholder(label) => {
                 panic!("Error: unknown score bonus label {label:?}")
             }
