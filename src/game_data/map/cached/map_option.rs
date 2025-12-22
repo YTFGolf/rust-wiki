@@ -55,6 +55,26 @@ pub struct MapOptionCSV {
     _jpname: &'static str,
 }
 
+fn parse_mo_line(record: Result<ByteRecord, csv::Error>) -> Result<(u32, MapOptionCSV), Box<dyn Error>> {
+    let mut record = record.map_err(Box::new)?;
+
+    if record.len() == 17 {
+        // pre-15.1: `row[2]` was _crown_1, so we add in a blank column
+        // to get it to default to `None`
+        let mut new = ByteRecord::new();
+        new.push_field(record.get(0).expect("Already checked length"));
+        new.push_field(record.get(1).expect("Already checked length"));
+        new.push_field(b"");
+        for i in 2..record.len() {
+            new.push_field(record.get(i).expect("Already checked length"));
+        }
+        record = new;
+    }
+
+    let result: MapOptionCSV = record.deserialize(None).map_err(Box::new)?;
+    Ok((result.mapid, result))
+}
+
 fn get_map_option(path: &Path) -> Result<HashMap<u32, MapOptionCSV>, Box<dyn Error>> {
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false)
@@ -63,28 +83,7 @@ fn get_map_option(path: &Path) -> Result<HashMap<u32, MapOptionCSV>, Box<dyn Err
         .from_path(path.join("DataLocal/Map_option.csv"))
         .map_err(Box::new)?;
 
-    rdr.byte_records()
-        .skip(1)
-        .map(|record| {
-            let mut record = record.map_err(Box::new)?;
-
-            if record.len() == 17 {
-                // pre-15.1: `row[2]` was _crown_1, so we add in a blank column
-                // to get it to default to `None`
-                let mut new = ByteRecord::new();
-                new.push_field(record.get(0).expect("Already checked length"));
-                new.push_field(record.get(1).expect("Already checked length"));
-                new.push_field(b"");
-                for i in 2..record.len() {
-                    new.push_field(record.get(i).expect("Already checked length"));
-                }
-                record = new;
-            }
-
-            let result: MapOptionCSV = record.deserialize(None).map_err(Box::new)?;
-            Ok((result.mapid, result))
-        })
-        .collect()
+    rdr.byte_records().skip(1).map(parse_mo_line).collect()
 }
 
 #[derive(Debug)]
