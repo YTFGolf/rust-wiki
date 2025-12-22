@@ -2,7 +2,7 @@
 
 use crate::{
     game_data::{
-        map::cached::special_rules::{ContentsType, RuleType},
+        map::cached::special_rules::{ContentsType, RuleNameLabel, RuleType, SpecialRule},
         stage::{
             parsed::stage::{Restriction, RestrictionCrowns as Crowns, RestrictionStages, Stage},
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
@@ -340,6 +340,36 @@ pub fn restrictions_section(stage: &Stage) -> String {
     buf
 }
 
+/// Should probably be a vec but that's for next time.
+fn rule_params(label: &RuleNameLabel, rules: &SpecialRule) -> Option<String> {
+    match label {
+        RuleNameLabel::MegaCatCannon => {
+            for rule in &rules.rule_type {
+                match rule {
+                    RuleType::AwesomeCatCannon([pct]) => return Some(pct.to_string()),
+                    _ => continue,
+                }
+            }
+        }
+        RuleNameLabel::UniformMotion => {
+            for rule in &rules.rule_type {
+                match rule {
+                    RuleType::AwesomeUnitSpeed([minc, maxc, mine, maxe]) => {
+                        assert_eq!(minc, mine);
+                        assert_eq!(maxc, maxe);
+                        assert_eq!(*minc, 1);
+                        return Some(maxc.to_string());
+                    }
+                    _ => continue,
+                }
+            }
+        }
+        _ => return None,
+    }
+
+    unreachable!()
+}
+
 /// Get stage rules.
 fn rules(stage: &Stage) -> Option<String> {
     let Some(rules) = &stage.rules else {
@@ -348,6 +378,10 @@ fn rules(stage: &Stage) -> Option<String> {
     if let Some(name) = &rules.rule_name_label {
         let mut buf = "{{ColosseumRule|".to_string();
         buf += name.as_str();
+        if let Some(params) = rule_params(name, rules) {
+            buf += "|";
+            buf += &params;
+        }
         buf += "}}";
         return Some(buf);
     }
