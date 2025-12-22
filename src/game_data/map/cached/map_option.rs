@@ -213,7 +213,7 @@ mod tests {
     fn assert_parse_checker_works() {
         // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,4,-100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり",
+            "0,4,-100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり",
         );
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
@@ -226,10 +226,8 @@ mod tests {
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
-            let record = result.unwrap();
-            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-
-            let map_id = assert_conditions(&record_parsed, &seen);
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
             seen.insert(map_id);
         }
     }
@@ -238,10 +236,10 @@ mod tests {
     #[should_panic = "assertion failed: !seen.contains(&map_id)"]
     // two lines with same map id so should fail
     fn assert_dupe_checker_works() {
-        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        // line is "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
-             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+            "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,0,100,120,150,150,0,0,0,8000,0,0,1536,0,0,0,異次元コロシアム",
         );
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
@@ -254,10 +252,8 @@ mod tests {
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
-            let record = result.unwrap();
-            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-
-            let map_id = assert_conditions(&record_parsed, &seen);
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
             seen.insert(map_id);
         }
     }
@@ -266,10 +262,10 @@ mod tests {
     #[should_panic = "Message(\"invalid value: integer `0`, expected a nonzero u8\")"]
     // fails on first line as crown is 0
     fn assert_difficulty_checker_works_0() {
-        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        // line is "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,0,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
-             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+            "0,0,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,0,100,120,150,150,0,0,0,8000,0,0,1536,0,0,0,異次元コロシアム",
         );
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
@@ -282,10 +278,8 @@ mod tests {
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
-            let record = result.unwrap();
-            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-
-            let map_id = assert_conditions(&record_parsed, &seen);
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
             seen.insert(map_id);
         }
     }
@@ -294,10 +288,10 @@ mod tests {
     #[should_panic = "assertion failed: (1..=4).contains(&d)"]
     // fails on first line as crown is 5
     fn assert_difficulty_checker_works_5() {
-        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        // line is "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,5,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
-             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+            "0,5,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,0,100,120,150,150,0,0,0,8000,0,0,1536,0,0,0,異次元コロシアム",
         );
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
@@ -310,10 +304,8 @@ mod tests {
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
-            let record = result.unwrap();
-            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-
-            let map_id = assert_conditions(&record_parsed, &seen);
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
             seen.insert(map_id);
         }
     }
@@ -322,10 +314,10 @@ mod tests {
     #[should_panic = "left: 101\n right: 100"]
     // fails on first line as 1-crown mag is not 100
     fn assert_crown_1_checker_works() {
-        // line is "0,4,100,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり"
+        // line is "0,4,0,100,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり"
         let reader = Cursor::new(
-            "0,4,101,150,200,300,0,0,0,0,0,0,7,0,0,レジェンドステージ：伝説のはじまり\n\
-             0,2,100,120,150,150,0,0,0,8000,0,0,1536,0,0,異次元コロシアム",
+            "0,4,0,101,150,200,300,0,0,0,0,0,0,7,0,0,0,レジェンドステージ：伝説のはじまり\n\
+             0,2,0,100,120,150,150,0,0,0,8000,0,0,1536,0,0,0,異次元コロシアム",
         );
         let rdr = csv::ReaderBuilder::new()
             .has_headers(false)
@@ -338,10 +330,8 @@ mod tests {
 
         let mut seen = HashSet::<u32>::new();
         for result in records {
-            let record = result.unwrap();
-            let record_parsed: MapOptionCSV = record.deserialize(None).unwrap();
-
-            let map_id = assert_conditions(&record_parsed, &seen);
+            let record = parse_mo_line(result).unwrap();
+            let map_id = assert_conditions(&record, &seen);
             seen.insert(map_id);
         }
     }
