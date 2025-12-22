@@ -12,7 +12,7 @@ use crate::{
     wiki_data::cat_data::CAT_DATA,
     wikitext::template::TemplateParameter,
 };
-use num_format::{Locale, WriteFormatted};
+use num_format::{Locale, ToFormattedString, WriteFormatted};
 use std::{
     collections::HashSet,
     fmt::Write,
@@ -346,7 +346,11 @@ fn rule_params(label: &RuleNameLabel, rules: &SpecialRule) -> Option<String> {
         RuleNameLabel::MegaCatCannon => {
             for rule in &rules.rule_type {
                 match rule {
-                    RuleType::AwesomeCatCannon([pct]) => return Some(pct.to_string()),
+                    RuleType::AwesomeCatCannon([pct]) => {
+                        // for now not bother with fractions
+                        assert_eq!(pct % 100, 0);
+                        return Some((pct / 100).to_formatted_string(&Locale::en));
+                    }
                     _ => continue,
                 }
             }
@@ -358,7 +362,7 @@ fn rule_params(label: &RuleNameLabel, rules: &SpecialRule) -> Option<String> {
                         assert_eq!(minc, mine);
                         assert_eq!(maxc, maxe);
                         assert_eq!(*minc, 1);
-                        return Some(maxc.to_string());
+                        return Some(maxc.to_formatted_string(&Locale::en));
                     }
                     _ => continue,
                 }
@@ -826,6 +830,18 @@ mod tests {
         assert_eq!(
             rules_section(&uniform_motion_2),
             "{{ColosseumRule|Uniform Motion|25}}"
+        );
+    }
+
+    #[test]
+    fn rule_params_fmt() {
+        let mcc = Stage::from_id_current(StageID::from_components(T::Colosseum, 10, 0)).unwrap();
+        assert_eq!(rules_section(&mcc), "{{ColosseumRule|Mega Cat Cannon|100}}");
+
+        let mcc2 = Stage::from_id_current(StageID::from_components(T::Colosseum, 19, 0)).unwrap();
+        assert_eq!(
+            rules_section(&mcc2),
+            "{{ColosseumRule|Mega Cat Cannon|200}}"
         );
     }
 
