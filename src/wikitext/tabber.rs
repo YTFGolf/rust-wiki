@@ -49,7 +49,7 @@ impl Tabber {
 impl Display for Tabber {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.content.len() == 1 {
-            return write!(f, "{}", self.content[0]);
+            return write!(f, "{}", self.content[0].content);
         }
 
         let (open, mid, close) = match self.ttype {
