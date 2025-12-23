@@ -1,14 +1,17 @@
 //! Module for testing stage info.
 #![cfg(test)]
 
-use super::{stage_info::get_stage_wiki_data, variables::get_stage_variable};
+use super::stage_info::get_stage_wiki_data;
 use crate::{
     game_data::{
         meta::stage::{stage_id::StageID, variant::StageVariantID as T},
         stage::parsed::stage::Stage,
         version::lang::VersionLanguage,
     },
-    interface::config::{Config, TEST_CONFIG},
+    interface::{
+        config::{Config, TEST_CONFIG},
+        scripts::stage_info::stage_info::si_template,
+    },
 };
 
 // these were all generated on a different branch.
@@ -165,12 +168,12 @@ fn get_config() -> Config {
 fn info_earthshaker() {
     let earthshaker = StageID::from_components(T::SoL, 0, 0);
     let wik = get_stage_wiki_data(&earthshaker);
-    let stage = get_stage_variable(
-        "si_template",
+    let stage = si_template(
         &Stage::from_id_current(earthshaker).unwrap(),
         &wik,
         &get_config(),
-    );
+    )
+    .to_string();
     assert_eq!(stage, EARTHSHAKER);
 }
 
@@ -178,12 +181,12 @@ fn info_earthshaker() {
 fn info_finale() {
     let finale = StageID::from_components(T::Collab, 209, 0);
     let wik = get_stage_wiki_data(&finale);
-    let stage = get_stage_variable(
-        "si_template",
+    let stage = si_template(
         &Stage::from_id_current(finale).unwrap(),
         &wik,
         &get_config(),
-    );
+    )
+    .to_string();
     assert_eq!(stage, FINALE);
 }
 
@@ -195,12 +198,7 @@ fn info_baron_mags() {
     let mut config = get_config();
     config.stage_info.set_suppress(false);
 
-    let stage = get_stage_variable(
-        "si_template",
-        &Stage::from_id_current(baron).unwrap(),
-        &wik,
-        &config,
-    );
+    let stage = si_template(&Stage::from_id_current(baron).unwrap(), &wik, &config).to_string();
     assert_eq!(stage, SEAL_MAGS);
 }
 
@@ -212,12 +210,7 @@ fn info_baron_nomags() {
     let mut config = get_config();
     config.stage_info.set_suppress(true);
 
-    let stage = get_stage_variable(
-        "si_template",
-        &Stage::from_id_current(baron).unwrap(),
-        &wik,
-        &config,
-    );
+    let stage = si_template(&Stage::from_id_current(baron).unwrap(), &wik, &config).to_string();
     assert_eq!(stage, SEAL_NOMAG);
 }
 
@@ -225,11 +218,7 @@ fn info_baron_nomags() {
 fn info_dojo() {
     let dojo = StageID::from_components(T::Dojo, 0, 0);
     let wik = get_stage_wiki_data(&dojo);
-    let stage = get_stage_variable(
-        "si_template",
-        &Stage::from_id_current(dojo).unwrap(),
-        &wik,
-        &get_config(),
-    );
+    let stage =
+        si_template(&Stage::from_id_current(dojo).unwrap(), &wik, &get_config()).to_string();
     assert_eq!(stage, DOJO);
 }
