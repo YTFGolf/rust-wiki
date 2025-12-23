@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.8.3] - 2025-12-23
+
 ### 15.1
 
 - New `Map_option` format when line length >= 18.
@@ -26,8 +36,6 @@ subheading.
 
 - `Tabber` implementation for spirit stats.
 - Parameters to colosseum rule template.
-
-### Fixed
 
 ### Changed
 
@@ -494,7 +502,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.2...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.3...dev
+[0.8.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.7.4...v0.8.0
