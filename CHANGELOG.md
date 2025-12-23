@@ -13,11 +13,27 @@ subheading.
 
 ## [Unreleased]
 
+### 15.1
+
+- New `Map_option` format when line length >= 18.
+- `Slow` Dojo rule.
+
+## 15.0 EN
+
+- Grand Battle Colosseum rule.
+
 ### Added
+
+- `Tabber` implementation for spirit stats.
+- Parameters to colosseum rule template.
 
 ### Fixed
 
 ### Changed
+
+- `MapOption` stores `MapOptionCSV` data instead of `ByteRecord`s.
+- `Tabber` now checks content length before writing: if length is 1 then just
+  writes the content and forgoes the `<tabber>` tag.
 
 ### Removed
 
