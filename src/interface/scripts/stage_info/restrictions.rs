@@ -321,10 +321,7 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 // TODO fixed_formation.csv
 /// Get content of restrictions section.
 pub fn restrictions_section(stage: &Stage) -> Option<String> {
-    let restrictions = match get_restriction_list(stage, false) {
-        None => return None,
-        Some(r) => r,
-    };
+    let restrictions = get_restriction_list(stage, false)?;
 
     if restrictions.len() == 1 {
         return restrictions.into_iter().next();
