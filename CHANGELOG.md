@@ -18,7 +18,7 @@ subheading.
 - New `Map_option` format when line length >= 18.
 - `Slow` Dojo rule.
 
-## 15.0 EN
+### 15.0 EN
 
 - Grand Battle Colosseum rule.
 
