@@ -19,7 +19,11 @@ use crate::{
         },
     },
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA},
-    wikitext::text_utils::{extract_name, get_small_ordinal},
+    wikitext::{
+        page::Page,
+        section::Section,
+        text_utils::{extract_name, get_small_ordinal},
+    },
 };
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
@@ -307,20 +311,28 @@ pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
 
     // log::debug!("{map:#?}");
     log::warn!("This is not updated to the latest format");
-    let map_wiki_data = get_map_wiki_data(&map.id);
+    let map_data = get_map_wiki_data(&map.id);
+    let version = &config.version.current_version();
 
-    let mut buf = String::new();
-    for node in parse_info_format(FORMAT) {
-        if node.ptype == ParseType::Text {
-            buf.write_str(node.content).infallible_write();
-            continue;
-        }
+    let mut page = Page::blank();
 
-        let new_buf = get_map_variable(node.content, map, map_wiki_data, config);
-        buf.write_str(&new_buf).infallible_write();
+    page.push(Section::blank(
+        map_img(map) + "\n" + &intro(map, map_data, config),
+    ));
+    if let Some(d) = difficulty(map) {
+        page.push(Section::h2("Difficulty", d));
     }
 
-    buf
+    page.push(Section::h2(
+        "List of Stages",
+        stage_table(map, map_data, version),
+    ));
+    page.push(Section::blank(materials(map, version)));
+    page.push(Section::h2("Reference", db_reference(&map.id)));
+    page.push(Section::blank(nav(map)));
+    page.push(Section::blank(footer(map)));
+
+    page.to_string()
 }
 
 #[cfg(test)]
