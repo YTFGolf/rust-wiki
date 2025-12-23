@@ -39,7 +39,7 @@ ${battlegrounds}
 *${reference}\
 ";
 
-fn si_template(
+pub fn si_template(
     stage: &Stage,
     stage_wiki_data: &StageWikiDataContainer,
     config: &Config,
@@ -86,7 +86,7 @@ pub fn get_stage_variable(
 }
 
 /// Get the battlecats-db reference link.
-fn reference(stage: &Stage) -> String {
+pub fn reference(stage: &Stage) -> String {
     format!(
         "https://battlecats-db.com/stage/s{type:02}{map:03}-{incremented_stage:02}.html",
         r#type = stage.id.variant().num(),
