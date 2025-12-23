@@ -68,8 +68,8 @@ fn stages_tab_info(stages: &[Stage]) -> Option<Vec<TabInfoWithStages>> {
         let container = TabInfo {
             enemies_appearing: enemies_appearing(stage),
             infobox: template_check(stage).to_string(),
-            rules_section: rules_section(stage),
-            restrictions: restrictions_section(stage),
+            rules_section: rules_section(stage).unwrap_or_default(),
+            restrictions: restrictions_section(stage).unwrap_or_default(),
             battlegrounds: battlegrounds(stage),
         };
 

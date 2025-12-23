@@ -320,14 +320,14 @@ pub fn restrictions_info(stage: &Stage) -> Option<TemplateParameter> {
 
 // TODO fixed_formation.csv
 /// Get content of restrictions section.
-pub fn restrictions_section(stage: &Stage) -> String {
+pub fn restrictions_section(stage: &Stage) -> Option<String> {
     let restrictions = match get_restriction_list(stage, false) {
-        None => return String::new(),
+        None => return None,
         Some(r) => r,
     };
 
     if restrictions.len() == 1 {
-        return restrictions.into_iter().next().unwrap();
+        return restrictions.into_iter().next();
     }
 
     let mut buf = String::new();
@@ -337,7 +337,7 @@ pub fn restrictions_section(stage: &Stage) -> String {
         buf.write_str("\n").infallible_write();
     }
     buf.truncate(buf.len() - "\n".len());
-    buf
+    Some(buf)
 }
 
 /// Should probably be a vec but that's for next time.
@@ -418,7 +418,7 @@ fn bonuses(stage: &Stage) -> Option<String> {
 }
 
 /// Get content of rules section.
-pub fn rules_section(stage: &Stage) -> String {
+pub fn rules_section(stage: &Stage) -> Option<String> {
     let mut buf = String::new();
     if let Some(r) = rules(stage) {
         buf.write_str(&r).infallible_write();
@@ -426,7 +426,8 @@ pub fn rules_section(stage: &Stage) -> String {
     if let Some(b) = bonuses(stage) {
         buf.write_str(&b).infallible_write();
     }
-    buf
+
+    if buf.is_empty() { None } else { Some(buf) }
 }
 
 #[cfg(test)]
@@ -443,7 +444,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Event, 50, 1)).unwrap();
         assert_eq!(boxing_clever.restrictions, None);
         assert_eq!(restrictions_info(&boxing_clever), None);
-        assert_eq!(&restrictions_section(&boxing_clever), "");
+        assert_eq!(restrictions_section(&boxing_clever), None);
     }
 
     #[test]
@@ -455,7 +456,7 @@ mod tests {
             restrictions_info(&realm_of_carnage),
             Some(TemplateParameter::new("restriction", "[[No Continues]]"))
         );
-        assert_eq!(&restrictions_section(&realm_of_carnage), "");
+        assert_eq!(restrictions_section(&realm_of_carnage), None);
     }
 
     #[test]
@@ -466,7 +467,7 @@ mod tests {
             &[FOUR_CROWN_DEFAULT_RESTRICTION]
         );
         assert_eq!(restrictions_info(&earthshaker), None);
-        assert_eq!(&restrictions_section(&earthshaker), "");
+        assert_eq!(restrictions_section(&earthshaker), None);
     }
 
     #[test]
@@ -481,7 +482,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&sighter_star),
+            &restrictions_section(&sighter_star).unwrap(),
             "Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]] and [[:Category:Super Rare Cats|Super Rare]]"
         );
     }
@@ -498,7 +499,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&babies_first),
+            &restrictions_section(&babies_first).unwrap(),
             "Rarity: Only [[:Category:Normal Cats|Normal]] and [[:Category:Uber Rare Cats|Uber Rare]]"
         );
     }
@@ -515,7 +516,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&somolon),
+            &restrictions_section(&somolon).unwrap(),
             "Rarity: Only [[:Category:Special Cats|Special]]"
         );
     }
@@ -531,7 +532,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&wahwah),
+            &restrictions_section(&wahwah).unwrap(),
             "Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]"
         );
     }
@@ -548,7 +549,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&wrath_w_cyclone),
+            &restrictions_section(&wrath_w_cyclone).unwrap(),
             "Max # of Deployable Cats: 10"
         );
     }
@@ -564,7 +565,10 @@ mod tests {
                 "Deploy from Row 1 only"
             ))
         );
-        assert_eq!(&restrictions_section(&uranus), "Deploy from Row 1 only");
+        assert_eq!(
+            &restrictions_section(&uranus).unwrap(),
+            "Deploy from Row 1 only"
+        );
     }
 
     #[test]
@@ -579,7 +583,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&saturn),
+            &restrictions_section(&saturn).unwrap(),
             "Cat Deploy Cost: Only 300¢ or more"
         );
     }
@@ -596,7 +600,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&skelling),
+            &restrictions_section(&skelling).unwrap(),
             "Cat Deploy Cost: Only 1,200¢ or more"
         );
     }
@@ -613,7 +617,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&buutara),
+            &restrictions_section(&buutara).unwrap(),
             "Cat Deploy Cost: Only 1,200¢ or less"
         );
     }
@@ -630,7 +634,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&catseye_nebula),
+            &restrictions_section(&catseye_nebula).unwrap(),
             "Cat Deploy Cost: Only 4,000¢ or less"
         );
     }
@@ -646,7 +650,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&finale),
+            &restrictions_section(&finale).unwrap(),
             "Unit Restriction: Only [[Cat (Normal Cat)|Cat]]"
         );
     }
@@ -663,7 +667,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&final_race),
+            &restrictions_section(&final_race).unwrap(),
             "Unit Restriction: Only [[Cat Giraffe Modoki (Special Cat)|Cat Giraffe Modoki]], [[Catnip Tricky (Special Cat)|Catnip Tricky]] and [[Catnip Dragon (Special Cat)|Catnip Dragon]]"
         );
     }
@@ -679,7 +683,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&sorry),
+            &restrictions_section(&sorry).unwrap(),
             "Unit Restriction: Cannot use [[Homura Akemi (Uber Rare Cat)|Homura Akemi]] and [[Li'l Homura (Special Cat)|Li'l Homura]]"
         );
     }
@@ -699,7 +703,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            restrictions_section(&black_hole),
+            restrictions_section(&black_hole).unwrap(),
             "*Rarity: Only [[:Category:Special Cats|Special]], [[:Category:Rare Cats|Rare]], [[:Category:Uber Rare Cats|Uber Rare]] and [[:Category:Legend Rare Cats|Legend Rare]]\n\
             *Max # of Deployable Cats: 10"
         );
@@ -718,7 +722,7 @@ mod tests {
             )),
         );
         assert_eq!(
-            restrictions_section(&feathered),
+            restrictions_section(&feathered).unwrap(),
             "*Rarity: Only [[:Category:Normal Cats|Normal]], [[:Category:Special Cats|Special]] and [[:Category:Rare Cats|Rare]]\n\
             *4-Crown: Max # of Deployable Cats: 10"
         );
@@ -730,7 +734,7 @@ mod tests {
             Stage::from_id_current(StageID::from_components(T::Event, 169, 1)).unwrap();
         assert_eq!(revenge_r_cyclone.restrictions, Some(vec![]));
         assert_eq!(restrictions_info(&revenge_r_cyclone), None);
-        assert_eq!(restrictions_section(&revenge_r_cyclone), "");
+        assert_eq!(restrictions_section(&revenge_r_cyclone), None);
     }
 
     #[test]
@@ -747,7 +751,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            restrictions_section(&vanguard_veteran),
+            restrictions_section(&vanguard_veteran).unwrap(),
             "Max # of Deployable Cats: 1"
         );
     }
@@ -794,7 +798,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&afraid_nothing),
+            &restrictions_section(&afraid_nothing).unwrap(),
             "Unit Restriction: Cannot use [[Bebe (Uber Rare Cat)|Bebe]]"
         );
     }
@@ -813,7 +817,10 @@ mod tests {
     fn rule_trust_fund() {
         let trust_fund_2 =
             Stage::from_id_current(StageID::from_components(T::Colosseum, 0, 1)).unwrap();
-        assert_eq!(rules_section(&trust_fund_2), "{{ColosseumRule|Trust Fund}}");
+        assert_eq!(
+            rules_section(&trust_fund_2).unwrap(),
+            "{{ColosseumRule|Trust Fund}}"
+        );
     }
 
     #[test]
@@ -821,14 +828,14 @@ mod tests {
         let uniform_motion =
             Stage::from_id_current(StageID::from_components(T::Colosseum, 11, 0)).unwrap();
         assert_eq!(
-            rules_section(&uniform_motion),
+            rules_section(&uniform_motion).unwrap(),
             "{{ColosseumRule|Uniform Motion|12}}"
         );
 
         let uniform_motion_2 =
             Stage::from_id_current(StageID::from_components(T::Colosseum, 18, 0)).unwrap();
         assert_eq!(
-            rules_section(&uniform_motion_2),
+            rules_section(&uniform_motion_2).unwrap(),
             "{{ColosseumRule|Uniform Motion|25}}"
         );
     }
@@ -836,11 +843,14 @@ mod tests {
     #[test]
     fn rule_params_fmt() {
         let mcc = Stage::from_id_current(StageID::from_components(T::Colosseum, 10, 0)).unwrap();
-        assert_eq!(rules_section(&mcc), "{{ColosseumRule|Mega Cat Cannon|100}}");
+        assert_eq!(
+            rules_section(&mcc).unwrap(),
+            "{{ColosseumRule|Mega Cat Cannon|100}}"
+        );
 
         let mcc2 = Stage::from_id_current(StageID::from_components(T::Colosseum, 19, 0)).unwrap();
         assert_eq!(
-            rules_section(&mcc2),
+            rules_section(&mcc2).unwrap(),
             "{{ColosseumRule|Mega Cat Cannon|200}}"
         );
     }
@@ -850,7 +860,7 @@ mod tests {
         let doge_disturbance_last =
             Stage::from_id_current(StageID::from_components(T::Extra, 71, 9)).unwrap();
         assert_eq!(
-            rules_section(&doge_disturbance_last),
+            rules_section(&doge_disturbance_last).unwrap(),
             "{{StageRule|12thAnni}}"
         );
     }
@@ -868,7 +878,7 @@ mod tests {
             ))
         );
         assert_eq!(
-            &restrictions_section(&no_longer_single),
+            &restrictions_section(&no_longer_single).unwrap(),
             "Unit Restriction: Only [[Secret Crush Cat (Special Cat)|Secret Crush Cat]], [[Tomboy Lion Cat (Special Cat)|Tomboy Lion Cat]], [[Chalkboard Eraser Cat (Special Cat)|Chalkboard Eraser Cat]], [[Class Rep Cat (Special Cat)|Class Rep Cat]] and [[Principal Cat (Special Cat)|Principal Cat]]"
         );
     }
@@ -877,6 +887,6 @@ mod tests {
     fn dojo_rule() {
         let weaken_dojo =
             Stage::from_id_current(StageID::from_components(T::RankingDojo, 30, 0)).unwrap();
-        assert_eq!(rules_section(&weaken_dojo), "{{DojoRule|Weaken}}");
+        assert_eq!(rules_section(&weaken_dojo).unwrap(), "{{DojoRule|Weaken}}");
     }
 }

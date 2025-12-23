@@ -76,8 +76,8 @@ pub fn get_stage_variable(
         "enemies_appearing" => enemies_appearing(stage),
         "intro" => intro(stage, stage_wiki_data),
         "si_template" => si_template(stage, stage_wiki_data, config).to_string(),
-        "restrictions_section" => restrictions_section(stage),
-        "rules" => rules_section(stage),
+        "restrictions_section" => restrictions_section(stage).unwrap_or_default(),
+        "rules" => rules_section(stage).unwrap_or_default(),
         "battlegrounds" => battlegrounds(stage),
         "reference" => reference(stage),
 
