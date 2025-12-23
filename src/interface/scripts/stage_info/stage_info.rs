@@ -59,28 +59,6 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> impl Display {
     page
 }
 
-/// Get stage info based on specified format.
-fn get_stage_info_formatted(stage: &Stage, format: &str, config: &Config) -> String {
-    let parsed = parse_info_format(format);
-    let mut buf = String::new();
-    let stage_wiki_data = get_stage_wiki_data(&stage.id);
-
-    for node in parsed {
-        if node.ptype == ParseType::Text {
-            buf.write_str(node.content).infallible_write();
-            continue;
-        }
-
-        let new_buf = get_stage_variable(node.content, stage, &stage_wiki_data, config);
-        buf.write_str(&new_buf).infallible_write();
-    }
-
-    let buf = static_regex(r"\n==.*==\n\n").replace_all(&buf, "");
-    // Remove empty sections.
-
-    buf.into_owned()
-}
-
 /// Get the stage's corresponding wiki data.
 pub fn get_stage_wiki_data(stage: &StageID) -> StageWikiDataContainer {
     let stage_map = STAGE_WIKI_DATA
@@ -95,3 +73,5 @@ pub fn get_stage_wiki_data(stage: &StageID) -> StageWikiDataContainer {
         stage_name,
     }
 }
+
+// TODO tests
