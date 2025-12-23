@@ -9,6 +9,5 @@ pub mod restrictions;
 pub mod stage_cli;
 pub mod stage_info;
 pub mod treasure;
-pub mod variables;
 
 mod tests;

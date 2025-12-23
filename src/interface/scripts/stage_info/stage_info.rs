@@ -1,26 +1,25 @@
 //! Root module for stage info script.
 
-use super::{
-    super::format_parser::{ParseType, parse_info_format},
-    variables::get_stage_variable,
-};
 use crate::{
     game_data::{meta::stage::stage_id::StageID, stage::parsed::stage::Stage},
     interface::{
         config::Config,
-        error_handler::InfallibleWrite,
         scripts::stage_info::{
             battlegrounds::battlegrounds,
             beginning::{enemies_appearing, intro},
-            restrictions::{restrictions_section, rules_section},
-            variables::{reference, si_template},
+            enemies_list::enemies_list,
+            information::{
+                base_hp, energy, max_enemies, stage_location, stage_name, time_limit, width, xp,
+            },
+            misc_information::{chapter, difficulty, max_clears, stage_nav, star},
+            restrictions::{restrictions_info, restrictions_section, rules_section},
+            treasure::{score_rewards, treasure},
         },
     },
-    regex_handler::static_regex,
     wiki_data::stage_wiki_data::{MapWikiData, STAGE_WIKI_DATA, StageWikiData},
-    wikitext::{page::Page, section::Section},
+    wikitext::{page::Page, section::Section, template::Template},
 };
-use std::fmt::{Display, Write};
+use std::fmt::Display;
 
 /// Container for wiki data about a stage.
 pub struct StageWikiDataContainer {
@@ -29,6 +28,43 @@ pub struct StageWikiDataContainer {
     pub stage_map: &'static MapWikiData,
     /// Stage itself.
     pub stage_name: &'static StageWikiData,
+}
+
+/// Stage info template.
+pub fn si_template(
+    stage: &Stage,
+    stage_wiki_data: &StageWikiDataContainer,
+    config: &Config,
+) -> Template {
+    Template::named("Stage Info")
+        .add_params(stage_name(stage, config.version.lang()))
+        .add_params(stage_location(stage, config.version.lang()))
+        .add_params(energy(stage))
+        .add_params(base_hp(stage))
+        .add_params(enemies_list(stage, config.stage_info.suppress()))
+        .add_params(treasure(stage))
+        .add_params(restrictions_info(stage))
+        .add_params(time_limit(stage))
+        .add_params(score_rewards(stage))
+        .add_params(xp(stage))
+        .add_params(width(stage))
+        .add_params(max_enemies(stage))
+        .add_const(&[("jpname", "?"), ("script", "?"), ("romaji", "?")])
+        .add_params(star(stage))
+        .add_params(chapter(stage, stage_wiki_data))
+        .add_params(max_clears(stage))
+        .add_params(difficulty(stage))
+        .add_params(stage_nav(stage, stage_wiki_data))
+}
+
+/// Get the battlecats-db reference link.
+fn reference(stage: &Stage) -> String {
+    format!(
+        "https://battlecats-db.com/stage/s{type:02}{map:03}-{incremented_stage:02}.html",
+        r#type = stage.id.variant().num(),
+        map = stage.id.map().num(),
+        incremented_stage = stage.id.num() + 1,
+    )
 }
 
 /// Get full stage info.
