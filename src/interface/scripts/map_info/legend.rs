@@ -131,10 +131,10 @@ fn intro(map: &GameMap, map_data: &MapWikiData, config: &Config) -> String {
 }
 
 /// `LegendDiff` invocation for map.
-fn difficulty(map: &GameMap) -> String {
+fn difficulty(map: &GameMap) -> Option<String> {
     let data = map.crown_data.as_ref().unwrap();
     if u8::from(data.max_difficulty) == 1 {
-        return String::new();
+        return None;
     }
 
     let mut buf = "{{LegendDiff".to_string();
@@ -153,7 +153,7 @@ fn difficulty(map: &GameMap) -> String {
     }
 
     buf.write_str("}}").infallible_write();
-    buf
+    Some(buf)
 }
 
 /// Stage's material drops.
@@ -282,7 +282,7 @@ fn get_map_variable(name: &str, map: &GameMap, map_data: &MapWikiData, config: &
     match name {
         "map_img" => map_img(map),
         "intro" => intro(map, map_data, config),
-        "difficulty" => difficulty(map),
+        "difficulty" => difficulty(map).unwrap_or_default(),
         "stage_table" => stage_table(map, map_data, version),
         "materials" => materials(map, version),
         "ref" => db_reference(&map.id),
@@ -345,7 +345,7 @@ mod tests {
             [[Legend Stages#Stories of Legend|Stories of Legend]]. \
             It is available up to {{4c}} difficulty."
         );
-        assert_eq!(difficulty(&leg_begins), "{{LegendDiff|150|200|300}}");
+        assert_eq!(difficulty(&leg_begins).unwrap(), "{{LegendDiff|150|200|300}}");
         // assert_eq!(stage_table(&leg_begins, map_data, version), "");
         assert_eq!(
             materials(&leg_begins, version),
