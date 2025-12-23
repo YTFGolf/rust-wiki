@@ -37,6 +37,8 @@ subheading.
 
 ### Removed
 
+- `format_parser` module, replaced with imperative format.
+
 ## [0.8.2] - 2025-12-06
 
 ### Added
