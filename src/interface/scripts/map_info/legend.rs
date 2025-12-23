@@ -285,8 +285,11 @@ pub fn get_legend_map(map: &GameMap, config: &Config) -> String {
         stage_table(map, map_data, version),
     ));
     page.push(Section::blank(materials(map, version)));
-    page.push(Section::h2("Reference", db_reference(&map.id)));
-    page.push(Section::blank(nav(map)));
+    page.push(Section::h2(
+        "Reference",
+        "*".to_string() + &db_reference(&map.id),
+    ));
+    page.push(Section::blank(format!("----\n{}\n----", nav(map))));
     page.push(Section::blank(footer(map)));
 
     page.to_string()
