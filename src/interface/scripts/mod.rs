@@ -6,7 +6,3 @@ pub mod gauntlet;
 pub mod map_info;
 pub mod read_wiki;
 pub mod stage_info;
-// scripts
-
-mod format_parser;
-// legacy
