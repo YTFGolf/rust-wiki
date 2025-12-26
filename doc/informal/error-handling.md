@@ -68,3 +68,43 @@ Now, `Self::from_id` will return an error, which is either that it couldn't open
 `Self::from_file_name` will return a different error; either that same error from `Self::from_id` (but wrapped because it has to be), or an `InvalidSelector`. The trick here is that it only returns the error and not the name of the file. Why? Because the user **does** have that information. They called this function using that file name. In this case, the user of this call is responsible for adding necessary context.
 
 In the first case, if the function fails, the user of the function needs to know why it failed. Perhaps there could be better error variants, but it does describe the aspects of the implementation that failed. The specific file that it failed on and the line it failed on are both implementation details. With `Self::from_file_name`, on the other hand, the file that couldn't be parsed into a selector is not an implementation detail, it is part of the interface.
+
+## 2025-12-26
+
+Okay what actually was that description lol.
+
+### Clarification because it took me too long to figure out what I meant
+
+By the `InvalidSelector` thing what I mean is that unlike `Self::from_id`, which will at least tell you the file that the error occurred on, `InvalidSelector`'s error will not tell you the selector that the error occurred on. That's because the selector that caused the error is already known to the caller.
+
+### Brief recap
+
+#### Functions/macros
+
+Actual lines of code.
+
+- Bad error handling is fine in test-only code since the entire point of testing code is that it's brittle and if you make one mistake then it crashes. It's also fine in `const` contexts because the program won't compile if it crashes there.
+- Don't use `unwrap`. I've used `unwrap` in many places and that's not good. All errors should be bubbled up as much as possible, perhaps with error logging. `unwrap` is for tests and prototypes.
+  - If `unwrap` appears then it must be eliminated bottom-up.
+- Don't use `panic!` for similar reasons. There are exceptions, such as the [current](https://github.com/YTFGolf/rust-wiki/blob/9026345cc73392f383b9c21b768ac433b9f4fad1/src/game_data/version/version_obj.rs#L129) implementation of CacheableVersionData. This is fine because the script is assumed to be non-continuable if the data cannot be found. For example, if you wanted to query unitbuy but could not find unitbuy, there is zero replacement for that file's data. Whereas with Colosseum rules, they didn't even exist when this code was initially written so if they cannot be found then it should just be assumed you're working with an older version of the game.
+- `expect` should be used when you know something cannot go wrong, such as calling `.split(...).next()` on a string.
+- `assert!` I'm still not sure about. I've definitely used `assert!` liberally and idk if that's good or not.
+- `unreachable!` should be used in similar contexts to `expect`. It should also be used if you have some invariant that should already have been checked and something must have gone horribly wrong if that is found.
+- `todo!` should be used when prototyping, similar to when you'd `return null` when doing TDD in Java.
+- `unimplemented!` is something I sort of blend together with `assert!` a bit, but I basically do it e.g. if a script doesn't have the necessary feature to continue.
+
+#### Patterns
+
+General structure and ways of doing things rather than lines of code.
+
+Basically, bubbling: you want to pass the whole error context upwards until someone decides either to handle the error or to panic. For example, if A calls B, and B fails, A needs to know what failed in B. Let's say B was meant to parse a string that A sent it. B says why it failed.
+
+Now let's say A calls B, and B is a very high-level function and does many things (is that a bad idea?). Let's say that B parses the string and calls C, but C fails because its input was invalid. C will say why it failed.
+
+B now has another job to do: it must wrap the error that C returned because A needs to know this input. C's error only says why it failed; it does not say what it failed on, because _B knows what C failed on_. A, on the other hand, _does not know what C failed on_. Therefore, B must tell A both C's reason for failing (i.e. the one C gave to B), and the input that C failed on.
+
+### Has anything changed?
+
+- I've done some architectural changes for error handling purposes. In particular, I've reformed `CacheableVersionData` so that it returns an error and a description on how to handle the error. Not only does this provide better protection for things going wrong, but it also provides better error insulation. It's now very rare that the Version object's mutex lock gets poisoned on tests, whereas before only one `init_data` needed to fail to make every single test using CVD fail too.
+- The 24/7 server analogy I realised doesn't hold much water since a server would be handling all this in threads, which would only panic individually.
+- I've gotten slightly better at using `Result` when appropriate.
