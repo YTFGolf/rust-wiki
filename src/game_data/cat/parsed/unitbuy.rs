@@ -255,7 +255,7 @@ impl From<i32> for CatGuideOrder {
         match value {
             x if x >= 0 => Self::Unit(x as u32),
             -1 => Self::Summon,
-            _ => unreachable!(),
+            _ => unimplemented!(),
         }
     }
 }
