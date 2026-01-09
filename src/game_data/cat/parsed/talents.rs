@@ -6,25 +6,25 @@ use strum::FromRepr;
 
 /// New targets that talents implicitly enable.
 ///
-/// Only targets that appear in isolation can be determined. "Maybe" targets are
-/// only used for Mola King. Unknown targets are not used at all (they're
-/// probably witch and eva angel).
+/// Only targets that appear in isolation can be determined. Others come from
+/// Timtams.
+/// (https://discord.com/channels/1456204440951455786/1456204442150899809/1459321849682071603)
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr)]
 #[allow(missing_docs)]
 #[repr(usize)]
 pub enum TalentTargets {
-    MaybeRed = 0,
-    MaybeFloating = 1,
-    MaybeBlack = 2,
+    Red = 0,
+    Floating = 1,
+    Black = 2,
     Metal = 3,
-    MaybeAngel = 4,
+    Angel = 4,
     Alien = 5,
     Zombie = 6,
     Relic = 7,
-    MaybeTraitless = 8,
-    Unknown1 = 9,
-    Unknown2 = 10,
-    MaybeAku = 11,
+    Traitless = 8,
+    Witch = 9,
+    Eva = 10,
+    Aku = 11,
 
     /// Only use this to avoid having to panic in this module.
     AsYetUnknown = 99,
@@ -209,16 +209,16 @@ mod tests {
         assert_eq!(
             TalentTargets::get_targets(mola_king.fixed.type_id),
             vec![
-                TalentTargets::MaybeRed,
-                TalentTargets::MaybeFloating,
-                TalentTargets::MaybeBlack,
+                TalentTargets::Red,
+                TalentTargets::Floating,
+                TalentTargets::Black,
                 TalentTargets::Metal,
-                TalentTargets::MaybeAngel,
+                TalentTargets::Angel,
                 TalentTargets::Alien,
                 TalentTargets::Zombie,
                 TalentTargets::Relic,
-                TalentTargets::MaybeTraitless,
-                TalentTargets::MaybeAku
+                TalentTargets::Traitless,
+                TalentTargets::Aku
             ]
         );
     }

@@ -11,7 +11,7 @@ use crate::{
     },
     wiki_data::enemy_data::ENEMY_DATA,
 };
-use clap::{Args, command};
+use clap::Args;
 
 #[derive(Debug, Args, PartialEq)]
 /// Encounters options.
