@@ -419,3 +419,32 @@ pub fn map_gauntlet(map_id: &MapID, config: &Config) -> String {
 }
 
 // TODO test with Ms. Sign in stage
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{TEST_CONFIG, game_data::meta::stage::variant::StageVariantID};
+
+    #[test]
+    fn test_different_bases() {
+        let sfvh = MapID::from_components(StageVariantID::Collab, 193);
+        let map = map_gauntlet(&sfvh, &TEST_CONFIG);
+
+        const FIRST: &str = "Level 1, 3, 5, 7, 9=\n\
+        {{EnemiesAppearing|Chickful A|Aku Gory|Helmut Krabbe|Pigeon de Sable|Sakura|Ryu}}\n\n\
+        {{Stage Info\n\
+        |stage name = [[File:rc014.png]]\n\
+        [[File:Mapsn193 00 c ja.png]]\n\
+        |stage location = [[File:Mapname193 c ja.png]]";
+
+        const SECOND: &str = "Level 2, 4, 6, 8, 10=\n\
+        {{EnemiesAppearing|Croconator|Capy|Dark Otter|Zigge|Luke|Guile}}\n\n\
+        {{Stage Info\n\
+        |stage name = [[File:rc014/png]]\n\
+        [[File:Mapsn193 00 c ja.png]]\n\
+        |stage location = [[File:Mapname193 c ja.png]]";
+
+        assert!(map.contains(FIRST), "{map}");
+        assert!(map.contains(SECOND), "{map}");
+    }
+}
