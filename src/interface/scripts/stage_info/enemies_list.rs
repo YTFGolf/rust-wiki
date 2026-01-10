@@ -16,6 +16,7 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use std::{collections::HashSet, fmt::Write};
 
+/// Get list of enemies and their magnifications.
 pub fn enemies_list(
     stage: &Stage,
     suppress_gauntlet_magnification: bool,
@@ -23,11 +24,15 @@ pub fn enemies_list(
     let suppress_magnification: bool = matches!(stage.id.variant(), T::Dojo | T::RankingDojo)
         || suppress_gauntlet_magnification && stage.id.variant().is_gauntlet();
 
-    enemies_list2(stage, suppress_magnification)
+    enemies_list_main(stage, suppress_magnification)
 }
 
 /// Get list of enemies and their magnifications.
-pub fn enemies_list2(stage: &Stage, suppress_magnification: bool) -> Vec<TemplateParameter> {
+///
+/// Difference between this and [`enemies_list`] is that
+/// `suppress_magnification` applies to all stage variants rather than just
+/// gauntlet and dojo.
+pub fn enemies_list_main(stage: &Stage, suppress_magnification: bool) -> Vec<TemplateParameter> {
     struct EnemyListWithDupes<'a> {
         base: Vec<&'a StageEnemy>,
         enemies: Vec<&'a StageEnemy>,
@@ -571,6 +576,29 @@ mod tests {
                     |Bore|200%}}"
                 ),
                 TemplateParameter::new("boss", "{{Magnification|Le'noir|150%}}"),
+            ]
+        );
+    }
+
+    #[test]
+    fn with_insane_base_suppressed() {
+        let relay_1600m =
+            Stage::from_id_current(StageID::from_components(T::Extra, 61, 2)).unwrap();
+        assert_eq!(
+            enemies_list_main(&relay_1600m, true),
+            vec![
+                TemplateParameter::new("base", "{{Magnification|Relay Base|0}}"),
+                TemplateParameter::new(
+                    "enemies",
+                    "{{Magnification|White Wind|0\n\
+                    |Duche|0\n\
+                    |Red Wind|0\n\
+                    |Gory Black|0\n\
+                    |Black Wind|0\n\
+                    |R.Ost|0\n\
+                    |Bore|0}}"
+                ),
+                TemplateParameter::new("boss", "{{Magnification|Le'noir|0}}"),
             ]
         );
     }

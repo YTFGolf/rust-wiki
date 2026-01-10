@@ -5,7 +5,7 @@ use super::super::{
     stage_info::{
         battlegrounds::battlegrounds,
         beginning::enemies_appearing,
-        enemies_list::enemies_list2,
+        enemies_list::enemies_list_main,
         information::{base_hp, energy, max_enemies, stage_location, stage_name, width, xp},
         misc_information::{chapter, max_clears, star},
         restrictions::{restrictions_info, restrictions_section, rules_section},
@@ -37,7 +37,7 @@ use std::fmt::{Display, Write};
 /// Get the template used for comparing [`TabInfo`].
 fn template_check(stage: &Stage) -> Template {
     Template::named("Stage Info")
-        .add_params(enemies_list2(stage, true))
+        .add_params(enemies_list_main(stage, true))
         .add_params(restrictions_info(stage))
         .add_params(width(stage))
         .add_params(max_enemies(stage))
@@ -337,7 +337,7 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
         let template = Template::named("Stage Info")
             .add_params(sname.clone())
             .add_params(sloc.clone())
-            .add_params(enemies_list2(tab_stage0, true))
+            .add_params(enemies_list_main(tab_stage0, true))
             .add_params(restrictions_info(tab_stage0))
             .add_params(width(tab_stage0))
             .add_params(max_enemies(tab_stage0))
