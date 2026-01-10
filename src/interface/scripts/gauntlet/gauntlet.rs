@@ -6,7 +6,7 @@ use super::super::{
         battlegrounds::battlegrounds,
         beginning::enemies_appearing,
         enemies_list::enemies_list_main,
-        information::{base_hp, energy, max_enemies, stage_location, stage_name, width, xp},
+        information::{base_hp, energy, max_enemies, stage_location, width, xp},
         misc_information::{chapter, max_clears, star},
         restrictions::{restrictions_info, restrictions_section, rules_section},
         stage_info::get_stage_wiki_data,
@@ -21,12 +21,16 @@ use crate::{
             stage_enemy::{MS_SIGN, Magnification, StageEnemy},
         },
     },
-    interface::{config::Config, error_handler::InfallibleWrite},
+    interface::{
+        config::Config,
+        error_handler::InfallibleWrite,
+        scripts::stage_info::information::{stage_name_base, stage_name_img},
+    },
     wiki_data::enemy_data::ENEMY_DATA,
     wikitext::{
         section::Section,
         tabber::{Tabber, TabberTab, TabberType},
-        template::Template,
+        template::{Template, TemplateParameter},
         text_utils::extract_link,
     },
 };
@@ -324,7 +328,6 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
     let stage0 = &stages[0];
     let data = get_stage_wiki_data(&stage0.id);
 
-    let sname = stage_name(stage0, config.version.lang());
     let sloc = stage_location(stage0, config.version.lang());
     let schap = chapter(stage0, &data);
 
@@ -334,8 +337,16 @@ fn map_tabber(map_id: &MapID, config: &Config) -> Tabber {
         let ranges = StageRange::get_ranges(&tab.0);
         let tab_stage0 = &stages[ranges[0].min as usize];
 
+        let sname = {
+            let mut buf = vec![];
+
+            buf.push(stage_name_base(tab_stage0));
+            buf.push(stage_name_img(stage0, config.version.lang()));
+
+            TemplateParameter::new("stage name", buf.join("\n"))
+        };
         let template = Template::named("Stage Info")
-            .add_params(sname.clone())
+            .add_params(sname)
             .add_params(sloc.clone())
             .add_params(enemies_list_main(tab_stage0, true))
             .add_params(restrictions_info(tab_stage0))
@@ -440,7 +451,7 @@ mod tests {
         const SECOND: &str = "Level 2, 4, 6, 8, 10=\n\
         {{EnemiesAppearing|Croconator|Capy|Dark Otter|Zigge|Luke|Guile}}\n\n\
         {{Stage Info\n\
-        |stage name = [[File:rc014/png]]\n\
+        |stage name = [[File:rc007.png]]\n\
         [[File:Mapsn193 00 c ja.png]]\n\
         |stage location = [[File:Mapname193 c ja.png]]";
 
