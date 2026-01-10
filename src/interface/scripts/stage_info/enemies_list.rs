@@ -16,11 +16,18 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use std::{collections::HashSet, fmt::Write};
 
-/// Get list of enemies and their magnifications.
 pub fn enemies_list(
     stage: &Stage,
     suppress_gauntlet_magnification: bool,
 ) -> Vec<TemplateParameter> {
+    let suppress_magnification: bool = matches!(stage.id.variant(), T::Dojo | T::RankingDojo)
+        || suppress_gauntlet_magnification && stage.id.variant().is_gauntlet();
+
+    enemies_list2(stage, suppress_magnification)
+}
+
+/// Get list of enemies and their magnifications.
+pub fn enemies_list2(stage: &Stage, suppress_magnification: bool) -> Vec<TemplateParameter> {
     struct EnemyListWithDupes<'a> {
         base: Vec<&'a StageEnemy>,
         enemies: Vec<&'a StageEnemy>,
@@ -41,9 +48,6 @@ pub fn enemies_list(
         }
     }
     // get all enemies
-
-    let suppress_magnification: bool = matches!(stage.id.variant(), T::Dojo | T::RankingDojo)
-        || suppress_gauntlet_magnification && stage.id.variant().is_gauntlet();
 
     assert!(
         enemy_list.base.len() <= 1,
