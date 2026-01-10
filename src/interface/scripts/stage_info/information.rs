@@ -16,36 +16,41 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use std::fmt::Write;
 
-/// Get the `|stage name` parameter.
-pub fn stage_name(stage: &Stage, lang: VersionLanguage) -> TemplateParameter {
-    let mut buf = String::new();
-
+/// Get the base part of the stage name parameter.
+pub fn stage_name_base(stage: &Stage) -> String {
     match stage.anim_base_id {
-        None => write!(buf, "[[File:rc{base_id:03}.png]]", base_id = stage.base_id).unwrap(),
+        None => format!("[[File:rc{base_id:03}.png]]", base_id = stage.base_id),
         Some(id) => {
             let id: u32 = u32::from(id) - 2;
             const RESIZE: [u32; 8] = [657, 669, 678, 681, 693, 734, 738, 739];
             if RESIZE.contains(&id) {
-                write!(buf, "[[File:E {id}.png|200px]]").unwrap();
+                format!("[[File:E {id}.png|200px]]")
             } else {
-                write!(buf, "[[File:E {id}.png]]").unwrap();
+                format!("[[File:E {id}.png]]")
                 // maybe just put the 200px there always
             }
         }
     }
-    // base part
+}
 
-    write!(
-        buf,
-        "\n[[File:Mapsn{map_num:03} {stage_num:02} {type_code} {lang}.png]]",
+/// Get the stage image part of the stage name parameter.
+pub fn stage_name_img(stage: &Stage, lang: VersionLanguage) -> String {
+    format!(
+        "[[File:Mapsn{map_num:03} {stage_num:02} {type_code} {lang}.png]]",
         map_num = stage.id.map().num(),
         stage_num = stage.id.num(),
         type_code = map_img_code(stage.id.map()),
     )
-    .unwrap();
-    // stage name part
+}
 
-    TemplateParameter::new("stage name", buf)
+/// Get the `|stage name` parameter.
+pub fn stage_name(stage: &Stage, lang: VersionLanguage) -> TemplateParameter {
+    let mut buf = vec![];
+
+    buf.push(stage_name_base(stage));
+    buf.push(stage_name_img(stage, lang));
+
+    TemplateParameter::new("stage name", buf.join("\n"))
 }
 
 /// Get the `|stage location` parameter.
