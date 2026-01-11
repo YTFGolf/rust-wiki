@@ -161,6 +161,7 @@ pub struct EnemyCSV {
     // 110
     pub supervillain: Bool,
 
+    #[serde(default)]
     rest: Vec<i32>,
 }
 
