@@ -1,10 +1,12 @@
 //! Module that deals with `unitbuy.csv` data.
 
-use crate::game_data::version::{
-    Version,
-    version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+use crate::game_data::{
+    cat::raw::unitbuy::parse_unitbuy_error,
+    version::{
+        Version,
+        version_data::{CacheableVersionData, CvdCreateError, CvdResult},
+    },
 };
-use csv::ByteRecord;
 use serde::Deserialize;
 use std::{error::Error, fmt::Debug, path::Path};
 use string_error::into_err;
@@ -87,17 +89,6 @@ pub struct ComboDataFrom15_0 {
     pub rest: Vec<i32>,
 }
 
-fn parse_nyancombodata_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
-    // I think this was because the error doesn't actually say what field caused
-    // the error
-    let index = match e.kind() {
-        csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
-        _ => unimplemented!(),
-    };
-
-    String::from_utf8(result[index as usize].into()).unwrap()
-}
-
 /// Get raw combo data.
 fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(
     path: &Path,
@@ -113,7 +104,7 @@ fn get_combodata<T: for<'a> Deserialize<'a> + Into<ComboData>>(
             result.deserialize(None).map_err(|e| {
                 let msg = format!(
                     "Error when parsing record {result:?}: {e}. Item was {item:?}.",
-                    item = parse_nyancombodata_error(&e, &result)
+                    item = parse_unitbuy_error(&e, &result)
                 );
                 into_err(msg)
             })

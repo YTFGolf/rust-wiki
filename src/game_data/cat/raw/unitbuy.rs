@@ -125,7 +125,10 @@ pub struct UnitBuyRaw {
     pub rest: Vec<i32>,
 }
 
-fn parse_unitbuy_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
+/// Turn unitbuy error into something usable.
+pub fn parse_unitbuy_error(e: &csv::Error, result: &ByteRecord) -> impl Debug {
+    // I think this was because the error doesn't actually say what field caused
+    // the error
     let index = match e.kind() {
         csv::ErrorKind::Deserialize { pos: _, err } => err.field().unwrap(),
         _ => unimplemented!(),
