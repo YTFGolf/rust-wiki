@@ -106,7 +106,7 @@ pub struct EnemyCSV {
     pub warp_chance: Percent,
     pub warp_len: Big,
     pub warp_min_quad: i16,
-    pub warp_max_quad: Big,
+    pub warp_max_quad: i16,
     pub starred_alien: Bool,
 
     // 70
@@ -128,16 +128,38 @@ pub struct EnemyCSV {
     pub surge_range_quad: Big,
     pub surge_level: Small,
     pub immune_surge: Bool,
+    pub is_mini_wave: Bool,
     pub shield_hp: Massive,
     pub shield_regen: Percent,
     pub death_surge_chance: Percent,
-    pub death_surge_spawn_quad: Big,
 
     // 90
+    pub death_surge_spawn_quad: Big,
     pub death_surge_range_quad: Big,
     pub death_surge_level: Small,
     pub aku: Bool,
     pub colossus: Bool,
+    pub second_ld_is_different: Bool,
+    pub second_ld_base: i16,
+    pub second_ld_range: i16,
+    pub third_ld_is_different: Bool,
+    pub third_ld_base: i16,
+
+    // 100
+    pub third_ld_range: i16,
+    pub behemoth: Bool,
+    pub is_mini_surge: Bool,
+    pub counter_surge: Bool,
+    pub sage: Bool,
+    pub immune_curse: Bool,
+    pub explosion_chance: Percent,
+    pub explosion_spawn_quad: Big,
+    /// Technically something to do with explosions I think.
+    _uk108: Small,
+    pub immune_explosion: Bool,
+
+    // 110
+    pub supervillain: Bool,
 
     rest: Vec<i32>,
 }
@@ -188,7 +210,8 @@ mod tests {
         let t_unit = version.get_cached_file::<TUnitContainer>();
         let units = &t_unit.units;
 
-        for unit in units {
+        #[allow(clippy::used_underscore_binding)]
+        for (_i, unit) in units.into_iter().enumerate() {
             if unit.hp == 0 {
                 // first two placeholders
                 continue;
@@ -197,13 +220,15 @@ mod tests {
             assert_eq!(unit._uk7, 0);
             assert_eq!(unit._width, 320);
             assert_eq!(unit._uk9, 0);
-            // assert!(
-            //     unit.rest.is_empty(),
-            //     "Remaining fields not empty, found {:?}",
-            //     unit.rest
-            // );
-            println!("{unit:?}");
+            if unit.kamikaze != 0 {
+                assert_eq!(unit.kamikaze, 2);
+            }
+            assert!(
+                unit.rest.is_empty(),
+                "Remaining fields not empty, found {:?}",
+                unit.rest
+            );
+            // println!("{_i}: {unit:?}");
         }
-        panic!()
     }
 }
