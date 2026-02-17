@@ -21,6 +21,7 @@ type Bool = u8;
 
 #[derive(Debug, serde::Deserialize, Default)]
 #[allow(missing_docs)]
+/// Data from `t_unit.csv`.
 pub struct EnemyCSV {
     pub hp: Massive,
     pub kb: Massive,
@@ -166,8 +167,15 @@ pub struct EnemyCSV {
 }
 
 #[derive(Debug)]
+/// Container for [`EnemyCSV`] data.
 pub struct TUnitContainer {
     units: Vec<EnemyCSV>,
+}
+impl TUnitContainer {
+    /// Get [`EnemyCSV`] line for a unit.
+    pub fn get_unit(&self, id: u32) -> Option<&EnemyCSV> {
+        self.units.get(id as usize)
+    }
 }
 impl CacheableVersionData for TUnitContainer {
     fn create(version: &Version) -> CvdResult<Self> {
