@@ -462,6 +462,7 @@ pub struct CatFormStats {
 impl CatFormStats {
     /// Get unit stats from the combined stat data.
     pub fn from_combined(combined: &CombinedCatData) -> Self {
+        log::trace!("Combined: {combined:?}");
         let (fixed, var) = combined;
         Self {
             hp: fixed.hp,
