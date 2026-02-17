@@ -5,6 +5,7 @@ use std::{fmt::Display, ptr::addr_of};
 
 enum Color {
     Red,
+    Green,
     Yellow,
     Blue,
     Blank,
@@ -13,6 +14,7 @@ impl Color {
     const fn get_color_num(&self) -> &str {
         match self {
             Color::Red => "31",
+            Color::Green => "32",
             Color::Yellow => "33",
             Color::Blue => "34",
             Color::Blank => "0",
@@ -62,7 +64,12 @@ impl log::Log for Logger {
                 blank = Color::Blank,
                 args = record.args()
             ),
-            Level::Trace => unimplemented!(),
+            Level::Trace => eprintln!(
+                "[{green}debug{blank}] - {args}",
+                green = Color::Green,
+                blank = Color::Blank,
+                args = record.args()
+            ),
         }
     }
 
