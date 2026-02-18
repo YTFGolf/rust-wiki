@@ -302,6 +302,7 @@ mod tests {
         // both for unused special rule and for string version
         let version = TEST_CONFIG.version.current_version();
         let rules = version.get_cached_file::<SpecialRules>();
+        println!("{rules:?}");
 
         assert!(!rules.map.is_empty());
         // make sure hasn't defaulted
