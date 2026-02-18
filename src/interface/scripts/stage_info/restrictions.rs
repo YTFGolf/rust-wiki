@@ -365,6 +365,16 @@ fn rule_params(label: &RuleNameLabel, rules: &SpecialRule) -> Option<String> {
                 }
             }
         }
+        RuleNameLabel::UberClearance => {
+            for rule in &rules.rule_type {
+                match rule {
+                    RuleType::RarityLimit([__n, __ex, __rr, __sr, ur, __lr]) => {
+                        return Some(ur.to_formatted_string(&Locale::en));
+                    }
+                    _ => continue,
+                }
+            }
+        }
         _ => return None,
     }
 
