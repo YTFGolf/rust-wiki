@@ -369,6 +369,11 @@ fn rule_params(label: &RuleNameLabel, rules: &SpecialRule) -> Option<String> {
             for rule in &rules.rule_type {
                 match rule {
                     RuleType::RarityLimit([__n, __ex, __rr, __sr, ur, __lr]) => {
+                        assert_eq!(*__n, 0);
+                        assert_eq!(*__ex, 0);
+                        assert_eq!(*__rr, 0);
+                        assert_eq!(*__sr, 0);
+                        assert_eq!(*__lr, 0);
                         return Some(ur.to_formatted_string(&Locale::en));
                     }
                     _ => continue,
