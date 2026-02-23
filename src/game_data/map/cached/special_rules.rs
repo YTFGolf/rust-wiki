@@ -223,7 +223,8 @@ impl RuleNameLabel {
             RuleNameLabel::PayDay => "Pay Day",
             RuleNameLabel::GrandBattle => "Grand Battle",
             RuleNameLabel::Placeholder(label) => {
-                panic!("Error: unknown special rule label {label:?}")
+                log::error!("unknown special rule label {label:?}");
+                "???"
             }
         }
     }
