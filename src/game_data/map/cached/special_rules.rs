@@ -140,7 +140,8 @@ impl RuleType {
     }
 }
 
-// TODO completely remove; fallback should be enough
+// This has to be an enum since the `{{ColosseumRule}}` template may require
+// parameters and the enum is the only way to figure out which rule you have.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 /// Possible rule name label value.
 pub enum RuleNameLabel {
