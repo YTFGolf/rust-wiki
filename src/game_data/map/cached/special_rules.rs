@@ -176,6 +176,8 @@ pub enum RuleNameLabel {
     PayDay,
     /// Grand Battle.
     GrandBattle,
+    /// ハイスピード
+    ハイスピード,
     /// Placeholder.
     Placeholder(String),
 }
@@ -198,6 +200,7 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName013" => Self::DirtCheap,
             "SpecialRuleName014" => Self::PayDay,
             "SpecialRuleName015" => Self::GrandBattle,
+            "SpecialRuleName016" => Self::ハイスピード,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -222,6 +225,7 @@ impl RuleNameLabel {
             RuleNameLabel::DirtCheap => "Dirt Cheap",
             RuleNameLabel::PayDay => "Pay Day",
             RuleNameLabel::GrandBattle => "Grand Battle",
+            RuleNameLabel::ハイスピード => "ハイスピード",
             RuleNameLabel::Placeholder(label) => {
                 log::error!("unknown special rule label {label:?}");
                 "???"
@@ -304,6 +308,7 @@ mod tests {
         let version = TEST_CONFIG.version.current_version();
         let rules = version.get_cached_file::<SpecialRules>();
         println!("{rules:?}");
+        // quick way to check all rules when there's an update
 
         assert!(!rules.map.is_empty());
         // make sure hasn't defaulted
