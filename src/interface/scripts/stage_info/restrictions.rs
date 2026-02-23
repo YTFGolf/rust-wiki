@@ -891,7 +891,7 @@ mod tests {
         );
         assert_eq!(
             &restrictions_section(&no_longer_single).unwrap(),
-            "Unit Restriction: Only [[Secret Crush Cat (Special Cat)|Secret Crush Cat]], [[Tomboy Lion Cat (Special Cat)|Tomboy Lion Cat]], [[Chalkboard Eraser Cat (Special Cat)|Chalkboard Eraser Cat]], [[Class Rep Cat (Special Cat)|Class Rep Cat]] and [[Principal Cat (Special Cat)|Principal Cat]]"
+            "Unit Restriction: Only [[Secret Crush Cat (Special Cat)|Secret Crush Cat]], [[Tomboy Lion Cat (Special Cat)|Tomboy Lion Cat]], [[Chalkboard Eraser Cat (Special Cat)|Chalkboard Eraser Cat]], [[Class Rep Cat (Special Cat)|Class Rep Cat]], [[Principal Cat (Special Cat)|Principal Cat]] and [[853 (Special Cat)|853-1]]"
         );
     }
 

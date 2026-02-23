@@ -319,6 +319,17 @@ mod tests {
                     "boss",
                     "{{Magnification|Ururun Wolf|300/500%\n\
                     |Mystic Mask Yulala|100%}}"
+                ),
+                TemplateParameter::new(
+                    "enemies2",
+                    "{{Magnification|Celeboodle|1,200%\n\
+                    |Relic Doge|180%\n\
+                    |Sir Rel|180%}}"
+                ),
+                TemplateParameter::new(
+                    "boss2",
+                    "{{Magnification|Ururun Wolf|360/600%\n\
+                    |Mystic Mask Yulala|120%}}"
                 )
             ]
         );
