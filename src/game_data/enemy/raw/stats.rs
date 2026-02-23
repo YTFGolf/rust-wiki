@@ -1,3 +1,5 @@
+//! Deals with enemy stats (`t_unit.csv`).
+
 use crate::game_data::{
     cat::raw::unitbuy::parse_unitbuy_error,
     version::{
@@ -163,7 +165,7 @@ pub struct EnemyCSV {
     pub supervillain: Bool,
 
     #[serde(default)]
-    rest: Vec<i32>,
+    pub rest: Vec<i32>,
 }
 
 #[derive(Debug)]
