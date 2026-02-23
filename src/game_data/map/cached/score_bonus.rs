@@ -209,6 +209,8 @@ mod tests {
         // both for unused score bonus and for string version
         let version = TEST_CONFIG.version.current_version();
         let bonuses = version.get_cached_file::<ScoreBonuses>();
+        println!("{bonuses:?}");
+        // quick way to check all bonuses when there's an update
 
         assert!(!bonuses.map.is_empty());
         // make sure hasn't defaulted
