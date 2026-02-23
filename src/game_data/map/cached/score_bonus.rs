@@ -133,7 +133,8 @@ impl BonusNameLabel {
             Self::MassiveDamage => "Massive Damage",
             Self::Slow => "Slow",
             BonusNameLabel::Placeholder(label) => {
-                panic!("Error: unknown score bonus label {label:?}")
+                log::error!("Error: unknown score bonus label {label:?}");
+                "???"
             }
         }
     }
