@@ -13,11 +13,31 @@ subheading.
 
 ## [Unreleased]
 
+### 15.2
+
+- New SpecialRule + parameters for UberClearance.
+
 ### Added
+
+- Updated README to reference `mini-bc-data`.
+- Trace logging.
+- Enemy stats (`t_unit.csv`) parser.
 
 ### Fixed
 
+- Replaced a reachable `unreachable!` with `unimplemented!`.
+- Gauntlet bases are handled properly instead of using stage 0's base for each
+  tab.
+- `Battleground` section no longer referred to as `Battlegrounds`.
+
 ### Changed
+
+- Got full confirmation of Talent targets.
+- Extracted out CSV field error logger from nyancombo and unitbuy.
+- SpecialRule/ScoreBonus placeholders no longer panic, instead log error and
+  return `"???"`.
+- Separate `enemies_list` so magnification can be suppressed in
+  non-Gauntlet/Dojo stages (without changing default behaviour).
 
 ### Removed
 
