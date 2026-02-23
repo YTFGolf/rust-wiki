@@ -88,7 +88,7 @@ pub fn get_stage_info(stage: &Stage, config: &Config) -> impl Display {
         page.push(Section::h2("Restrictions", s));
     }
 
-    page.push(Section::h2("Battlegrounds", battlegrounds(stage)));
+    page.push(Section::h2("Battleground", battlegrounds(stage)));
     page.push(Section::h2("Strategy", "-"));
     page.push(Section::h2(
         "Reference",
