@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.8.4] - 2026-02-23
+
 ### 15.2
 
 - New SpecialRule + parameters for UberClearance.
@@ -38,8 +48,6 @@ subheading.
   return `"???"`.
 - Separate `enemies_list` so magnification can be suppressed in
   non-Gauntlet/Dojo stages (without changing default behaviour).
-
-### Removed
 
 ## [0.8.3] - 2025-12-23
 
@@ -522,7 +530,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.3...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.4...dev
+[0.8.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.0...v0.8.1
