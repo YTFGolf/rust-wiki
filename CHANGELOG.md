@@ -17,6 +17,9 @@ subheading.
 
 ### Fixed
 
+- Issues relating to EoC and ItF Zombie Outbreak stagenames
+(<https://battlecats.miraheze.org/wiki/Special:Diff/378250>).
+
 ### Changed
 
 ### Removed
