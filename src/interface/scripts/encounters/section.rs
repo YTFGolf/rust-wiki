@@ -425,7 +425,7 @@ mod tests {
         let section = Ref::AkuRealms.section();
         assert_eq!(
             stringify(section, &zoutbreak, name, MAGS),
-            "Stage 3-44: [[Las Vegas (Empire of Cats)|Las Vegas]] (600%)"
+            "Stage 3-44: [[Las Vegas (Empire of Cats)/Outbreak|Las Vegas]] (600%)"
         );
     }
 
