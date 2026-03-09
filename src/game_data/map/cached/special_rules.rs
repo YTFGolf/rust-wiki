@@ -301,7 +301,8 @@ impl CacheableVersionData for SpecialRules {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::TEST_CONFIG;
+    use crate::{TEST_CONFIG, regex_handler::static_regex};
+    use std::io::{BufRead, BufReader};
 
     #[test]
     fn assert_no_placeholders() {
@@ -323,6 +324,26 @@ mod tests {
             if let Some(RuleNameLabel::Placeholder(label)) = &rule.1.rule_name_label {
                 panic!("Error: unknown special rule label {label:?}")
             }
+        }
+    }
+
+    #[test]
+    fn test_correct_en_names() {
+        // TODO refactor to use a proper localizable parser
+        let version = TEST_CONFIG.version.en();
+
+        let reader =
+            BufReader::new(File::open(version.get_file_path("resLocal/localizable.tsv")).unwrap());
+        let re = static_regex(r"^(SpecialRuleName\d{3})\t(.*)$");
+
+        for line in reader.lines() {
+            let l2 = line.unwrap();
+            let Some(caps) = re.captures(&l2) else {
+                continue;
+            };
+            let (_, [key, value]) = caps.extract();
+
+            assert_eq!(RuleNameLabel::from(key).as_str(), value);
         }
     }
 }
