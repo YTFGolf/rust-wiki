@@ -22,7 +22,7 @@ pub fn stage_name_base(stage: &Stage) -> String {
         None => format!("[[File:rc{base_id:03}.png]]", base_id = stage.base_id),
         Some(id) => {
             let id: u32 = u32::from(id) - 2;
-            const RESIZE: [u32; 8] = [657, 669, 678, 681, 693, 734, 738, 739];
+            const RESIZE: [u32; 9] = [657, 669, 678, 681, 693, 734, 738, 739, 767];
             if RESIZE.contains(&id) {
                 format!("[[File:E {id}.png|200px]]")
             } else {
