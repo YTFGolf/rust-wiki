@@ -332,7 +332,7 @@ mod tests {
             treasure(&ht30),
             Some(TemplateParameter::new(
                 "treasure",
-                "- [[Cat Capsule#Rare Cat Capsule|Rare Ticket]] +3 (100%, 1 time)"
+                "- [[Cat Capsule#Rare Capsule|Rare Ticket]] +3 (100%, 1 time)"
             ))
         );
         assert_eq!(score_rewards(&ht30), None);
