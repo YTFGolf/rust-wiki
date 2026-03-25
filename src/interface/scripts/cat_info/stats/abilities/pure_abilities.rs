@@ -147,12 +147,15 @@ mod multiple_ability_tests {
 pub fn get_pure_abilities(
     hits: &AttackHits,
     cat_abilities: &[Ability],
-    targets: &[EnemyType],
+    _targets: &[EnemyType],
+    // targets is only here for historical reasons, was removed in 1.2
+    // maybe instead becomes an enum?
 ) -> Vec<String> {
     let mut abilities = vec![];
     let mut immunities = vec![];
 
-    let targets = get_targets(targets);
+    // let targets = get_targets(targets);
+    let targets = "target traits";
     let multab = get_multiple_hit_abilities(hits);
 
     let abil = get_ability;
@@ -165,36 +168,36 @@ pub fn get_pure_abilities(
         let icon = String::from("{{AbilityIcon|") + ability.name() + "}}";
         match ability {
             Ability::StrongAgainst => abilities.push(format!(
-                "{icon} {strong} against {targets} enemies (Deals 1.5x damage, only takes 1/2 damage)",
+                "{icon} {strong} against {targets} (Deals 1.5x damage, only takes 1/2 damage)",
                 strong = abil("Strong Against", "Strong")
             )),
             Ability::Knockback { chance } => abilities.push(format!(
-                "{icon} {chance}% chance to {knockback} {targets} enemies{multab}",
+                "{icon} {chance}% chance to {knockback} {targets}{multab}",
                 knockback = abil("Knockback", "knockback")
             )),
             Ability::Freeze { chance, duration } => abilities.push(format!(
-                "{icon} {chance}% chance to {freeze} {targets} enemies for {duration}{multab}",
+                "{icon} {chance}% chance to {freeze} {targets} for {duration}{multab}",
                 freeze = abil("Freeze", "freeze"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::Slow { chance, duration } => abilities.push(format!(
-                "{icon} {chance}% chance to {slow} {targets} enemies for {duration}{multab}",
+                "{icon} {chance}% chance to {slow} {targets} for {duration}{multab}",
                 slow = abil("Slow", "slow"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
             Ability::Resist => abilities.push(format!(
-                "{icon} {resistant} to {targets} enemies",
+                "{icon} {resistant} to {targets}",
                 resistant = abil2("Resistant")
             )),
             Ability::MassiveDamage => abilities.push(format!(
-                "{icon} Deals {damage} to {targets} enemies",
+                "{icon} Deals {damage} to {targets}",
                 damage = abil("Massive Damage", "massive damage")
             )),
             Ability::Crit { chance } => abilities.push(format!(
                 "{icon} {chance}% chance to perform a [[Critical Hit]]{multab}"
             )),
             Ability::TargetsOnly => abilities.push(format!(
-                "{icon} {attacks} {targets} enemies",
+                "{icon} {attacks} {targets}",
                 attacks = abil("Attacks Only", "Attacks only")
             )),
             Ability::DoubleBounty => abilities.push(format!(
@@ -221,7 +224,7 @@ pub fn get_pure_abilities(
                 duration,
                 multiplier,
             } => abilities.push(format!(
-                "{icon} {chance}% chance to {weaken} {targets} enemies \
+                "{icon} {chance}% chance to {weaken} {targets} \
                 to {multiplier}% for {duration}{multab}",
                 weaken = abil("Weaken", "weaken"),
                 duration = get_duration_repr(u32::from(*duration))
@@ -260,11 +263,11 @@ pub fn get_pure_abilities(
                 angels = enemy("EVA Angel", "EVA Angels")
             )),
             Ability::InsaneResist => abilities.push(format!(
-                "{icon} {tough} against {targets} enemies",
+                "{icon} {tough} against {targets}",
                 tough = abil("Insanely Tough", "Insanely tough")
             )),
             Ability::InsaneDamage => abilities.push(format!(
-                "{icon} Deals {damage} to {targets} enemies",
+                "{icon} Deals {damage} to {targets}",
                 damage = abil("Insane Damage", "insane damage")
             )),
             Ability::SavageBlow { chance, damage } => abilities.push(format!(
@@ -275,7 +278,7 @@ pub fn get_pure_abilities(
                 pc = get_formatted_float(f64::from(damage + 100) / 100.0, 2)
             )),
             Ability::Dodge { chance, duration } => abilities.push(format!(
-                "{icon} {chance}% chance to {dodge} attacks from {targets} enemies for {duration}",
+                "{icon} {chance}% chance to {dodge} attacks from {targets} for {duration}",
                 dodge = abil("Dodge Attack", "dodge"),
                 duration = get_duration_repr(u32::from(*duration))
             )),
@@ -314,7 +317,7 @@ pub fn get_pure_abilities(
             }
 
             Ability::Curse { chance, duration } => abilities.push(format!(
-                "{icon} {chance}% chance to {curse} {targets} enemies for {duration}{multab}",
+                "{icon} {chance}% chance to {curse} {targets} for {duration}{multab}",
                 curse = abil("Curse", "curse"),
                 duration = get_duration_repr(u32::from(*duration))
             )),

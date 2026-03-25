@@ -55,6 +55,7 @@ fn write_val_stats(t: &mut Template, form_name: &str, form: Form, is_kamikaze: b
         t.push_params(P::new(format!("{f} Kamikaze"), "true"));
     }
 
+    t.push_params(P::new(format!("{f} Targets"), form.targets));
     t.push_params(P::new(format!("{f} Abilities"), form.abilities));
 }
 

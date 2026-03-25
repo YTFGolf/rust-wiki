@@ -59,6 +59,8 @@ pub struct Form {
     pub atk_max: String,
     /// Single/Area.
     pub attack_type: &'static str,
+    /// Targets.
+    pub targets: String,
     /// List of cat abilities.
     pub abilities: String,
 }
@@ -209,6 +211,17 @@ pub fn get_form(
         AreaOfEffect::SingleAttack => "Single",
         AreaOfEffect::AreaAttack => "Area",
     };
+    let targets = if stats.targets.is_empty() {
+        "-".to_string()
+    } else {
+        stats
+            .targets
+            .iter()
+            .map(|t| t.to_string())
+            .collect::<Vec<_>>()
+            .join(",")
+    };
+
     let abilities = {
         let mut abilities = vec![];
 
@@ -251,6 +264,7 @@ pub fn get_form(
             hp_max,
             atk_max,
             attack_type,
+            targets,
             abilities,
         },
     }
