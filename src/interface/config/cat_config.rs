@@ -20,14 +20,17 @@ pub enum StatsTemplateVersion {
     Ver1o0,
     /// Version 1.1.
     Ver1o1,
+    /// Version 1.2.
+    Ver1o2,
 }
-const POSSIBLE_VALUES: [StatsTemplateVersion; 6] = [
+const POSSIBLE_VALUES: [StatsTemplateVersion; 7] = [
     StatsTemplateVersion::Current,
     StatsTemplateVersion::Manual,
     StatsTemplateVersion::Ver0o1,
     StatsTemplateVersion::Ver0o2,
     StatsTemplateVersion::Ver1o0,
     StatsTemplateVersion::Ver1o1,
+    StatsTemplateVersion::Ver1o2,
 ];
 impl StatsTemplateVersion {
     /// Get string representation of template version.
@@ -39,6 +42,7 @@ impl StatsTemplateVersion {
             Self::Ver0o2 => "0.2",
             Self::Ver1o0 => "1.0",
             Self::Ver1o1 => "1.1",
+            Self::Ver1o2 => "1.2",
         }
     }
 }
