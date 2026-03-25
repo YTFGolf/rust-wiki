@@ -123,12 +123,11 @@ pub fn get_range_ability(hits: &AttackHits) -> Vec<String> {
             }
         }
         AttackHits::Triple([hit1, hit2, hit3]) => {
-            if hit2.range == AttackRange::Unchanged
-                || hit3.range == AttackRange::Unchanged
-                || hit2.range == hit1.range
-                || hit3.range == hit1.range
+            if (hit2.range == AttackRange::Unchanged && hit3.range == AttackRange::Unchanged)
+                || (hit2.range == hit1.range && hit3.range == hit1.range)
             {
                 assert_eq!(hit2.range, hit3.range);
+                // not needed?
                 get_range_ability_same(hit1).into_iter().collect()
             } else {
                 get_range_ability_different(hits)
