@@ -268,10 +268,11 @@ pub fn get_pure_abilities(
                 damage = abil("Insane Damage", "insane damage")
             )),
             Ability::SavageBlow { chance, damage } => abilities.push(format!(
-                "{icon} {chance}% chance to land a {blow} for +{damage}% \
+                "{icon} {chance}% chance to land a {blow} dealing {pc}x \
                 damage to non-{metal} enemies{multab}",
                 blow = abil("Savage Blow", "savage blow"),
-                metal = enemy2("Metal")
+                metal = enemy2("Metal"),
+                pc = get_formatted_float(f64::from(damage + 100) / 100.0, 2)
             )),
             Ability::Dodge { chance, duration } => abilities.push(format!(
                 "{icon} {chance}% chance to {dodge} attacks from {targets} enemies for {duration}",
