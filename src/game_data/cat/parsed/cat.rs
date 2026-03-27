@@ -1,13 +1,13 @@
 //! Deals with cat data.
 
-use super::{
-    anim::{AnimDataError, CatFormAnimData, get_cat_anims},
-    stats::form::CatFormStats,
-    unitbuy::{AncientEggInfo, UnitBuy},
-};
 use crate::game_data::{
     cat::{
-        parsed::{anim::Anim, talents::Talents},
+        parsed::{
+            anim::{CatFormAnimData, get_cat_anims},
+            stats::form::CatFormStats,
+            talents::Talents,
+            unitbuy::{AncientEggInfo, UnitBuy},
+        },
         raw::{
             stats::read_data_file,
             talents::TalentsContainer,
@@ -16,6 +16,7 @@ use crate::game_data::{
             unitlevel::{UnitLevelContainer, UnitLevelRaw},
         },
     },
+    unit::anim::{Anim, AnimDataError},
     version::{
         Version,
         lang::{MultiLangVersionContainer, VersionLanguage},
