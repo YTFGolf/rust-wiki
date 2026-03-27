@@ -2,9 +2,12 @@
 
 use super::util::{get_ability, get_ability_single, get_duration_repr, get_enemy_category};
 use crate::{
-    game_data::cat::{
-        ability::{Ability, Surge, SurgeType, Wave, WaveType},
-        parsed::stats::form::{AttackHits, EnemyType, LATEST_ENEMY_TYPE},
+    game_data::{
+        cat::{
+            ability::{Ability, Surge, SurgeType, Wave, WaveType},
+            parsed::stats::form::AttackHits,
+        },
+        unit::traits::{EnemyType, LATEST_ENEMY_TYPE},
     },
     interface::error_handler::InfallibleWrite,
     wikitext::number_utils::get_formatted_float,
@@ -53,7 +56,7 @@ fn get_targets(targets: &[EnemyType]) -> String {
 #[cfg(test)]
 mod get_targets_tests {
     use super::*;
-    use crate::game_data::cat::parsed::stats::form::EnemyType as E;
+    use EnemyType as E;
 
     #[test]
     fn single() {
