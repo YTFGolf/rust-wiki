@@ -2,7 +2,7 @@
 
 use crate::game_data::{
     enemy::{parsed::stats::EnemyStats, raw::stats::TUnitContainer},
-    unit::anim::{AnimDataError, get_maanim_data},
+    unit::anim::{Anim, AnimDataError, get_maanim_data},
     version::lang::{MultiLangVersionContainer, VersionLanguage},
 };
 
@@ -13,6 +13,8 @@ pub struct Enemy {
     pub id: u32,
     /// Enemy stats.
     pub stats: EnemyStats,
+    /// Animation data.
+    pub anims: Anim,
 }
 
 #[derive(Debug)]
@@ -34,22 +36,16 @@ impl Enemy {
         version_cont: &T,
     ) -> Result<Self, EnemyDataError> {
         let id = wiki_id;
-        let stats = Self::get_forms(id, version_cont)?;
+        let stats = Self::get_stats(id, version_cont)?;
+        let anims = Self::get_anims(id, version_cont)?;
 
-        Ok(Self { id, stats })
+        Ok(Self { id, stats, anims })
     }
 
-    fn get_forms<T: MultiLangVersionContainer>(
+    fn get_anims<T: MultiLangVersionContainer>(
         wiki_id: u32,
         version_cont: &T,
-    ) -> Result<EnemyStats, EnemyDataError> {
-        let t_unit = version_cont
-            .lang_default()
-            .get_cached_file::<TUnitContainer>();
-        let stats = t_unit
-            .get_unit(wiki_id)
-            .ok_or(EnemyDataError::StatsNotFound)?;
-
+    ) -> Result<Anim, EnemyDataError> {
         let animfile = format!("{wiki_id:03}_e.maanim");
         let get = |ver| get_maanim_data(&animfile, ver);
 
@@ -66,6 +62,20 @@ impl Enemy {
             }
         };
 
-        Ok(EnemyStats::from_raw(stats, &anims))
+        Ok(anims)
+    }
+
+    fn get_stats<T: MultiLangVersionContainer>(
+        wiki_id: u32,
+        version_cont: &T,
+    ) -> Result<EnemyStats, EnemyDataError> {
+        let t_unit = version_cont
+            .lang_default()
+            .get_cached_file::<TUnitContainer>();
+        let stats = t_unit
+            .get_unit(wiki_id)
+            .ok_or(EnemyDataError::StatsNotFound)?;
+
+        Ok(EnemyStats::from_raw(stats))
     }
 }
