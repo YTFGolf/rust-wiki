@@ -1,0 +1,71 @@
+//! Defines enemy object.
+
+use crate::game_data::{
+    enemy::raw::stats::TUnitContainer,
+    unit::anim::{AnimDataError, get_maanim_data},
+    version::lang::{MultiLangVersionContainer, VersionLanguage},
+};
+
+#[derive(Debug)]
+/// Stats of an enemy.
+pub struct EnemyStats {}
+
+#[derive(Debug)]
+/// Parsed enemy object.
+pub struct Enemy {
+    /// ERO id.
+    pub id: u32,
+    /// Enemy stats.
+    pub stats: EnemyStats,
+}
+
+#[derive(Debug)]
+/// Error when getting enemy data.
+pub enum EnemyDataError {
+    /// Error with unit animations.
+    AnimationError {
+        /// Exact error that occurred.
+        source: AnimDataError,
+    },
+}
+
+impl Enemy {
+    /// Get enemy from wiki id.
+    pub fn from_wiki_id<T: MultiLangVersionContainer>(
+        wiki_id: u32,
+        version_cont: &T,
+    ) -> Result<Self, EnemyDataError> {
+        let id = wiki_id;
+        let stats = Self::get_forms(id, version_cont)?;
+
+        Ok(Self { id, stats })
+    }
+
+    fn get_forms<T: MultiLangVersionContainer>(
+        wiki_id: u32,
+        version_cont: &T,
+    ) -> Result<EnemyStats, EnemyDataError> {
+        let t_unit = version_cont
+            .lang_default()
+            .get_cached_file::<TUnitContainer>();
+        let stats = t_unit.get_unit(wiki_id);
+
+        let animfile = format!("{wiki_id:03}_e.maanim");
+        let get = |ver| get_maanim_data(&animfile, ver);
+
+        let anims = get(version_cont.get_lang(VersionLanguage::EN))
+            // .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
+            // .or_else(|_| get(version_cont.get_lang(VersionLanguage::TW)))
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::JP)))
+            .or_else(|_| get(version_cont.get_lang(VersionLanguage::Fallback)));
+
+        let anims = match anims {
+            Ok(a) => a,
+            Err(source) => {
+                return Err(EnemyDataError::AnimationError { source });
+            }
+        };
+
+        Ok(EnemyStats {})
+    }
+}
