@@ -6,4 +6,5 @@ pub mod enemy;
 pub mod map;
 pub mod meta;
 pub mod stage;
+pub mod unit;
 pub mod version;

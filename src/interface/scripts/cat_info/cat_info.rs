@@ -422,7 +422,7 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
 
     let stats = match config.cat_info.stats_template_version {
         StatsTemplateVersion::Current | StatsTemplateVersion::Ver1o2 => stats_1o2(&cat, config),
-         StatsTemplateVersion::Ver1o1 => stats_1o1(&cat, config),
+        StatsTemplateVersion::Ver1o1 => stats_1o1(&cat, config),
         StatsTemplateVersion::Ver1o0 => stats_1o0(&cat, config),
         StatsTemplateVersion::Ver0o2 => stats_0o2(&cat, config),
         StatsTemplateVersion::Ver0o1 => stats_0o1(&cat, config),
