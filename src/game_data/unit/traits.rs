@@ -1,9 +1,11 @@
+//! Deal with enemy traits.
 
 use crate::game_data::unit::stats_util::bool;
 use std::fmt::Display;
 use crate::game_data::cat::raw::stats::CombinedCatData;
 
 #[repr(usize)]
+// TODO rename
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 /// Enemy types that can be targeted.
 pub enum EnemyType {
