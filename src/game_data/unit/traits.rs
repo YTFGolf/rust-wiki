@@ -1,8 +1,8 @@
 //! Deal with enemy traits.
 
-use crate::game_data::unit::stats_util::bool;
-use std::fmt::Display;
 use crate::game_data::cat::raw::stats::CombinedCatData;
+use crate::game_data::{enemy::raw::stats::EnemyCSV, unit::stats_util::bool};
+use std::fmt::Display;
 
 #[repr(usize)]
 // TODO rename
@@ -101,6 +101,70 @@ impl EnemyType {
         }
         if bool(variable.targ_aku).unwrap() {
             targets.push(Self::Aku);
+        }
+
+        targets
+    }
+}
+
+impl EnemyType {
+    /// Get all of the enemy's traits.
+    pub fn get_all_traits(stats: &EnemyCSV) -> Vec<EnemyType> {
+        let mut targets = vec![];
+
+        if bool(stats.red).unwrap() {
+            targets.push(Self::Red);
+        }
+        if bool(stats.floating).unwrap() {
+            targets.push(Self::Floating);
+        }
+        if bool(stats.black).unwrap() {
+            targets.push(Self::Black);
+        }
+        if bool(stats.metal).unwrap() {
+            targets.push(Self::Metal);
+        }
+        if bool(stats.traitless).unwrap() {
+            targets.push(Self::Traitless);
+        }
+        if bool(stats.angel).unwrap() {
+            targets.push(Self::Angel);
+        }
+        if bool(stats.alien).unwrap() {
+            targets.push(Self::Alien);
+        }
+        if bool(stats.zombie).unwrap() {
+            targets.push(Self::Zombie);
+        }
+        if bool(stats.witch).unwrap() {
+            targets.push(Self::Witch)
+        }
+        if bool(stats.typeless).unwrap() {
+            targets.push(Self::Typeless)
+        }
+        if bool(stats.starred_alien).unwrap() {
+            targets.push(Self::StarredAlien)
+        }
+        if bool(stats.eva_angel).unwrap() {
+            targets.push(Self::EvaAngel)
+        }
+        if bool(stats.relic).unwrap() {
+            targets.push(Self::Relic);
+        }
+        if bool(stats.aku).unwrap() {
+            targets.push(Self::Aku);
+        }
+        if bool(stats.colossus).unwrap() {
+            targets.push(Self::Colossus)
+        }
+        if bool(stats.behemoth).unwrap() {
+            targets.push(Self::Behemoth)
+        }
+        if bool(stats.sage).unwrap() {
+            targets.push(Self::Sage)
+        }
+        if bool(stats.supervillain).unwrap() {
+            targets.push(Self::Supervillain)
         }
 
         targets
