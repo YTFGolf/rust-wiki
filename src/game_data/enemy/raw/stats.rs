@@ -27,7 +27,7 @@ type Bool = u8;
 pub struct EnemyCSV {
     pub hp: Massive,
     pub kb: Massive,
-    pub spd: Big,
+    pub speed: Big,
     pub dmg: Massive,
     pub tba: Big,
     pub range: Big,
