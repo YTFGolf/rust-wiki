@@ -1,14 +1,10 @@
 //! Defines enemy object.
 
 use crate::game_data::{
-    enemy::raw::stats::TUnitContainer,
+    enemy::{parsed::stats::EnemyStats, raw::stats::TUnitContainer},
     unit::anim::{AnimDataError, get_maanim_data},
     version::lang::{MultiLangVersionContainer, VersionLanguage},
 };
-
-#[derive(Debug)]
-/// Stats of an enemy.
-pub struct EnemyStats {}
 
 #[derive(Debug)]
 /// Parsed enemy object.
@@ -22,6 +18,8 @@ pub struct Enemy {
 #[derive(Debug)]
 /// Error when getting enemy data.
 pub enum EnemyDataError {
+    /// Unit's stats not found in `t_unit.csv`.
+    StatsNotFound,
     /// Error with unit animations.
     AnimationError {
         /// Exact error that occurred.
@@ -48,7 +46,9 @@ impl Enemy {
         let t_unit = version_cont
             .lang_default()
             .get_cached_file::<TUnitContainer>();
-        let stats = t_unit.get_unit(wiki_id);
+        let stats = t_unit
+            .get_unit(wiki_id)
+            .ok_or(EnemyDataError::StatsNotFound)?;
 
         let animfile = format!("{wiki_id:03}_e.maanim");
         let get = |ver| get_maanim_data(&animfile, ver);
@@ -66,6 +66,6 @@ impl Enemy {
             }
         };
 
-        Ok(EnemyStats {})
+        Ok(EnemyStats::from_raw(stats, &anims))
     }
 }
