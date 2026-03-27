@@ -61,6 +61,7 @@ impl FromStr for StatsTemplateVersion {
             "0.2" => Ok(Self::Ver0o2),
             "1.0" => Ok(Self::Ver1o0),
             "1.1" => Ok(Self::Ver1o1),
+            "1.2" => Ok(Self::Ver1o2),
             _ => Err(()),
         }
     }
@@ -134,7 +135,10 @@ mod tests {
     fn as_str_is_from_str() {
         for value in POSSIBLE_VALUES {
             let as_str = value.as_str();
-            let parsed_value = as_str.parse().unwrap();
+            let parsed_value = match as_str.parse() {
+                Ok(v) => v,
+                Err(_) => panic!("parsing cat stats version failed for {as_str}"),
+            };
             assert_eq!(value, parsed_value);
             assert_eq!(as_str, parsed_value.as_str());
         }
