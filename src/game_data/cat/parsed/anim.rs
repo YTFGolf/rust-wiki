@@ -37,7 +37,8 @@ impl Anim {
     }
 }
 
-pub fn get_maanim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
+/// Get data from a `.maanim` file.
+pub fn get_maanim_data(path: &str, version: &Version) -> Result<Anim, AnimDataError> {
     use AnimDataError as E;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
 
@@ -109,9 +110,12 @@ pub fn get_maanim_data(path: &str, version: &Version) -> Result<CatFormAnimData,
     // can be assumed that 0f wouldn't appear naturally so must only appear if
     // the animation is empty
 
-    let anim = Ok(Anim::new(max_frame as u16 + 1));
+    Ok(Anim::new(max_frame as u16 + 1))
+}
+
+fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
     Ok(CatFormAnimData {
-        attack: anim.unwrap()
+        attack: get_maanim_data(path, version)?,
     })
 }
 
@@ -141,18 +145,19 @@ pub fn get_cat_anims(
         ),
     };
 
-    let mut anims = vec![get_maanim_data(&form1, version).map_err(|e| (e, 1))?];
+    let mut anims = vec![get_anim_data(&form1, version).map_err(|e| (e, 1))?];
     if amt_forms > 1 {
-        anims.push(get_maanim_data(&form2, version).map_err(|e| (e, 2))?);
+        anims.push(get_anim_data(&form2, version).map_err(|e| (e, 2))?);
     }
     if amt_forms > 2 {
         let tf = format!("{wiki_id:03}_s02.maanim");
-        anims.push(get_maanim_data(&tf, version).map_err(|e| (e, 3))?);
+        anims.push(get_anim_data(&tf, version).map_err(|e| (e, 3))?);
     }
     if amt_forms > 3 {
         let uf = format!("{wiki_id:03}_u02.maanim");
-        anims.push(get_maanim_data(&uf, version).map_err(|e| (e, 4))?);
+        anims.push(get_anim_data(&uf, version).map_err(|e| (e, 4))?);
     }
+
     Ok(anims)
 }
 
