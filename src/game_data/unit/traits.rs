@@ -6,35 +6,34 @@ use crate::game_data::cat::raw::stats::CombinedCatData;
 
 #[repr(usize)]
 // TODO rename
+#[allow(missing_docs)]
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 /// Enemy types that can be targeted.
 pub enum EnemyType {
-    /// Red.
     Red,
-    /// Floating.
     Floating,
-    /// Black.
     Black,
-    /// Metal.
     Metal,
-    /// Traitless.
     Traitless,
-    /// Angel.
     Angel,
-    /// Alien.
     Alien,
-    /// Zombie.
     Zombie,
-    /// Relic.
+    Witch,
+    Typeless,
+    StarredAlien,
+    EvaAngel,
     Relic,
-    /// Aku.
     Aku,
+    Colossus,
+    Behemoth,
+    Sage,
+    Supervillain,
     // make sure that MAX_VALUE is up-to-date if adding anything new in
     // actually why not just use tests to enforce that
     // TODO
 }
 /// Latest entry (therefore highest numerically).
-pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Aku;
+pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Supervillain;
 
 impl EnemyType {
     fn as_str(&self) -> &'static str {
@@ -47,8 +46,16 @@ impl EnemyType {
             Self::Angel => "Angel",
             Self::Alien => "Alien",
             Self::Zombie => "Zombie",
+            Self::Witch => "Witch",
+            Self::Typeless => "Typeless",
+            Self::StarredAlien => "Starred Alien",
+            Self::EvaAngel => "Eva Angel",
             Self::Relic => "Relic",
             Self::Aku => "Aku",
+            Self::Colossus => "Colossus",
+            Self::Behemoth => "Behemoth",
+            Self::Sage => "Sage",
+            Self::Supervillain => "Supervillain",
         }
     }
 }
