@@ -37,48 +37,7 @@ impl Anim {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-/// Data about a unit form's animations.
-pub struct CatFormAnimData {
-    /// Attack animation.
-    pub attack: Anim,
-}
-
-/// Get unit animations.
-pub fn get_anims(
-    wiki_id: u32,
-    version: &Version,
-    amt_forms: usize,
-    egg_data: &AncientEggInfo,
-) -> Result<Vec<CatFormAnimData>, (AnimDataError, usize)> {
-    let (form1, form2) = match egg_data {
-        AncientEggInfo::None => (
-            format!("{wiki_id:03}_f02.maanim"),
-            format!("{wiki_id:03}_c02.maanim"),
-            // I think 02 means the attack animation
-        ),
-        AncientEggInfo::Egg { normal, evolved } => (
-            format!("{normal:03}_m02.maanim"),
-            format!("{evolved:03}_m02.maanim"),
-        ),
-    };
-
-    let mut anims = vec![get_anim_data(&form1, version).map_err(|e| (e, 1))?];
-    if amt_forms > 1 {
-        anims.push(get_anim_data(&form2, version).map_err(|e| (e, 2))?);
-    }
-    if amt_forms > 2 {
-        let tf = format!("{wiki_id:03}_s02.maanim");
-        anims.push(get_anim_data(&tf, version).map_err(|e| (e, 3))?);
-    }
-    if amt_forms > 3 {
-        let uf = format!("{wiki_id:03}_u02.maanim");
-        anims.push(get_anim_data(&uf, version).map_err(|e| (e, 4))?);
-    }
-    Ok(anims)
-}
-
-fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
+pub fn get_maanim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimDataError> {
     use AnimDataError as E;
     let qualified = version.get_file_path("ImageDataLocal").join(path);
 
@@ -150,9 +109,51 @@ fn get_anim_data(path: &str, version: &Version) -> Result<CatFormAnimData, AnimD
     // can be assumed that 0f wouldn't appear naturally so must only appear if
     // the animation is empty
 
+    let anim = Ok(Anim::new(max_frame as u16 + 1));
     Ok(CatFormAnimData {
-        attack: Anim::new(max_frame as u16 + 1),
+        attack: anim.unwrap()
     })
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Data about a unit form's animations.
+pub struct CatFormAnimData {
+    /// Attack animation.
+    pub attack: Anim,
+}
+
+/// Get unit animations.
+pub fn get_cat_anims(
+    wiki_id: u32,
+    version: &Version,
+    amt_forms: usize,
+    egg_data: &AncientEggInfo,
+) -> Result<Vec<CatFormAnimData>, (AnimDataError, usize)> {
+    let (form1, form2) = match egg_data {
+        AncientEggInfo::None => (
+            format!("{wiki_id:03}_f02.maanim"),
+            format!("{wiki_id:03}_c02.maanim"),
+            // I think 02 means the attack animation
+        ),
+        AncientEggInfo::Egg { normal, evolved } => (
+            format!("{normal:03}_m02.maanim"),
+            format!("{evolved:03}_m02.maanim"),
+        ),
+    };
+
+    let mut anims = vec![get_maanim_data(&form1, version).map_err(|e| (e, 1))?];
+    if amt_forms > 1 {
+        anims.push(get_maanim_data(&form2, version).map_err(|e| (e, 2))?);
+    }
+    if amt_forms > 2 {
+        let tf = format!("{wiki_id:03}_s02.maanim");
+        anims.push(get_maanim_data(&tf, version).map_err(|e| (e, 3))?);
+    }
+    if amt_forms > 3 {
+        let uf = format!("{wiki_id:03}_u02.maanim");
+        anims.push(get_maanim_data(&uf, version).map_err(|e| (e, 4))?);
+    }
+    Ok(anims)
 }
 
 #[cfg(test)]
@@ -182,7 +183,7 @@ mod tests {
         version: &Version,
     ) -> Result<Vec<CatFormAnimData>, (AnimDataError, usize)> {
         let (egg, amt) = get_egg_data(id, version);
-        get_anims(id, version, amt, &egg)
+        get_cat_anims(id, version, amt, &egg)
     }
 
     #[track_caller]

@@ -1,7 +1,7 @@
 //! Deals with cat data.
 
 use super::{
-    anim::{AnimDataError, CatFormAnimData, get_anims},
+    anim::{AnimDataError, CatFormAnimData, get_cat_anims},
     stats::form::CatFormStats,
     unitbuy::{AncientEggInfo, UnitBuy},
 };
@@ -139,7 +139,7 @@ impl Cat {
     ) -> Result<CatForms, CatDataError> {
         let stats = Self::get_stats(id, version_cont.lang_default()).collect::<Vec<_>>();
 
-        let get = |ver| get_anims(id, ver, amt_forms, egg_data);
+        let get = |ver| get_cat_anims(id, ver, amt_forms, egg_data);
 
         let anims = get(version_cont.get_lang(VersionLanguage::EN))
             // .or_else(|_| get(version_cont.get_lang(VersionLanguage::KR)))
