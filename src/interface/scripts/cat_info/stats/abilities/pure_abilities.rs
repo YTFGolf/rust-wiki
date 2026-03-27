@@ -147,15 +147,21 @@ mod multiple_ability_tests {
 pub fn get_pure_abilities(
     hits: &AttackHits,
     cat_abilities: &[Ability],
-    _targets: &[EnemyType],
+    targets: &[EnemyType],
     // targets is only here for historical reasons, was removed in 1.2
     // maybe instead becomes an enum?
 ) -> Vec<String> {
+    const SHOW_ALL_TRAITS: bool = false;
+    // should probably be converted to a config option
+
     let mut abilities = vec![];
     let mut immunities = vec![];
 
-    // let targets = get_targets(targets);
-    let targets = "target traits";
+    let targets = if SHOW_ALL_TRAITS {
+        get_targets(targets) + " enemies"
+    } else {
+        "target traits".to_string()
+    };
     let multab = get_multiple_hit_abilities(hits);
 
     let abil = get_ability;
