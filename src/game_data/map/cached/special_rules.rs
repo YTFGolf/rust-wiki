@@ -100,8 +100,16 @@ pub enum RuleType {
     AwesomeCatCannon(Single),
     /// Normalise Cat and Enemy speed.
     ///
-    /// 100% speculation, but is probably `[min_cat_speed, normalised_cat_speed,
-    /// min_enemy_speed, normalised_enemy_speed]`.
+    /// 100% speculation, but is probably `[cat_speed_mode, normalised_cat_speed,
+    /// enemy_speed_mode, normalised_enemy_speed]`.
+    ///
+    /// Modes:
+    /// - 1 = absolute speed
+    /// - 2 = percentage of current speed
+    ///
+    /// References:
+    /// - https://discord.com/channels/1456204440951455786/1456204442150899809/1489183156073398282
+    /// - https://discord.com/channels/1456204440951455786/1456204442150899809/1489188921018679470
     AwesomeUnitSpeed([ParamSize; 4]),
     /// Used so this program can still run when in the wrong update.
     Placeholder(u8),
