@@ -55,6 +55,8 @@ pub enum ContentsType {
     Colosseum = 0,
     /// Only used in 12th anniversary stages.
     Anni12 = 1,
+    /// Only used in 13th anniversary stages.
+    Anni13 = 2,
 }
 impl From<ContentsSize> for ContentsType {
     fn from(value: ContentsSize) -> Self {

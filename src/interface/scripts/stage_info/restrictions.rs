@@ -407,6 +407,10 @@ fn rules(stage: &Stage) -> Option<String> {
             assert_eq!(&rules.rule_type, &[RuleType::TrustFund([4500])]);
             Some(String::from("{{StageRule|12thAnni}}"))
         }
+        ContentsType::Anni13 => {
+            assert_eq!(&rules.rule_type, &[RuleType::TrustFund([4500])]);
+            Some(String::from("{{StageRule|13thAnni}}"))
+        }
         ContentsType::Colosseum => unreachable!(
             "Should have reached {:?} in earlier code.",
             rules.contents_type
