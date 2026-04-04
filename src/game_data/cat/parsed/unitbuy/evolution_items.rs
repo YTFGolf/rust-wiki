@@ -22,6 +22,7 @@ pub enum EvolutionItemVariant {
     ElderFruit = 42,
     EpicSeed = 43,
     GoldFruit = 44,
+    GoldSeed = 164,
     PurpleStone = 167,
     RedStone = 168,
     BlueStone = 169,
