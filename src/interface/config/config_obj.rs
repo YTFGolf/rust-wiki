@@ -4,7 +4,7 @@ use super::{
     map_config::MapConfig, stage_config::StageConfig, version_config::VersionConfig,
     wiki_config::WikiConfig,
 };
-use crate::interface::config::cat_config::CatConfig;
+use crate::interface::config::{cat_config::CatConfig, encounters_config::EncountersConfig};
 use log::Level;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -51,6 +51,9 @@ pub struct Config {
     pub wiki: WikiConfig,
     /// Game version config.
     pub version: VersionConfig,
+    #[serde(default)]
+    /// Config for `encounters`.
+    pub encounters: EncountersConfig,
     /// Config for `stage_info`.
     #[serde(default)]
     pub stage_info: StageConfig,
@@ -69,6 +72,7 @@ impl Default for Config {
             // grr
             wiki: Default::default(),
             version: Default::default(),
+            encounters:Default::default(),
             stage_info: Default::default(),
             map_info: Default::default(),
             cat_info: Default::default(),

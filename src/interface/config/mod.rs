@@ -1,6 +1,7 @@
 //! Deals with user config.
 
 pub mod cat_config;
+pub mod encounters_config;
 pub mod config_obj;
 pub mod map_config;
 pub mod stage_config;
