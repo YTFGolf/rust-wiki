@@ -12,7 +12,7 @@ use std::fmt::Display;
 pub enum EnemyType {
     Red,
     Floating,
-    Black,
+    Dark,
     Metal,
     Traitless,
     Angel,
@@ -40,7 +40,7 @@ impl EnemyType {
         match self {
             Self::Red => "Red",
             Self::Floating => "Floating",
-            Self::Black => "Black",
+            Self::Dark => "Dark",
             Self::Metal => "Metal",
             Self::Traitless => "Traitless",
             Self::Angel => "Angel",
@@ -78,8 +78,8 @@ impl EnemyType {
         if bool(fixed.targ_float).unwrap() {
             targets.push(Self::Floating);
         }
-        if bool(fixed.targ_black).unwrap() {
-            targets.push(Self::Black);
+        if bool(fixed.targ_dark).unwrap() {
+            targets.push(Self::Dark);
         }
         if bool(fixed.targ_metal).unwrap() {
             targets.push(Self::Metal);
@@ -118,8 +118,8 @@ impl EnemyType {
         if bool(stats.floating).unwrap() {
             targets.push(Self::Floating);
         }
-        if bool(stats.black).unwrap() {
-            targets.push(Self::Black);
+        if bool(stats.dark).unwrap() {
+            targets.push(Self::Dark);
         }
         if bool(stats.metal).unwrap() {
             targets.push(Self::Metal);

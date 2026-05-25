@@ -444,7 +444,7 @@ mod tests {
         assert_eq!(
             battlegrounds(&bouquet_toss),
             "*The enemy base here is a [[Clown Base (Enemy Base)|Clown Base]].\n\
-            *3 [[Gory Black]]s spawn after 13.33 seconds<sup>400f</sup>, delay 13.33~20 seconds<sup>400f~600f</sup>.\n\
+            *3 [[Gory Dark]]s spawn after 13.33 seconds<sup>400f</sup>, delay 13.33~20 seconds<sup>400f~600f</sup>.\n\
             *When the base reaches 99% HP:\n\
             **1 [[Le'noir]] spawns as the boss.\n\
             **5 [[Doge Dark]]s spawn, delay 6.67~10 seconds<sup>200f~300f</sup>.\n\

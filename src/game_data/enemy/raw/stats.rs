@@ -43,7 +43,7 @@ pub struct EnemyCSV {
     pub area: Bool,
     pub foreswing: Massive,
     pub floating: Bool,
-    pub black: Bool,
+    pub dark: Bool,
     pub metal: Bool,
     pub traitless: Bool,
     pub angel: Bool,

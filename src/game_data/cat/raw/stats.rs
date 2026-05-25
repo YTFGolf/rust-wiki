@@ -58,7 +58,7 @@ pub struct CatCSV {
     /// Gross, Mighty Kristal Muu.
     _uk15: Small,
     pub targ_float: Bool,
-    pub targ_black: Bool,
+    pub targ_dark: Bool,
     pub targ_metal: Bool,
     pub targ_traitless: Bool,
 

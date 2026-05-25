@@ -91,7 +91,7 @@ fn talent_from_text_id(
         (25, 29), // curse immunity
         (33, 33), // target red
         (34, 34), // target floating
-        (35, 35), // target black
+        (35, 35), // target dark
         (36, 36), // target metal
         (37, 37), // target angel
         (38, 38), // target alien

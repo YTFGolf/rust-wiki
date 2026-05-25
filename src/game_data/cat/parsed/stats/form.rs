@@ -568,7 +568,7 @@ mod tests {
                 targets: [
                     E::Red,
                     E::Floating,
-                    E::Black,
+                    E::Dark,
                     E::Metal,
                     E::Traitless,
                     E::Angel,
@@ -641,7 +641,7 @@ mod tests {
                 targets: [
                     E::Red,
                     E::Floating,
-                    E::Black,
+                    E::Dark,
                     E::Metal,
                     E::Traitless,
                     E::Angel,

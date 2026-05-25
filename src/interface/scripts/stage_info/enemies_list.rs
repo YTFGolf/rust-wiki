@@ -581,8 +581,8 @@ mod tests {
                     "{{Magnification|White Wind|700%\n\
                     |Duche|300%\n\
                     |Red Wind|700%\n\
-                    |Gory Black|200%\n\
-                    |Black Wind|700%\n\
+                    |Gory Dark|200%\n\
+                    |Dark Wind|700%\n\
                     |R.Ost|100%\n\
                     |Bore|200%}}"
                 ),
@@ -604,8 +604,8 @@ mod tests {
                     "{{Magnification|White Wind|0\n\
                     |Duche|0\n\
                     |Red Wind|0\n\
-                    |Gory Black|0\n\
-                    |Black Wind|0\n\
+                    |Gory Dark|0\n\
+                    |Dark Wind|0\n\
                     |R.Ost|0\n\
                     |Bore|0}}"
                 ),
@@ -660,7 +660,7 @@ mod tests {
                     "enemies",
                     "{{Magnification|Doge Dark|0\n\
                     |Zoge|0\n\
-                    |Gory Black|0\n\
+                    |Gory Dark|0\n\
                     |Zory|0\n\
                     |Shadow Boxer K|0\n\
                     |Zang Roo|0}}"
@@ -681,7 +681,7 @@ mod tests {
                     "enemies",
                     "{{Magnification|Doge Dark|500%\n\
                     |Zoge|150%\n\
-                    |Gory Black|150%\n\
+                    |Gory Dark|150%\n\
                     |Zory|100%\n\
                     |Shadow Boxer K|150%\n\
                     |Zang Roo|100%}}"

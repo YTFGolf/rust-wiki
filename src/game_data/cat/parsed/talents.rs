@@ -15,7 +15,7 @@ use strum::FromRepr;
 pub enum TalentTargets {
     Red = 0,
     Floating = 1,
-    Black = 2,
+    Dark = 2,
     Metal = 3,
     Angel = 4,
     Alien = 5,
@@ -211,7 +211,7 @@ mod tests {
             vec![
                 TalentTargets::Red,
                 TalentTargets::Floating,
-                TalentTargets::Black,
+                TalentTargets::Dark,
                 TalentTargets::Metal,
                 TalentTargets::Angel,
                 TalentTargets::Alien,
