@@ -1,13 +1,16 @@
 //! Deals with talents section.
 
 use crate::{
-    game_data::{cat::{
-        parsed::{
-            cat::Cat,
-            talents::{SingleTalent, TalentTargets},
+    game_data::{
+        cat::{
+            parsed::{
+                cat::Cat,
+                talents::{SingleTalent, TalentTargets},
+            },
+            raw::talents_cost::TalentsCostContainer,
         },
-        raw::talents_cost::TalentsCostContainer,
-    }, unit::traits::LATEST_ENEMY_TYPE},
+        unit::traits::LATEST_ENEMY_TYPE,
+    },
     interface::{
         config::Config, error_handler::InfallibleWrite,
         scripts::cat_info::stats::abilities::pure_abilities::get_multiple_hit_abilities,

@@ -72,7 +72,7 @@ impl Default for Config {
             // grr
             wiki: Default::default(),
             version: Default::default(),
-            encounters:Default::default(),
+            encounters: Default::default(),
             stage_info: Default::default(),
             map_info: Default::default(),
             cat_info: Default::default(),

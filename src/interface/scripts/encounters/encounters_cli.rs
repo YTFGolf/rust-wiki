@@ -19,6 +19,13 @@ pub struct EncountersOptions {
     /// Which units to get encounters for.
     pub names: Vec<String>,
 
+    #[arg(long)]
+    /// Do you use the encounters cache?
+    pub use_cache: bool,
+    #[arg(long)]
+    /// Do you write to the encounters cache?
+    pub write_cache: bool,
+
     #[command(flatten)]
     /// Global options.
     pub base: BaseOptions,
@@ -31,6 +38,9 @@ impl ConfigMerge for EncountersOptions {
     fn merge(&self, config: &mut Config) {
         self.base.merge(config);
         self.version.merge(config);
+
+        config.encounters.use_cache = self.use_cache;
+        config.encounters.write_cache = self.write_cache;
     }
 }
 
