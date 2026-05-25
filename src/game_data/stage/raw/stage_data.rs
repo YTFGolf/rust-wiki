@@ -17,12 +17,17 @@ use crate::game_data::{
 };
 use csv::{ByteRecord, StringRecord};
 use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
+use serde::ser::SerializeMap;
 use std::{fs::File, io::BufReader, path::PathBuf};
 
 /// Types to deserialise csv files.
 pub mod csv_types {
+    use serde;
+
     // TODO split this up
-    #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
+    #[derive(
+        Debug, Default, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize, serde::Serialize,
+    )]
     /// Data stored in the header of the csv file (minus most Main Chapters).
     pub struct HeaderCSV {
         /// ID of base used.
@@ -39,7 +44,7 @@ pub mod csv_types {
         pub cont_stage_id_max: u32,
     }
 
-    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize, serde::Serialize)]
     /// Data stored in line 2 of the csv file (line 1 for most Main Chapter
     /// stages).
     pub struct Line2CSV {
@@ -62,7 +67,7 @@ pub mod csv_types {
         pub(super) _unknown_3: Option<u32>,
     }
 
-    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize, serde::Serialize)]
     /// CSV data for enemies. See [Stage Structure
     /// Page/Battlegrounds](https://battlecats.miraheze.org/wiki/The_Battle_Cats_Wiki:Stage_Structure_Page/Battlegrounds)
     /// for more complete documentation.
@@ -105,7 +110,7 @@ pub mod csv_types {
     }
 
     /// Raw data from the stage csv file.
-    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize, serde::Serialize)]
     pub struct RawCSVData {
         /// Header row.
         pub header: HeaderCSV,
@@ -125,6 +130,30 @@ pub struct StageData<'a> {
     pub stage_csv_data: RawCSVData,
 
     version: &'a Version,
+}
+impl serde::Serialize for StageData<'_> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        const LEN: usize = 2;
+        // id + data
+        let mut map = serializer.serialize_map(Some(LEN))?;
+        let id = (self.id.variant().num(), self.id.map().num(), self.id.num());
+        map.serialize_entry("id", &id)?;
+        map.serialize_entry("stage_csv_data", &self.stage_csv_data)?;
+        map.end()
+    }
+}
+impl<'a> StageData<'a> {
+    /// Create raw StageData object.
+    pub fn raw(id: StageID, stage_csv_data: RawCSVData, version: &'a Version) -> Self {
+        Self {
+            id,
+            stage_csv_data,
+            version,
+        }
+    }
 }
 
 #[derive(Debug, thiserror::Error)]
