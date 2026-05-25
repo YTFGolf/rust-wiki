@@ -53,11 +53,11 @@ impl EnemyDataContainer {
     }
     /// Get the name of an enemy as used in Lua modules.
     pub fn get_common_name(&self, id: u32) -> &str {
-        &self.get_data(id).name
+        &self.get_data(id).unwrap().name
     }
     /// Get the data of the enemy.
-    pub fn get_data(&self, id: u32) -> &EnemyData {
-        self.data.get(&id).unwrap()
+    pub fn get_data(&self, id: u32) -> Option<&EnemyData> {
+        self.data.get(&id)
     }
     /// Get unit's id from name. Case-insensitive. Uses common name.
     pub fn get_id_from_name(&self, name: &str) -> Option<&u32> {
@@ -149,19 +149,19 @@ mod tests {
                 assert_eq!(enemy.name, "Empty");
                 continue;
             }
-            assert_eq!(
-                ENEMY_DATA.get_data(enemy._id - 2).name,
-                extract_name(&enemy.name)
-            );
+            let Some(d) = ENEMY_DATA.get_data(enemy._id - 2) else {
+                panic!("Data not found for enemy with ID {}", enemy._id - 2);
+            };
+            assert_eq!(d.name, extract_name(&enemy.name));
         }
     }
 
     #[test]
     fn test_blank_link_is_none() {
-        let hermit = ENEMY_DATA.get_data(354);
+        let hermit = ENEMY_DATA.get_data(354).unwrap();
         assert_eq!(hermit.link, Some("Hermit Cat (Enemy)".into()));
 
-        let doge = ENEMY_DATA.get_data(0);
+        let doge = ENEMY_DATA.get_data(0).unwrap();
         assert_eq!(doge.link, None);
     }
 

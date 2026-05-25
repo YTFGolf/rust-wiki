@@ -110,7 +110,7 @@ pub fn base_hp(stage: &Stage) -> Vec<TemplateParameter> {
     }
 
     let anim_base_id = <u32>::from(stage.anim_base_id.unwrap()) - 2;
-    let base_hp = ENEMY_DATA.get_data(anim_base_id).hp;
+    let base_hp = ENEMY_DATA.get_data(anim_base_id).unwrap().hp;
     let enemy_magnification = || {
         for enemy in &stage.enemies {
             if enemy.is_base {
