@@ -1,7 +1,8 @@
 //! Deal with enemy traits.
 
-use crate::game_data::cat::raw::stats::CombinedCatData;
-use crate::game_data::{enemy::raw::stats::EnemyCSV, unit::stats_util::bool};
+use crate::game_data::{
+    cat::raw::stats::CombinedCatData, enemy::raw::stats::EnemyCSV, unit::stats_util::bool,
+};
 use std::fmt::Display;
 
 #[repr(usize)]

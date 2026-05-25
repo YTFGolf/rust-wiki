@@ -1,8 +1,10 @@
 //! Deals with cat stats.
 
-use crate::game_data::unit::{stats_util::bool, traits::EnemyType};
 use super::super::super::{ability::Ability, raw::stats::CombinedCatData};
-use crate::game_data::cat::raw::unitlevel::UnitLevelRaw;
+use crate::game_data::{
+    cat::raw::unitlevel::UnitLevelRaw,
+    unit::{stats_util::bool, traits::EnemyType},
+};
 use std::num::NonZero;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Default)]

@@ -38,7 +38,7 @@ impl EnemyStats {
             money_drop: stats.money_drop,
             attack: todo!(),    //Attack::from_combined(combined),
             abilities: todo!(), //Ability::get_all_abilities(combined),
-            traits:     EnemyType::get_all_traits(stats),
+            traits: EnemyType::get_all_traits(stats),
         }
     }
 }
