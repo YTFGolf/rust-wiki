@@ -14,7 +14,8 @@ use crate::{
             variant::StageVariantID as T,
         },
         stage::{
-            parsed::stage_enemy::StageEnemy, raw::stage_data::StageData,
+            parsed::stage_enemy::StageEnemy,
+            raw::stage_data::{StageData, csv_types::RawCSVData},
             stage_util::get_stage_files,
         },
         version::Version,
@@ -28,7 +29,13 @@ use either::Either::{Left, Right};
 use num_format::{Locale, WriteFormatted};
 use order::enumerate_id;
 use regex::Regex;
-use std::{borrow::Cow, collections::HashSet, fmt::Write};
+use std::{
+    borrow::Cow,
+    collections::HashSet,
+    fmt::Write,
+    fs::File,
+    io::{Read, Write as IOWrite},
+};
 
 type Ref = SectionRef;
 
@@ -460,9 +467,40 @@ fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
 
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
-    let abs_enemy_id = wiki_id + 2;
+    const WRITE_CACHE: bool = false;
+    const USE_CACHE: bool = false;
+    const CACHE_FILE: &str = "cache.json";
 
-    let all_stages = get_stages(config.version.current_version()).collect::<Vec<_>>();
+    let abs_enemy_id = wiki_id + 2;
+    let version = config.version.current_version();
+
+    let all_stages = if !USE_CACHE {
+        get_stages(version).collect::<Vec<_>>()
+    } else {
+        let mut file_content = File::open(CACHE_FILE).unwrap();
+
+        let mut contents = String::new();
+        file_content.read_to_string(&mut contents).unwrap();
+
+        #[derive(Debug, serde::Deserialize)]
+        struct IntermediateValue {
+            id: (u32, u32, u32),
+            stage_csv_data: RawCSVData,
+        }
+
+        let module: Vec<IntermediateValue> = serde_json::from_str(&contents.as_str()).unwrap();
+        module.into_iter().map(|m| {
+            let i = m.id;
+            let id = StageID::from_numbers(i.0, i.1, i.2);
+            StageData::raw(id, m.stage_csv_data, version)
+        }).collect()
+    };
+
+    if WRITE_CACHE {
+        let mut f = File::create(CACHE_FILE).unwrap();
+        let s = serde_json::to_string(&all_stages).unwrap();
+        f.write_all(s.as_bytes()).unwrap();
+    }
 
     let mut encounters = all_stages
         .iter()
