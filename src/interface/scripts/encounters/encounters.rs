@@ -35,6 +35,7 @@ use std::{
     fmt::Write,
     fs::File,
     io::{Read, Write as IOWrite},
+    path::{Path, PathBuf},
 };
 
 type Ref = SectionRef;
@@ -465,19 +466,21 @@ fn get_stages(version: &Version) -> impl Iterator<Item = StageData<'_>> {
         .map(|file_name| StageData::from_file_name(&file_name, version).unwrap())
 }
 
+const CACHE_DIR: &str = "cache";
+const CACHE_FILE: &str = "encounters.json";
+fn get_cache_path() -> PathBuf {
+    Path::new(CACHE_DIR).join(CACHE_FILE)
+}
+
 /// temp
 pub fn do_thing(wiki_id: u32, config: &Config) {
-    const WRITE_CACHE: bool = false;
-    const USE_CACHE: bool = false;
-    const CACHE_FILE: &str = "cache.json";
-
     let abs_enemy_id = wiki_id + 2;
     let version = config.version.current_version();
 
-    let all_stages = if !USE_CACHE {
+    let all_stages = if !config.encounters.use_cache {
         get_stages(version).collect::<Vec<_>>()
     } else {
-        let mut file_content = File::open(CACHE_FILE).unwrap();
+        let mut file_content = File::open(get_cache_path()).unwrap();
 
         let mut contents = String::new();
         file_content.read_to_string(&mut contents).unwrap();
@@ -489,15 +492,19 @@ pub fn do_thing(wiki_id: u32, config: &Config) {
         }
 
         let module: Vec<IntermediateValue> = serde_json::from_str(&contents.as_str()).unwrap();
-        module.into_iter().map(|m| {
-            let i = m.id;
-            let id = StageID::from_numbers(i.0, i.1, i.2);
-            StageData::raw(id, m.stage_csv_data, version)
-        }).collect()
+        module
+            .into_iter()
+            .map(|m| {
+                let i = m.id;
+                let id = StageID::from_numbers(i.0, i.1, i.2);
+                StageData::raw(id, m.stage_csv_data, version)
+            })
+            .collect()
     };
 
-    if WRITE_CACHE {
-        let mut f = File::create(CACHE_FILE).unwrap();
+    if config.encounters.write_cache {
+        std::fs::create_dir_all(CACHE_DIR).unwrap();
+        let mut f = File::create(get_cache_path()).unwrap();
         let s = serde_json::to_string(&all_stages).unwrap();
         f.write_all(s.as_bytes()).unwrap();
     }

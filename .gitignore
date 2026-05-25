@@ -1,5 +1,6 @@
 /target
 /data
 /user-config.toml
+/cache
 .vscode
 .obsidian
