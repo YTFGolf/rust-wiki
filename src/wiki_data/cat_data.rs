@@ -34,6 +34,8 @@ impl CatName {
             "Kitaro Cat & Nezumi-Otoko Cat 2" => "Kitaro Cat & Nezumi-Otoko Cat",
             "Kabuto Cat Sw" => "Kabuto Cat",
             "Kuwagata Cat Sw" => "Kuwagata Cat",
+            "Commander Cat (13th)" => "Commander Cat",
+            "Gold Cat (13th)" => "Gold Cat",
             other => other,
         }
         // TODO put in file
