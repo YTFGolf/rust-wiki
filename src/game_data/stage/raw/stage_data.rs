@@ -154,6 +154,7 @@ impl<'a> StageData<'_> {
     pub fn from_id(id: StageID, version: &'a Version) -> Result<StageData<'a>, FullCSVError> {
         let file_name = stage_data_file(&id);
         let path = PathBuf::from("DataLocal").join(&file_name);
+        // log::trace!("{file_name}");
 
         let file = match File::open(version.get_file_path(&path)) {
             Ok(file) => file,
@@ -309,7 +310,11 @@ fn remove_comment_ind(mut record: ByteRecord, index: usize) -> ByteRecord {
 #[allow(clippy::unwrap_used)]
 // I really can't be bothered to make this look nice, so deal with the spaghetti
 // code
-fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
+fn deserialise_single_enemy(mut result: StringRecord) -> Option<StageEnemyCSV> {
+    // log::trace!("{result:?}");
+    if result.len() < 10 {
+        result.push_field("");
+    }
     let record: StageEnemyCSV = match result.deserialize(None) {
         Ok(r) => r,
         Err(x) => match x.kind() {
@@ -344,12 +349,12 @@ fn deserialise_single_enemy(result: StringRecord) -> Option<StageEnemyCSV> {
                         _ => unimplemented!(),
                     }
                 }
-                _ => unimplemented!(), // csv::DeserializeErrorKind::Message(_) => unimplemented!(),
-                                       // csv::DeserializeErrorKind::Unsupported(_) => unimplemented!(),
-                                       // csv::DeserializeErrorKind::UnexpectedEndOfRow => unimplemented!(),
-                                       // csv::DeserializeErrorKind::InvalidUtf8(utf8_error) => unimplemented!(),
-                                       // csv::DeserializeErrorKind::ParseBool(parse_bool_error) => unimplemented!(),
-                                       // csv::DeserializeErrorKind::ParseFloat(parse_float_error) => unimplemented!(),
+                _ => unimplemented!("{x:#?}"), // csv::DeserializeErrorKind::Message(_) => unimplemented!(),
+                                               // csv::DeserializeErrorKind::Unsupported(_) => unimplemented!(),
+                                               // csv::DeserializeErrorKind::UnexpectedEndOfRow => unimplemented!(),
+                                               // csv::DeserializeErrorKind::InvalidUtf8(utf8_error) => unimplemented!(),
+                                               // csv::DeserializeErrorKind::ParseBool(parse_bool_error) => unimplemented!(),
+                                               // csv::DeserializeErrorKind::ParseFloat(parse_float_error) => unimplemented!(),
             },
             // csv::ErrorKind::Io(error) => unimplemented!(),
             // csv::ErrorKind::Utf8 { pos, err } => unimplemented!(),
