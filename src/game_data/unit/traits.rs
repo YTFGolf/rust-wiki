@@ -37,7 +37,8 @@ pub enum EnemyType {
 pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Supervillain;
 
 impl EnemyType {
-    fn as_str(&self) -> &'static str {
+    /// Get enemy type as string slice.
+    pub const fn as_str(self) -> &'static str {
         match self {
             Self::Red => "Red",
             Self::Floating => "Floating",

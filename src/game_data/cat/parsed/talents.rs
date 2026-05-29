@@ -1,6 +1,9 @@
 //! Parsed talents object.
 
-use crate::game_data::cat::raw::talents::{TalentGroup, TalentLine};
+use crate::game_data::{
+    cat::raw::talents::{TalentGroup, TalentLine},
+    unit::traits::EnemyType,
+};
 use std::num::NonZeroUsize;
 use strum::FromRepr;
 
@@ -9,7 +12,7 @@ use strum::FromRepr;
 /// Only targets that appear in isolation can be determined. Others come from
 /// Timtams.
 /// (https://discord.com/channels/1456204440951455786/1456204442150899809/1459321849682071603)
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, FromRepr, Copy, Clone)]
 #[allow(missing_docs)]
 #[repr(usize)]
 pub enum TalentTargets {
@@ -42,6 +45,25 @@ impl TalentTargets {
                 Some(TalentTargets::from_repr(i).unwrap_or(TalentTargets::AsYetUnknown))
             })
             .collect()
+    }
+}
+impl From<TalentTargets> for EnemyType {
+    fn from(value: TalentTargets) -> Self {
+        match value {
+            TalentTargets::Red => Self::Red,
+            TalentTargets::Floating => Self::Floating,
+            TalentTargets::Dark => Self::Dark,
+            TalentTargets::Metal => Self::Metal,
+            TalentTargets::Angel => Self::Angel,
+            TalentTargets::Alien => Self::Alien,
+            TalentTargets::Zombie => Self::Zombie,
+            TalentTargets::Relic => Self::Relic,
+            TalentTargets::Traitless => Self::Traitless,
+            TalentTargets::Witch => Self::Witch,
+            TalentTargets::Eva => Self::EvaAngel,
+            TalentTargets::Aku => Self::Aku,
+            TalentTargets::AsYetUnknown => unimplemented!(),
+        }
     }
 }
 
