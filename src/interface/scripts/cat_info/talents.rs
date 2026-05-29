@@ -31,8 +31,6 @@ fn talent_from_text_id(
     new_targets_with_space: &str,
     multab: &str,
 ) -> Option<String> {
-    log::debug!("{talent:?}/{new_targets_with_space}");
-
     let c_abil = usize::from(talent.ability_id);
     // check ability id
     let p_len = talent.params.len();
@@ -962,6 +960,7 @@ fn get_single_talent(
     targs: &[TalentTargets],
     multab: &str,
 ) -> String {
+    log::debug!("{talent:?}");
     let mut buf = format!(
         "*'''{}'''",
         TALENT_DATA.get_talent_name(talent.ability_id.into())
@@ -996,6 +995,7 @@ fn get_single_talent(
         }
     };
 
+    log::debug!("Targets: {new_targets_with_space}");
     if let Some(desc) = talent_from_text_id(talent, new_targets_with_space, multab) {
         write!(buf, ": {desc}").infallible_write();
     }
