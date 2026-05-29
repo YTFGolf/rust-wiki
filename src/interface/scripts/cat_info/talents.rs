@@ -9,7 +9,7 @@ use crate::{
             },
             raw::talents_cost::TalentsCostContainer,
         },
-        unit::traits::LATEST_ENEMY_TYPE,
+        unit::traits::{EnemyType, LATEST_ENEMY_TYPE},
     },
     interface::{
         config::Config, error_handler::InfallibleWrite,
@@ -970,20 +970,30 @@ fn get_single_talent(
     let new_targets_with_space = if targs.is_empty() {
         ""
     } else if targs.len() == 1 {
-        match &targs[0] {
-            TalentTargets::Metal => " [[:Category:Metal Enemies|Metal]]",
-            TalentTargets::Alien => " [[:Category:Alien Enemies|Alien]]",
-            TalentTargets::Zombie => " [[:Category:Zombie Enemies|Zombie]]",
-            TalentTargets::Relic => " [[:Category:Relic Enemies|Relic]]",
-            t => panic!("Found {t:?}, not sure what this type is"),
-        }
+        let targ = EnemyType::from(targs[0]);
+        &format!(" [[:Category:{targ} Enemies|{targ}]]")
     } else if targs.len() == LATEST_ENEMY_TYPE as usize + 1 {
         " all"
     } else {
-        unimplemented!(
-            "Found nonstandard enemy list type: length = {}",
-            targs.len()
-        )
+        &{
+            let mut buf = String::new();
+            let mut iter = targs.iter().peekable();
+            let first = iter.next().expect("already checked len >= 2");
+            let first = EnemyType::from(*first);
+            write!(buf, " [[:Category:{first} Enemies|{first}]]").infallible_write();
+
+            while let Some(target) = iter.next() {
+                let separator = match iter.peek() {
+                    Some(_) => ",",
+                    None => " and",
+                };
+                let target = EnemyType::from(*target);
+                write!(buf, "{separator} [[:Category:{target} Enemies|{target}]]")
+                    .infallible_write();
+            }
+
+            buf
+        }
     };
 
     if let Some(desc) = talent_from_text_id(talent, new_targets_with_space, multab) {
