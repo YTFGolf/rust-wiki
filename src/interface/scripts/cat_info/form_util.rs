@@ -62,4 +62,20 @@ impl CatForm {
     pub fn deploy_icon(self, id: u32, eggs: &AncientEggInfo) -> String {
         self.deploy_icon_no_ext(id, eggs) + ".png"
     }
+
+    /// Cat's wiki appearance image.
+    pub fn wiki_appearance(self, id: u32, eggs: &AncientEggInfo) -> String {
+        match self {
+            CatForm::Normal => match eggs {
+                AncientEggInfo::None => format!("{id:03} 1.png"),
+                AncientEggInfo::Egg { normal, .. } => format!("m {normal:03}.png"),
+            },
+            CatForm::Evolved => match eggs {
+                AncientEggInfo::None => format!("{id:03} 2.png"),
+                AncientEggInfo::Egg { evolved, .. } => format!("m {evolved:03}.png"),
+            },
+            CatForm::True => format!("{id:03} 3.png"),
+            CatForm::Ultra => format!("{id:03} 4.png"),
+        }
+    }
 }
