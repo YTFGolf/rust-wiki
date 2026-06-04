@@ -214,6 +214,7 @@ fn evolution(cat: &Cat) -> Section {
 fn appearance(cat: &Cat) -> Template {
     type P = TemplateParameter;
     let id = cat.id;
+    let eggs = &cat.unitbuy.misc.egg_info;
 
     // functional programming sure is beautiful
     Template::named("Cat Appearance")
@@ -235,10 +236,22 @@ fn appearance(cat: &Cat) -> Template {
                 .name_option(id)
                 .map(|n| P::new("Ultra Form name", n)),
         )
-        .add_params((cat.forms.amt_forms >= 1).then(|| P::new("image1", format!("{id:03} 1.png"))))
-        .add_params((cat.forms.amt_forms >= 2).then(|| P::new("image2", format!("{id:03} 2.png"))))
-        .add_params((cat.forms.amt_forms >= 3).then(|| P::new("image3", format!("{id:03} 3.png"))))
-        .add_params((cat.forms.amt_forms >= 4).then(|| P::new("image4", format!("{id:03} 4.png"))))
+        .add_params(
+            (cat.forms.amt_forms >= 1)
+                .then(|| P::new("image1", CatForm::Normal.wiki_appearance(id, eggs))),
+        )
+        .add_params(
+            (cat.forms.amt_forms >= 2)
+                .then(|| P::new("image2", CatForm::Evolved.wiki_appearance(id, eggs))),
+        )
+        .add_params(
+            (cat.forms.amt_forms >= 3)
+                .then(|| P::new("image3", CatForm::True.wiki_appearance(id, eggs))),
+        )
+        .add_params(
+            (cat.forms.amt_forms >= 4)
+                .then(|| P::new("image4", CatForm::Ultra.wiki_appearance(id, eggs))),
+        )
 }
 
 fn catfruit_evolution(cat: &Cat, config: &Config) -> Option<Section> {
