@@ -434,26 +434,33 @@ pub fn map_gauntlet(map_id: &MapID, config: &Config) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{TEST_CONFIG, game_data::meta::stage::variant::StageVariantID};
+    use crate::{
+        TEST_CONFIG,
+        game_data::{meta::stage::variant::StageVariantID, version::lang::VersionLanguage},
+    };
 
     #[test]
     fn test_different_bases() {
+        let mut config = TEST_CONFIG.clone();
+        config.version.set_lang(VersionLanguage::EN);
+        config.version.init_all();
+
         let sfvh = MapID::from_components(StageVariantID::Collab, 193);
-        let map = map_gauntlet(&sfvh, &TEST_CONFIG);
+        let map = map_gauntlet(&sfvh, &config);
 
         const FIRST: &str = "Level 1, 3, 5, 7, 9=\n\
         {{EnemiesAppearing|Chickful A|Aku Gory|Helmut Krabbe|Pigeon de Sable|Sakura|Ryu}}\n\n\
         {{Stage Info\n\
         |stage name = [[File:rc014.png]]\n\
-        [[File:Mapsn193 00 c ja.png]]\n\
-        |stage location = [[File:Mapname193 c ja.png]]";
+        [[File:Mapsn193 00 c en.png]]\n\
+        |stage location = [[File:Mapname193 c en.png]]";
 
         const SECOND: &str = "Level 2, 4, 6, 8, 10=\n\
         {{EnemiesAppearing|Croconator|Capy|Dark Otter|Zigge|Luke|Guile}}\n\n\
         {{Stage Info\n\
         |stage name = [[File:rc007.png]]\n\
-        [[File:Mapsn193 00 c ja.png]]\n\
-        |stage location = [[File:Mapname193 c ja.png]]";
+        [[File:Mapsn193 00 c en.png]]\n\
+        |stage location = [[File:Mapname193 c en.png]]";
 
         assert!(map.contains(FIRST), "{map}");
         assert!(map.contains(SECOND), "{map}");
