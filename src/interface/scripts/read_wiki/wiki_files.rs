@@ -1,6 +1,7 @@
 //! Module that deals with getting and updating wiki files.
 
 use crate::{interface::config::Config, wiki_data::file_handler::get_wiki_data_location};
+use serde_json::Value;
 use similar::{ChangeTag, TextDiff};
 use std::{
     fs::File,
@@ -143,11 +144,20 @@ fn update_from_query(directory: &Path, user_agent: &str) {
             ])
             .call()
             .expect("Error: couldn't get the data from the wiki.");
-        let res_str = response.into_body().read_to_string().unwrap();
+        let response = response.into_body().read_to_string().unwrap();
+        let mut res_json: Value = serde_json::from_str(response.as_str()).unwrap();
 
-        println!("{res_str}");
+        let data = res_json.as_object_mut().unwrap().remove("bucket").unwrap();
+        let file_content = match data {
+            Value::String(mut s) => {
+                s.push('\n');
+                s
+            }
+            Value::Object(_map) => todo!(),
+            Value::Null | Value::Bool(_) | Value::Number(_) | Value::Array(_) => unimplemented!(),
+        };
 
-        // let path = directory.join(file_name);
-        // save_file(&path, file_name, content);
+        let path = directory.join(file_name);
+        save_file(&path, file_name, &file_content);
     }
 }
