@@ -1,7 +1,8 @@
 //! Module that deals with getting and updating wiki files.
 
 use crate::{interface::config::Config, wiki_data::file_handler::get_wiki_data_location};
-use serde_json::Value;
+use serde::Serialize;
+use serde_json::{Serializer, Value, ser::PrettyFormatter};
 use similar::{ChangeTag, TextDiff};
 use std::{
     fs::File,
@@ -28,10 +29,16 @@ const FILES: [(&str, &str); 7] = [
         "User:TheWWRNerdGuy/data/ContinueStages.csv",
     ),
 ];
-const QUERIES: [(&str, &str); 1] = [(
-    "UnitNames.csv",
-    "require(\"Module:Cats/api\").get_cats_csv()",
-)];
+const QUERIES: [(&str, &str); 2] = [
+    (
+        "UnitNames.csv",
+        "require(\"Module:Cats/api\").get_cats_csv()",
+    ),
+    (
+        "UnitReplacements.json",
+        "require(\"Module:Cats/api\").get_replacements_json()",
+    ),
+];
 
 const USER_AGENT: &str = "user-agent";
 
@@ -152,7 +159,16 @@ fn update_from_query(directory: &Path, user_agent: &str) {
                 s.push('\n');
                 s
             }
-            Value::Object(_map) => todo!(),
+            Value::Object(map) => {
+                let mut buf = Vec::new();
+                let formatter = PrettyFormatter::with_indent(b"\t");
+                let mut ser = Serializer::with_formatter(&mut buf, formatter);
+                map.serialize(&mut ser).unwrap();
+                // properly formatting is effort, this seems to sort
+                // alphabetically so will be fine for now
+
+                String::from_utf8(buf).unwrap()
+            }
             Value::Null | Value::Bool(_) | Value::Number(_) | Value::Array(_) => unimplemented!(),
         };
 
