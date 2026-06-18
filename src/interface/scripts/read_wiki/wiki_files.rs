@@ -7,7 +7,9 @@ use std::{
     io::{Read, Write},
     path::Path,
 };
-const WIKI_URL: &str = "https://battlecats.miraheze.org/wiki";
+const WIKI_URL: &str = "https://battlecats.miraheze.org";
+const WIKI_PATH: &str = "/wiki";
+const API_PATH: &str = "/w/api.php";
 
 /// (`file_name`, `page_name`)
 const FILES: [(&str, &str); 8] = [
@@ -26,6 +28,10 @@ const FILES: [(&str, &str); 8] = [
         "User:TheWWRNerdGuy/data/ContinueStages.csv",
     ),
 ];
+const QUERIES: [(&str, &str); 1] = [(
+    "UnitNames.csv",
+    "require(\"Module:Cats/api\").get_cats_csv()",
+)];
 
 const USER_AGENT: &str = "user-agent";
 
@@ -74,7 +80,8 @@ pub fn update_wiki_files(config: &Config) {
     std::fs::create_dir_all(directory).unwrap();
 
     let user_agent = format!("{}/rust-wiki-reader", config.wiki.username);
-    update_raw_files(directory, user_agent);
+    update_raw_files(directory, &user_agent);
+    update_from_query(directory, &user_agent);
 }
 
 fn save_file(path: &Path, file_name: &str, content: &str) {
@@ -104,11 +111,11 @@ fn save_file(path: &Path, file_name: &str, content: &str) {
     f_write.write_all(content.as_bytes()).unwrap();
 }
 
-fn update_raw_files(directory: &Path, user_agent: String) {
+fn update_raw_files(directory: &Path, user_agent: &str) {
     for (file_name, page_name) in FILES {
-        let uri = format!("{WIKI_URL}/{page_name}?action=raw");
+        let uri = format!("{WIKI_URL}{WIKI_PATH}/{page_name}?action=raw");
         let response = ureq::get(&uri)
-            .header(USER_AGENT, &user_agent)
+            .header(USER_AGENT, user_agent)
             .call()
             .expect("Error: couldn't get the data from the wiki.");
         let mut res_str = response.into_body().read_to_string().unwrap();
@@ -117,5 +124,30 @@ fn update_raw_files(directory: &Path, user_agent: String) {
 
         let path = directory.join(file_name);
         save_file(&path, file_name, content);
+    }
+}
+
+fn update_from_query(directory: &Path, user_agent: &str) {
+    for (file_name, lua_query) in QUERIES {
+        let uri = format!("{WIKI_URL}{API_PATH}");
+        let response = ureq::get(&uri)
+            .header(USER_AGENT, user_agent)
+            .query_pairs([
+                ("action", "bucket"),
+                ("format", "json"),
+                ("query", lua_query),
+                ("formatversion", "2"),
+                // these two are to reduce server load probably
+                ("fakeaction", "raw"),
+                ("ctype", "text/css"),
+            ])
+            .call()
+            .expect("Error: couldn't get the data from the wiki.");
+        let res_str = response.into_body().read_to_string().unwrap();
+
+        println!("{res_str}");
+
+        // let path = directory.join(file_name);
+        // save_file(&path, file_name, content);
     }
 }
