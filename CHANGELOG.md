@@ -13,14 +13,40 @@ subheading.
 
 ## [Unreleased]
 
+### Updated
+
+- Various library updates.
+- `Black` -> `Dark`.
+- Add 13th anniversary special rule.
+- Add more special rules.
+
 ### Added
+
+- Common `units` handler for cats and enemies.
+- Parsed `Enemy` struct.
+- Tests for dojos and special rules.
+- `serde::Serialize` implementation for `StageData`.
+- JSON caching for encounters.
+  - `--write-cache` and `--use-cache` options.
+- Stats template version 1.2.
+- `get` can now read from wiki API as well as normal pages.
 
 ### Fixed
 
-- Issues relating to EoC and ItF Zombie Outbreak stagenames
+- Issues relating to hardcoded stuff (mainly the "fixed" encounters for units
+that appear in a lot of outbreaks in EoC, also stuff in tests) for EoC and ItF
+Zombie Outbreak stagenames
 (<https://battlecats.miraheze.org/wiki/Special:Diff/378250>).
+- Cat Appearance template now does proper filenames for ancient eggs.
 
 ### Changed
+
+- Moved some cats' features to `units`
+  - Animations.
+  - Enemy traits.
+- Something to do with fixing stage enemy parsing on China (EoC).
+- Remove targets from cat stats template ability descriptions.
+- `UnitNames.csv` now uses the API instead of Module:Cats/names.csv.
 
 ### Removed
 
