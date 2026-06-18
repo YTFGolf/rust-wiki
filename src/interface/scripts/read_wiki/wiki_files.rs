@@ -13,7 +13,7 @@ const WIKI_PATH: &str = "/wiki";
 const API_PATH: &str = "/w/api.php";
 
 /// (`file_name`, `page_name`)
-const FILES: [(&str, &str); 8] = [
+const FILES: [(&str, &str); 7] = [
     ("StageNames.csv", "User:TheWWRNerdGuy/data/StageNames.csv"),
     (
         "EnemyLinkData.csv",
@@ -22,7 +22,6 @@ const FILES: [(&str, &str); 8] = [
     ("Treasures.csv", "User:TheWWRNerdGuy/data/Treasures.csv"),
     ("TalentNames.csv", "User:TheWWRNerdGuy/data/TalentNames.csv"),
     ("Difficulty.txt", "User:Novastrala/Difficulty.txt"),
-    ("UnitNames.csv", "Module:Cats/names.csv"),
     ("EnemyNames.csv", "Module:Enemies.csv"),
     (
         "ContinueStages.csv",
