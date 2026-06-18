@@ -5,6 +5,7 @@ use similar::{ChangeTag, TextDiff};
 use std::{
     fs::File,
     io::{Read, Write},
+    path::Path,
 };
 const WIKI_URL: &str = "https://battlecats.miraheze.org/wiki";
 
@@ -73,6 +74,37 @@ pub fn update_wiki_files(config: &Config) {
     std::fs::create_dir_all(directory).unwrap();
 
     let user_agent = format!("{}/rust-wiki-reader", config.wiki.username);
+    update_raw_files(directory, user_agent);
+}
+
+fn save_file(path: &Path, file_name: &str, content: &str) {
+    let file = File::options().read(true).open(&path);
+    let diff: String = match file {
+        Ok(mut f) => {
+            let mut buf = String::new();
+            f.read_to_string(&mut buf).unwrap();
+            get_file_diff(&buf, content)
+        }
+        Err(e) => match e.kind() {
+            std::io::ErrorKind::NotFound => "File created".to_string(),
+            _ => panic!("Error when trying to open file: {e}"),
+        },
+    };
+    if diff.is_empty() {
+        return;
+    }
+    println!("{:#>80}\n{file_name}", '#');
+    println!("{diff}\n");
+    let mut f_write = File::options()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&path)
+        .unwrap();
+    f_write.write_all(content.as_bytes()).unwrap();
+}
+
+fn update_raw_files(directory: &Path, user_agent: String) {
     for (file_name, page_name) in FILES {
         let uri = format!("{WIKI_URL}/{page_name}?action=raw");
         let response = ureq::get(&uri)
@@ -84,32 +116,6 @@ pub fn update_wiki_files(config: &Config) {
         let content = strip_pre(&res_str);
 
         let path = directory.join(file_name);
-        let file = File::options().read(true).open(&path);
-
-        let diff: String = match file {
-            Ok(mut f) => {
-                let mut buf = String::new();
-                f.read_to_string(&mut buf).unwrap();
-                get_file_diff(&buf, content)
-            }
-            Err(e) => match e.kind() {
-                std::io::ErrorKind::NotFound => "File created".to_string(),
-                _ => panic!("Error when trying to open file: {e}"),
-            },
-        };
-
-        if diff.is_empty() {
-            continue;
-        }
-
-        println!("{:#>80}\n{file_name}", '#');
-        println!("{diff}\n");
-        let mut f_write = File::options()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .open(&path)
-            .unwrap();
-        f_write.write_all(content.as_bytes()).unwrap();
+        save_file(&path, file_name, content);
     }
 }
