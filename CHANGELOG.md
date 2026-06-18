@@ -13,6 +13,16 @@ subheading.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.9.0]
+
 ### Updated
 
 - Various library updates.
@@ -47,8 +57,6 @@ Zombie Outbreak stagenames
 - Something to do with fixing stage enemy parsing on China (EoC).
 - Remove targets from cat stats template ability descriptions.
 - `UnitNames.csv` now uses the API instead of Module:Cats/names.csv.
-
-### Removed
 
 ## [0.8.4] - 2026-02-23
 
@@ -559,7 +567,8 @@ update since there's just too much to actually make sense of.
 
 Project started.
 
-[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.4...dev
+[unreleased]: https://github.com/YTFGolf/rust-wiki/compare/v0.9.0...dev
+[0.9.0]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.4...v0.9.0
 [0.8.4]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/YTFGolf/rust-wiki/compare/v0.8.1...v0.8.2
