@@ -52,6 +52,14 @@ impl CatDataContainer {
     pub fn get_cat_replacement(&self, name: &str) -> Option<&str> {
         self.replacements.get(name).map(|x| x.as_str())
     }
+
+    /// Get cat replacement name (e.g. `Cat Bros EX` -> `Cat Bros`).
+    pub fn replace_name<'a>(&'a self, name: &'a str) -> &'a str {
+        match self.get_cat_replacement(name) {
+            Some(n) => n,
+            None => name,
+        }
+    }
 }
 impl CatDataContainer {
     /// Try to get cat data from wiki ID.
@@ -70,7 +78,7 @@ impl CatDataContainer {
         format!(
             "[[{link}|{name}]]",
             link = cat.page,
-            name = CatName::clean_cat_name(&cat.normal),
+            name = self.replace_name(&cat.normal),
         )
     }
 

@@ -11,7 +11,7 @@ use crate::{
             stats::form::{get_form, write_level_and_plus},
         },
     },
-    wiki_data::cat_data::CatName,
+    wiki_data::cat_data::CAT_DATA,
     wikitext::template::{Template, TemplateParameter},
 };
 use std::{fmt::Write, iter::zip};
@@ -105,7 +105,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     for (form_variant, stats_and_anims) in zip(forms, iter) {
         let name = form_variant.name(cat.id);
-        let name = CatName::clean_cat_name(name);
+        let name = CAT_DATA.replace_name(name);
 
         let form_name = form_variant.as_str();
         let (stats, anims) = stats_and_anims;
