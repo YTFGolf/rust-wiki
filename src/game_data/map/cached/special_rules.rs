@@ -191,8 +191,8 @@ pub enum RuleNameLabel {
     HighSpeed,
     /// Half-Off: S. Rare
     HalfOffSR,
-    /// 物価高騰 超激レア
-    物価高騰超激レア,
+    /// Inflation: Uber Rare
+    InflationUberRare,
     /// Placeholder.
     Placeholder(String),
 }
@@ -217,7 +217,7 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName015" => Self::GrandBattle,
             "SpecialRuleName016" => Self::HighSpeed,
             "SpecialRuleName017" => Self::HalfOffSR,
-            "SpecialRuleName018" => Self::物価高騰超激レア,
+            "SpecialRuleName018" => Self::InflationUberRare,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -244,7 +244,7 @@ impl RuleNameLabel {
             RuleNameLabel::GrandBattle => "Grand Battle",
             RuleNameLabel::HighSpeed => "High Speed",
             RuleNameLabel::HalfOffSR => "Half-Off: S. Rare",
-            RuleNameLabel::物価高騰超激レア => "物価高騰 超激レア",
+            RuleNameLabel::InflationUberRare => "Inflation: Uber Rare",
             RuleNameLabel::Placeholder(label) => {
                 log::error!("unknown special rule label {label:?}");
                 "???"

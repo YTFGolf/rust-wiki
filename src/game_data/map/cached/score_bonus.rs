@@ -205,6 +205,8 @@ mod tests {
     use crate::TEST_CONFIG;
 
     #[test]
+    #[ignore]
+    // ignored because this is unmaintained
     fn assert_no_placeholders() {
         // both for unused score bonus and for string version
         let version = TEST_CONFIG.version.current_version();

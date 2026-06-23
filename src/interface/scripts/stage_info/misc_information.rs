@@ -352,7 +352,7 @@ mod tests {
                 TemplateParameter::new(
                     "next stage",
                     "[[Ahosan Domain]]<br>\n\
-                    [[Doge's Rebellion (Satsuma Imo Domain)|Doge's Rebellion]] (''Invasion Stage'')"
+                    [[Satsuma Imo Domain/Doge's Rebellion|Doge's Rebellion]] (''Invasion Stage'')"
                 )
             ]
         );
