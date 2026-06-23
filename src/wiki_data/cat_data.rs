@@ -2,7 +2,7 @@
 
 use crate::wiki_data::file_handler::get_wiki_data_location;
 use serde::Deserialize;
-use std::sync::LazyLock;
+use std::{collections::BTreeMap, fs::File, sync::LazyLock};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "PascalCase")]
@@ -28,6 +28,7 @@ pub struct CatName {
 }
 impl CatName {
     /// Convert unique cat name into actual cat name.
+    #[deprecated]
     pub fn clean_cat_name(name: &str) -> &str {
         match name {
             "Cat Bros EX" | "Cat Bros R" | "Cat Bros Sw" => "Cat Bros",
@@ -44,6 +45,13 @@ impl CatName {
 /// Container for cat data.
 pub struct CatDataContainer {
     names: LazyLock<Vec<CatName>>,
+    replacements: LazyLock<BTreeMap<String, String>>,
+}
+impl CatDataContainer {
+    /// Get cat replacement name (e.g. `Cat Bros EX` -> `Cat Bros`).
+    pub fn get_cat_replacement(&self, name: &str) -> Option<&str> {
+        self.replacements.get(name).map(|x| x.as_str())
+    }
 }
 impl CatDataContainer {
     /// Try to get cat data from wiki ID.
@@ -92,6 +100,7 @@ impl CatDataContainer {
 /// Contains data about cats.
 pub static CAT_DATA: CatDataContainer = CatDataContainer {
     names: LazyLock::new(get_cat_names),
+    replacements: LazyLock::new(get_cat_replacements),
 };
 
 fn get_cat_names() -> Vec<CatName> {
@@ -103,6 +112,11 @@ fn get_cat_names() -> Vec<CatName> {
         .deserialize::<CatName>()
         .map(|r| r.unwrap())
         .collect()
+}
+
+fn get_cat_replacements() -> BTreeMap<String, String> {
+    let f = File::open(get_wiki_data_location().join("UnitReplacements.json")).unwrap();
+    serde_json::from_reader(f).unwrap()
 }
 
 #[cfg(test)]
