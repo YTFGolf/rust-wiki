@@ -14,7 +14,7 @@ else:
    extra = ''
 prepend = extra
 
-append = "\n{{SpecialStages List}}\n[[Category:Event Stages]]\n[[Category:Restriction Stages]]"
+append = "\n{{Otherworld Colosseum}}\n[[Category:Event Stages]]\n[[Category:Restriction Stages]]"
 
 map_num = int(sys.argv[1])
 stage = f"sr {map_num} {num}"
