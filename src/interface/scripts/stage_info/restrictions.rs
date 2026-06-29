@@ -423,6 +423,7 @@ fn rules(stage: &Stage) -> Option<String> {
             "Should have reached {:?} in earlier code.",
             rules.contents_type
         ),
+        ContentsType::Unknown => Some(String::from("Unknown rule")),
     }
 }
 

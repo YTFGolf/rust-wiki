@@ -57,11 +57,15 @@ pub enum ContentsType {
     Anni12 = 1,
     /// Only used in 13th anniversary stages.
     Anni13 = 2,
+    /// Who knows.
+    Unknown = 99,
 }
 impl From<ContentsSize> for ContentsType {
     fn from(value: ContentsSize) -> Self {
-        ContentsType::from_repr(value)
-            .unwrap_or_else(|| panic!("Unexpected SpecialRule ContentsType value: {value}."))
+        ContentsType::from_repr(value).unwrap_or_else(|| {
+            log::error!("Unexpected SpecialRule ContentsType value: {value}.");
+            Self::Unknown
+        })
     }
 }
 
