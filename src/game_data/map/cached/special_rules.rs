@@ -77,8 +77,11 @@ type Single = [ParamSize; 1];
 type Rarity = [ParamSize; AMT_RARITIES];
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+/// Parameters but they're for Trust Fund because PONOS loves consistency.
 pub enum TrustFundParams {
+    /// The classic route that didn't cause errors.
     Classic(Single),
+    /// The non-classic route that caused errors.
     Ugh([ParamSize; 2]),
 }
 impl TrustFundParams {
