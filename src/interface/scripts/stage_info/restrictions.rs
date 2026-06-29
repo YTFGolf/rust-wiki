@@ -2,7 +2,9 @@
 
 use crate::{
     game_data::{
-        map::cached::special_rules::{ContentsType, RuleNameLabel, RuleType, SpecialRule},
+        map::cached::special_rules::{
+            ContentsType, RuleNameLabel, RuleType, SpecialRule, TrustFundParams,
+        },
         stage::{
             parsed::stage::{Restriction, RestrictionCrowns as Crowns, RestrictionStages, Stage},
             raw::stage_option::charagroups::{CharaGroup, CharaGroupType},
@@ -404,11 +406,17 @@ fn rules(stage: &Stage) -> Option<String> {
 
     match rules.contents_type {
         ContentsType::Anni12 => {
-            assert_eq!(&rules.rule_type, &[RuleType::TrustFund([4500])]);
+            assert_eq!(
+                &rules.rule_type,
+                &[RuleType::TrustFund(TrustFundParams::Classic([4500]))]
+            );
             Some(String::from("{{StageRule|12thAnni}}"))
         }
         ContentsType::Anni13 => {
-            assert_eq!(&rules.rule_type, &[RuleType::TrustFund([4500])]);
+            assert_eq!(
+                &rules.rule_type,
+                &[RuleType::TrustFund(TrustFundParams::Classic([4500]))]
+            );
             Some(String::from("{{StageRule|13thAnni}}"))
         }
         ContentsType::Colosseum => unreachable!(

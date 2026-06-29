@@ -72,11 +72,26 @@ type Single = [ParamSize; 1];
 /// Rule with parameters for each rarity.
 type Rarity = [ParamSize; AMT_RARITIES];
 
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TrustFundParams {
+    Classic(Single),
+    Ugh([ParamSize; 2]),
+}
+impl TrustFundParams {
+    fn from_params(params: &[ParamSize]) -> Self {
+        match params.len() {
+            1 => Self::Classic(RuleType::to_arr(params)),
+            2 => Self::Ugh(RuleType::to_arr(params)),
+            x => panic!("HAHA you need to account for parameters of length {x}: {params:?}"),
+        }
+    }
+}
+
 /// Type of special rule.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum RuleType {
-    /// Param is starting cash in ¢.
-    TrustFund(Single),
+    /// Param is starting cash in ¢. Second param is ???.
+    TrustFund(TrustFundParams),
     /// Param is frames that global cooldown is set to.
     CooldownEquality(Single),
     /// Limit each rarity to specified amount of simultaneous deploys.
@@ -122,7 +137,7 @@ impl From<RawRuleItem> for RuleType {
     fn from(value: RawRuleItem) -> Self {
         let params = &value.1.parameters;
         match value.0 {
-            0 => Self::TrustFund(Self::to_arr(params)),
+            0 => Self::TrustFund(TrustFundParams::from_params(params)),
             1 => Self::CooldownEquality(Self::to_arr(params)),
             //
             3 => Self::RarityLimit(Self::to_arr(params)),
@@ -143,7 +158,7 @@ impl From<RawRuleItem> for RuleType {
 impl RuleType {
     /// Copy `params` to statically sized array.
     fn to_arr<const N: usize>(params: &[ParamSize]) -> [ParamSize; N] {
-        assert_eq!(params.len(), N, "Params is incorrect size!");
+        assert_eq!(params.len(), N, "Params is incorrect size! {params:?}");
         let mut arr = [0; N];
         arr[..N].copy_from_slice(&params[..N]);
         arr
