@@ -912,6 +912,9 @@ mod tests {
     fn dojo_rule() {
         let md_dojo =
             Stage::from_id_current(StageID::from_components(T::RankingDojo, 30, 0)).unwrap();
-        assert_eq!(rules_section(&md_dojo).unwrap(), "{{DojoRule|Massive Damage}}");
+        assert_eq!(
+            rules_section(&md_dojo).unwrap(),
+            "{{DojoRule|Massive Damage}}"
+        );
     }
 }
