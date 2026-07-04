@@ -145,8 +145,8 @@ fn update_from_query(directory: &Path, user_agent: &str) {
                 ("query", lua_query),
                 ("formatversion", "2"),
                 // these two are to reduce server load probably
-                ("fakeaction", "raw"),
-                ("ctype", "text/css"),
+                ("maxage", "600"),
+                ("smaxage", "600"),
             ])
             .call()
             .expect("Error: couldn't get the data from the wiki.");
