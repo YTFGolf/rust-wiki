@@ -358,6 +358,7 @@ impl From<StageData<'_>> for Stage {
         }
     }
 }
+#[track_caller]
 fn u8_to_bool(n: u8) -> bool {
     match n {
         0 => false,

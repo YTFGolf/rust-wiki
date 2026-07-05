@@ -20,6 +20,42 @@ use csv_types::{HeaderCSV, Line2CSV, RawCSVData, StageEnemyCSV};
 use serde::ser::SerializeMap;
 use std::{fs::File, io::BufReader, path::PathBuf};
 
+const IS_KUMANCHU: bool = false;
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize, serde::Serialize)]
+/// Data stored in line 2 of the csv file (line 1 for most Main Chapter stages).
+struct Line2CSVKumanchu {
+    /// Stage width.
+    pub width: u32,
+    /// Base HP (ignore this if `animbase_id` is not 0).
+    pub base_hp: u32,
+    pub(super) _生産最低f: u32,
+    pub(super) _生産最高f: u32,
+    /// ID of stage background.
+    pub background_id: u32,
+    /// Max enemies in stage.
+    pub max_enemies: u32,
+    not_anim_base_id: u32,
+    not_time_limit: u32,
+    not_indestructible: u8,
+    pub(super) _unknown_3: Option<u32>,
+}
+impl From<Line2CSVKumanchu> for Line2CSV {
+    fn from(value: Line2CSVKumanchu) -> Self {
+        Self {
+            width: value.width,
+            base_hp: value.base_hp,
+            _生産最低f: value._生産最低f,
+            _生産最高f: value._生産最高f,
+            background_id: value.background_id,
+            max_enemies: value.max_enemies,
+            anim_base_id: 0,
+            time_limit: 0,
+            indestructible: 0,
+            _unknown_3: value._unknown_3,
+        }
+    }
+}
+
 /// Types to deserialise csv files.
 pub mod csv_types {
     use serde;
@@ -297,6 +333,8 @@ fn read_header_lines<R: std::io::Read>(
         line_1_or_2.len() <= 7 || is_ignorable(&line_1_or_2[6]) || is_ignorable(&line_1_or_2[7]);
     // does this specific file have the proper header? If not then the first
     // line will be what is called line2
+    let has_header = !IS_KUMANCHU && has_header;
+
     let csv_head: HeaderCSV = if has_header {
         let tmp = line_1_or_2;
         let head = tmp
@@ -319,9 +357,16 @@ fn read_header_lines<R: std::io::Read>(
     };
 
     let line_2 = line_1_or_2;
-    let csv_line_2: Line2CSV = line_2
-        .deserialize(None)
-        .map_err(|e| (E::DeserialiseError(e), 2))?;
+    let csv_line_2: Line2CSV = if !IS_KUMANCHU {
+        line_2
+            .deserialize(None)
+            .map_err(|e| (E::DeserialiseError(e), 2))?
+    } else {
+        line_2
+            .deserialize::<Line2CSVKumanchu>(None)
+            .map_err(|e| (E::DeserialiseError(e), 2))?
+            .into()
+    };
 
     Ok((csv_head, csv_line_2))
 }
@@ -341,8 +386,17 @@ fn remove_comment_ind(mut record: ByteRecord, index: usize) -> ByteRecord {
 // code
 fn deserialise_single_enemy(mut result: StringRecord) -> Option<StageEnemyCSV> {
     // log::trace!("{result:?}");
-    if result.len() < 10 {
+    if result.len() == 9 && result[8] != *"" {
         result.push_field("");
+        // eoc
+    }
+    if result.len() <= 9 {
+        // either must be of length 8, or is of length 9 and 9th element is
+        // blank
+        result.truncate(8);
+        result.push_field("0");
+        result.push_field("");
+        // kumanchu royale
     }
     let record: StageEnemyCSV = match result.deserialize(None) {
         Ok(r) => r,
