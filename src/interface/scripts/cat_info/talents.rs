@@ -114,7 +114,7 @@ fn talent_from_text_id(
     ];
 
     match talent.skill_description_id {
-        1 | 70 | 71 => {
+        1 | 70 | 71 | 98 => {
             // unlock weaken, level up for higher duration
             // 70 = relic
             // 71 = alien
@@ -137,7 +137,7 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        2 | 76 => {
+        2 | 76 | 99 => {
             // freeze, level up for higher duration
             // 76 = metal
             assert_eq!(c_abil, 2);
@@ -158,7 +158,7 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        3 | 69 | 72 => {
+        3 | 69 | 72 | 100 => {
             // slow, level up for higher duration
             // 69 = relic
             // 72 = metal
@@ -184,7 +184,7 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        8 | 73 | 75 => {
+        8 | 73 | 75 | 101 => {
             // knockback, level up for higher chance
             // 73 = zombie
             // 75 = alien
@@ -197,7 +197,7 @@ fn talent_from_text_id(
             let step = calculate_step(talent, min, max);
 
             let msg = format!(
-                "Adds a {min}% chance to knockback{new_targets_with_space} enemies{multab}, improves by {step}% per level up to {max}%"
+                "Adds a {min}% chance to knockback{new_targets_with_space} enemies{multab}, improves chance by {step}% per level up to {max}%"
             );
             Some(msg)
         }
@@ -768,7 +768,7 @@ fn talent_from_text_id(
             );
             Some(msg)
         }
-        80 => {
+        80 | 102 => {
             // curse, level up duration
             assert_eq!(c_abil, 60);
             assert_eq!(p_len, 2);
@@ -784,7 +784,7 @@ fn talent_from_text_id(
             let step_time = fmt_time(step);
 
             let msg = format!(
-                "Adds a {chance}% chance to curse enemies for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
+                "Adds a {chance}% chance to curse{new_targets_with_space} enemies for {min_time}{multab}, improves by {step_time} per level up to {max_time}"
             );
             Some(msg)
         }
