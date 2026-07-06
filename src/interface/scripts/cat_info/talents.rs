@@ -111,6 +111,8 @@ fn talent_from_text_id(
         (79, 59), // soulstrike
         (85, 63), // colossus slayer
         (91, 66), // sage slayer
+        (96, 68), // counter-surge
+        (97, 69), // immune to explosion
     ];
 
     match talent.skill_description_id {
@@ -118,6 +120,7 @@ fn talent_from_text_id(
             // unlock weaken, level up for higher duration
             // 70 = relic
             // 71 = alien
+            // 98 = all
             assert_eq!(c_abil, 1);
             assert_eq!(p_len, 3);
 
@@ -140,6 +143,7 @@ fn talent_from_text_id(
         2 | 76 | 99 => {
             // freeze, level up for higher duration
             // 76 = metal
+            // 99 = all
             assert_eq!(c_abil, 2);
             assert_eq!(p_len, 2);
 
@@ -162,6 +166,7 @@ fn talent_from_text_id(
             // slow, level up for higher duration
             // 69 = relic
             // 72 = metal
+            // 100 = all
             assert_eq!(c_abil, 3);
             assert_eq!(p_len, 2);
 
@@ -188,6 +193,7 @@ fn talent_from_text_id(
             // knockback, level up for higher chance
             // 73 = zombie
             // 75 = alien
+            // 101 = all
             assert_eq!(c_abil, 8);
             assert_eq!(p_len, 1);
 
@@ -770,6 +776,7 @@ fn talent_from_text_id(
         }
         80 | 102 => {
             // curse, level up duration
+            // 102 = all
             assert_eq!(c_abil, 60);
             assert_eq!(p_len, 2);
 
