@@ -9,7 +9,7 @@ use crate::{
             },
             raw::talents_cost::TalentsCostContainer,
         },
-        unit::traits::{EnemyType, LATEST_ENEMY_TYPE},
+        unit::traits::{BASE_TYPES, EnemyType},
     },
     interface::{
         config::Config, error_handler::InfallibleWrite,
@@ -971,7 +971,11 @@ fn get_single_talent(
     } else if targs.len() == 1 {
         let targ = EnemyType::from(targs[0]);
         &format!(" [[:Category:{targ} Enemies|{targ}]]")
-    } else if targs.len() == LATEST_ENEMY_TYPE as usize + 1 {
+    } else if targs.len() == BASE_TYPES.len() {
+        log::debug!(
+            "Talent targets: assuming that because this unit unlocks {l} targets, then must target all enemies",
+            l = BASE_TYPES.len()
+        );
         " all"
     } else {
         &{
