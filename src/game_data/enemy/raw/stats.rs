@@ -162,7 +162,7 @@ pub struct EnemyCSV {
     pub immune_explosion: Bool,
 
     // 110
-    pub supervillain: Bool,
+    pub kaijin: Bool,
 
     #[serde(default)]
     pub rest: Vec<i32>,

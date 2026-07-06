@@ -28,13 +28,13 @@ pub enum EnemyType {
     Colossus,
     Behemoth,
     Sage,
-    Supervillain,
+    Kaijin,
     // make sure that MAX_VALUE is up-to-date if adding anything new in
     // actually why not just use tests to enforce that
     // TODO
 }
 /// Latest entry (therefore highest numerically).
-pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Supervillain;
+pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Kaijin;
 /// Basic types, used for "chance to hit all enemies"-type stuff.
 pub const BASE_TYPES: [EnemyType; 10] = [
     EnemyType::Red,
@@ -70,7 +70,7 @@ impl EnemyType {
             Self::Colossus => "Colossus",
             Self::Behemoth => "Behemoth",
             Self::Sage => "Sage",
-            Self::Supervillain => "Supervillain",
+            Self::Kaijin => "Kaijin",
         }
     }
 }
@@ -178,8 +178,8 @@ impl EnemyType {
         if bool(stats.sage).unwrap() {
             targets.push(Self::Sage)
         }
-        if bool(stats.supervillain).unwrap() {
-            targets.push(Self::Supervillain)
+        if bool(stats.kaijin).unwrap() {
+            targets.push(Self::Kaijin)
         }
 
         targets
