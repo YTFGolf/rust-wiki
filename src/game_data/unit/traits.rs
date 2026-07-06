@@ -35,6 +35,19 @@ pub enum EnemyType {
 }
 /// Latest entry (therefore highest numerically).
 pub const LATEST_ENEMY_TYPE: EnemyType = EnemyType::Supervillain;
+/// Basic types, used for "chance to hit all enemies"-type stuff.
+pub const BASE_TYPES: [EnemyType; 10] = [
+    EnemyType::Red,
+    EnemyType::Floating,
+    EnemyType::Dark,
+    EnemyType::Metal,
+    EnemyType::Traitless,
+    EnemyType::Angel,
+    EnemyType::Alien,
+    EnemyType::Zombie,
+    EnemyType::Relic,
+    EnemyType::Aku,
+];
 
 impl EnemyType {
     /// Get enemy type as string slice.
