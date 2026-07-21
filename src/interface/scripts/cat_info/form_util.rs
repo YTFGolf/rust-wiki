@@ -44,9 +44,9 @@ impl CatForm {
         };
         match self {
             Self::Normal => Some(Cow::Borrowed(&cat.normal)),
-            Self::Evolved => cat.evolved.as_ref().map(|n| Cow::Owned(n.clone())),
-            Self::True => cat.true_form.as_ref().map(|n| Cow::Owned(n.clone())),
-            Self::Ultra => cat.ultra.as_ref().map(|n| Cow::Owned(n.clone())),
+            Self::Evolved => cat.evolved.as_ref().map(|n| Cow::Borrowed(n.as_str())),
+            Self::True => cat.true_form.as_ref().map(|n| Cow::Borrowed(n.as_str())),
+            Self::Ultra => cat.ultra.as_ref().map(|n| Cow::Borrowed(n.as_str())),
             // borrow checker pls be nice
         }
     }
