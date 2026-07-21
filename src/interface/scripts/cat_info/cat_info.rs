@@ -144,7 +144,7 @@ fn intro(cat: &Cat) -> Section {
             );
             let patch = update % 100;
             if patch != 0 {
-                write!(buf, ",{patch}").infallible_write();
+                write!(buf, ".{patch}").infallible_write();
             }
 
             Some(buf)
