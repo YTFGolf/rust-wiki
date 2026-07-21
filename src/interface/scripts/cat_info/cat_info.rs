@@ -217,24 +217,24 @@ fn appearance(cat: &Cat) -> Template {
     let eggs = &cat.unitbuy.misc.egg_info;
 
     // functional programming sure is beautiful
-    Template::named("Cat Appearance")
-        .add_params(P::new("Cat Unit Number", id.to_string()))
-        .add_params(P::new("cat category", cat.unitbuy.misc.rarity.category()))
-        .add_params(P::new("Normal Form name", CatForm::Normal.name(id)))
+    Template::named("Cat Info")
+        .add_params(P::new("ID", id.to_string()))
+        .add_params(P::new("rarity", cat.unitbuy.misc.rarity.short_code()))
+        .add_params(P::new("name1", CatForm::Normal.name(id)))
         .add_params(
             CatForm::Evolved
                 .name_option(id)
-                .map(|n| P::new("Evolved Form name", n)),
+                .map(|n| P::new("name2", n)),
         )
         .add_params(
             CatForm::True
                 .name_option(id)
-                .map(|n| P::new("True Form name", n)),
+                .map(|n| P::new("name3", n)),
         )
         .add_params(
             CatForm::Ultra
                 .name_option(id)
-                .map(|n| P::new("Ultra Form name", n)),
+                .map(|n| P::new("name4", n)),
         )
         .add_params(
             (cat.forms.amt_forms >= 1)

@@ -208,6 +208,18 @@ impl Rarity {
             Self::LegendRare => "[[:Category:Legend Rare Cats|Legend Rare Cat]]",
         }
     }
+
+    /// Rarity short code.
+    pub const fn short_code(&self) -> &'static str {
+        match self {
+            Self::Normal => "N",
+            Self::Special => "EX",
+            Self::Rare => "RR",
+            Self::SuperRare => "SR",
+            Self::UberRare => "UR",
+            Self::LegendRare => "LR",
+        }
+    }
 }
 
 impl Display for Rarity {
