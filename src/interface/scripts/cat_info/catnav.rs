@@ -9,7 +9,9 @@ pub fn cat_nav(id: u32) -> Section {
     let mut prev_id = id;
     while prev_id > 0 {
         prev_id -= 1;
-        let cat = CAT_DATA.get_cat(prev_id);
+        let Some(cat) = CAT_DATA.try_get_cat(prev_id as usize) else {
+            continue;
+        };
 
         if ["Iron Wall Cat"].contains(&cat.normal.as_str())
             || ["Special Abilities#Conjure"].contains(&cat.page.as_str())

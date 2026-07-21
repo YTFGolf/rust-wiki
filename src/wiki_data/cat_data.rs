@@ -2,7 +2,7 @@
 
 use crate::wiki_data::file_handler::get_wiki_data_location;
 use serde::Deserialize;
-use std::{collections::BTreeMap, fs::File, sync::LazyLock};
+use std::{borrow::Cow, collections::BTreeMap, fs::File, sync::LazyLock};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "PascalCase")]
@@ -25,6 +25,12 @@ pub struct CatName {
     pub page: String,
     /// Short rarity code.
     pub rarity: String,
+}
+impl CatName {
+    /// Form is 1-based.
+    pub fn get_placeholder(id: usize, form: usize) -> String {
+        format!("{id}-{form}")
+    }
 }
 
 /// Container for cat data.
@@ -53,14 +59,12 @@ impl CatDataContainer {
         self.names.get(id)
     }
 
-    /// Get cat data from wiki ID.
-    pub fn get_cat(&self, id: u32) -> &CatName {
-        &self.names[id as usize]
-    }
-
     /// Get cat link from wiki ID.
     pub fn get_cat_link(&self, id: u32) -> String {
-        let cat = self.get_cat(id);
+        let Some(cat) = self.try_get_cat(id as usize) else {
+            panic!("Cat name data not found for cat with id: {id}")
+            // let's not bother dealing with this edge case
+        };
         format!(
             "[[{link}|{name}]]",
             link = cat.page,

@@ -52,7 +52,7 @@ fn fmt_combo(i: usize, combo: &ComboData, config: &Config) -> String {
     for unit in &combo.units {
         let form = CatForm::from_repr(unit.form.try_into().unwrap()).unwrap();
         buf += "|";
-        buf += form.name(unit.id.try_into().unwrap());
+        buf += &form.name(unit.id.try_into().unwrap());
     }
 
     buf += "|jpname=";

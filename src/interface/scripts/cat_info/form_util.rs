@@ -1,5 +1,9 @@
 //! Utility functions for templates.
-use crate::{game_data::cat::parsed::unitbuy::AncientEggInfo, wiki_data::cat_data::CAT_DATA};
+use crate::{
+    game_data::cat::parsed::unitbuy::AncientEggInfo,
+    wiki_data::cat_data::{CAT_DATA, CatName},
+};
+use std::borrow::Cow;
 use strum::FromRepr;
 
 #[repr(usize)]
@@ -27,17 +31,23 @@ impl CatForm {
     }
 
     /// Name of given unit in this form.
-    pub fn name(self, id: u32) -> &'static str {
+    pub fn name(self, id: u32) -> Cow<'static, str> {
         self.name_option(id).unwrap()
     }
 
     /// Name of unit in this form, `None` if form does not have a name.
-    pub fn name_option(self, id: u32) -> Option<&'static String> {
+    pub fn name_option(self, id: u32) -> Option<Cow<'static, str>> {
+        let id = id as usize;
+        let cat = match CAT_DATA.try_get_cat(id) {
+            Some(c) => c,
+            None => return Some(Cow::Owned(CatName::get_placeholder(id, self as usize + 1))),
+        };
         match self {
-            Self::Normal => Some(&CAT_DATA.get_cat(id).normal),
-            Self::Evolved => CAT_DATA.get_cat(id).evolved.as_ref(),
-            Self::True => CAT_DATA.get_cat(id).true_form.as_ref(),
-            Self::Ultra => CAT_DATA.get_cat(id).ultra.as_ref(),
+            Self::Normal => Some(Cow::Borrowed(&cat.normal)),
+            Self::Evolved => cat.evolved.as_ref().map(|n| Cow::Owned(n.clone())),
+            Self::True => cat.true_form.as_ref().map(|n| Cow::Owned(n.clone())),
+            Self::Ultra => cat.ultra.as_ref().map(|n| Cow::Owned(n.clone())),
+            // borrow checker pls be nice
         }
     }
 }
