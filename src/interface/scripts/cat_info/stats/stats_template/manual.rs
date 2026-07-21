@@ -49,7 +49,7 @@ fn add_all_forms(t: &mut Template, cat: &Cat) {
 
     for (form_variant, stats_and_anims) in zip(forms, iter) {
         let name = form_variant.name(cat.id);
-        let name = CAT_DATA.replace_name(&name);
+        let name = CAT_DATA.replace_name(&name).into_owned();
 
         let form_name = form_variant.as_str();
         let (stats, anims) = stats_and_anims;

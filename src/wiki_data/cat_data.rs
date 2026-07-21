@@ -45,11 +45,11 @@ impl CatDataContainer {
     }
 
     /// Get cat replacement name (e.g. `Cat Bros EX` -> `Cat Bros`).
-    pub fn replace_name<'a>(&'a self, name: &str) -> Cow<'a, str> {
+    pub fn replace_name<'a>(&'a self, name: &'a str) -> Cow<'a, str> {
         // I have no idea what to do with this
         match self.get_cat_replacement(name) {
-            Some(n) => Cow::Owned(n.into()),
-            None => Cow::Owned(name.into()),
+            Some(n) => Cow::Borrowed(n),
+            None => Cow::Borrowed(name),
         }
     }
 }
