@@ -276,7 +276,9 @@ fn get_group<'a: 'b, 'b>(
     let mut group = Group::new(sec_ref, vec![]);
     let group_chapters = &mut group.chapters;
     for stage in &section_map.1 {
-        let stage_map = STAGE_WIKI_DATA.stage_map(stage.id.map()).unwrap();
+        let Some(stage_map) = STAGE_WIKI_DATA.stage_map(stage.id.map()) else {
+            panic!("Map {} not found in StageNames.csv", stage.id.map());
+        };
 
         if add_to_removed && OLD_OR_REMOVED_DETECT.is_match(&stage_map.name) {
             removed_vec.push(stage);
