@@ -32,7 +32,10 @@ impl CatForm {
 
     /// Name of given unit in this form.
     pub fn name(self, id: u32) -> Cow<'static, str> {
-        self.name_option(id).unwrap()
+        match self.name_option(id) {
+            Some(s) => s,
+            None => panic!("Unit {id} not found in UnitNames.csv"),
+        }
     }
 
     /// Name of unit in this form, `None` if form does not have a name.
