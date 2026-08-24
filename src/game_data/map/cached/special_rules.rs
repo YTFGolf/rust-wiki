@@ -217,8 +217,8 @@ pub enum RuleNameLabel {
     InflationUberRare,
     /// フィーバーラッシュ
     フィーバーラッシュ,
-    /// 100万使い切り
-    X100万使い切り,
+    /// Spend a Million
+    SpendMillion,
     /// 超半額セット EX
     超半額セットEX,
     /// レア度選抜+1
@@ -249,7 +249,7 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName017" => Self::HalfOffSR,
             "SpecialRuleName018" => Self::InflationUberRare,
             "SpecialRuleName019" => Self::フィーバーラッシュ,
-            "SpecialRuleName020" => Self::X100万使い切り,
+            "SpecialRuleName020" => Self::SpendMillion,
             "SpecialRuleName021" => Self::超半額セットEX,
             "SpecialRuleName022" => Self::レア度選抜plus1,
             label => Self::Placeholder(label.to_string()),
@@ -280,7 +280,7 @@ impl RuleNameLabel {
             RuleNameLabel::HalfOffSR => "Half-Off: S. Rare",
             RuleNameLabel::InflationUberRare => "Inflation: Uber Rare",
             RuleNameLabel::フィーバーラッシュ => "フィーバーラッシュ",
-            RuleNameLabel::X100万使い切り => "100万使い切り",
+            RuleNameLabel::SpendMillion => "Spend a Million",
             RuleNameLabel::超半額セットEX => "超半額セット EX",
             RuleNameLabel::レア度選抜plus1 => "レア度選抜+1",
             RuleNameLabel::Placeholder(label) => {
