@@ -163,6 +163,8 @@ pub struct EnemyCSV {
 
     // 110
     pub kaijin: Bool,
+    pub drain_chance: Percent,
+    pub drain_percent: Percent,
 
     #[serde(default)]
     pub rest: Vec<i32>,
