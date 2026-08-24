@@ -211,6 +211,8 @@ pub struct CatCSV2 {
     _uk115: Small,
     // "explosion range"
     pub immune_explosion: Bool,
+    pub immune_drain: Bool,
+    _uk118: Small,
 
     rest: Vec<i32>,
 }

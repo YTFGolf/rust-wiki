@@ -384,6 +384,7 @@ pub fn get_pure_abilities(
             Ability::ImmuneToToxic => immunities.push((ability, "Toxic")),
             Ability::ImmuneToSurge => immunities.push((ability, "Surge")),
             Ability::ImmuneToExplosion => immunities.push((ability, "Explosions")),
+            Ability::ImmuneToDrain => immunities.push((ability, "Drain")),
         }
     }
 

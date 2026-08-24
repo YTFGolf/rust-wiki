@@ -248,6 +248,8 @@ pub enum Ability {
     },
     /// Immune to explosion.
     ImmuneToExplosion,
+    /// Immune to drain.
+    ImmuneToDrain,
 }
 
 impl Ability {
@@ -287,7 +289,8 @@ impl Ability {
             | Self::ConjureUnit { .. }
             | Self::SageSlayer
             | Self::MetalKiller { .. }
-            | Self::ImmuneToExplosion => true,
+            | Self::ImmuneToExplosion
+            | Self::ImmuneToDrain => true,
             //
             Self::Knockback { .. }
             | Self::Freeze { .. }
@@ -353,7 +356,8 @@ impl Ability {
             | Self::SageSlayer
             | Self::MetalKiller { .. }
             | Self::Explosion { .. }
-            | Self::ImmuneToExplosion => false,
+            | Self::ImmuneToExplosion
+            | Self::ImmuneToDrain => false,
         }
     }
 
@@ -412,7 +416,8 @@ impl Ability {
             | Self::ImmuneToCurse
             | Self::ImmuneToToxic
             | Self::ImmuneToSurge
-            | Self::ImmuneToExplosion => true,
+            | Self::ImmuneToExplosion
+            | Self::ImmuneToDrain => true,
         }
     }
 }
@@ -475,6 +480,7 @@ impl Ability {
             Self::MetalKiller { .. } => "Metal Killer",
             Self::Explosion { .. } => "Explosion",
             Self::ImmuneToExplosion => "Immune to Explosions",
+            Self::ImmuneToDrain => "Immune to Drain",
         }
     }
 }
@@ -723,6 +729,10 @@ impl Ability {
 
         if bool(variable.immune_explosion).unwrap() {
             abilities.push(Self::ImmuneToExplosion);
+        }
+
+        if bool(variable.immune_drain).unwrap() {
+            abilities.push(Self::ImmuneToDrain);
         }
 
         abilities
