@@ -79,6 +79,7 @@ mod order {
         T::Dojo,
         T::RankingDojo,
         T::Championships,
+        T::PR,
         //
         T::Catamin,
         T::Extra,
@@ -186,7 +187,7 @@ fn raw_section(stage: &StageID) -> SectionRef {
         T::Labyrinth => Ref::Labyrinth,
         T::Collab | T::CollabGauntlet => Ref::Collab,
         T::Enigma => Ref::Enigma,
-        T::Dojo | T::RankingDojo | T::Championships => Ref::Dojo,
+        T::Dojo | T::RankingDojo | T::Championships | T::PR => Ref::Dojo,
         T::Extra => Ref::Extra,
         T::Catamin => Ref::Catamin,
     }

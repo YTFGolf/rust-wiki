@@ -31,7 +31,7 @@ const fn init(
 pub const SELECTOR_SEPARATOR: char = ' ';
 #[rustfmt::skip]
 /// Stage types container.
-pub const RAW_STAGE_TYPES: [StageType; 25] = [
+pub const RAW_STAGE_TYPES: [StageType; 26] = [
     // Matcher is possible common names for the stage type, separated by a pipe
     // character.
     init("Stories of Legend",            Some("N"),  C::RPrefix,     T::SoL,                "SoL"),
@@ -62,6 +62,7 @@ pub const RAW_STAGE_TYPES: [StageType; 25] = [
     init("Colosseum",                    Some("SR"), C::RPrefix,     T::Colosseum,          "Colosseum"),
     init("Catclaw Championships",        Some("G"),  C::Map,         T::Championships,      "Championships"),
     init("Filibuster Invasion Outbreak", None,       C::Custom,      T::FilibusterOutbreak, "FilibusterZ"),
+    init("PR",                           Some("PR"), C::RPrefix,     T::PR,                 ""),
 ];
 
 // -----------------------------------------------------------------------------
@@ -85,7 +86,7 @@ pub struct StageTypeDataContainer {
 }
 
 /// Max numeric value of any variant.
-pub const MAX_VARIANT_NUMBER: VariantSize = 38;
+pub const MAX_VARIANT_NUMBER: VariantSize = 39;
 /// [`MAX_VARIANT_NUMBER`], usable as an array index.
 pub const MAX_VARIANT_INDEX: usize = MAX_VARIANT_NUMBER as usize + 1;
 /// Type for the inner data of [`STAGE_TYPES`].

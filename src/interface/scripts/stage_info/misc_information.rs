@@ -56,7 +56,7 @@ pub fn chapter(stage: &Stage, data: &StageWikiDataContainer) -> Vec<TemplatePara
                 TemplateParameter::new("event-chapter", get_map_name(data.stage_map)),
             ]
         }
-        T::Dojo | T::RankingDojo | T::Championships => vec![TemplateParameter::new(
+        T::Dojo | T::RankingDojo | T::Championships | T::PR => vec![TemplateParameter::new(
             "dojo-chapter",
             get_map_name(data.stage_map),
         )],

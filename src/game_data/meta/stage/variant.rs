@@ -57,6 +57,7 @@ pub enum StageVariantID {
     Colosseum = 36,
     Championships = 37,
     FilibusterOutbreak = 38,
+    PR = 39,
 }
 
 impl From<VariantSize> for StageVariantID {

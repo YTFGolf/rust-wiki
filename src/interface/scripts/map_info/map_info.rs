@@ -40,7 +40,7 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
         T::Event | T::Collab | T::Enigma => Some(Preset::Event),
         T::Gauntlet | T::CollabGauntlet => Some(Preset::Gauntlet),
         T::Colosseum => Some(Preset::Colosseum),
-        T::Dojo | T::RankingDojo | T::Championships => Some(Preset::Table),
+        T::Dojo | T::RankingDojo | T::Championships | T::PR => Some(Preset::Table),
         //
         T::MainChapters | T::Filibuster | T::AkuRealms | T::FilibusterOutbreak => None,
         //
