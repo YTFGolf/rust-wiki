@@ -296,7 +296,7 @@ impl Misc {
                 normal: 0,
                 evolved: n as u8,
             },
-            _ => unreachable!(),
+            _ => unimplemented!(),
         };
         Self {
             rarity: Rarity::from_repr(unitbuy.rarity).unwrap(),

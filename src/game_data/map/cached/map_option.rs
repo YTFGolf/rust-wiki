@@ -37,6 +37,8 @@ pub struct MapOptionCSV {
     /// `cooldown` is set, the event goes into cooldown rather than
     /// disappearing.
     pub max_clears: u32,
+
+    // 10
     /// Probably something to do with where it appears on the legend stages
     /// screen.
     pub display_order: u32,
