@@ -372,6 +372,9 @@ mod tests {
         // make sure hasn't defaulted
 
         for rule in &rules.map {
+            if rule.1.contents_type == ContentsType::Unknown {
+                panic!("Unknown contents type for map {}", rule.0);
+            }
             for rtype in &rule.1.rule_type {
                 if let RuleType::Placeholder(n) = rtype {
                     panic!("Unknown SpecialRule id: {n}");
