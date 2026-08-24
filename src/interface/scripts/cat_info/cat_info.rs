@@ -221,21 +221,9 @@ fn appearance(cat: &Cat) -> Template {
         .add_params(P::new("ID", id.to_string()))
         .add_params(P::new("rarity", cat.unitbuy.misc.rarity.short_code()))
         .add_params(P::new("name1", CatForm::Normal.name(id)))
-        .add_params(
-            CatForm::Evolved
-                .name_option(id)
-                .map(|n| P::new("name2", n)),
-        )
-        .add_params(
-            CatForm::True
-                .name_option(id)
-                .map(|n| P::new("name3", n)),
-        )
-        .add_params(
-            CatForm::Ultra
-                .name_option(id)
-                .map(|n| P::new("name4", n)),
-        )
+        .add_params(CatForm::Evolved.name_option(id).map(|n| P::new("name2", n)))
+        .add_params(CatForm::True.name_option(id).map(|n| P::new("name3", n)))
+        .add_params(CatForm::Ultra.name_option(id).map(|n| P::new("name4", n)))
         .add_params(
             (cat.forms.amt_forms >= 1)
                 .then(|| P::new("image1", CatForm::Normal.wiki_appearance(id, eggs))),
@@ -442,18 +430,24 @@ pub fn get_info(wiki_id: u32, config: &Config) -> Result<Page, CatDataError> {
         StatsTemplateVersion::Manual => stats_manual(&cat, config),
     };
     page.push(Section::h2("Stats", stats.to_string()));
+
+    let animviewer;
+    // the spirit section needs to come before cf evo but it affects animation
+    // viewer, and animation viewer needs to come after cf evo
+    if let Some(spirit) = spirit_section(&cat, config) {
+        page.push(spirit);
+        animviewer = Section::blank("{{UnitViewer|conjurer}}");
+    } else {
+        animviewer = Section::blank("{{UnitViewer|cat}}");
+    }
+
     if let Some(cf_evo) = catfruit_evolution(&cat, config) {
         page.push(cf_evo);
     }
     if let Some(talents) = talents_section(&cat, config) {
         page.push(talents);
     }
-    if let Some(spirit) = spirit_section(&cat, config) {
-        page.push(spirit);
-        page.push(Section::blank("{{UnitViewer|conjurer}}"));
-    } else {
-        page.push(Section::blank("{{UnitViewer|cat}}"));
-    }
+    page.push(animviewer);
 
     page.push(Section::blank(format!(
         "{{{{Gallery|{file}}}}}",
