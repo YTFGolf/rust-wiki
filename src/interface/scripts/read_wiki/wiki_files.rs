@@ -15,18 +15,18 @@ const API_PATH: &str = "/w/api.php";
 
 /// (`file_name`, `page_name`)
 const FILES: [(&str, &str); 7] = [
-    ("StageNames.csv", "User:TheWWRNerdGuy/data/StageNames.csv"),
+    ("StageNames.csv", "User:Jenny_on_Wiki/data/StageNames.csv"),
     (
         "EnemyLinkData.csv",
-        "User:TheWWRNerdGuy/data/EnemyLinkData.csv",
+        "User:Jenny_on_Wiki/data/EnemyLinkData.csv",
     ),
-    ("Treasures.csv", "User:TheWWRNerdGuy/data/Treasures.csv"),
-    ("TalentNames.csv", "User:TheWWRNerdGuy/data/TalentNames.csv"),
+    ("Treasures.csv", "User:Jenny_on_Wiki/data/Treasures.csv"),
+    ("TalentNames.csv", "User:Jenny_on_Wiki/data/TalentNames.csv"),
     ("Difficulty.txt", "User:Novastrala/Difficulty.txt"),
     ("EnemyNames.csv", "Module:Enemies.csv"),
     (
         "ContinueStages.csv",
-        "User:TheWWRNerdGuy/data/ContinueStages.csv",
+        "User:Jenny_on_Wiki/data/ContinueStages.csv",
     ),
 ];
 const QUERIES: [(&str, &str); 2] = [

@@ -49,7 +49,7 @@ Stage info requires the internal map and stage numbers to work. These numbers ar
 
   HackerCatBOT actually uses these references, so most of them should be accurate as long as the page has exactly one reference complete with the stage number. However, not every stage might have a reference.
 
-If both of these methods fail, or give weird results, the last resort is to Ctrl+f on [StageNames.csv](https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/data/StageNames.csv) (or your local copy) and look up the stage name.
+If both of these methods fail, or give weird results, the last resort is to Ctrl+f on [StageNames.csv](https://battlecats.miraheze.org/wiki/User:Jenny_on_Wiki/data/StageNames.csv) (or your local copy) and look up the stage name.
 
 ## Other information
 

@@ -37,7 +37,7 @@ pub enum Command {
     ///
     /// See <https://battlecats.miraheze.org/wiki/?diff=207709> for a list of
     /// additional stuff you may need to do, although
-    /// (gauntlet.py)[<https://battlecats.miraheze.org/wiki/User:TheWWRNerdGuy/scripts#gauntlet.py>]
+    /// (gauntlet.py)[<https://battlecats.miraheze.org/wiki/User:Jenny_on_Wiki/scripts#gauntlet.py>]
     /// can fix most problems.
     Gauntlet(GauntletOptions),
 }
