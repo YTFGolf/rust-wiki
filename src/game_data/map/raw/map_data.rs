@@ -22,6 +22,7 @@ use csv::ByteRecord;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
+    path::Path,
 };
 
 /// Stage map.
@@ -34,7 +35,11 @@ impl GameMapData {
     /// Create new [`GameMapData`] object.
     pub fn new(map: &MapID, v: &Version) -> Self {
         let map_file = v.get_file_path("DataLocal").join(map_data_file(map));
-        let lines = BufReader::new(File::open(map_file).unwrap());
+        Self::from_path(&map_file)
+    }
+
+    fn from_path(path: &Path) -> Self {
+        let lines = BufReader::new(File::open(path).unwrap());
 
         let mut rdr = csv::ReaderBuilder::new()
             .has_headers(false)
