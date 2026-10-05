@@ -55,7 +55,7 @@ pub struct TalentGroup {
     /// 0 for normal, 1 for ultra.
     pub limit_x: u8,
 }
-const AMT_GROUPS: usize = 8;
+const AMT_GROUPS: usize = 11;
 
 /// Container for a single line of talents.
 #[derive(Debug)]
