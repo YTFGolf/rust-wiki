@@ -412,7 +412,7 @@ pub fn get_pure_abilities(
             };
             write!(
                 text_buf,
-                "{separator} [[Special Abilities#Immune to {immunity}|{immunity}]]"
+                "{separator} [[Immune to {immunity}|{immunity}]]"
             )
             .infallible_write();
         }
@@ -485,7 +485,7 @@ mod tests {
         assert_eq!(counter + 1, abilities.len());
         // i.e. gone over everything but last item in abilities
 
-        const FINAL_IMMUNITY: &str = "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Boss Shockwave|Immune to Warp|Immune to Curse|Immune to Toxic|Immune to Surge|Immune to Explosions|Immune to Drain}}<br>[[Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]], [[Special Abilities#Immune to Boss Shockwave|Boss Shockwave]], [[Special Abilities#Immune to Warp|Warp]], [[Special Abilities#Immune to Curse|Curse]], [[Special Abilities#Immune to Toxic|Toxic]], [[Special Abilities#Immune to Surge|Surge]], [[Special Abilities#Immune to Explosions|Explosions]] and [[Special Abilities#Immune to Drain|Drain]]";
+        const FINAL_IMMUNITY: &str = "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Boss Shockwave|Immune to Warp|Immune to Curse|Immune to Toxic|Immune to Surge|Immune to Explosions|Immune to Drain}}<br>[[Immune to Waves]], [[Immune to Knockback|Knockback]], [[Immune to Freeze|Freeze]], [[Immune to Slow|Slow]], [[Immune to Weaken|Weaken]], [[Immune to Boss Shockwave|Boss Shockwave]], [[Immune to Warp|Warp]], [[Immune to Curse|Curse]], [[Immune to Toxic|Toxic]], [[Immune to Surge|Surge]], [[Immune to Explosions|Explosions]] and [[Immune to Drain|Drain]]";
         assert_eq!(abilities[counter], FINAL_IMMUNITY);
     }
 
@@ -536,7 +536,7 @@ mod tests {
         let immunities = &lines[lines.len() - 1];
         assert_eq!(
             immunities,
-            "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken}} [[Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]] and [[Special Abilities#Immune to Weaken|Weaken]]"
+            "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken}} [[Immune to Waves]], [[Immune to Knockback|Knockback]], [[Immune to Freeze|Freeze]], [[Immune to Slow|Slow]] and [[Immune to Weaken|Weaken]]"
         );
     }
 
@@ -549,7 +549,7 @@ mod tests {
         let immunities = &lines[lines.len() - 1];
         assert_eq!(
             immunities,
-            "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Warp}}<br>[[Immune to Waves]], [[Special Abilities#Immune to Knockback|Knockback]], [[Special Abilities#Immune to Freeze|Freeze]], [[Special Abilities#Immune to Slow|Slow]], [[Special Abilities#Immune to Weaken|Weaken]] and [[Special Abilities#Immune to Warp|Warp]]"
+            "{{AbilityIcon|Immune to Waves|Immune to Knockback|Immune to Freeze|Immune to Slow|Immune to Weaken|Immune to Warp}}<br>[[Immune to Waves]], [[Immune to Knockback|Knockback]], [[Immune to Freeze|Freeze]], [[Immune to Slow|Slow]], [[Immune to Weaken|Weaken]] and [[Immune to Warp|Warp]]"
         );
     }
 

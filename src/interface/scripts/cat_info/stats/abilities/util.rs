@@ -18,7 +18,7 @@ pub fn get_duration_repr(duration: u32) -> String {
 
 /// Get link to special abilities page.
 pub fn get_ability(link: &str, display: &str) -> String {
-    format!("[[Special Abilities#{link}|{display}]]")
+    format!("[[{link}|{display}]]")
 }
 
 /// Get link to abilities page where link == display.
