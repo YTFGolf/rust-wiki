@@ -20,7 +20,7 @@ impl TalentMap {
     fn get_talent(&self, id: usize) -> &TalentEntry {
         self.map
             .get(id)
-            .unwrap_or_else(|| panic!("talent id not found: {id}."))
+            .unwrap_or_else(|| panic!("talent id not found in wiki file TalentNames.csv: {id}."))
     }
     /// Get the name of the talent.
     pub fn get_talent_name(&self, id: usize) -> &str {
