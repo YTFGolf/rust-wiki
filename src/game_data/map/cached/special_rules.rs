@@ -215,14 +215,14 @@ pub enum RuleNameLabel {
     HalfOffSR,
     /// Inflation: Uber Rare
     InflationUberRare,
-    /// フィーバーラッシュ
-    フィーバーラッシュ,
+    /// Metal Mania
+    MetalMania,
     /// Spend a Million
     SpendMillion,
-    /// 超半額セット EX
-    超半額セットEX,
-    /// レア度選抜+1
-    レア度選抜plus1,
+    /// Half-Off+: Special
+    HalfOfPlusSpecial,
+    /// Rarity Draft: Duo
+    RarityDraftDuo,
     /// Placeholder.
     Placeholder(String),
 }
@@ -248,10 +248,10 @@ impl<T: AsRef<str>> From<T> for RuleNameLabel {
             "SpecialRuleName016" => Self::HighSpeed,
             "SpecialRuleName017" => Self::HalfOffSR,
             "SpecialRuleName018" => Self::InflationUberRare,
-            "SpecialRuleName019" => Self::フィーバーラッシュ,
+            "SpecialRuleName019" => Self::MetalMania,
             "SpecialRuleName020" => Self::SpendMillion,
-            "SpecialRuleName021" => Self::超半額セットEX,
-            "SpecialRuleName022" => Self::レア度選抜plus1,
+            "SpecialRuleName021" => Self::HalfOfPlusSpecial,
+            "SpecialRuleName022" => Self::RarityDraftDuo,
             label => Self::Placeholder(label.to_string()),
         }
     }
@@ -279,10 +279,10 @@ impl RuleNameLabel {
             RuleNameLabel::HighSpeed => "High Speed",
             RuleNameLabel::HalfOffSR => "Half-Off: S. Rare",
             RuleNameLabel::InflationUberRare => "Inflation: Uber Rare",
-            RuleNameLabel::フィーバーラッシュ => "フィーバーラッシュ",
+            RuleNameLabel::MetalMania => "Metal Mania",
             RuleNameLabel::SpendMillion => "Spend a Million",
-            RuleNameLabel::超半額セットEX => "超半額セット EX",
-            RuleNameLabel::レア度選抜plus1 => "レア度選抜+1",
+            RuleNameLabel::HalfOfPlusSpecial => "Half-Off+: Special",
+            RuleNameLabel::RarityDraftDuo => "Rarity Draft: Duo",
             RuleNameLabel::Placeholder(label) => {
                 log::error!("unknown special rule label {label:?}");
                 "???"
