@@ -9,7 +9,7 @@ use crate::{
 /// Get spirit stats template.
 pub fn stats_spirit(cat: &Cat) -> Template {
     type P = TemplateParameter;
-    const KAMIKAZE: &str = "{{AbilityIcon|Kamikaze}} [[Special Abilities#Kamikaze|Kamikaze]] (Attacks once, then disappears from the battlefield)<br>\n";
+    const KAMIKAZE: &str = "{{AbilityIcon|Kamikaze}} [[Kamikaze]] (Attacks once, then disappears from the battlefield)<br>\n";
 
     let mut t = Template::named("SpiritStats");
     assert_eq!(cat.forms.amt_forms, 1);

@@ -1115,7 +1115,7 @@ mod tests {
         let boogie = Cat::from_wiki_id(22, &TEST_CONFIG.version).unwrap();
         let sect = talents_section(&boogie, &TEST_CONFIG).unwrap().to_string();
 
-        const TARGET: &str = "*'''[[Special Abilities#Knockback|Knockback]]''': Increases knockback chance by 5%, improves by ~1.11% per level up to 15% (Total Cost: 125 NP)";
+        const TARGET: &str = "*'''[[Knockback]]''': Increases knockback chance by 5%, improves by ~1.11% per level up to 15% (Total Cost: 125 NP)";
         // cannot be evenly divided, plus 0 -> 1 is 5% while rest are all 1%/2%
         let line = sect.lines().nth(1).unwrap();
 
@@ -1139,7 +1139,7 @@ mod tests {
         assert_eq!(talents.normal[0].skill_description_id, DESC_ID);
         // strengthen is first talent
 
-        const K_TARGET: &str = "*'''[[Special Abilities#Strengthen|Strengthen]]''': Upgrades strengthen attack power by 23%, improves by 3% per level up to 50% (Total Cost: 175 NP)";
+        const K_TARGET: &str = "*'''[[Strengthen]]''': Upgrades strengthen attack power by 23%, improves by 3% per level up to 50% (Total Cost: 175 NP)";
         let line = sect.lines().nth(1).unwrap();
         assert_eq!(line, K_TARGET);
 
@@ -1157,7 +1157,7 @@ mod tests {
         assert_eq!(talents.normal[0].skill_description_id, DESC_ID);
         // strengthen is first talent
 
-        const F_TARGET: &str = "*'''[[Special Abilities#Strengthen|Strengthen]]''': Adds 100% attack power at 1% health, improves by ~44.44% per level up to 500% (Total Cost: 235 NP)";
+        const F_TARGET: &str = "*'''[[Strengthen]]''': Adds 100% attack power at 1% health, improves by ~44.44% per level up to 500% (Total Cost: 235 NP)";
         let line = sect.lines().nth(1).unwrap();
         assert_eq!(line, F_TARGET);
 
@@ -1172,7 +1172,7 @@ mod tests {
         assert_eq!(talents.normal[0].skill_description_id, DESC_ID);
         // strengthen is first talent
 
-        const C_TARGET: &str = "*'''[[Special Abilities#Strengthen|Strengthen]]''': Adds 10% attack power at 66% health, improves by 10% per level up to 100% (Total Cost: 235 NP)";
+        const C_TARGET: &str = "*'''[[Strengthen]]''': Adds 10% attack power at 66% health, improves by 10% per level up to 100% (Total Cost: 235 NP)";
         let line = sect.lines().nth(1).unwrap();
         assert_eq!(line, C_TARGET);
     }
@@ -1189,7 +1189,7 @@ mod tests {
         // wave immune is second talent
 
         const C_TARGET: &str =
-            "*'''[[Special Abilities#Immune to Waves|Immune to Waves]]''' (Cost: 100 NP)";
+            "*'''[[Immune to Waves]]''' (Cost: 100 NP)";
         let line = sect.lines().nth(2).unwrap();
         assert_eq!(line, C_TARGET);
     }

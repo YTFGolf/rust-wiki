@@ -23,7 +23,7 @@ pub fn get_ability(link: &str, display: &str) -> String {
 
 /// Get link to abilities page where link == display.
 pub fn get_ability_single(link_display: &str) -> String {
-    format!("[[Special Abilities#{link_display}|{link_display}]]")
+    format!("[[{link_display}]]")
 }
 
 /// Get link to enemy category.
