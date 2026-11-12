@@ -314,7 +314,7 @@ mod tests {
         assert_eq!(
             intro(&leg_begins, map_data, &config),
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
-            [[Legend Stages#Stories of Legend|Stories of Legend]]. \
+            [[Stories of Legend]]. \
             It is available up to {{4c}} difficulty."
         );
         assert_eq!(
@@ -365,7 +365,7 @@ mod tests {
         }
         let target = format!(
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
-            [[Legend Stages#Stories of Legend|Stories of Legend]]. It \
+            [[Stories of Legend]]. It \
             was introduced in [[Version {ver} Update|Version {ver}]] and \
             is available up to {{{{4c}}}} difficulty."
         );
@@ -376,7 +376,7 @@ mod tests {
         assert_eq!(
             intro(&leg_begins, map_data, &no_version),
             "'''The Legend Begins''' (?, ''?'', '''?''') is the first sub-chapter of \
-            [[Legend Stages#Stories of Legend|Stories of Legend]]. \
+            [[Stories of Legend]]. \
             It is available up to {{4c}} difficulty."
         );
     }
