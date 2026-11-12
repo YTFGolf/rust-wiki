@@ -62,7 +62,7 @@ pub const RAW_STAGE_TYPES: [StageType; 26] = [
     init("Colosseum",                    Some("SR"), C::RPrefix,     T::Colosseum,          "Colosseum"),
     init("Catclaw Championships",        Some("G"),  C::Map,         T::Championships,      "Championships"),
     init("Filibuster Invasion Outbreak", None,       C::Custom,      T::FilibusterOutbreak, "FilibusterZ"),
-    init("PR",                           Some("PR"), C::RPrefix,     T::PR,                 ""),
+    init("PR",                           Some("PR"), C::RPrefix,     T::Point,              ""),
 ];
 
 // -----------------------------------------------------------------------------
