@@ -436,7 +436,7 @@ impl Ability {
             Self::MassiveDamage => "Massive Damage",
             Self::Crit { .. } => "Critical",
             Self::TargetsOnly => "Attacks Only",
-            Self::DoubleBounty => "Extra Money",
+            Self::DoubleBounty => "Money Up",
             Self::BaseDestroyer => "Base Destroyer",
             Self::Wave(wave) => match wave.wtype {
                 WaveType::Wave => "Wave Attack",

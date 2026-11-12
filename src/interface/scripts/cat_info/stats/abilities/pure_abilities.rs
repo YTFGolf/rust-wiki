@@ -211,7 +211,7 @@ pub fn get_pure_abilities(
             )),
             Ability::DoubleBounty => abilities.push(format!(
                 "{icon} {money} gained when defeating enemies",
-                money = abil("Extra Money", "Double money")
+                money = abil("Money Up", "Double money")
             )),
             Ability::BaseDestroyer => abilities.push(icon + " " + &abil2("Base Destroyer")),
             Ability::Wave(Wave {
