@@ -70,6 +70,7 @@ mod order {
         T::Gauntlet,
         T::Behemoth,
         T::Colosseum,
+        T::Point,
         //
         T::Labyrinth,
         T::Collab,
@@ -79,7 +80,6 @@ mod order {
         T::Dojo,
         T::RankingDojo,
         T::Championships,
-        T::Point,
         //
         T::Catamin,
         T::Extra,
@@ -110,7 +110,7 @@ mod order {
 
     const _: () = assert!(TYPE_ORDER_INDICES[T::MainChapters as usize] == 0);
     // doctest would cause visibility nightmares so just use const assert
-    const _: () = assert!(TYPE_ORDER_INDICES[T::Labyrinth as usize] == 16);
+    const _: () = assert!(TYPE_ORDER_INDICES[T::Labyrinth as usize] == 17);
     // just to make sure I can count
     const _: () = assert!(TYPE_ORDER_INDICES[T::Extra as usize] == STYPE_AMT - 1);
 
@@ -183,11 +183,17 @@ fn raw_section(stage: &StageID) -> SectionRef {
         T::SoL => Ref::SoL,
         T::UL => Ref::UL,
         T::ZL => Ref::ZL,
-        T::Event | T::Tower | T::Challenge | T::Gauntlet | T::Behemoth | T::Colosseum => Ref::Event,
+        T::Event
+        | T::Tower
+        | T::Challenge
+        | T::Gauntlet
+        | T::Behemoth
+        | T::Colosseum
+        | T::Point => Ref::Event,
         T::Labyrinth => Ref::Labyrinth,
         T::Collab | T::CollabGauntlet => Ref::Collab,
         T::Enigma => Ref::Enigma,
-        T::Dojo | T::RankingDojo | T::Championships | T::Point => Ref::Dojo,
+        T::Dojo | T::RankingDojo | T::Championships => Ref::Dojo,
         T::Extra => Ref::Extra,
         T::Catamin => Ref::Catamin,
     }

@@ -37,10 +37,10 @@ const fn get_preset(st: StageVariantID) -> Option<Preset> {
     type T = StageVariantID;
     match st {
         T::SoL | T::UL | T::ZL => Some(Preset::Legend),
-        T::Event | T::Collab | T::Enigma => Some(Preset::Event),
+        T::Event | T::Collab | T::Enigma | T::Point => Some(Preset::Event),
         T::Gauntlet | T::CollabGauntlet => Some(Preset::Gauntlet),
         T::Colosseum => Some(Preset::Colosseum),
-        T::Dojo | T::RankingDojo | T::Championships | T::Point => Some(Preset::Table),
+        T::Dojo | T::RankingDojo | T::Championships => Some(Preset::Table),
         //
         T::MainChapters | T::Filibuster | T::AkuRealms | T::FilibusterOutbreak => None,
         //
