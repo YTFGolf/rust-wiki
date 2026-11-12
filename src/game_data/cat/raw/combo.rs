@@ -132,6 +132,8 @@ pub enum ComboUnlockType {
     Rank2150 = 10002,
     /// At User Rank 2700.
     Rank2700 = 10003,
+    /// We don't talk about this one.
+    Idk = 9999,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -190,7 +192,10 @@ impl From<ComboDataTo14_7> for ComboData {
 }
 impl From<ComboDataFrom15_0> for ComboData {
     fn from(value: ComboDataFrom15_0) -> Self {
-        let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap();
+        let unlock_type = ComboUnlockType::from_repr(value.unlock_type).unwrap_or_else(|| {
+            log::error!("Unknown unlock type: {}", value.unlock_type);
+            ComboUnlockType::Idk
+        });
         let effect_num = value.combo_effect_num;
         let intensity_num = value.combo_intensity_num;
 
