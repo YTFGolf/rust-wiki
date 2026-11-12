@@ -1188,8 +1188,7 @@ mod tests {
         assert_eq!(talents.normal[1].max_level, 0);
         // wave immune is second talent
 
-        const C_TARGET: &str =
-            "*'''[[Immune to Waves]]''' (Cost: 100 NP)";
+        const C_TARGET: &str = "*'''[[Immune to Waves]]''' (Cost: 100 NP)";
         let line = sect.lines().nth(2).unwrap();
         assert_eq!(line, C_TARGET);
     }

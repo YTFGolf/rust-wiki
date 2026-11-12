@@ -154,8 +154,7 @@ pub fn get_multihit_ability(
     match hits {
         AttackHits::Single(_) => None,
         AttackHits::Double([h1, h2]) => {
-            let mut buf =
-                "{{AbilityIcon|Multi-Hit}} [[Multi-Hit]] (".to_string();
+            let mut buf = "{{AbilityIcon|Multi-Hit}} [[Multi-Hit]] (".to_string();
 
             write_mh_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
@@ -165,8 +164,7 @@ pub fn get_multihit_ability(
             Some(buf)
         }
         AttackHits::Triple([h1, h2, h3]) => {
-            let mut buf =
-                "{{AbilityIcon|Multi-Hit}} [[Multi-Hit]] (".to_string();
+            let mut buf = "{{AbilityIcon|Multi-Hit}} [[Multi-Hit]] (".to_string();
 
             write_mh_hit(&mut buf, h1, scaling, level);
             buf.write_str(", ").infallible_write();
@@ -185,12 +183,9 @@ mod tests {
     use super::*;
     use crate::{TEST_CONFIG, game_data::cat::parsed::cat::Cat};
 
-    const MULTI_HIT_INTRO: &str =
-        "{{AbilityIcon|Multi-Hit}} [[Multi-Hit]]";
-    const LD_INTRO: &str =
-        "{{AbilityIcon|Long Distance}} [[Long Distance]]";
-    const OMNI_INTRO: &str =
-        "{{AbilityIcon|Omni Strike}} [[Omni Strike]]";
+    const MULTI_HIT_INTRO: &str = "{{AbilityIcon|Multi-Hit}} [[Multi-Hit]]";
+    const LD_INTRO: &str = "{{AbilityIcon|Long Distance}} [[Long Distance]]";
+    const OMNI_INTRO: &str = "{{AbilityIcon|Omni Strike}} [[Omni Strike]]";
 
     fn get_stats(id: u32) -> Cat {
         Cat::from_wiki_id(id, &TEST_CONFIG.version).unwrap()

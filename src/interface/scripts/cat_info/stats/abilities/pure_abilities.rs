@@ -397,11 +397,7 @@ pub fn get_pure_abilities(
 
         let (icon, first) = iter.next().expect("already check is_empty");
         write!(icons_buf, "{{{{AbilityIcon|{i}", i = icon.name()).infallible_write();
-        write!(
-            text_buf,
-            "[[Immune to {first}]]"
-        )
-        .infallible_write();
+        write!(text_buf, "[[Immune to {first}]]").infallible_write();
 
         while let Some((icon, immunity)) = iter.next() {
             write!(icons_buf, "|{i}", i = icon.name()).infallible_write();
@@ -410,11 +406,7 @@ pub fn get_pure_abilities(
                 Some(_) => ",",
                 None => " and",
             };
-            write!(
-                text_buf,
-                "{separator} [[Immune to {immunity}|{immunity}]]"
-            )
-            .infallible_write();
+            write!(text_buf, "{separator} [[Immune to {immunity}|{immunity}]]").infallible_write();
         }
         icons_buf += "}}";
 
